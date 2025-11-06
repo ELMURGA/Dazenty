@@ -1,0 +1,227 @@
+/* ===== RESET Y VARIABLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --brand-dark: #0a0a0a;
+    --brand-gray: #111111;
+    --brand-blue-400: #00BFFF;
+    --brand-blue-500: #00AFFF;
+    --brand-blue-600: #0099E0;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== CLASES PERSONALIZADAS ===== */
+.text-glow {
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.7);
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: var(--brand-blue-400);
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background-color: var(--brand-gray);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    border-color: var(--brand-blue-400);
+    box-shadow: 0 0 15px 0 rgba(0, 191, 255, 0.3);
+    transform: translateY(-0.25rem);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--brand-dark);
+    border: 1px solid var(--gray-700);
+    border-radius: 0.5rem;
+    color: var(--gray-200);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--brand-blue-500);
+    box-shadow: 0 0 0 1px var(--brand-blue-500);
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 1.125rem;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--brand-blue-500);
+    color: var(--brand-dark);
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-blue-400);
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    border: 2px solid var(--brand-blue-500);
+    color: var(--brand-blue-500);
+    background-color: transparent;
+}
+
+.btn-secondary:hover {
+    background-color: var(--brand-blue-500);
+    color: var(--brand-dark);
+}
+
+/* ===== FONDO ANIMADO CON PARTÍCULAS ===== */
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* ===== ANIMACIONES PERSONALIZADAS ===== */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 191, 255, 0.6);
+    }
+}
+
+.float-animation {
+    animation: float 6s ease-in-out infinite;
+}
+
+.pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===== EFECTOS DE SCROLL ===== */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.6s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== ESTILOS RESPONSIVOS ===== */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 1.875rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* ===== ICONOS SOCIALES ===== */
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--brand-blue-500);
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--brand-blue-400);
+    transform: scale(1.1) rotate(5deg);
+}
+
+.social-icon img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+/* ===== LOADER DE PÁGINA ===== */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--brand-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--gray-700);
+    border-top: 5px solid var(--brand-blue-400);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

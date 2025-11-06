@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño Gráfico - Dazenty</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../img/logo.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/main.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace']
+                    },
+                    colors: {
+                        'brand-dark': '#0a0a0a',
+                        'brand-gray': '#111111',
+                        'brand-blue': {
+                            '400': '#00BFFF',
+                            '500': '#00AFFF',
+                            '600': '#0099E0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-gray-300 font-sans antialiased">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-brand-dark/90 backdrop-blur-lg shadow-lg">
+        <nav class="container mx-auto max-w-7xl px-4 py-4 flex justify-between items-center">
+            <a href="../index.html" class="flex items-center gap-3">
+                <img src="../img/logo.png" alt="Dazenty Logo" class="h-12 w-auto">
+                <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
+            </a>
+            
+            <ul class="hidden md:flex items-center space-x-6">
+                <li><a href="../index.html#inicio" class="text-gray-200 hover:text-brand-blue-400 transition">Inicio</a></li>
+                <li><a href="../index.html#servicios" class="text-gray-200 hover:text-brand-blue-400 transition">Servicios</a></li>
+                <li><a href="../index.html#proyectos" class="text-gray-200 hover:text-brand-blue-400 transition">Proyectos</a></li>
+                <li><a href="../index.html#contacto" class="btn btn-secondary text-sm py-2 px-5">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pt-24">
+        <!-- Hero Section -->
+        <section class="py-20 px-4 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute top-10 right-10 w-96 h-96 bg-brand-blue-400 rounded-full filter blur-3xl animate-pulse"></div>
+            </div>
+            
+            <div class="container mx-auto max-w-6xl relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Texto -->
+                    <div data-aos="fade-right">
+                        <span class="text-brand-blue-400 font-mono text-sm uppercase tracking-wider">Nuestros Servicios</span>
+                        <h1 class="text-5xl md:text-6xl font-bold text-white mt-2 mb-6">Diseño Gráfico Profesional</h1>
+                        <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                            Creamos identidades visuales únicas que capturan la esencia de tu marca y conectan emocionalmente con tu audiencia.
+                        </p>
+                        <a href="../index.html#contacto" class="btn btn-primary">Solicitar Presupuesto</a>
+                    </div>
+                    
+                    <!-- Imagen -->
+                    <div data-aos="fade-left" class="relative">
+                        <div class="rounded-2xl overflow-hidden shadow-2xl">
+                            <img src="../img/imprenta-online-programas-diseno.jpg" alt="Diseño Gráfico" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Servicios Incluidos -->
+        <section class="py-20 px-4 bg-brand-gray">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="section-title" data-aos="fade-up">¿Qué Incluye?</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Todo lo que necesitas para destacar visualmente</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Servicio 1 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Diseño de Logotipos</h3>
+                        <p class="text-gray-400">Creación de logos únicos y memorables con todas sus variantes y formatos.</p>
+                    </div>
+                    
+                    <!-- Servicio 2 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Identidad Corporativa</h3>
+                        <p class="text-gray-400">Manual de marca completo con paleta de colores, tipografías y guías de uso.</p>
+                    </div>
+                    
+                    <!-- Servicio 3 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Material Publicitario</h3>
+                        <p class="text-gray-400">Flyers, tarjetas, banners y todo tipo de material promocional impreso y digital.</p>
+                    </div>
+                    
+                    <!-- Servicio 4 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="500">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Diseño para Redes Sociales</h3>
+                        <p class="text-gray-400">Posts, stories, covers y contenido visual optimizado para todas las plataformas.</p>
+                    </div>
+                    
+                    <!-- Servicio 5 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="600">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Catálogos y Brochures</h3>
+                        <p class="text-gray-400">Diseño editorial profesional para catálogos de productos y material informativo.</p>
+                    </div>
+                    
+                    <!-- Servicio 6 -->
+                    <div class="card p-6" data-aos="fade-up" data-aos-delay="700">
+                        <div class="w-14 h-14 bg-brand-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Packaging y Etiquetas</h3>
+                        <p class="text-gray-400">Diseño de empaques atractivos que hacen destacar tus productos en el mercado.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Proceso de Trabajo -->
+        <section class="py-20 px-4">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="section-title" data-aos="fade-up">Nuestro Proceso</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Así trabajamos cada proyecto</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-20 h-20 bg-brand-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-brand-dark">1</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Briefing</h3>
+                        <p class="text-gray-400">Entendemos tu visión, objetivos y público objetivo</p>
+                    </div>
+                    
+                    <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-20 h-20 bg-brand-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-brand-dark">2</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Conceptualización</h3>
+                        <p class="text-gray-400">Creamos propuestas iniciales y bocetos creativos</p>
+                    </div>
+                    
+                    <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-20 h-20 bg-brand-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-brand-dark">3</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Desarrollo</h3>
+                        <p class="text-gray-400">Refinamos y desarrollamos el diseño seleccionado</p>
+                    </div>
+                    
+                    <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+                        <div class="w-20 h-20 bg-brand-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-brand-dark">4</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Entrega</h3>
+                        <p class="text-gray-400">Archivos finales en todos los formatos necesarios</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 px-4 bg-brand-gray">
+            <div class="container mx-auto max-w-4xl text-center">
+                <div data-aos="zoom-in">
+                    <h2 class="text-4xl font-bold text-white mb-6">¿Listo para crear algo increíble?</h2>
+                    <p class="text-xl text-gray-400 mb-8">Transformemos tu visión en un diseño espectacular</p>
+                    <a href="../index.html#contacto" class="btn btn-primary">Solicitar Presupuesto</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-brand-dark border-t border-gray-800">
+        <div class="container mx-auto max-w-7xl px-4 text-center">
+            <div class="flex justify-center items-center gap-6 mb-4">
+                <a href="tel:676448762" class="social-icon">
+                    <img src="../img/telefono.png" alt="Teléfono" class="w-6 h-6">
+                </a>
+                <a href="mailto:designerazenty@gmail.com" class="social-icon">
+                    <img src="../img/correos.png" alt="Email" class="w-6 h-6">
+                </a>
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" class="social-icon" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);">
+                    <img src="../img/instagram_logo_blanco.png" alt="Instagram" class="w-6 h-6">
+                </a>
+            </div>
+            <p class="text-gray-500">&copy; 2024 Dazenty. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
