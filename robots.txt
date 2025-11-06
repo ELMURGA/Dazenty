@@ -1,0 +1,11 @@
+# robots.txt para Dazenty
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://dazenty.com/sitemap.xml
+
+# Bloquear archivos innecesarios
+Disallow: /css/
+Disallow: /.git/
+Disallow: /.DS_Store

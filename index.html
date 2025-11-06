@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dazenty - Creamos tu web</title>
+    <title>Dazenty - Diseño Web, Gráfico y Marketing Digital | Transformamos Ideas en Realidad</title>
+    <meta name="description" content="Dazenty: Agencia de diseño web, diseño gráfico y marketing digital. Creamos sitios web profesionales, identidades visuales únicas y estrategias digitales efectivas. ¡Transforma tu negocio hoy!">
+    <meta name="keywords" content="diseño web, diseño gráfico, marketing digital, desarrollo web, branding, identidad corporativa, SEO, páginas web profesionales">
+    <meta name="author" content="Dazenty">
     <link rel="icon" type="image/png" href="img/logo.png">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dazenty.com/">
+    <meta property="og:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
+    <meta property="og:description" content="Transformamos ideas en experiencias digitales excepcionales. Diseño web profesional, identidad visual y estrategias de marketing digital.">
+    <meta property="og:image" content="https://dazenty.com/img/logo.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://dazenty.com/">
+    <meta property="twitter:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
+    <meta property="twitter:description" content="Transformamos ideas en experiencias digitales excepcionales. Diseño web profesional, identidad visual y estrategias de marketing digital.">
+    <meta property="twitter:image" content="https://dazenty.com/img/logo.png">
     
     <!-- Cargamos Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +36,12 @@
     
     <!-- Particles.js para efecto de fondo -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- CSS Personalizado -->
     <link rel="stylesheet" href="css/main.css">
@@ -173,7 +196,7 @@
                     <!-- Proyecto 1 -->
                     <a href="html/proyecto-diseno-grafico.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="200">
                         <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
-                            <img src="img/proyecto_diseno_grafico.jpg" alt="Proyecto Diseño Gráfico" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            <img src="img/proyecto_diseno_grafico.jpg" alt="Proyecto Diseño Gráfico" loading="lazy" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <span class="text-sm text-brand-blue-400">Diseño Gráfico</span>
@@ -186,7 +209,7 @@
                     <!-- Proyecto 2 -->
                     <a href="html/proyecto-desarrollo-web.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="300">
                         <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
-                            <img src="img/proyecto_desarrollo_web.jpg" alt="Proyecto Desarrollo Web" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            <img src="img/proyecto_desarrollo_web.jpg" alt="Proyecto Desarrollo Web" loading="lazy" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <span class="text-sm text-brand-blue-400">Web Desarrollo</span>
@@ -199,7 +222,7 @@
                     <!-- Proyecto 3 -->
                     <a href="html/proyecto-marketing-digital.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="400">
                         <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
-                            <img src="img/proyecto_marketing_digital.jpg" alt="Proyecto Marketing Digital" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            <img src="img/proyecto_marketing_digital.jpg" alt="Proyecto Marketing Digital" loading="lazy" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <span class="text-sm text-brand-blue-400">Marketing Digital</span>
@@ -217,7 +240,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <!-- Imagen -->
                     <div class="w-full h-80 rounded-lg overflow-hidden" data-aos="fade-right">
-                         <img src="img/foto_sobre_nosotros.jpg" alt="Equipo de Dazenty" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                         <img src="img/foto_sobre_nosotros.jpg" alt="Equipo de Dazenty" loading="lazy" width="800" height="600" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
                     </div>
                     
                     <!-- Texto -->

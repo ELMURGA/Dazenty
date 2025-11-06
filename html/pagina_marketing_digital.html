@@ -50,19 +50,39 @@
     </style>
 </head>
 <body class="text-white min-h-screen">
-    <!-- Header -->
-    <header class="fixed w-full top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="../index.html" class="flex items-center gap-3">
-                <img src="../img/logo.png" alt="Dazenty Logo" class="h-10 w-auto">
+    <!-- ===== HEADER / NAVBAR ===== -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-brand-dark/90 backdrop-blur-lg" id="header">
+        <nav class="container mx-auto max-w-7xl px-4 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="../index.html#inicio" class="flex items-center gap-3">
+                <img src="../img/logo.png" alt="Dazenty Logo" class="h-12 w-auto">
+                <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
             </a>
-            <nav class="hidden md:flex gap-8">
-                <a href="../index.html" class="text-gray-300 hover:text-blue-400 transition-colors">Inicio</a>
-                <a href="pagina_diseno_grafico.html" class="text-gray-300 hover:text-blue-400 transition-colors">Diseño Gráfico</a>
-                <a href="pagina_desarrollo_web.html" class="text-gray-300 hover:text-blue-400 transition-colors">Desarrollo Web</a>
-                <a href="pagina_marketing_digital.html" class="text-blue-400 font-semibold">Marketing Digital</a>
-                <a href="../index.html#contacto" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all">Contacto</a>
-            </nav>
+            
+            <!-- Navegación Desktop -->
+            <ul class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                <li><a href="../index.html#inicio" class="text-gray-200 hover:text-brand-blue-400 transition">Inicio</a></li>
+                <li><a href="../index.html#servicios" class="text-gray-200 hover:text-brand-blue-400 transition">Servicios</a></li>
+                <li><a href="../index.html#proyectos" class="text-gray-200 hover:text-brand-blue-400 transition">Proyectos</a></li>
+                <li><a href="../index.html#nosotros" class="text-gray-200 hover:text-brand-blue-400 transition">Nosotros</a></li>
+                <li><a href="../index.html#contacto" class="ml-4 btn btn-secondary text-sm py-2 px-5">Hablemos</a></li>
+            </ul>
+            
+            <!-- Botón Menú Móvil -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+        
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="fixed inset-0 bg-brand-dark/95 backdrop-blur-lg flex-col items-center justify-center space-y-8 text-2xl font-bold hidden md:hidden">
+            <a href="../index.html#inicio" class="text-white hover:text-brand-blue-400 menu-link">Inicio</a>
+            <a href="../index.html#servicios" class="text-white hover:text-brand-blue-400 menu-link">Servicios</a>
+            <a href="../index.html#proyectos" class="text-white hover:text-brand-blue-400 menu-link">Proyectos</a>
+            <a href="../index.html#nosotros" class="text-white hover:text-brand-blue-400 menu-link">Nosotros</a>
+            <a href="../index.html#contacto" class="mt-8 btn btn-primary menu-link">Pide tu presupuesto</a>
         </div>
     </header>
 
@@ -228,41 +248,49 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-12 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="font-bold text-xl mb-4">Dazenty</h3>
-                    <p class="text-gray-400">Transformando ideas en experiencias digitales excepcionales</p>
-                </div>
-                <div>
-                    <h3 class="font-bold text-xl mb-4">Enlaces</h3>
-                    <div class="flex flex-col gap-2">
-                        <a href="../index.html#servicios" class="text-gray-400 hover:text-blue-400 transition-colors">Servicios</a>
-                        <a href="../index.html#proyectos" class="text-gray-400 hover:text-blue-400 transition-colors">Proyectos</a>
-                        <a href="../index.html#contacto" class="text-gray-400 hover:text-blue-400 transition-colors">Contacto</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-xl mb-4">Contacto</h3>
-                    <div class="flex flex-col gap-3">
-                        <a href="tel:676448762" class="text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-2">
-                            <img src="../img/telefono.png" alt="Teléfono" class="w-5 h-5">
-                            676 448 762
-                        </a>
-                        <a href="mailto:designerazenty@gmail.com" class="text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-2">
-                            <img src="../img/correos.png" alt="Email" class="w-5 h-5">
-                            designerazenty@gmail.com
-                        </a>
-                        <a href="https://www.instagram.com/dazen.ty" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-2">
-                            <img src="../img/instagram_logo_blanco.png" alt="Instagram" class="w-5 h-5">
-                            @dazen.ty
-                        </a>
-                    </div>
-                </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="py-12 bg-brand-gray border-t border-gray-800">
+        <div class="container mx-auto max-w-7xl px-4">
+            <!-- Logo y descripción -->
+            <div class="text-center mb-8" data-aos="fade-up">
+                <a href="../index.html#inicio" class="inline-flex items-center gap-3 mb-4">
+                    <img src="../img/logo.png" alt="Dazenty Logo" class="h-10 w-auto">
+                    <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
+                </a>
+                <p class="text-gray-400 mt-4 max-w-md mx-auto">
+                    Transformando ideas en experiencias digitales excepcionales
+                </p>
             </div>
-            <div class="border-t border-white/10 pt-8 text-center text-gray-400">
+            
+            <!-- Redes sociales e iconos de contacto -->
+            <div class="flex justify-center items-center gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <!-- Teléfono -->
+                <a href="tel:676448762" class="social-icon group" title="Llamar">
+                    <img src="../img/telefono.png" alt="Teléfono" class="w-6 h-6">
+                </a>
+                
+                <!-- Email -->
+                <a href="mailto:designerazenty@gmail.com" class="social-icon group" title="Email">
+                    <img src="../img/correos.png" alt="Email" class="w-6 h-6">
+                </a>
+                
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="social-icon group" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);" title="Instagram">
+                    <img src="../img/instagram_logo_blanco.png" alt="Instagram" class="w-6 h-6">
+                </a>
+            </div>
+            
+            <!-- Links del footer -->
+            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm" data-aos="fade-up" data-aos-delay="200">
+                <a href="../index.html#inicio" class="text-gray-400 hover:text-brand-blue-400 transition">Inicio</a>
+                <a href="../index.html#servicios" class="text-gray-400 hover:text-brand-blue-400 transition">Servicios</a>
+                <a href="../index.html#proyectos" class="text-gray-400 hover:text-brand-blue-400 transition">Proyectos</a>
+                <a href="../index.html#nosotros" class="text-gray-400 hover:text-brand-blue-400 transition">Nosotros</a>
+                <a href="../index.html#contacto" class="text-gray-400 hover:text-brand-blue-400 transition">Contacto</a>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="text-center text-gray-500 text-sm border-t border-gray-800 pt-6" data-aos="fade-up" data-aos-delay="300">
                 <p>&copy; 2024 Dazenty. Todos los derechos reservados.</p>
             </div>
         </div>
