@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dazenty - Diseño Web, Gráfico y Marketing Digital | Transformamos Ideas en Realidad</title>
+    <meta name="description" content="Dazenty: Agencia de diseño web, diseño gráfico y marketing digital. Creamos sitios web profesionales, identidades visuales únicas y estrategias digitales efectivas. ¡Transforma tu negocio hoy!">
+    <meta name="keywords" content="diseño web, diseño gráfico, marketing digital, desarrollo web, branding, identidad corporativa, SEO, páginas web profesionales">
+    <meta name="author" content="Dazenty">
+    <link rel="icon" type="image/png" href="img/logo.png">
+    
+    <!-- Preconnect a recursos externos críticos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://formsubmit.co">
+    
+    <!-- Preload de recursos críticos (LCP) -->
+    <link rel="preload" href="img/webp/logo.webp" as="image" type="image/webp" fetchpriority="high">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dazenty.com/">
+    <meta property="og:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
+    <meta property="og:description" content="Transformamos ideas en experiencias digitales excepcionales. Diseño web profesional, identidad visual y estrategias de marketing digital.">
+    <meta property="og:image" content="https://dazenty.com/img/logo.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://dazenty.com/">
+    <meta property="twitter:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
+    <meta property="twitter:description" content="Transformamos ideas en experiencias digitales excepcionales. Diseño web profesional, identidad visual y estrategias de marketing digital.">
+    <meta property="twitter:image" content="https://dazenty.com/img/logo.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Google Fonts con display=swap (optimizado) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- CSS Crítico Inline (Above-the-fold) -->
+    <style>
+        /* Reset y variables críticas */
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--brand-dark:#0a0a0a;--brand-gray:#111111;--brand-blue-400:#00BFFF;--brand-blue-500:#00AFFF;--brand-blue-600:#0099E0;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-700:#374151;--gray-800:#1f2937}
+        html{scroll-behavior:smooth}
+        body{background-color:var(--brand-dark);color:var(--gray-300);font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        
+        /* Loader crítico */
+        .page-loader{position:fixed;top:0;left:0;width:100%;height:100%;background-color:var(--brand-dark);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s ease}
+        .page-loader.hidden{opacity:0;pointer-events:none}
+        .loader-spinner{width:50px;height:50px;border:5px solid var(--gray-700);border-top:5px solid var(--brand-blue-400);border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        
+        /* Header crítico */
+        header{position:fixed;top:0;left:0;width:100%;z-index:50;transition:all .3s}
+        nav{max-width:80rem;margin:0 auto;padding:1rem;display:flex;justify-content:space-between;align-items:center}
+        
+        /* Hero crítico */
+        #inicio{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;position:relative;overflow:hidden}
+        .text-glow{text-shadow:0 0 8px rgba(0,191,255,.7)}
+        
+        /* Botones críticos */
+        .btn{display:inline-block;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:700;font-size:1.125rem;text-decoration:none;text-align:center;transition:all .3s;cursor:pointer;border:none}
+        .btn-primary{background-color:var(--brand-blue-500);color:var(--brand-dark)}
+        .btn-secondary{border:2px solid var(--brand-blue-500);color:var(--brand-blue-500);background-color:transparent}
+        
+        /* Utilidades críticas */
+        .hidden{display:none!important}
+        .flex{display:flex}
+        .items-center{align-items:center}
+        .justify-center{justify-content:center}
+        .text-white{color:#fff}
+        .text-center{text-align:center}
+        .relative{position:relative}
+        .absolute{position:absolute}
+        .inset-0{top:0;right:0;bottom:0;left:0}
+        .z-0{z-index:0}
+        .z-10{z-index:10}
+        .z-50{z-index:50}
+        .gap-3{gap:.75rem}
+        .gap-4{gap:1rem}
+        .mb-6{margin-bottom:1.5rem}
+        .mb-12{margin-bottom:3rem}
+        .mx-auto{margin-left:auto;margin-right:auto}
+        .max-w-4xl{max-width:56rem}
+        .w-auto{width:auto}
+        .h-12{height:3rem}
+        .overflow-hidden{overflow:hidden}
+        .font-mono{font-family:'Space Mono',monospace}
+        .font-bold{font-weight:700}
+        .text-2xl{font-size:1.5rem;line-height:2rem}
+        .text-6xl{font-size:3.75rem;line-height:1}
+        @media(min-width:640px){.sm\:text-7xl{font-size:4.5rem;line-height:1}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:flex-row{flex-direction:row}}
+        @media(min-width:1024px){.lg\:text-9xl{font-size:8rem;line-height:1}.lg\:text-4xl{font-size:2.25rem;line-height:2.5rem}}
+        .flex-col{flex-direction:column}
+    </style>
+    
+    <!-- Tailwind CSS (diferido) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace']
+                    },
+                    colors: {
+                        'brand-dark': '#0a0a0a',
+                        'brand-gray': '#111111',
+                        'brand-blue': {
+                            '400': '#00BFFF',
+                            '500': '#00AFFF',
+                            '600': '#0099E0'
+                        }
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 15px 0 rgba(0, 191, 255, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- CSS Personalizado (diferido para no bloquear) -->
+    <link rel="preload" href="css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/main.css"></noscript>
+    
+    <!-- AOS CSS diferido -->
+    <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
+    
+    <!-- Particles.js se cargará dinámicamente solo en desktop -->
+</head>
+<body class="bg-brand-dark text-gray-300 font-sans antialiased">
+    
+    <!-- Loader de página -->
+    <div class="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- ===== HEADER / NAVBAR ===== -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="header">
+        <nav class="container mx-auto max-w-7xl px-4 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#inicio" class="flex items-center gap-3">
+                <picture>
+                    <source srcset="img/webp/logo.webp" type="image/webp">
+                    <img src="img/logo.png" alt="Dazenty Logo" width="48" height="48" class="h-12 w-auto" fetchpriority="high" decoding="sync">
+                </picture>
+                <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
+            </a>
+            
+            <!-- Navegación Desktop -->
+            <ul class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                <li><a href="#inicio" class="text-gray-200 hover:text-brand-blue-400 transition">Inicio</a></li>
+                <li><a href="#servicios" class="text-gray-200 hover:text-brand-blue-400 transition">Servicios</a></li>
+                <li><a href="#proyectos" class="text-gray-200 hover:text-brand-blue-400 transition">Proyectos</a></li>
+                <li><a href="#nosotros" class="text-gray-200 hover:text-brand-blue-400 transition">Nosotros</a></li>
+                <li><a href="#contacto" class="ml-4 btn btn-secondary text-sm py-2 px-5">Hablemos</a></li>
+            </ul>
+            
+            <!-- Botón Menú Móvil -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-brand-blue-400 rounded-lg p-1 z-50" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+        
+        <!-- Menú Móvil (Oculto por defecto) -->
+        <div id="mobile-menu" class="fixed inset-0 bg-brand-dark/95 backdrop-blur-lg flex-col items-center justify-center space-y-8 text-2xl font-bold hidden md:hidden">
+            <a href="#inicio" class="text-white hover:text-brand-blue-400 menu-link">Inicio</a>
+            <a href="#servicios" class="text-white hover:text-brand-blue-400 menu-link">Servicios</a>
+            <a href="#proyectos" class="text-white hover:text-brand-blue-400 menu-link">Proyectos</a>
+            <a href="#nosotros" class="text-white hover:text-brand-blue-400 menu-link">Nosotros</a>
+            <a href="#contacto" class="mt-8 btn btn-primary menu-link">Pide tu presupuesto</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== SECCIÓN HERO ===== -->
+        <section id="inicio" class="min-h-screen h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
+            <!-- Partículas de fondo -->
+            <div id="particles-js" class="absolute inset-0 z-0"></div>
+            
+            <!-- Efecto de fondo sutil -->
+            <div class="absolute inset-0 z-0 opacity-10">
+                <div class="absolute inset-0 bg-brand-dark" style="background-image: radial-gradient(circle, rgba(0, 191, 255, 0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
+            </div>
+            
+            <div class="relative z-10 max-w-4xl mx-auto" data-aos="fade-up">
+                <!-- Título con efecto hacker -->
+                <h1 id="hacker-title" class="text-6xl sm:text-7xl lg:text-9xl font-mono font-bold text-white mb-6 text-glow parallax" data-text="DAZENTY" data-speed="0.3">
+                    DAZENTY
+                </h1>
+                <!-- Subtítulo -->
+                <p class="text-2xl sm:text-3xl lg:text-4xl text-brand-blue-400 font-mono mb-12 parallax" data-speed="0.5" data-aos="fade-up" data-aos-delay="200">
+                    Creamos tu web
+                </p>
+                <!-- Botones -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#contacto" class="btn btn-primary pulse-glow" aria-label="Solicitar presupuesto gratuito">
+                        Pide tu presupuesto
+                    </a>
+                    <a href="#proyectos" class="btn btn-secondary" aria-label="Ver nuestros proyectos">
+                        Ver Proyectos
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN SERVICIOS ===== -->
+        <section id="servicios" class="py-24 bg-brand-gray px-4">
+            <div class="container mx-auto max-w-7xl">
+                <h2 class="section-title" data-aos="fade-up">Nuestros Servicios</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Soluciones digitales a medida para tu negocio.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card 1: Diseño Gráfico -->
+                    <div class="card card-hover p-8 text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-lg">
+                            <picture>
+                                <source srcset="img/webp/imprenta-online-programas-diseno-400.webp 400w, img/webp/imprenta-online-programas-diseno-800.webp 800w" sizes="(max-width: 768px) 100vw, 400px" type="image/webp">
+                                <img src="img/imprenta-online-programas-diseno.jpg" alt="Diseño Gráfico" width="400" height="300" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                            </picture>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Diseño Gráfico</h3>
+                        <p class="text-gray-400 mb-6">Diseñamos interfaces de usuario (UI/UX) intuitivas y atractivas. Nos aseguramos de que tu web sea responsive y se vea increíble en todos los dispositivos.</p>
+                        <a href="html/pagina_diseno_grafico.html" class="btn btn-secondary text-sm">Ver más</a>
+                    </div>
+
+                    <!-- Card 2: Desarrollo Web -->
+                    <div class="card card-hover p-8 text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-lg">
+                            <picture>
+                                <source srcset="img/webp/pagina_web-400.webp 400w, img/webp/pagina_web-800.webp 800w" sizes="(max-width: 768px) 100vw, 400px" type="image/webp">
+                                <img src="img/pagina_web.jpg" alt="Desarrollo Web" width="400" height="300" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                            </picture>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Desarrollo Web</h3>
+                        <p class="text-gray-400 mb-6">Convertimos diseños en sitios web funcionales y rápidos. Escribimos código limpio, semántico y escalable para un rendimiento óptimo.</p>
+                        <a href="html/pagina_desarrollo_web.html" class="btn btn-secondary text-sm">Ver más</a>
+                    </div>
+
+                    <!-- Card 3: Marketing Digital -->
+                    <div class="card card-hover p-8 text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-lg">
+                            <picture>
+                                <source srcset="img/webp/foto-marketing-400.webp 400w, img/webp/foto-marketing-800.webp 800w" sizes="(max-width: 768px) 100vw, 400px" type="image/webp">
+                                <img src="img/foto-marketing.jpg" alt="Marketing Digital" width="400" height="300" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                            </picture>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Marketing Digital</h3>
+                        <p class="text-gray-400 mb-6">Mantenemos tu sitio web actualizado, seguro y funcionando sin problemas. Ofrecemos soporte continuo, copias de seguridad y optimizaciones.</p>
+                        <a href="html/pagina_marketing_digital.html" class="btn btn-secondary text-sm">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== SECCIÓN PROYECTOS ===== -->
+        <section id="proyectos" class="py-24 px-4">
+            <div class="container mx-auto max-w-7xl">
+                <h2 class="section-title" data-aos="fade-up">Proyectos Recientes</h2>
+                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Un vistazo a nuestro trabajo.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Proyecto 1 -->
+                    <a href="html/proyecto-diseno-grafico.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="200">
+                        <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
+                            <picture>
+                                <source srcset="img/webp/proyecto_diseno_grafico-400.webp 400w, img/webp/proyecto_diseno_grafico-800.webp 800w" sizes="(max-width: 768px) 100vw, 600px" type="image/webp">
+                                <img src="img/proyecto_diseno_grafico.jpg" alt="Proyecto Diseño Gráfico" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            </picture>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-sm text-brand-blue-400">Diseño Gráfico</span>
+                            <h3 class="text-2xl font-bold text-white mt-2 mb-3">Identidad Visual Corporativa</h3>
+                            <p class="text-gray-400 mb-4">Diseño completo de identidad visual para empresas, incluyendo logotipo, paleta de colores y guía de estilo.</p>
+                            <span class="font-semibold text-white group-hover:text-brand-blue-400 transition">Ver proyecto &rarr;</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Proyecto 2 -->
+                    <a href="html/proyecto-desarrollo-web.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="300">
+                        <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
+                            <picture>
+                                <source srcset="img/webp/proyecto_desarrollo_web-400.webp 400w, img/webp/proyecto_desarrollo_web-800.webp 800w" sizes="(max-width: 768px) 100vw, 600px" type="image/webp">
+                                <img src="img/proyecto_desarrollo_web.jpg" alt="Proyecto Desarrollo Web" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            </picture>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-sm text-brand-blue-400">Web Desarrollo</span>
+                            <h3 class="text-2xl font-bold text-white mt-2 mb-3">Sitio Web Profesional</h3>
+                            <p class="text-gray-400 mb-4">Desarrollo de sitios web modernos, responsive y optimizados para SEO con las últimas tecnologías.</p>
+                            <span class="font-semibold text-white group-hover:text-brand-blue-400 transition">Ver proyecto &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Proyecto 3 -->
+                    <a href="html/proyecto-marketing-digital.html" class="card card-hover group" data-aos="flip-left" data-aos-delay="400">
+                        <div class="relative w-full h-60 bg-brand-gray overflow-hidden">
+                            <picture>
+                                <source srcset="img/webp/proyecto_marketing_digital-400.webp 400w, img/webp/proyecto_marketing_digital-800.webp 800w" sizes="(max-width: 768px) 100vw, 600px" type="image/webp">
+                                <img src="img/proyecto_marketing_digital.jpg" alt="Proyecto Marketing Digital" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                            </picture>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-sm text-brand-blue-400">Marketing Digital</span>
+                            <h3 class="text-2xl font-bold text-white mt-2 mb-3">Estrategia Digital 360°</h3>
+                            <p class="text-gray-400 mb-4">Campañas de marketing digital completas para aumentar la visibilidad y conversiones de tu negocio.</p>
+                            <span class="font-semibold text-white group-hover:text-brand-blue-400 transition">Ver proyecto &rarr;</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- ===== SECCIÓN NOSOTROS ===== -->
+        <section id="nosotros" class="py-24 bg-brand-gray px-4">
+            <div class="container mx-auto max-w-7xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <!-- Imagen -->
+                    <div class="w-full h-80 rounded-lg overflow-hidden" data-aos="fade-right">
+                        <picture>
+                            <source srcset="img/webp/foto_sobre_nosotros-400.webp 400w, img/webp/foto_sobre_nosotros-800.webp 800w" sizes="(max-width: 768px) 100vw, 800px" type="image/webp">
+                            <img src="img/foto_sobre_nosotros.jpg" alt="Equipo de Dazenty" width="800" height="600" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                        </picture>
+                    </div>
+                    
+                    <!-- Texto -->
+                    <div class="md:pr-8" data-aos="fade-left">
+                        <span class="text-brand-blue-400 font-mono">Quiénes Somos</span>
+                        <h2 class="text-4xl font-bold text-white mt-2 mb-6">Somos Dazenty</h2>
+                        <div class="space-y-4 text-gray-300 text-lg leading-relaxed">
+                            <p>Somos <strong class="text-white">diseñadores gráficos y desarrolladores web</strong> apasionados por crear experiencias digitales únicas y a medida. Nos especializamos en construir sitios web, identidades visuales y soluciones creativas que no solo lucen bien, sino que también funcionan a la perfección.</p>
+                            <p>Nuestro equipo combina creatividad, diseño y experiencia técnica para ofrecer proyectos que superan las expectativas. Como diseñadores gráficos, entendemos la importancia de una identidad visual sólida y coherente que comunique la esencia de tu marca.</p>
+                            <p>Creemos en la colaboración estrecha con nuestros clientes para entender su visión y convertirla en realidad visual y funcional. El éxito de tu proyecto y el crecimiento de tu marca son nuestro principal objetivo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN PROCESO (NUEVA) ===== -->
+        <section id="proceso" class="py-24 px-4">
+            <div class="container mx-auto max-w-7xl">
+                <h2 class="section-title">Nuestro Proceso</h2>
+                <p class="section-subtitle">Un plan claro para un resultado exitoso.</p>
+                
+                <!-- Timeline/Grid del Proceso -->
+                <div class="relative mt-16">
+                    <!-- Línea de fondo (solo desktop) -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2"></div>
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5" style="background: linear-gradient(to right, theme('colors.brand-blue.500'), transparent 80%)"></div>
+
+                    <div class="relative grid grid-cols-1 md:grid-cols-4 gap-12">
+                        <!-- Paso 1 -->
+                        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-brand-gray border-2 border-brand-blue-400 text-brand-blue-400 text-2xl font-mono font-bold mb-4 z-10">01</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Descubrir</h3>
+                            <p class="text-gray-400">Analizamos tus metas, audiencia y competencia para definir una estrategia clara.</p>
+                        </div>
+                        <!-- Paso 2 -->
+                        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-brand-gray border-2 border-brand-blue-400 text-brand-blue-400 text-2xl font-mono font-bold mb-4 z-10">02</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Diseñar</h3>
+                            <p class="text-gray-400">Creamos wireframes y prototipos de alta fidelidad (UI/UX) centrados en el usuario.</p>
+                        </div>
+                        <!-- Paso 3 -->
+                        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-brand-gray border-2 border-brand-blue-400 text-brand-blue-400 text-2xl font-mono font-bold mb-4 z-10">03</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Desarrollar</h3>
+                            <p class="text-gray-400">Escribimos código limpio y eficiente para construir un sitio rápido y responsive.</p>
+                        </div>
+                        <!-- Paso 4 -->
+                        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-brand-gray border-2 border-brand-blue-400 text-brand-blue-400 text-2xl font-mono font-bold mb-4 z-10">04</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Lanzar</h3>
+                            <p class="text-gray-400">Realizamos pruebas finales, optimizamos el SEO y desplegamos tu web al mundo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN TESTIMONIOS (NUEVA) ===== -->
+        <section id="testimonios" class="py-24 bg-brand-gray px-4">
+            <div class="container mx-auto max-w-4xl text-center">
+                <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+                <p class="section-subtitle">Tu éxito es nuestra mejor carta de presentación.</p>
+                
+                <div class="card p-10 md:p-12 relative">
+                    <svg class="absolute top-6 left-6 w-12 h-12 text-gray-700" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M10 9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2.586l3.293 3.293a1 1 0 1 1-1.414 1.414L9 8.414V9zm12 0a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2.586l3.293 3.293a1 1 0 1 1-1.414 1.414L21 8.414V9z"></path></svg>
+                    <p class="text-xl md:text-2xl italic text-gray-200 leading-relaxed z-10 relative">
+                        "Trabajar con Dazenty fue una experiencia increíble. Captaron nuestra visión a la perfección y el resultado final superó todas nuestras expectativas. ¡100% recomendados!"
+                    </p>
+                    <div class="mt-8">
+                        <img src="https://placehold.co/100x100/333333/FFFFFF?text=Cliente" alt="Foto del cliente" class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-brand-blue-400">
+                        <h4 class="text-xl font-bold text-white">Ana García</h4>
+                        <p class="text-brand-blue-400">CEO de TechSolutions</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== SECCIÓN CONTACTO (MEJORADA) ===== -->
+        <section id="contacto" class="py-24 px-4 relative overflow-hidden">
+            <!-- Fondo decorativo animado -->
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute top-10 left-10 w-72 h-72 bg-brand-blue-400 rounded-full filter blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-10 right-10 w-96 h-96 bg-brand-blue-500 rounded-full filter blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+            
+            <div class="container mx-auto max-w-6xl relative z-10">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="section-title">¿Listo para empezar?</h2>
+                    <p class="section-subtitle">Cuéntanos sobre tu proyecto y hagamos realidad tus ideas</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <!-- Lado izquierdo: Información de contacto con iconos animados -->
+                    <div class="space-y-8" data-aos="fade-right">
+                        <div class="card p-8">
+                            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                                <span class="w-12 h-12 bg-brand-blue-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                    </svg>
+                                </span>
+                                Contáctanos
+                            </h3>
+                            
+                            <div class="space-y-6">
+                                <!-- Email -->
+                                <a href="mailto:designerazenty@gmail.com" class="flex items-center gap-4 p-4 bg-brand-dark rounded-lg hover:bg-opacity-80 transition-all group">
+                                    <div class="w-14 h-14 bg-brand-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <picture>
+                                            <source srcset="img/webp/correos.webp" type="image/webp">
+                                            <img src="img/correos.png" alt="" width="32" height="32" loading="lazy" decoding="async" aria-hidden="true" class="w-8 h-8">
+                                        </picture>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Email</p>
+                                        <p class="text-white font-semibold text-lg">designerazenty@gmail.com</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Teléfono -->
+                                <a href="tel:676448762" class="flex items-center gap-4 p-4 bg-brand-dark rounded-lg hover:bg-opacity-80 transition-all group">
+                                    <div class="w-14 h-14 bg-brand-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <picture>
+                                            <source srcset="img/webp/telefono.webp" type="image/webp">
+                                            <img src="img/telefono.png" alt="" width="32" height="32" loading="lazy" decoding="async" aria-hidden="true" class="w-8 h-8">
+                                        </picture>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Teléfono</p>
+                                        <p class="text-white font-semibold text-lg">676 448 762</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Instagram -->
+                                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-brand-dark rounded-lg hover:bg-opacity-80 transition-all group">
+                                    <div class="w-14 h-14 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <picture>
+                                            <source srcset="img/webp/instagram_logo_blanco.webp" type="image/webp">
+                                            <img src="img/instagram_logo_blanco.png" alt="" width="32" height="32" loading="lazy" decoding="async" aria-hidden="true" class="w-8 h-8">
+                                        </picture>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Instagram</p>
+                                        <p class="text-white font-semibold text-lg">@dazen.ty</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Estadísticas animadas -->
+                            <div class="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-800">
+                                <div class="text-center">
+                                    <p class="text-3xl font-bold text-brand-blue-400 counter" data-target="50">0</p>
+                                    <p class="text-sm text-gray-400 mt-1">Proyectos</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-3xl font-bold text-brand-blue-400 counter" data-target="100">0</p>
+                                    <p class="text-sm text-gray-400 mt-1">Clientes</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-3xl font-bold text-brand-blue-400 counter" data-target="5">0</p>
+                                    <p class="text-sm text-gray-400 mt-1">Años</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lado derecho: Formulario mejorado -->
+                    <div class="card p-8 md:p-10" data-aos="fade-left">
+                        <h3 class="text-2xl font-bold text-white mb-6">Envíanos un mensaje</h3>
+                        <form action="https://formsubmit.co/designerazenty@gmail.com" method="POST" class="space-y-6">
+                            <!-- FormSubmit Configuration -->
+                            <input type="hidden" name="_subject" value="Nuevo mensaje desde Dazenty">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_next" value="https://dazenty.com/gracias.html">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Nombre -->
+                                <div class="relative">
+                                    <label for="nombre" class="block text-sm font-bold text-gray-200 mb-2">Nombre</label>
+                                    <input type="text" id="nombre" name="nombre" class="form-input" placeholder="Tu nombre" required>
+                                </div>
+                                
+                                <!-- Email -->
+                                <div class="relative">
+                                    <label for="email" class="block text-sm font-bold text-gray-200 mb-2">Email</label>
+                                    <input type="email" id="email" name="email" class="form-input" placeholder="tu@email.com" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Servicio -->
+                            <div class="relative">
+                                <label for="servicio" class="block text-sm font-bold text-gray-200 mb-2">Servicio de interés</label>
+                                <select id="servicio" name="servicio" class="form-input">
+                                    <option value="">Selecciona un servicio</option>
+                                    <option value="Diseño Gráfico">Diseño Gráfico</option>
+                                    <option value="Desarrollo Web">Desarrollo Web</option>
+                                    <option value="Marketing Digital">Marketing Digital</option>
+                                    <option value="Consultoría">Consultoría</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Mensaje -->
+                            <div class="relative">
+                                <label for="mensaje" class="block text-sm font-bold text-gray-200 mb-2">Mensaje</label>
+                                <textarea id="mensaje" name="mensaje" rows="5" class="form-input" placeholder="Cuéntanos sobre tu proyecto..." required></textarea>
+                            </div>
+                            
+                            <!-- Botón -->
+                            <button type="submit" class="btn btn-primary w-full text-center flex items-center justify-center gap-2 group">
+                                <span>Enviar Mensaje</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="py-12 bg-brand-gray border-t border-gray-800">
+        <div class="container mx-auto max-w-7xl px-4">
+            <!-- Logo y descripción -->
+            <div class="text-center mb-8" data-aos="fade-up">
+                <a href="#inicio" class="inline-flex items-center gap-3 mb-4" aria-label="Ir al inicio">
+                    <picture>
+                        <source srcset="img/webp/logo.webp" type="image/webp">
+                        <img src="img/logo.png" alt="" width="40" height="40" loading="lazy" decoding="async" aria-hidden="true" class="h-10 w-auto">
+                    </picture>
+                    <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
+                </a>
+                <p class="text-gray-400 mt-4 max-w-md mx-auto">
+                    Transformando ideas en experiencias digitales excepcionales
+                </p>
+            </div>
+            
+            <!-- Redes sociales e iconos de contacto -->
+            <div class="flex justify-center items-center gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <!-- Teléfono -->
+                <a href="tel:676448762" class="social-icon group" title="Llamar" aria-label="Llamar al teléfono 676 448 762">
+                    <picture>
+                        <source srcset="img/webp/telefono.webp" type="image/webp">
+                        <img src="img/telefono.png" alt="" width="24" height="24" loading="lazy" decoding="async" aria-hidden="true" class="w-6 h-6">
+                    </picture>
+                </a>
+                
+                <!-- Email -->
+                <a href="mailto:designerazenty@gmail.com" class="social-icon group" title="Email" aria-label="Enviar email a designerazenty@gmail.com">
+                    <picture>
+                        <source srcset="img/webp/correos.webp" type="image/webp">
+                        <img src="img/correos.png" alt="" width="24" height="24" loading="lazy" decoding="async" aria-hidden="true" class="w-6 h-6">
+                    </picture>
+                </a>
+                
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="social-icon group" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);" title="Instagram" aria-label="Visitar perfil de Instagram @dazen.ty">
+                    <picture>
+                        <source srcset="img/webp/instagram_logo_blanco.webp" type="image/webp">
+                        <img src="img/instagram_logo_blanco.png" alt="" width="24" height="24" loading="lazy" decoding="async" aria-hidden="true" class="w-6 h-6">
+                    </picture>
+                </a>
+            </div>
+            
+            <!-- Links del footer -->
+            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm" data-aos="fade-up" data-aos-delay="200">
+                <a href="#inicio" class="text-gray-400 hover:text-brand-blue-400 transition">Inicio</a>
+                <a href="#servicios" class="text-gray-400 hover:text-brand-blue-400 transition">Servicios</a>
+                <a href="#proyectos" class="text-gray-400 hover:text-brand-blue-400 transition">Proyectos</a>
+                <a href="#nosotros" class="text-gray-400 hover:text-brand-blue-400 transition">Nosotros</a>
+                <a href="#contacto" class="text-gray-400 hover:text-brand-blue-400 transition">Contacto</a>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="text-center text-gray-500 text-sm border-t border-gray-800 pt-6" data-aos="fade-up" data-aos-delay="300">
+                <p>&copy; 2024 Dazenty. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts optimizados -->
+    <!-- AOS se carga de forma diferida -->
+    <script>
+        // Carga diferida de AOS
+        function loadAOS() {
+            if (window.aosLoaded) return;
+            window.aosLoaded = true;
+            var script = document.createElement('script');
+            script.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
+            script.onload = function() {
+                AOS.init({
+                    duration: 600,
+                    once: true,
+                    offset: 50,
+                    easing: 'ease-out'
+                });
+            };
+            document.body.appendChild(script);
+        }
+        
+        // Cargar AOS en scroll o después de 2s
+        window.addEventListener('scroll', loadAOS, { once: true, passive: true });
+        setTimeout(loadAOS, 2000);
+        
+        // Carga condicional de Particles.js (solo desktop con buena conexión)
+        function loadParticles() {
+            if (window.innerWidth < 768) return; // No cargar en móvil
+            if (navigator.connection && navigator.connection.effectiveType === '2g') return; // No cargar en conexión lenta
+            
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+            script.onload = function() {
+                if (typeof particlesJS !== 'undefined') {
+                    particlesJS('particles-js', {
+                        particles: {
+                            number: { value: 40, density: { enable: true, value_area: 800 } },
+                            color: { value: '#00BFFF' },
+                            shape: { type: 'circle' },
+                            opacity: { value: 0.3, random: false },
+                            size: { value: 3, random: true },
+                            line_linked: { enable: true, distance: 150, color: '#00BFFF', opacity: 0.2, width: 1 },
+                            move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out' }
+                        },
+                        interactivity: {
+                            detect_on: 'canvas',
+                            events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                        },
+                        retina_detect: true
+                    });
+                }
+            };
+            document.body.appendChild(script);
+        }
+        
+        // Cargar Particles después de que la página esté lista
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadParticles, { timeout: 3000 });
+        } else {
+            setTimeout(loadParticles, 3000);
+        }
+    </script>
+    
+    <!-- Script principal diferido -->
+    <script src="js/main.js" defer></script>
+</body>
+</html>

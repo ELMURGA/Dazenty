@@ -1,0 +1,113 @@
+/* ================================
+   CSS PAGINA MARKETING DIGITAL
+================================ */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 2.0;
+    color: #333;
+    background-color: #f8f9fa;
+}
+header {
+    background: #000000;
+    color: #ffffff;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+header img {
+    height: 80px;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+.contact-wrapper {
+    border: 2px solid rgb(223, 124, 98); /* Línea naranja */
+    padding: 5px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    opacity: 0.8; /* Transparente */
+}
+.content {
+    display: flex;
+    padding: 20px;
+    justify-content: flex-start; /* Alinear a la izquierda */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.content img {
+    width: 600px; /* Tamaño de la imagen */
+    height: auto;
+    border-radius: 10px;
+    margin-right: 20px; /* Espacio entre la imagen y el texto */
+    margin-left: -20px; /* Mover la imagen más a la izquierda */
+}
+.text {
+    max-width: 600px;
+    padding-left: 20px;
+}
+.text h2 {
+    color: #000000; /* Color negro para el título */
+    font-size: 36px; /* Tamaño del título */
+    font-weight: bold; /* Negrita */
+    margin-bottom: 10px; /* Reducir margen inferior */
+}
+.banner {
+    display: flex;
+    flex-direction: column; /* Cambia la disposición a columna para centrar todo */
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    background-color: #DF7B62; /* Fondo azul */
+    padding: 30px 20px; /* Más espacio alrededor */
+    text-align: center; /* Centra el texto */
+}
+.banner-text h3 {
+    font-size: 58px; /* Tamaño grande para el título */
+    font-weight: bold;
+    color: #fff; /* Texto blanco */
+    margin-bottom: -50px; /* Espacio entre título y subtítulo */
+}
+.banner-text p {
+    font-size: 28px; /* Tamaño del subtítulo */
+    color: #000000; /* Texto negro */
+    margin-bottom: 20px; /* Espacio entre subtítulo y botón */
+}
+.contact-box {
+    text-decoration: none;
+    padding: 15px 30px; /* Tamaño del botón */
+    border: 2px solid #fff; /* Borde blanco */
+    color: #fff; /* Texto blanco */
+    font-weight: bold;
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer; /* Cambia el cursor al pasar por el botón */
+}
+.contact-box:hover {
+    background-color: #fff; /* Fondo blanco al pasar el ratón */
+    color: #000000; /* Texto negro */
+}
+footer {
+    background: #000000;
+    color: #ffffff;
+    text-align: center;
+    padding: 100px;
+}
+footer a {
+    color: #DF7B62;
+    text-decoration: none;
+    margin: 0 10px;
+}
+.footer-logo {
+    margin-top: 20px; /* Ajuste para que no esté tan abajo */
+}
