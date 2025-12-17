@@ -316,3 +316,69 @@ body {
 .skip-link:focus {
     top: 0;
 }
+
+/* ===== MENÚ MÓVIL MEJORADO ===== */
+#mobile-menu {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#mobile-menu.opacity-0 {
+    opacity: 0;
+}
+
+#mobile-menu.opacity-100 {
+    opacity: 1;
+}
+
+#mobile-menu nav a {
+    position: relative;
+    overflow: hidden;
+}
+
+#mobile-menu nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--brand-blue-400);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+#mobile-menu nav a:hover::after {
+    width: 100%;
+}
+
+/* Animación del botón X */
+#menu-close svg {
+    transition: transform 0.3s ease;
+}
+
+#menu-close:hover svg {
+    transform: rotate(90deg);
+}
+
+/* Efecto de entrada para los enlaces del menú */
+#mobile-menu.flex nav a {
+    animation: slideInUp 0.4s ease forwards;
+    opacity: 0;
+}
+
+#mobile-menu.flex nav a:nth-child(1) { animation-delay: 0.1s; }
+#mobile-menu.flex nav a:nth-child(2) { animation-delay: 0.15s; }
+#mobile-menu.flex nav a:nth-child(3) { animation-delay: 0.2s; }
+#mobile-menu.flex nav a:nth-child(4) { animation-delay: 0.25s; }
+#mobile-menu.flex nav a:nth-child(5) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

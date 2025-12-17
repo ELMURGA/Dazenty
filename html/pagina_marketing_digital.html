@@ -1,41 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketing Digital - Dazenty</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace']
+                    },
+                    colors: {
+                        'brand-dark': '#0a0a0a',
+                        'brand-gray': '#111111',
+                        'brand-blue': {
+                            '400': '#00BFFF',
+                            '500': '#00AFFF',
+                            '600': '#0099E0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --brand-dark: #0a0a0a;
             --brand-gray: #111111;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(180deg, var(--brand-dark) 0%, var(--brand-gray) 100%);
         }
-        .font-mono { font-family: 'Space Mono', monospace; }
+
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
         .text-gradient {
             background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .service-card {
             background: rgba(17, 17, 17, 0.6);
             border: 1px solid rgba(96, 165, 250, 0.1);
             transition: all 0.3s ease;
         }
+
         .service-card:hover {
             border-color: rgba(96, 165, 250, 0.4);
             transform: translateY(-5px);
             box-shadow: 0 10px 40px rgba(96, 165, 250, 0.2);
         }
+
         .process-number {
             background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
             width: 60px;
@@ -47,44 +79,111 @@
             font-weight: 700;
             font-size: 1.5rem;
         }
+        
+        /* Menú Móvil Mejorado */
+        #mobile-menu {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #mobile-menu.opacity-0 { opacity: 0; }
+        #mobile-menu.opacity-100 { opacity: 1; }
+        #mobile-menu nav a {
+            position: relative;
+            overflow: hidden;
+        }
+        #mobile-menu nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #00BFFF;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        #mobile-menu nav a:hover::after { width: 100%; }
+        #menu-close svg { transition: transform 0.3s ease; }
+        #menu-close:hover svg { transform: rotate(90deg); }
+        #mobile-menu.flex nav a {
+            animation: slideInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+        #mobile-menu.flex nav a:nth-child(1) { animation-delay: 0.1s; }
+        #mobile-menu.flex nav a:nth-child(2) { animation-delay: 0.15s; }
+        #mobile-menu.flex nav a:nth-child(3) { animation-delay: 0.2s; }
+        #mobile-menu.flex nav a:nth-child(4) { animation-delay: 0.25s; }
+        #mobile-menu.flex nav a:nth-child(5) { animation-delay: 0.3s; }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
+
 <body class="text-white min-h-screen">
     <!-- ===== HEADER / NAVBAR ===== -->
-    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-brand-dark/90 backdrop-blur-lg" id="header">
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-brand-dark/90 backdrop-blur-lg"
+        id="header">
         <nav class="container mx-auto max-w-7xl px-4 py-4 flex justify-between items-center">
             <!-- Logo -->
             <a href="../index.html#inicio" class="flex items-center gap-3">
                 <img src="../img/logo.png" alt="Dazenty Logo" class="h-12 w-auto">
                 <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
             </a>
-            
+
             <!-- Navegación Desktop -->
             <ul class="hidden md:flex items-center space-x-6 lg:space-x-8">
-                <li><a href="../index.html#inicio" class="text-gray-200 hover:text-brand-blue-400 transition">Inicio</a></li>
-                <li><a href="../index.html#servicios" class="text-gray-200 hover:text-brand-blue-400 transition">Servicios</a></li>
-                <li><a href="../index.html#proyectos" class="text-gray-200 hover:text-brand-blue-400 transition">Proyectos</a></li>
-                <li><a href="../index.html#nosotros" class="text-gray-200 hover:text-brand-blue-400 transition">Nosotros</a></li>
+                <li><a href="../index.html#inicio" class="text-gray-200 hover:text-brand-blue-400 transition">Inicio</a>
+                </li>
+                <li><a href="../index.html#servicios"
+                        class="text-gray-200 hover:text-brand-blue-400 transition">Servicios</a></li>
+                <li><a href="../index.html#proyectos"
+                        class="text-gray-200 hover:text-brand-blue-400 transition">Proyectos</a></li>
+                <li><a href="../index.html#nosotros"
+                        class="text-gray-200 hover:text-brand-blue-400 transition">Nosotros</a></li>
                 <li><a href="../index.html#contacto" class="ml-4 btn btn-secondary text-sm py-2 px-5">Hablemos</a></li>
             </ul>
-            
-            <!-- Botón Menú Móvil -->
-            <button id="menu-toggle" class="md:hidden text-white focus:outline-none z-50">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <!-- Botón Menú Móvil (Hamburguesa) -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-brand-blue-400 rounded-lg p-2 z-[60] relative" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
+                <svg id="menu-icon-open" class="w-8 h-8 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+                <svg id="menu-icon-close" class="w-8 h-8 hidden transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </nav>
-        
-        <!-- Menú Móvil -->
-        <div id="mobile-menu" class="fixed inset-0 bg-brand-dark/95 backdrop-blur-lg flex-col items-center justify-center space-y-8 text-2xl font-bold hidden md:hidden">
-            <a href="../index.html#inicio" class="text-white hover:text-brand-blue-400 menu-link">Inicio</a>
-            <a href="../index.html#servicios" class="text-white hover:text-brand-blue-400 menu-link">Servicios</a>
-            <a href="../index.html#proyectos" class="text-white hover:text-brand-blue-400 menu-link">Proyectos</a>
-            <a href="../index.html#nosotros" class="text-white hover:text-brand-blue-400 menu-link">Nosotros</a>
-            <a href="../index.html#contacto" class="mt-8 btn btn-primary menu-link">Pide tu presupuesto</a>
-        </div>
     </header>
+
+    <!-- Menú Móvil (Fuera del header para evitar bugs de scroll) -->
+    <div id="mobile-menu" class="fixed inset-0 bg-brand-dark/98 backdrop-blur-xl z-[100] flex-col items-center justify-center hidden md:hidden transition-all duration-300 opacity-0">
+        <!-- Botón X para cerrar -->
+        <button id="menu-close" class="absolute top-6 right-6 text-white hover:text-brand-blue-400 focus:outline-none focus:ring-2 focus:ring-brand-blue-400 rounded-lg p-2 transition-colors duration-300" aria-label="Cerrar menú">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        
+        <!-- Logo en el menú -->
+        <div class="mb-12">
+            <img src="../img/logo.png" alt="Dazenty Logo" class="h-20 w-auto opacity-80">
+        </div>
+        
+        <!-- Enlaces de navegación -->
+        <nav class="flex flex-col items-center space-y-6">
+            <a href="../index.html#inicio" class="text-white hover:text-brand-blue-400 text-2xl font-bold menu-link transition-all duration-300 hover:scale-105 py-2 px-4">Inicio</a>
+            <a href="../index.html#servicios" class="text-white hover:text-brand-blue-400 text-2xl font-bold menu-link transition-all duration-300 hover:scale-105 py-2 px-4">Servicios</a>
+            <a href="../index.html#proyectos" class="text-white hover:text-brand-blue-400 text-2xl font-bold menu-link transition-all duration-300 hover:scale-105 py-2 px-4">Proyectos</a>
+            <a href="../index.html#nosotros" class="text-white hover:text-brand-blue-400 text-2xl font-bold menu-link transition-all duration-300 hover:scale-105 py-2 px-4">Nosotros</a>
+            <a href="../index.html#contacto" class="mt-6 bg-brand-blue-500 hover:bg-brand-blue-400 text-brand-dark text-lg px-8 py-3 rounded-lg font-bold menu-link transition-all duration-300 hover:scale-105">Pide tu presupuesto</a>
+        </nav>
+        
+        <!-- Decoración inferior -->
+        <div class="absolute bottom-8 text-center">
+            <p class="text-gray-500 text-sm font-mono">© 2024 Dazenty</p>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="pt-32 pb-20 px-6">
@@ -95,16 +194,19 @@
                         Marketing <span class="text-gradient">Digital</span>
                     </h1>
                     <p class="text-xl text-gray-300 mb-8 leading-relaxed">
-                        Estrategias digitales que conectan tu marca con tu audiencia. 
+                        Estrategias digitales que conectan tu marca con tu audiencia.
                         Hacemos crecer tu presencia online con campañas medibles y efectivas.
                     </p>
-                    <a href="../index.html#contacto" class="inline-block px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold text-lg">
+                    <a href="../index.html#contacto"
+                        class="inline-block px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold text-lg">
                         Impulsar mi Marca
                     </a>
                 </div>
                 <div data-aos="fade-left" class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-3xl blur-3xl"></div>
-                    <img src="../img/foto-marketing.jpg" alt="Marketing Digital" class="relative rounded-3xl shadow-2xl border border-white/10">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-3xl blur-3xl">
+                    </div>
+                    <img src="../img/foto-marketing.jpg" alt="Marketing Digital"
+                        class="relative rounded-3xl shadow-2xl border border-white/10">
                 </div>
             </div>
         </div>
@@ -119,69 +221,92 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Service 1 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z">
+                            </path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Redes Sociales</h3>
-                    <p class="text-gray-400 leading-relaxed">Gestión completa de redes sociales con contenido estratégico que aumenta engagement y construye comunidad.</p>
+                    <p class="text-gray-400 leading-relaxed">Gestión completa de redes sociales con contenido
+                        estratégico que aumenta engagement y construye comunidad.</p>
                 </div>
 
                 <!-- Service 2 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Publicidad Digital</h3>
-                    <p class="text-gray-400 leading-relaxed">Campañas publicitarias en Google Ads, Meta Ads y más plataformas con ROI optimizado y resultados medibles.</p>
+                    <p class="text-gray-400 leading-relaxed">Campañas publicitarias en Google Ads, Meta Ads y más
+                        plataformas con ROI optimizado y resultados medibles.</p>
                 </div>
 
                 <!-- Service 3 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Analítica Web</h3>
-                    <p class="text-gray-400 leading-relaxed">Seguimiento y análisis profundo de métricas para tomar decisiones basadas en datos reales y tendencias.</p>
+                    <p class="text-gray-400 leading-relaxed">Seguimiento y análisis profundo de métricas para tomar
+                        decisiones basadas en datos reales y tendencias.</p>
                 </div>
 
                 <!-- Service 4 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Email Marketing</h3>
-                    <p class="text-gray-400 leading-relaxed">Campañas de email personalizadas con automatización, segmentación y alto ratio de conversión.</p>
+                    <p class="text-gray-400 leading-relaxed">Campañas de email personalizadas con automatización,
+                        segmentación y alto ratio de conversión.</p>
                 </div>
 
                 <!-- Service 5 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                            </path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Content Marketing</h3>
-                    <p class="text-gray-400 leading-relaxed">Creación de contenido valioso y estratégico que atrae, educa y convierte a tu audiencia ideal.</p>
+                    <p class="text-gray-400 leading-relaxed">Creación de contenido valioso y estratégico que atrae,
+                        educa y convierte a tu audiencia ideal.</p>
                 </div>
 
                 <!-- Service 6 -->
                 <div class="service-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Influencer Marketing</h3>
-                    <p class="text-gray-400 leading-relaxed">Colaboraciones estratégicas con influencers relevantes para amplificar el alcance de tu marca.</p>
+                    <p class="text-gray-400 leading-relaxed">Colaboraciones estratégicas con influencers relevantes para
+                        amplificar el alcance de tu marca.</p>
                 </div>
             </div>
         </div>
@@ -199,7 +324,8 @@
                     <div class="process-number flex-shrink-0">1</div>
                     <div>
                         <h3 class="text-2xl font-bold mb-3">Investigación de Mercado</h3>
-                        <p class="text-gray-400 leading-relaxed">Analizamos tu industria, competencia y audiencia para identificar oportunidades estratégicas únicas.</p>
+                        <p class="text-gray-400 leading-relaxed">Analizamos tu industria, competencia y audiencia para
+                            identificar oportunidades estratégicas únicas.</p>
                     </div>
                 </div>
 
@@ -208,7 +334,8 @@
                     <div class="process-number flex-shrink-0">2</div>
                     <div>
                         <h3 class="text-2xl font-bold mb-3">Estrategia Personalizada</h3>
-                        <p class="text-gray-400 leading-relaxed">Desarrollamos un plan de marketing digital específico con objetivos claros, KPIs y tácticas definidas.</p>
+                        <p class="text-gray-400 leading-relaxed">Desarrollamos un plan de marketing digital específico
+                            con objetivos claros, KPIs y tácticas definidas.</p>
                     </div>
                 </div>
 
@@ -217,7 +344,8 @@
                     <div class="process-number flex-shrink-0">3</div>
                     <div>
                         <h3 class="text-2xl font-bold mb-3">Ejecución de Campañas</h3>
-                        <p class="text-gray-400 leading-relaxed">Implementamos las campañas con contenido creativo, segmentación precisa y optimización continua.</p>
+                        <p class="text-gray-400 leading-relaxed">Implementamos las campañas con contenido creativo,
+                            segmentación precisa y optimización continua.</p>
                     </div>
                 </div>
 
@@ -226,7 +354,8 @@
                     <div class="process-number flex-shrink-0">4</div>
                     <div>
                         <h3 class="text-2xl font-bold mb-3">Análisis y Mejora</h3>
-                        <p class="text-gray-400 leading-relaxed">Monitoreamos resultados, analizamos métricas y ajustamos estrategias para maximizar el rendimiento.</p>
+                        <p class="text-gray-400 leading-relaxed">Monitoreamos resultados, analizamos métricas y
+                            ajustamos estrategias para maximizar el rendimiento.</p>
                     </div>
                 </div>
             </div>
@@ -242,7 +371,8 @@
             <p class="text-xl text-gray-300 mb-10">
                 Impulsa tu presencia digital con estrategias de marketing probadas y orientadas a resultados
             </p>
-            <a href="../index.html#contacto" class="inline-block px-10 py-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold text-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/50">
+            <a href="../index.html#contacto"
+                class="inline-block px-10 py-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold text-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/50">
                 PONTE EN CONTACTO
             </a>
         </div>
@@ -261,36 +391,42 @@
                     Transformando ideas en experiencias digitales excepcionales
                 </p>
             </div>
-            
+
             <!-- Redes sociales e iconos de contacto -->
             <div class="flex justify-center items-center gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
                 <!-- Teléfono -->
                 <a href="tel:676448762" class="social-icon group" title="Llamar">
                     <img src="../img/telefono.png" alt="Teléfono" class="w-6 h-6">
                 </a>
-                
+
                 <!-- Email -->
                 <a href="mailto:designerazenty@gmail.com" class="social-icon group" title="Email">
                     <img src="../img/correos.png" alt="Email" class="w-6 h-6">
                 </a>
-                
+
                 <!-- Instagram -->
-                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="social-icon group" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);" title="Instagram">
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer"
+                    class="social-icon group"
+                    style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);"
+                    title="Instagram">
                     <img src="../img/instagram_logo_blanco.png" alt="Instagram" class="w-6 h-6">
                 </a>
             </div>
-            
+
             <!-- Links del footer -->
             <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm" data-aos="fade-up" data-aos-delay="200">
                 <a href="../index.html#inicio" class="text-gray-400 hover:text-brand-blue-400 transition">Inicio</a>
-                <a href="../index.html#servicios" class="text-gray-400 hover:text-brand-blue-400 transition">Servicios</a>
-                <a href="../index.html#proyectos" class="text-gray-400 hover:text-brand-blue-400 transition">Proyectos</a>
+                <a href="../index.html#servicios"
+                    class="text-gray-400 hover:text-brand-blue-400 transition">Servicios</a>
+                <a href="../index.html#proyectos"
+                    class="text-gray-400 hover:text-brand-blue-400 transition">Proyectos</a>
                 <a href="../index.html#nosotros" class="text-gray-400 hover:text-brand-blue-400 transition">Nosotros</a>
                 <a href="../index.html#contacto" class="text-gray-400 hover:text-brand-blue-400 transition">Contacto</a>
             </div>
-            
+
             <!-- Copyright -->
-            <div class="text-center text-gray-500 text-sm border-t border-gray-800 pt-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-center text-gray-500 text-sm border-t border-gray-800 pt-6" data-aos="fade-up"
+                data-aos-delay="300">
                 <p>&copy; 2024 Dazenty. Todos los derechos reservados.</p>
             </div>
         </div>
@@ -303,6 +439,57 @@
             once: true,
             offset: 100
         });
+        
+        // ===== MENÚ MÓVIL MEJORADO =====
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+
+        const openMenu = () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            requestAnimationFrame(() => {
+                mobileMenu.classList.remove('opacity-0');
+                mobileMenu.classList.add('opacity-100');
+            });
+            if (menuIconOpen && menuIconClose) {
+                menuIconOpen.classList.add('hidden');
+                menuIconClose.classList.remove('hidden');
+            }
+            if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+        };
+
+        const closeMenu = () => {
+            mobileMenu.classList.remove('opacity-100');
+            mobileMenu.classList.add('opacity-0');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+            }, 300);
+            if (menuIconOpen && menuIconClose) {
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+            }
+            if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                isExpanded ? closeMenu() : openMenu();
+            });
+            if (menuClose) menuClose.addEventListener('click', closeMenu);
+            menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) closeMenu();
+            });
+        }
     </script>
 </body>
+
 </html>
