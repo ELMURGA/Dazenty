@@ -1,204 +1,226 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desarrollo Web - Dazenty</title>
+    <title>Case Study: E-Commerce Platform - Dazenty</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Fuentes Google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- AOS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/proyecto.css">
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Inter', 'sans-serif'],
-                        'mono': ['"Space Mono"', 'monospace']
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        'brand-dark': '#0a0a0a',
-                        'brand-gray': '#111111',
-                        'brand-blue': {
-                            '400': '#00BFFF',
-                            '500': '#00AFFF',
-                            '600': '#0099E0'
+                        brand: {
+                            blue: '#00BFFF',
+                            dark: '#050505',
+                            gray: '#121212',
+                            light: '#EAEAEA'
                         }
+                    },
+                    maxWidth: {
+                        'screen-2xl': '1440px',
                     }
                 }
             }
         }
     </script>
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/main.css">
+    
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
-<body class="bg-brand-dark text-gray-300 font-sans antialiased">
+<body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-brand-dark/90 backdrop-blur-lg shadow-lg">
-        <nav class="container mx-auto max-w-7xl px-4 py-4 flex justify-between items-center">
-            <a href="../index.html" class="flex items-center gap-3">
-                <img src="../img/logo.png" alt="Dazenty Logo" class="h-12 w-auto">
-                <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
-            </a>
-            <a href="../index.html#proyectos" class="btn btn-secondary text-sm py-2 px-5">← Volver</a>
+<!-- Page Loader -->
+<div class="page-loader">
+    <div class="loader-logo">
+        <span class="loader-letter">D</span><span class="loader-letter">A</span><span class="loader-letter">Z</span><span class="loader-letter">E</span><span class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
+    </div>
+</div>
+
+<div class="cursor-dot hidden md:block"></div>
+<div class="cursor-outline hidden md:block"></div>
+
+<!-- Navegación -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+    <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-md border-b border-white/5"></div>
+    <div class="container mx-auto px-6 h-20 flex items-center justify-between relative z-10">
+        <a href="../index.html" class="flex items-center gap-2 group">
+            <img src="../img/logo.png" alt="Dazenty" class="h-10 w-auto group-hover:rotate-12 transition-transform duration-500">
+            <span class="font-display font-bold text-xl tracking-tight">Dazenty</span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8">
+            <a href="../index.html#servicios" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Servicios</a>
+            <a href="../index.html#proyectos" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Proyectos</a>
+            <a href="../index.html#nosotros" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Nosotros</a>
         </nav>
-    </header>
 
-    <main class="pt-24">
-        <!-- Hero del Proyecto -->
-        <section class="py-20 px-4">
-            <div class="container mx-auto max-w-5xl">
-                <div data-aos="fade-up">
-                    <span class="text-brand-blue-400 font-mono">Desarrollo Web</span>
-                    <h1 class="text-5xl md:text-6xl font-bold text-white mt-2 mb-6">Sitio Web Profesional</h1>
-                    <p class="text-xl text-gray-400 max-w-3xl">Desarrollo de sitios web modernos, responsive y optimizados para SEO con las últimas tecnologías del mercado.</p>
+        <div class="hidden md:block">
+            <a href="../index.html#contacto" class="btn-glow inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-black transition-all duration-200 bg-brand-blue rounded-full hover:bg-white">Hablemos</a>
+        </div>
+        
+        <button class="md:hidden text-white p-2" id="mobile-menu-btn"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    </div>
+</header>
+    
+<!-- Menú Móvil Overlay -->
+<div class="fixed inset-0 z-40 bg-brand-dark/95 backdrop-blur-xl transform translate-x-full transition-transform duration-500 md:hidden flex flex-col items-center justify-center space-y-8" id="mobile-menu">
+    <button class="absolute top-6 right-6 text-white p-2" id="close-menu-btn">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+    <a href="../index.html#servicios" class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Servicios</a>
+    <a href="../index.html#proyectos" class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Proyectos</a>
+    <a href="../index.html#contacto" class="mobile-link text-3xl font-display font-bold text-brand-blue">Hablemos</a>
+</div>
+
+<main class="pt-32 pb-24 min-h-screen">
+    <div class="container mx-auto px-6">
+        
+        <!-- Project Header -->
+        <div class="max-w-4xl mx-auto mb-16">
+            <div class="flex items-center gap-4 text-brand-blue mb-6">
+                <span class="text-sm font-mono uppercase tracking-widest">Desarrollo Web</span>
+                <span class="w-12 h-[1px] bg-brand-blue/30"></span>
+                <span class="text-sm font-mono uppercase tracking-widest">2025</span>
+            </div>
+            <h1 class="text-5xl md:text-8xl font-display font-bold leading-none mb-8">NextGen Commerce</h1>
+            <p class="text-xl md:text-2xl text-gray-400 font-light leading-relaxed">
+                Una plataforma de comercio electrónico de alto rendimiento diseñada para una experiencia de usuario fluida y conversiones maximizadas.
+            </p>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="w-full h-[60vh] md:h-[80vh] mb-24 rounded-2xl overflow-hidden relative group">
+             <div class="absolute inset-0 bg-brand-blue/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+             <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" alt="Project Hero" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out">
+        </div>
+
+        <!-- Project Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-32 border-t border-white/10 pt-16">
+            <div class="md:col-span-4 space-y-8">
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-2">Cliente</h3>
+                    <p class="text-gray-400">TechRetail Inc.</p>
                 </div>
-                
-                <!-- Imagen Principal -->
-                <div class="mt-12 rounded-2xl overflow-hidden" data-aos="zoom-in">
-                    <img src="../img/proyecto_desarrollo_web.jpg" alt="Proyecto Desarrollo Web" loading="lazy" width="1200" height="800" class="w-full h-auto object-cover">
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-2">Servicios</h3>
+                    <p class="text-gray-400">Desarrollo Frontend, Backend API, UI/UX Design</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-2">Tecnologías</h3>
+                    <p class="text-gray-400">React, Tailwind CSS, Node.js, Stripe</p>
+                </div>
+                <div>
+                     <a href="#" class="inline-flex items-center text-brand-blue hover:text-white transition-colors font-bold mt-4">
+                        Ver Sitio en Vivo 
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                     </a>
                 </div>
             </div>
-        </section>
-
-        <!-- Detalles del Proyecto -->
-        <section class="py-16 px-4 bg-brand-gray">
-            <div class="container mx-auto max-w-5xl">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <div data-aos="fade-up">
-                        <h3 class="text-brand-blue-400 font-mono mb-2">Cliente</h3>
-                        <p class="text-white text-lg">Empresas y Startups</p>
-                    </div>
-                    <div data-aos="fade-up" data-aos-delay="100">
-                        <h3 class="text-brand-blue-400 font-mono mb-2">Tecnologías</h3>
-                        <p class="text-white text-lg">HTML5, CSS3, JavaScript, React</p>
-                    </div>
-                    <div data-aos="fade-up" data-aos-delay="200">
-                        <h3 class="text-brand-blue-400 font-mono mb-2">Año</h3>
-                        <p class="text-white text-lg">2024</p>
-                    </div>
-                </div>
-
-                <div class="prose prose-invert max-w-none">
-                    <h2 class="text-3xl font-bold text-white mb-6" data-aos="fade-up">Descripción del Proyecto</h2>
-                    <div class="text-gray-300 space-y-4 text-lg leading-relaxed" data-aos="fade-up" data-aos-delay="100">
-                        <p>Creamos sitios web que no solo se ven increíbles, sino que también funcionan a la perfección. Utilizamos las últimas tecnologías y mejores prácticas para garantizar un rendimiento óptimo.</p>
-                        
-                        <h3 class="text-2xl font-bold text-white mt-8 mb-4">Características Principales</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-300">
-                            <li>Diseño responsive que se adapta a todos los dispositivos</li>
-                            <li>Optimización SEO para mejorar tu posicionamiento</li>
-                            <li>Velocidad de carga ultrarrápida</li>
-                            <li>Código limpio y semántico</li>
-                            <li>Integración con sistemas de gestión de contenido</li>
-                            <li>Formularios de contacto funcionales</li>
-                            <li>Google Analytics integrado</li>
-                        </ul>
-
-                        <h3 class="text-2xl font-bold text-white mt-8 mb-4">Tecnologías que Utilizamos</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
-                            <div class="bg-brand-dark p-4 rounded-lg text-center">
-                                <p class="font-bold text-brand-blue-400">HTML5</p>
-                            </div>
-                            <div class="bg-brand-dark p-4 rounded-lg text-center">
-                                <p class="font-bold text-brand-blue-400">CSS3</p>
-                            </div>
-                            <div class="bg-brand-dark p-4 rounded-lg text-center">
-                                <p class="font-bold text-brand-blue-400">JavaScript</p>
-                            </div>
-                            <div class="bg-brand-dark p-4 rounded-lg text-center">
-                                <p class="font-bold text-brand-blue-400">React</p>
-                            </div>
-                        </div>
-
-                        <h3 class="text-2xl font-bold text-white mt-8 mb-4">Nuestro Proceso</h3>
-                        <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                            <li>Análisis de requisitos y objetivos</li>
-                            <li>Wireframing y diseño de la estructura</li>
-                            <li>Desarrollo del frontend</li>
-                            <li>Integración de funcionalidades</li>
-                            <li>Pruebas exhaustivas en múltiples dispositivos</li>
-                            <li>Lanzamiento y seguimiento</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="py-20 px-4">
-            <div class="container mx-auto max-w-4xl text-center">
-                <div data-aos="fade-up">
-                    <h2 class="text-4xl font-bold text-white mb-6">¿Listo para tu nuevo sitio web?</h2>
-                    <p class="text-xl text-gray-400 mb-8">Creemos juntos una presencia digital impactante</p>
-                    <a href="../index.html#contacto" class="btn btn-primary">Solicitar Presupuesto</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <!-- ===== FOOTER ===== -->
-    <footer class="py-12 bg-brand-gray border-t border-gray-800">
-        <div class="container mx-auto max-w-7xl px-4">
-            <!-- Logo y descripción -->
-            <div class="text-center mb-8" data-aos="fade-up">
-                <a href="../index.html#inicio" class="inline-flex items-center gap-3 mb-4">
-                    <img src="../img/logo.png" alt="Dazenty Logo" class="h-10 w-auto">
-                    <span class="text-2xl font-mono font-bold text-white text-glow">Dazenty</span>
-                </a>
-                <p class="text-gray-400 mt-4 max-w-md mx-auto">
-                    Transformando ideas en experiencias digitales excepcionales
+            
+            <div class="md:col-span-8">
+                <h2 class="text-3xl font-display font-bold mb-6">El Desafío</h2>
+                <p class="text-gray-400 leading-relaxed mb-8">
+                    El cliente necesitaba renovar su infraestructura digital heredada que sufría de tiempos de carga lentos y una experiencia móvil deficiente. El objetivo era crear una plataforma que no solo fuera rápida, sino que también permitiera una gestión de inventario en tiempo real y una experiencia de pago simplificada.
+                </p>
+                <h2 class="text-3xl font-display font-bold mb-6">La Solución</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Desarrollamos una arquitectura headless utilizando las últimas tecnologías web. Implementamos una estrategia de renderizado híbrido para garantizar tiempos de carga instantáneos en las páginas de productos y un checkout seguro y robusto. El resultado fue un aumento del 40% en las tasas de conversión móvil durante el primer mes.
                 </p>
             </div>
-            
-            <!-- Redes sociales e iconos de contacto -->
-            <div class="flex justify-center items-center gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
-                <!-- Teléfono -->
-                <a href="tel:676448762" class="social-icon group" title="Llamar">
-                    <img src="../img/telefono.png" alt="Teléfono" class="w-6 h-6">
-                </a>
-                
-                <!-- Email -->
-                <a href="mailto:designerazenty@gmail.com" class="social-icon group" title="Email">
-                    <img src="../img/correos.png" alt="Email" class="w-6 h-6">
-                </a>
-                
-                <!-- Instagram -->
-                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="social-icon group" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);" title="Instagram">
-                    <img src="../img/instagram_logo_blanco.png" alt="Instagram" class="w-6 h-6">
-                </a>
-            </div>
-            
-            <!-- Links del footer -->
-            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm" data-aos="fade-up" data-aos-delay="200">
-                <a href="../index.html#inicio" class="text-gray-400 hover:text-brand-blue-400 transition">Inicio</a>
-                <a href="../index.html#servicios" class="text-gray-400 hover:text-brand-blue-400 transition">Servicios</a>
-                <a href="../index.html#proyectos" class="text-gray-400 hover:text-brand-blue-400 transition">Proyectos</a>
-                <a href="../index.html#nosotros" class="text-gray-400 hover:text-brand-blue-400 transition">Nosotros</a>
-                <a href="../index.html#contacto" class="text-gray-400 hover:text-brand-blue-400 transition">Contacto</a>
-            </div>
-            
-            <!-- Copyright -->
-            <div class="text-center text-gray-500 text-sm border-t border-gray-800 pt-6" data-aos="fade-up" data-aos-delay="300">
-                <p>&copy; 2024 Dazenty. Todos los derechos reservados.</p>
+        </div>
+
+        <!-- Gallery -->
+        <div class="space-y-8 mb-32">
+            <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?q=80&w=2940&auto=format&fit=crop" alt="Detail 1" class="w-full rounded-2xl border border-white/5">
+            <div class="grid md:grid-cols-2 gap-8">
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2940&auto=format&fit=crop" alt="Detail 2" class="w-full rounded-2xl border border-white/5">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2940&auto=format&fit=crop" alt="Detail 3" class="w-full rounded-2xl border border-white/5">
             </div>
         </div>
-    </footer>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="../js/main.js"></script>
+        <!-- Next Project Navigation -->
+        <div class="py-24 border-t border-white/10 flex justify-between items-center group">
+            <div>
+                 <span class="text-sm font-mono text-gray-500 mb-2 block">Siguiente Proyecto</span>
+                 <a href="proyecto-diseno-grafico.html" class="text-4xl md:text-6xl font-display font-bold group-hover:text-brand-blue transition-colors">Nova Branding Identity</a>
+            </div>
+            <a href="proyecto-diseno-grafico.html" class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-brand-blue group-hover:text-black group-hover:border-transparent transition-all duration-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-black py-12 border-t border-white/10">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="../img/logo.png" alt="Dazenty" class="h-8 w-auto">
+                    <span class="font-display font-bold text-lg">Dazenty</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.</p>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/alejandro-hern%C3%A1ndez-murga" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="https://twitter.com/DAzenty" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Servicios</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Empresa</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="about.html" class="hover:text-brand-blue transition-colors">Nosotros</a></li>
+                    <li><a href="portfolio.html" class="hover:text-brand-blue transition-colors">Portfolio</a></li>
+                    <li><a href="../index.html#contacto" class="hover:text-brand-blue transition-colors">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="privacidad.html" class="hover:text-brand-blue transition-colors">Política de Privacidad</a></li>
+                    <li><a href="terminos.html" class="hover:text-brand-blue transition-colors">Términos de Servicio</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 Dazenty. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<script src="../js/main.js"></script>
 </body>
 </html>

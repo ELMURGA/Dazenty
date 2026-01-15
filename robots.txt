@@ -3,9 +3,11 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://dazenty.com/sitemap.xml
+Sitemap: https://dazenty.vercel.app/sitemap.xml
 
 # Bloquear archivos innecesarios
 Disallow: /css/
+Disallow: /js/
 Disallow: /.git/
 Disallow: /.DS_Store
+Disallow: /.vscode/

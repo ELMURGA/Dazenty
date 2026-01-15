@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - Dazenty</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#00BFFF',
+                            dark: '#050505',
+                            gray: '#121212',
+                            light: '#EAEAEA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
+
+<!-- Page Loader -->
+<div class="page-loader">
+    <div class="loader-logo">
+        <span class="loader-letter">D</span><span class="loader-letter">A</span><span class="loader-letter">Z</span><span class="loader-letter">E</span><span class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
+    </div>
+</div>
+
+<div class="cursor-dot hidden md:block"></div>
+<div class="cursor-outline hidden md:block"></div>
+
+<!-- Navegación -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+    <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-md border-b border-white/5"></div>
+    <div class="container mx-auto px-6 h-20 flex items-center justify-between relative z-10">
+        <a href="../index.html" class="flex items-center gap-2 group">
+            <img src="../img/logo.png" alt="Dazenty" class="h-10 w-auto group-hover:rotate-12 transition-transform duration-500">
+            <span class="font-display font-bold text-xl tracking-tight">Dazenty</span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8">
+            <a href="../index.html#servicios" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Servicios</a>
+            <a href="portfolio.html" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Portfolio</a>
+            <a href="about.html" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Nosotros</a>
+        </nav>
+
+        <div class="hidden md:block">
+            <a href="../index.html#contacto" class="btn-glow inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-black transition-all duration-200 bg-brand-blue rounded-full hover:bg-white">Hablemos</a>
+        </div>
+        
+        <button class="md:hidden text-white p-2" id="mobile-menu-btn"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    </div>
+</header>
+
+<main class="pt-32 pb-24 min-h-screen">
+    <div class="container mx-auto px-6 max-w-4xl">
+        
+        <div class="mb-12">
+            <a href="../index.html" class="inline-flex items-center text-brand-blue mb-6 hover:underline">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Volver al Inicio
+            </a>
+            <h1 class="text-5xl md:text-7xl font-display font-bold mb-6">Política de Privacidad</h1>
+            <p class="text-gray-400">Última actualización: 15 de enero de 2026</p>
+        </div>
+
+        <div class="prose prose-invert max-w-none space-y-8">
+            
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">1. Introducción</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    En Dazenty, nos comprometemos a proteger tu privacidad y tus datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos, compartimos y protegemos tu información cuando visitas nuestro sitio web o utilizas nuestros servicios.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">2. Información que Recopilamos</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">Recopilamos diferentes tipos de información:</p>
+                <div class="pl-6 space-y-4 text-gray-400">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">2.1 Información que nos Proporcionas</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Nombre y apellidos</li>
+                            <li>Dirección de correo electrónico</li>
+                            <li>Número de teléfono</li>
+                            <li>Información sobre tu empresa o proyecto</li>
+                            <li>Cualquier otra información que elijas proporcionarnos en formularios de contacto</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">2.2 Información Recopilada Automáticamente</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Dirección IP</li>
+                            <li>Tipo de navegador y versión</li>
+                            <li>Páginas visitadas y tiempo de permanencia</li>
+                            <li>Datos de navegación mediante cookies</li>
+                            <li>Dispositivo utilizado para acceder al sitio</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">3. Cómo Utilizamos tu Información</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">Utilizamos la información recopilada para:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-400">
+                    <li>Responder a tus consultas y solicitudes de servicio</li>
+                    <li>Proporcionar y mejorar nuestros servicios</li>
+                    <li>Enviar comunicaciones relacionadas con nuestros servicios</li>
+                    <li>Personalizar tu experiencia en nuestro sitio web</li>
+                    <li>Analizar el uso del sitio web para mejorar su funcionalidad</li>
+                    <li>Cumplir con obligaciones legales y reglamentarias</li>
+                    <li>Proteger nuestros derechos legales y prevenir fraudes</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">4. Cookies y Tecnologías Similares</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">
+                    Utilizamos cookies y tecnologías similares para mejorar tu experiencia en nuestro sitio web. Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo.
+                </p>
+                <p class="text-gray-400 leading-relaxed mb-4">Tipos de cookies que utilizamos:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-400">
+                    <li><strong class="text-white">Cookies Esenciales:</strong> Necesarias para el funcionamiento básico del sitio</li>
+                    <li><strong class="text-white">Cookies de Rendimiento:</strong> Nos ayudan a entender cómo los visitantes interactúan con el sitio</li>
+                    <li><strong class="text-white">Cookies de Funcionalidad:</strong> Permiten recordar tus preferencias</li>
+                    <li><strong class="text-white">Cookies de Marketing:</strong> Se utilizan para mostrar anuncios relevantes</li>
+                </ul>
+                <p class="text-gray-400 leading-relaxed mt-4">
+                    Puedes configurar tu navegador para rechazar todas o algunas cookies, aunque esto puede afectar la funcionalidad del sitio.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">5. Compartir tu Información</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">
+                    No vendemos, alquilamos ni comercializamos tu información personal. Podemos compartir tu información únicamente en las siguientes circunstancias:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-400">
+                    <li><strong class="text-white">Proveedores de Servicios:</strong> Con terceros que nos ayudan a operar nuestro negocio (ej. servicios de hosting, análisis web)</li>
+                    <li><strong class="text-white">Cumplimiento Legal:</strong> Cuando sea requerido por ley o para proteger nuestros derechos</li>
+                    <li><strong class="text-white">Transacciones Empresariales:</strong> En caso de fusión, adquisición o venta de activos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">6. Seguridad de los Datos</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger tu información personal contra acceso no autorizado, alteración, divulgación o destrucción. Estas medidas incluyen cifrado SSL, firewalls, controles de acceso y auditorías de seguridad regulares.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">7. Tus Derechos</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">Tienes los siguientes derechos respecto a tu información personal:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-400">
+                    <li><strong class="text-white">Acceso:</strong> Solicitar una copia de los datos personales que tenemos sobre ti</li>
+                    <li><strong class="text-white">Rectificación:</strong> Corregir información inexacta o incompleta</li>
+                    <li><strong class="text-white">Eliminación:</strong> Solicitar la eliminación de tus datos personales</li>
+                    <li><strong class="text-white">Portabilidad:</strong> Recibir tus datos en un formato estructurado y de uso común</li>
+                    <li><strong class="text-white">Oposición:</strong> Oponerte al procesamiento de tus datos personales</li>
+                    <li><strong class="text-white">Restricción:</strong> Solicitar la limitación del procesamiento de tus datos</li>
+                </ul>
+                <p class="text-gray-400 leading-relaxed mt-4">
+                    Para ejercer estos derechos, contáctanos en: <a href="mailto:privacy@dazenty.com" class="text-brand-blue hover:underline">privacy@dazenty.com</a>
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">8. Retención de Datos</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Conservamos tu información personal solo durante el tiempo necesario para cumplir con los propósitos descritos en esta política, a menos que la ley requiera o permita un período de retención más largo.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">9. Enlaces a Sitios de Terceros</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Nuestro sitio web puede contener enlaces a sitios de terceros. No somos responsables de las prácticas de privacidad de estos sitios. Te recomendamos leer las políticas de privacidad de cada sitio que visites.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">10. Privacidad de Menores</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos intencionalmente información personal de menores. Si descubrimos que hemos recopilado información de un menor, la eliminaremos de inmediato.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">11. Cambios a esta Política</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Podemos actualizar esta Política de Privacidad periódicamente. Te notificaremos sobre cambios significativos publicando la nueva política en esta página y actualizando la fecha de "Última actualización". Te recomendamos revisar esta página regularmente.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-display font-bold mb-4">12. Contacto</h2>
+                <p class="text-gray-400 leading-relaxed mb-4">
+                    Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información, contáctanos:
+                </p>
+                <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-gray-400"><strong class="text-white">Email:</strong> <a href="mailto:designerazenty@gmail.com" class="text-brand-blue hover:underline">designerazenty@gmail.com</a></p>
+                    <p class="text-gray-400 mt-2"><strong class="text-white">Teléfono:</strong> <a href="tel:676448762" class="text-brand-blue hover:underline">676 448 762</a></p>
+                    <p class="text-gray-400 mt-2"><strong class="text-white">Instagram:</strong> <a href="https://www.instagram.com/dazen.ty" target="_blank" class="text-brand-blue hover:underline">@dazen.ty</a></p>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+</main>
+
+<footer class="bg-black py-12 border-t border-white/10">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="../img/logo.png" alt="Dazenty" class="h-8 w-auto">
+                    <span class="font-display font-bold text-lg">Dazenty</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.</p>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/alejandro-hern%C3%A1ndez-murga" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="https://twitter.com/DAzenty" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-brand-blue transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Servicios</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
+                    <li><a href="../index.html#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Empresa</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="about.html" class="hover:text-brand-blue transition-colors">Nosotros</a></li>
+                    <li><a href="portfolio.html" class="hover:text-brand-blue transition-colors">Portfolio</a></li>
+                    <li><a href="../index.html#contacto" class="hover:text-brand-blue transition-colors">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="privacidad.html" class="hover:text-brand-blue transition-colors">Política de Privacidad</a></li>
+                    <li><a href="terminos.html" class="hover:text-brand-blue transition-colors">Términos de Servicio</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 Dazenty. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
