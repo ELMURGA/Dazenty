@@ -2,12 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Dazenty - Diseño Web, Gráfico y Marketing Digital | Transformamos Ideas en Realidad</title>
     <meta name="description" content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
     <meta name="keywords" content="diseño web, marketing digital, diseño gráfico, branding, SEO, desarrollo web, agencia digital">
     <meta name="author" content="Dazenty">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#00BFFF">
+    <meta name="msapplication-TileColor" content="#050505">
     <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
     <link rel="canonical" href="https://dazenty.vercel.app/">
     
     <!-- Open Graph / Facebook -->
@@ -16,13 +21,16 @@
     <meta property="og:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
     <meta property="og:description" content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
     <meta property="og:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:site_name" content="Dazenty">
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://dazenty.vercel.app/">
-    <meta property="twitter:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
-    <meta property="twitter:description" content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
-    <meta property="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://dazenty.vercel.app/">
+    <meta name="twitter:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
+    <meta name="twitter:description" content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
+    <meta name="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta name="twitter:site" content="@DAzenty">
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -339,9 +347,8 @@
                             </div>
                         </div>
 
-                        <form action="https://formsubmit.co/designerazenty@gmail.com" method="POST" class="space-y-6">
+                        <form action="https://formspree.io/f/xkozderd" method="POST" class="space-y-6">
                             <input type="hidden" name="_subject" value="Nuevo Lead desde Web Dazenty">
-                            <input type="hidden" name="_next" value="https://dazenty.com/gracias.html">
                             
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-gray-400">Nombre Completo</label>
@@ -356,10 +363,15 @@
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-gray-400">Servicio de interés</label>
                                 <select name="service" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue transition-colors appearance-none">
-                                    <option value="web">Desarrollo Web</option>
-                                    <option value="design">Diseño Gráfico</option>
-                                    <option value="marketing">Marketing Digital</option>
+                                    <option value="Desarrollo Web">Desarrollo Web</option>
+                                    <option value="Diseño Gráfico">Diseño Gráfico</option>
+                                    <option value="Marketing Digital">Marketing Digital</option>
                                 </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-400">Cuéntanos sobre tu proyecto</label>
+                                <textarea name="message" rows="4" required placeholder="Describe brevemente qué necesitas, tus objetivos o cualquier detalle que nos ayude a entender mejor tu proyecto..." class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue transition-colors resize-none"></textarea>
                             </div>
                             
                             <button type="submit" class="w-full bg-brand-blue text-black font-bold py-4 rounded-lg hover:bg-white transition-colors duration-300">

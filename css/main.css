@@ -268,3 +268,212 @@ a, button, .nav-link {
     }
 }
 
+/* ===== CROSS-BROWSER COMPATIBILITY ===== */
+
+/* Reset y normalización */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Evitar overflow horizontal en móviles */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Compatibilidad con Safari */
+img, video {
+    max-width: 100%;
+    height: auto;
+    -webkit-transform: translateZ(0);
+}
+
+/* Mejora de renderizado de texto */
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* Compatibilidad flexbox para IE11 */
+.flex {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/* Scroll suave para todos los navegadores */
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Estilos para inputs en todos los navegadores */
+input, textarea, select, button {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Fix para select en navegadores */
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+/* Fix de backdrop-filter para Firefox */
+@supports not (backdrop-filter: blur(10px)) {
+    .backdrop-blur-md,
+    .backdrop-blur-sm,
+    .backdrop-blur-xl {
+        background-color: rgba(5, 5, 5, 0.95);
+    }
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Extra small devices (phones, menos de 576px) */
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.1;
+    }
+    
+    h2 {
+        font-size: 2rem !important;
+    }
+    
+    .text-6xl, .text-7xl, .text-8xl {
+        font-size: 2.5rem !important;
+    }
+    
+    /* Botones en móvil */
+    .btn-glow, .inline-flex {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Small devices (landscape phones, 576px - 768px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    h1 {
+        font-size: 3rem !important;
+    }
+    
+    .text-6xl, .text-7xl, .text-8xl {
+        font-size: 3rem !important;
+    }
+}
+
+/* Medium devices (tablets, 768px - 992px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    h1 {
+        font-size: 4rem !important;
+    }
+}
+
+/* Ajustes para el modal en móviles */
+@media (max-width: 768px) {
+    #projectModal > div {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+    
+    #projectModal .p-8 {
+        padding: 1.5rem;
+    }
+    
+    #projectModal h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    #projectModal .flex-wrap {
+        flex-direction: column;
+    }
+    
+    #projectModal a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Ajustes para el portfolio grid en móviles */
+@media (max-width: 640px) {
+    .portfolio-item h3 {
+        font-size: 1rem;
+    }
+    
+    .portfolio-filter {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    .page-loader,
+    .cursor-dot,
+    .cursor-outline,
+    #navbar,
+    #mobile-menu,
+    footer {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .page-loader {
+        display: none;
+    }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+    .border-white\/10,
+    .border-white\/20 {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .text-gray-400,
+    .text-gray-500 {
+        color: rgba(255, 255, 255, 0.8);
+    }
+}
+

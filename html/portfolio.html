@@ -2,12 +2,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Portfolio - Proyectos de Diseño Web y Marketing Digital | Dazenty</title>
     <meta name="description" content="Descubre nuestros proyectos de diseño web, branding y marketing digital. Cases de éxito y trabajos destacados de Dazenty.">
     <meta name="keywords" content="portfolio diseño web, proyectos marketing digital, cases de éxito, trabajos diseño gráfico">
+    <meta name="author" content="Dazenty">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#00BFFF">
     <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="apple-touch-icon" href="../img/logo.png">
     <link rel="canonical" href="https://dazenty.vercel.app/html/portfolio.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dazenty.vercel.app/html/portfolio.html">
+    <meta property="og:title" content="Portfolio - Proyectos de Diseño Web y Marketing Digital | Dazenty">
+    <meta property="og:description" content="Descubre nuestros proyectos de diseño web, branding y marketing digital. Cases de éxito y trabajos destacados.">
+    <meta property="og:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta property="og:locale" content="es_ES">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://dazenty.vercel.app/html/portfolio.html">
+    <meta name="twitter:title" content="Portfolio - Proyectos | Dazenty">
+    <meta name="twitter:description" content="Descubre nuestros proyectos de diseño web, branding y marketing digital.">
+    <meta name="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,103 +132,218 @@
         </div>
 
         <!-- Portfolio Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
             
-            <!-- Proyecto 1 - Desarrollo Web -->
-            <a href="proyecto-desarrollo-web.html" class="portfolio-item group" data-category="web">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
+            <!-- Proyecto 1 - Sevilla Tarjetas Plásticas Web -->
+            <div class="portfolio-item group cursor-pointer" data-category="web" onclick="openModal('Sevilla Tarjetas Plásticas', '../proyectos/sevillatp.webp', 'Sitio web corporativo completo para empresa especializada en tarjetas plásticas PVC, impresión digital y rotulación en Sevilla. Incluye diseño responsive, galería de productos y formulario de contacto.', 'https://sevillatarjetasplasticas.com', 'Desarrollo Web')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
                     <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" alt="NextGen Commerce" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                    <img src="../proyectos/sevillatp.webp" alt="Sevilla Tarjetas Plásticas" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
                 </div>
                 <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
                         <span class="px-3 py-1 rounded-full border border-white/20">Desarrollo Web</span>
-                        <span>2025</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Branding</span>
                     </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">NextGen Commerce</h3>
-                    <p class="text-gray-400">Plataforma e-commerce de alto rendimiento con experiencia de usuario optimizada.</p>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Sevilla Tarjetas Plásticas</h3>
                 </div>
-            </a>
+            </div>
 
-            <!-- Proyecto 2 - Diseño Gráfico -->
-            <a href="proyecto-diseno-grafico.html" class="portfolio-item group" data-category="design">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
+            <!-- Proyecto 2 - Pinturas Merpa Web -->
+            <div class="portfolio-item group cursor-pointer" data-category="web" onclick="openModal('Pinturas Merpa', '../proyectos/pinturasmerpa.webp', 'Sitio web para empresa de pinturas profesionales con catálogo de productos y servicios. Diseño moderno y funcional que destaca la calidad de sus productos.', '', 'Desarrollo Web')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
                     <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=2940&auto=format&fit=crop" alt="Nova Identity" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                    <div class="absolute top-3 right-3 z-20 px-2 py-1 bg-yellow-500/90 text-black text-xs font-bold rounded-full">En desarrollo</div>
+                    <img src="../proyectos/pinturasmerpa.webp" alt="Pinturas Merpa" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
                 </div>
                 <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
-                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
-                        <span>2024</span>
-                    </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">Nova Identity</h3>
-                    <p class="text-gray-400">Sistema de identidad visual para startup de energía limpia.</p>
-                </div>
-            </a>
-
-            <!-- Proyecto 3 - Marketing -->
-            <a href="proyecto-marketing-digital.html" class="portfolio-item group" data-category="marketing">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
-                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=2931&auto=format&fit=crop" alt="Growth 360" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
-                </div>
-                <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
-                        <span class="px-3 py-1 rounded-full border border-white/20">Marketing Digital</span>
-                        <span>2024</span>
-                    </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">Growth 360</h3>
-                    <p class="text-gray-400">Estrategia omnicanal para marca de moda emergente.</p>
-                </div>
-            </a>
-
-            <!-- Proyecto 4 - Desarrollo Web -->
-            <a href="#" class="portfolio-item group" data-category="web">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
-                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?q=80&w=2940&auto=format&fit=crop" alt="Proyecto 4" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
-                </div>
-                <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
                         <span class="px-3 py-1 rounded-full border border-white/20">Desarrollo Web</span>
-                        <span>2024</span>
                     </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">SaaS Dashboard</h3>
-                    <p class="text-gray-400">Panel de control intuitivo para gestión empresarial.</p>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Pinturas Merpa</h3>
                 </div>
-            </a>
+            </div>
 
-            <!-- Proyecto 5 - Diseño -->
-            <a href="#" class="portfolio-item group" data-category="design">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
+            <!-- Proyecto 3 - Utrewal -->
+            <div class="portfolio-item group cursor-pointer" data-category="web" onclick="openModal('Utrewal', '../proyectos/utrewal.webp', 'Proyecto web interactivo con diseño moderno y funcionalidades dinámicas. Experiencia de usuario optimizada con animaciones fluidas.', '', 'Desarrollo Web')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
                     <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=2942&auto=format&fit=crop" alt="Proyecto 5" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                    <div class="absolute top-3 right-3 z-20 px-2 py-1 bg-yellow-500/90 text-black text-xs font-bold rounded-full">En desarrollo</div>
+                    <img src="../proyectos/utrewal.webp" alt="Utrewal" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
                 </div>
                 <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
-                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
-                        <span>2024</span>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Desarrollo Web</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Frontend</span>
                     </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">Elegant Packaging</h3>
-                    <p class="text-gray-400">Diseño de packaging premium para marca de cosméticos.</p>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Utrewal</h3>
                 </div>
-            </a>
+            </div>
 
-            <!-- Proyecto 6 - Marketing -->
-            <a href="#" class="portfolio-item group" data-category="marketing">
-                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-800">
+            <!-- Proyecto 4 - Dazenty -->
+            <div class="portfolio-item group cursor-pointer" data-category="web" onclick="openModal('Dazenty', '../proyectos/dazenty.webp', 'Página web corporativa de la agencia con diseño limpio, animaciones interactivas y experiencia de usuario premium. Desarrollada con tecnologías modernas.', 'https://dazenty.vercel.app', 'Desarrollo Web')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
                     <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
-                    <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=2952&auto=format&fit=crop" alt="Proyecto 6" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                    <img src="../proyectos/dazenty.webp" alt="Dazenty Website" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
                 </div>
                 <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Desarrollo Web</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Frontend</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Dazenty</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 5 - Marketing Costa del Sol -->
+            <div class="portfolio-item group cursor-pointer" data-category="marketing" onclick="openModal('Costa del Sol - Estrategia Digital', '../proyectos/costadelsol.webp', 'Estrategia de marketing digital integral para empresa de comercio mayorista en Marbella. Campañas de Google Ads, gestión de redes sociales y email marketing que incrementaron las ventas online un 180% en 6 meses.', '', 'Marketing Digital')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/costadelsol.webp" alt="Costa del Sol Marketing" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
                         <span class="px-3 py-1 rounded-full border border-white/20">Marketing Digital</span>
-                        <span>2023</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">SEO/SEM</span>
                     </div>
-                    <h3 class="text-2xl font-display font-bold group-hover:text-brand-blue transition-colors">Social Media Takeover</h3>
-                    <p class="text-gray-400">Campaña viral que generó +500k interacciones orgánicas.</p>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Costa del Sol - Estrategia Digital</h3>
                 </div>
-            </a>
+            </div>
+
+            <!-- Proyecto 6 - Marketing Sevilla Tarjetas Plásticas -->
+            <div class="portfolio-item group cursor-pointer" data-category="marketing" onclick="openModal('Sevilla TP - Campaña B2B', '../proyectos/sevillatp.webp', 'Campaña de marketing B2B para captación de clientes corporativos. Estrategia de LinkedIn Ads, contenido especializado y automatización de email marketing que generó +50 leads cualificados mensuales.', 'https://sevillatarjetasplasticas.com', 'Marketing Digital')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/sevillatp.webp" alt="Sevilla TP Marketing" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Marketing Digital</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">B2B</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Sevilla TP - Campaña B2B</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 7 - Marketing Pinturas Merpa -->
+            <div class="portfolio-item group cursor-pointer" data-category="marketing" onclick="openModal('Pinturas Merpa - Redes Sociales', '../proyectos/pinturasmerpa.webp', 'Gestión integral de redes sociales para empresa de pinturas profesionales. Creación de contenido, estrategia de Instagram y Facebook Ads que aumentaron el reconocimiento de marca un 250% en la zona.', '', 'Marketing Digital')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/pinturasmerpa.webp" alt="Pinturas Merpa Marketing" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Marketing Digital</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Social Media</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Pinturas Merpa - Redes Sociales</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 8 - CD Atlético Matalascañas -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('CD Atlético Matalascañas', '../proyectos/matalascanas.webp', 'Identidad visual completa para club deportivo. Incluye diseño de escudo oficial, paleta de colores institucional y materiales promocionales para la temporada.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/matalascanas.webp" alt="CD Atlético Matalascañas" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Branding</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">CD Atlético Matalascañas</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 9 - Cartel Promocional -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Cartel Promocional', '../proyectos/cartel.webp', 'Diseño minimalista para evento con estética moderna y llamativa. Composición visual impactante que capta la atención del público objetivo.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/cartel.webp" alt="Cartel Promocional" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Publicidad</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Cartel Promocional</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 10 - Pepe Gotera y Otilio -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Pepe Gotera y Otilio', '../proyectos/gyot.webp', 'Cartel publicitario para empresa de chapuzas con diseño creativo y llamativo. Inspirado en los icónicos personajes, transmite profesionalidad con un toque de humor.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/gyot.webp" alt="Pepe Gotera y Otilio" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Publicidad</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Pepe Gotera y Otilio</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 11 - Next Day DJ Carlos Berlanga -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Next Day - DJ Carlos Berlanga', '../proyectos/nextday.webp', 'Flyer promocional para comunicar fechas de actuación del DJ Carlos Berlanga. Diseño vibrante y moderno que refleja la energía de la música electrónica.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/nextday.webp" alt="Next Day - DJ Carlos Berlanga" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Flyer</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Next Day - DJ Carlos Berlanga</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 12 - Goal Wear -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Goal Wear', '../proyectos/goalwear.webp', 'Diseño de logotipo para tienda de camisetas de fútbol en Utrera. Marca deportiva con identidad visual fuerte y memorable.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/goalwear.webp" alt="Goal Wear" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Logotipo</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Goal Wear</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 13 - Carnet Socio Club Gelves -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Carnet Socio Club Gelves', '../proyectos/clubgelves1.webp', 'Diseño de carnet de socio para la temporada 24-25. Tipografía protagonista con jerarquía visual clara y acabado profesional para impresión.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/clubgelves1.webp" alt="Carnet Socio Club Gelves" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Print</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Carnet Socio Club Gelves</h3>
+                </div>
+            </div>
+
+            <!-- Proyecto 14 - Logo Costa del Sol -->
+            <div class="portfolio-item group cursor-pointer" data-category="design" onclick="openModal('Logo Costa del Sol', '../proyectos/costadelsol.webp', 'Diseño de logotipo para empresa de comercio mayorista ubicada en Marbella, Málaga. Identidad visual que transmite profesionalidad y confianza.', '', 'Diseño Gráfico')">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-4 bg-gray-800">
+                    <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500"></div>
+                    <img src="../proyectos/costadelsol.webp" alt="Logo Costa del Sol" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                        <span class="px-3 py-1 rounded-full border border-white/20">Diseño Gráfico</span>
+                        <span class="px-3 py-1 rounded-full border border-white/20">Logotipo</span>
+                    </div>
+                    <h3 class="text-xl font-display font-bold group-hover:text-brand-blue transition-colors">Logo Costa del Sol</h3>
+                </div>
+            </div>
 
         </div>
 
@@ -276,6 +411,42 @@
     </div>
 </footer>
 
+<!-- Modal para proyectos -->
+<div id="projectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm overflow-y-auto">
+    <div class="relative bg-brand-gray border border-white/10 rounded-3xl max-w-4xl w-full my-8 mx-auto" onclick="event.stopPropagation()">
+        <!-- Botón cerrar -->
+        <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-12 h-12 bg-brand-blue hover:bg-white rounded-full flex items-center justify-center transition-colors shadow-lg">
+            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        
+        <!-- Contenido del modal -->
+        <div class="p-0">
+            <!-- Imagen -->
+            <div class="relative w-full overflow-hidden rounded-t-3xl bg-gray-900">
+                <img id="modalImage" src="" alt="" class="w-full h-auto max-h-[60vh] object-contain mx-auto">
+                <div id="modalCategory" class="absolute top-4 left-4 px-4 py-2 bg-brand-blue text-black text-sm font-bold rounded-full"></div>
+            </div>
+            
+            <!-- Info -->
+            <div class="p-8">
+                <h2 id="modalTitle" class="text-3xl md:text-4xl font-display font-bold mb-4"></h2>
+                <p id="modalDescription" class="text-gray-400 text-lg leading-relaxed mb-8"></p>
+                
+                <!-- Botón de enlace -->
+                <div id="modalLinkContainer" class="flex flex-wrap gap-4">
+                    <a id="modalLink" href="" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-brand-blue text-black font-bold rounded-full hover:bg-white transition-colors">
+                        Ver Proyecto
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                    <a href="../index.html#contacto" class="inline-flex items-center justify-center px-6 py-3 border border-white/20 text-white font-bold rounded-full hover:bg-white/10 transition-colors">
+                        Solicitar Presupuesto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>AOS.init();</script>
 <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
@@ -303,6 +474,67 @@ filterButtons.forEach(button => {
         });
     });
 });
+
+// Modal Functions
+function openModal(title, image, description, link, category) {
+    const modal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImage = document.getElementById('modalImage');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalLink = document.getElementById('modalLink');
+    const modalLinkContainer = document.getElementById('modalLinkContainer');
+    const modalCategory = document.getElementById('modalCategory');
+    
+    modalTitle.textContent = title;
+    modalImage.src = image;
+    modalImage.alt = title;
+    modalDescription.textContent = description;
+    modalCategory.textContent = category;
+    
+    if (link && link.length > 0) {
+        modalLink.href = link;
+        modalLink.style.display = 'inline-flex';
+    } else {
+        modalLink.style.display = 'none';
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Bloquear scroll del body
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = getScrollbarWidth() + 'px';
+    // Scroll al inicio del modal
+    modal.scrollTop = 0;
+}
+
+function closeModal() {
+    const modal = document.getElementById('projectModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+}
+
+// Calcular ancho del scrollbar para evitar saltos
+function getScrollbarWidth() {
+    return window.innerWidth - document.documentElement.clientWidth;
+}
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('projectModal').addEventListener('click', (e) => {
+    if (e.target.id === 'projectModal') closeModal();
+});
+
+// Prevenir scroll del body cuando se hace scroll en el modal
+document.getElementById('projectModal').addEventListener('wheel', (e) => {
+    e.stopPropagation();
+}, { passive: true });
 </script>
 </body>
 </html>
