@@ -62,7 +62,62 @@ if (cursorDot && cursorOutline) {
     });
 }
 
-// Navbar Scroll Effect
+// Floating Nav — toggle + scroll collapse
+const dzNav    = document.getElementById('dz-nav');
+const dzToggle = document.getElementById('dz-toggle');
+if (dzNav && dzToggle) {
+
+    const SCROLL_THRESHOLD = 80;
+
+    function navOpen() {
+        dzNav.classList.add('is-open');
+        dzToggle.setAttribute('aria-expanded', 'true');
+    }
+    function navClose() {
+        dzNav.classList.remove('is-open');
+        dzToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    // Estado inicial: abierto en desktop, cerrado en móvil
+    if (window.innerWidth >= 768) {
+        navOpen();
+    } else {
+        navClose();
+    }
+
+    // Clic en la pill cuando está cerrada → abrir
+    dzNav.addEventListener('click', function (e) {
+        if (!dzNav.classList.contains('is-open')) {
+            e.preventDefault();
+            navOpen();
+        }
+    });
+
+    // Botón X → cerrar
+    dzToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        navClose();
+    });
+
+    // Cerrar al hacer clic fuera (solo cuando está abierto)
+    document.addEventListener('click', function (e) {
+        if (dzNav.classList.contains('is-open') && !dzNav.contains(e.target)) {
+            navClose();
+        }
+    });
+
+    // Scroll: colapsar al bajar, expandir al volver arriba (desktop y móvil)
+    window.addEventListener('scroll', function () {
+        const y = window.scrollY;
+        if (y > SCROLL_THRESHOLD) {
+            if (dzNav.classList.contains('is-open')) navClose();
+        } else {
+            if (!dzNav.classList.contains('is-open')) navOpen();
+        }
+    }, { passive: true });
+}
+
+// Navbar Scroll Effect (legacy — ya no se usa el #navbar de ancho completo)
 const navbar = document.getElementById('navbar');
 if (navbar) {
     window.addEventListener('scroll', () => {

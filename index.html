@@ -37,12 +37,20 @@
     <meta name="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
     <meta name="twitter:site" content="@DAzenty">
 
-    <!-- Fuentes -->
+    <!-- Rendimiento: DNS Prefetch y Preconnect -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fuentes con display=swap para no bloquear renderizado -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -89,60 +97,24 @@
     <div class="cursor-dot hidden md:block"></div>
     <div class="cursor-outline hidden md:block"></div>
 
-    <!-- Navegación Fixed / Sticky -->
-    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
-        <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-md border-b border-white/5"></div>
-        <div class="container mx-auto px-6 h-20 flex items-center justify-between relative z-10">
-            <!-- Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <img src="img/logo.png" alt="Dazenty Logo"
-                    class="h-10 w-auto group-hover:scale-110 transition-transform duration-300">
-            </a>
-
-            <!-- Menú Desktop -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="#servicios"
-                    class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Servicios</a>
-                <a href="html/portfolio.html"
-                    class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Portfolio</a>
-                <a href="html/about.html"
-                    class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Nosotros</a>
-            </nav>
-
-            <!-- CTA Button -->
-            <div class="hidden md:block">
-                <a href="#contacto"
-                    class="btn-glow inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-black transition-all duration-200 bg-brand-blue rounded-full hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue focus:ring-offset-gray-900">
-                    Hablemos
-                </a>
-            </div>
-
-            <!-- Menú Móvil Button -->
-            <button class="md:hidden text-white p-2" id="mobile-menu-btn">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
+    <!-- Navegación flotante tattoox.es -->
+    <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
+        <a href="#" class="dz-nav__logo">
+            <img src="img/logo.png" alt="Dazenty">
+            <span>Dazenty</span>
+        </a>
+        <div class="dz-nav__expand">
+            <ul class="dz-nav__links">
+                <li><a href="#servicios" data-num="01">Servicios</a></li>
+                <li><a href="html/portfolio.html" data-num="02">Portfolio</a></li>
+                <li><a href="html/about.html" data-num="03">Nosotros</a></li>
+                <li class="is-cta"><a href="#contacto">Hablemos</a></li>
+            </ul>
+            <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
+                <span></span><span></span>
             </button>
         </div>
-    </header>
-
-    <!-- Menú Móvil Overlay -->
-    <div class="fixed inset-0 z-40 bg-brand-dark/95 backdrop-blur-xl transform translate-x-full transition-transform duration-500 md:hidden flex flex-col items-center justify-center space-y-8"
-        id="mobile-menu">
-        <button class="absolute top-6 right-6 text-white p-2" id="close-menu-btn">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <a href="#servicios"
-            class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Servicios</a>
-        <a href="html/portfolio.html"
-            class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Portfolio</a>
-        <a href="html/about.html"
-            class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Nosotros</a>
-        <a href="#contacto" class="mobile-link text-3xl font-display font-bold text-brand-blue">Hablemos</a>
-    </div>
+    </nav>
 
     <main class="relative z-10">
 
@@ -156,7 +128,7 @@
                 class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] animate-float">
             </div>
 
-            <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
                 <div class="inline-block mb-6 overflow-hidden">
                     <span
                         class="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-sm font-medium text-brand-blue animate-fade-in-up">
@@ -206,7 +178,7 @@
 
         <!-- SERVICES SECTION -->
         <section class="py-32 relative bg-brand-gray" id="servicios">
-            <div class="container mx-auto px-6">
+            <div class="max-w-7xl mx-auto px-6">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
                     <div class="max-w-xl">
                         <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Nuestras Especialidades</h2>
@@ -314,10 +286,10 @@
 
         <!-- WORK / PROJECTS SECTION -->
         <section class="py-32 relative" id="proyectos">
-            <div class="container mx-auto px-6">
+            <div class="max-w-7xl mx-auto px-6">
                 <div class="mb-24 flex items-center justify-between">
                     <h2 class="font-display text-4xl md:text-6xl font-bold">Trabajos Recientes</h2>
-                    <a href="#"
+                    <a href="html/portfolio.html"
                         class="hidden md:flex items-center gap-2 text-sm font-medium uppercase tracking-widest hover:text-brand-blue transition-colors">
                         Ver todos
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,74 +300,77 @@
                 </div>
 
                 <div class="space-y-24 md:space-y-32">
-                    <!-- Proyecto 1 -->
-                    <a href="html/proyecto-diseno-grafico.html" class="project-item group block">
+                    <!-- Proyecto 1 — Hermanos Hervás -->
+                    <a href="html/proyecto-hermanos-hervas.html" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="img/webp/proyecto_diseno_grafico.webp" alt="Proyecto Diseño"
-                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                            <img src="proyectos/web_hermanoshervas.webp" alt="Hermanos Hervás"
+                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                loading="lazy">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
                             <div>
                                 <h3
                                     class="text-3xl font-display font-bold mb-2 group-hover:text-brand-blue transition-colors">
-                                    Identidad Visual Corporativa</h3>
-                                <p class="text-gray-400 text-lg">Branding & Estrategia</p>
+                                    Hermanos Hervás</h3>
+                                <p class="text-gray-400 text-lg">Desarrollo Web · Sistema de Reservas Online</p>
                             </div>
-                            <div class="mt-4 md:mt-0">
-                                <span
-                                    class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2025</span>
+                            <div class="mt-4 md:mt-0 flex gap-3 items-center">
+                                <span class="px-4 py-1 rounded-full border border-brand-blue/40 text-sm text-brand-blue">Reservas 24/7</span>
+                                <span class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2025</span>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Proyecto 2 -->
-                    <a href="html/proyecto-desarrollo-web.html" class="project-item group block">
+                    <!-- Proyecto 2 — Sevilla Tarjetas Plásticas -->
+                    <a href="html/proyecto-sevilla-tp.html" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="img/webp/proyecto_desarrollo_web.webp" alt="Proyecto Web"
-                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                            <img src="proyectos/web_sevillatp.webp" alt="Sevilla Tarjetas Plásticas"
+                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                loading="lazy">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
                             <div>
                                 <h3
                                     class="text-3xl font-display font-bold mb-2 group-hover:text-brand-blue transition-colors">
-                                    Plataforma E-commerce</h3>
-                                <p class="text-gray-400 text-lg">Desarrollo Web & UX</p>
+                                    Sevilla Tarjetas Plásticas</h3>
+                                <p class="text-gray-400 text-lg">E-Commerce · Marketing B2B · LinkedIn Ads</p>
                             </div>
-                            <div class="mt-4 md:mt-0">
-                                <span
-                                    class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2025</span>
+                            <div class="mt-4 md:mt-0 flex gap-3 items-center">
+                                <span class="px-4 py-1 rounded-full border border-brand-blue/40 text-sm text-brand-blue">E-Commerce</span>
+                                <span class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2025</span>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Proyecto 3 -->
-                    <a href="html/proyecto-marketing-digital.html" class="project-item group block">
+                    <!-- Proyecto 3 — Costa del Sol Foods -->
+                    <a href="html/proyecto-costa-del-sol.html" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="img/webp/proyecto_marketing_digital.webp" alt="Proyecto Marketing"
-                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                            <img src="proyectos/web_costadelsol.webp" alt="Costa del Sol Foods"
+                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                loading="lazy">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
                             <div>
                                 <h3
                                     class="text-3xl font-display font-bold mb-2 group-hover:text-brand-blue transition-colors">
-                                    Campaña de Crecimiento 360°</h3>
-                                <p class="text-gray-400 text-lg">Marketing Digital & SEO</p>
+                                    Costa del Sol Foods & Beverages</h3>
+                                <p class="text-gray-400 text-lg">Web Corporativa B2B Internacional · Marketing Digital SEM</p>
                             </div>
-                            <div class="mt-4 md:mt-0">
-                                <span
-                                    class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2024</span>
+                            <div class="mt-4 md:mt-0 flex gap-3 items-center">
+                                <span class="px-4 py-1 rounded-full border border-brand-blue/40 text-sm text-brand-blue">Internacional</span>
+                                <span class="px-4 py-1 rounded-full border border-white/20 text-sm text-gray-300">2025</span>
                             </div>
                         </div>
                     </a>
@@ -406,7 +381,7 @@
         <!-- INFO / STATS SECTION -->
         <section class="py-24 bg-brand-gray border-y border-white/5 relative overflow-hidden" id="nosotros">
             <div class="absolute inset-0 bg-gradient-to-r from-brand-blue/5 to-transparent"></div>
-            <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
                     <div class="scrol-reveal">
                         <span class="block text-5xl font-display font-bold text-white mb-2 counter"
@@ -435,7 +410,7 @@
         <section class="py-32 relative" id="contacto">
             <div class="absolute inset-0 bg-brand-blue/5 rounded-full blur-[200px] pointer-events-none"></div>
 
-            <div class="container mx-auto px-6 max-w-5xl">
+            <div class="max-w-5xl mx-auto px-6">
                 <div
                     class="bg-gray-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-16 relative overflow-hidden">
                     <div
@@ -524,7 +499,7 @@
     </main>
 
     <footer class="bg-black py-12 border-t border-white/10">
-        <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
@@ -591,11 +566,11 @@
         </div>
     </footer>
 
-    <!-- Scripts (GSAP + Lenis + Main) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
+    <script src="js/main.js" defer></script>
 </body>
 
 </html>

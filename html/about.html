@@ -28,10 +28,16 @@
     <meta name="twitter:description" content="Conoce la historia de Dazenty, una agencia digital especializada en diseño web.">
     <meta name="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
 
-    <!-- Fuentes -->
+    <!-- Rendimiento: DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Fuentes con display=swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,40 +83,26 @@
 <div class="cursor-dot hidden md:block"></div>
 <div class="cursor-outline hidden md:block"></div>
 
-<!-- Navegación -->
-<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
-    <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-md border-b border-white/5"></div>
-    <div class="container mx-auto px-6 h-20 flex items-center justify-between relative z-10">
-        <a href="../index.html" class="flex items-center gap-3 group">
-            <img src="../img/logo.png" alt="Dazenty Logo" class="h-10 w-auto group-hover:scale-110 transition-transform duration-300">
-        </a>
-        
-        <nav class="hidden md:flex items-center gap-8">
-            <a href="../index.html#servicios" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Servicios</a>
-            <a href="portfolio.html" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Portfolio</a>
-            <a href="about.html" class="nav-link text-sm font-medium text-brand-blue">Nosotros</a>
-        </nav>
-
-        <div class="hidden md:block">
-            <a href="../index.html#contacto" class="btn-glow inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-black transition-all duration-200 bg-brand-blue rounded-full hover:bg-white">Hablemos</a>
-        </div>
-        
-        <button class="md:hidden text-white p-2" id="mobile-menu-btn"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+<!-- Navegación flotante tattoox.es -->
+<nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
+    <a href="../index.html" class="dz-nav__logo">
+        <img src="../img/logo.png" alt="Dazenty">
+        <span>Dazenty</span>
+    </a>
+    <div class="dz-nav__expand">
+        <ul class="dz-nav__links">
+            <li><a href="../index.html#servicios" data-num="01">Servicios</a></li>
+            <li><a href="portfolio.html" data-num="02">Portfolio</a></li>
+            <li><a href="about.html" class="is-active" data-num="03">Nosotros</a></li>
+            <li class="is-cta"><a href="../index.html#contacto">Hablemos</a></li>
+        </ul>
+        <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
+            <span></span><span></span>
+        </button>
     </div>
-</header>
-    
-<!-- Menú Móvil Overlay -->
-<div class="fixed inset-0 z-40 bg-brand-dark/95 backdrop-blur-xl transform translate-x-full transition-transform duration-500 md:hidden flex flex-col items-center justify-center space-y-8" id="mobile-menu">
-    <button class="absolute top-6 right-6 text-white p-2" id="close-menu-btn">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-    </button>
-    <a href="../index.html#servicios" class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Servicios</a>
-    <a href="portfolio.html" class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Portfolio</a>
-    <a href="about.html" class="mobile-link text-3xl font-display font-bold text-brand-blue">Nosotros</a>
-    <a href="../index.html#contacto" class="mobile-link text-3xl font-display font-bold text-white hover:text-brand-blue">Contacto</a>
-</div>
+</nav>
 
-<main class="pt-32 pb-24 min-h-screen">
+<main class="pt-8 pb-24 min-h-screen">
     <div class="container mx-auto px-6">
         
         <!-- Hero Section -->
@@ -282,9 +274,9 @@
     </div>
 </footer>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init();</script>
-<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
-<script src="../js/main.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+<script defer>document.addEventListener('DOMContentLoaded',()=>AOS.init());</script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
+<script src="../js/main.js" defer></script>
 </body>
 </html>
