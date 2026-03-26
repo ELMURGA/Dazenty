@@ -241,4 +241,50 @@ btns.forEach(btn => {
     });
 });
 
+// Contact Form — AJAX para evitar que la página navegue/suba al enviar
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    // Pausar Lenis cuando el usuario interactúa con el formulario (evita scroll bug)
+    const formFields = contactForm.querySelectorAll('input, textarea, select');
+    formFields.forEach(el => {
+        el.addEventListener('focus', () => { if (lenis) lenis.stop(); });
+        el.addEventListener('blur',  () => { if (lenis) lenis.start(); });
+    });
+
+    contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const submitBtn  = contactForm.querySelector('button[type="submit"]');
+        const origText   = submitBtn.textContent;
+        submitBtn.disabled    = true;
+        submitBtn.textContent = 'Enviando...';
+
+        try {
+            const res = await fetch(contactForm.action, {
+                method:  'POST',
+                body:    new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) {
+                contactForm.reset();
+                submitBtn.textContent = '✓ Mensaje enviado. ¡Gracias!';
+                submitBtn.style.background = '#22c55e';
+                setTimeout(() => {
+                    submitBtn.textContent  = origText;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled     = false;
+                }, 5000);
+            } else {
+                throw new Error('server_error');
+            }
+        } catch {
+            submitBtn.textContent = 'Hubo un error. Inténtalo de nuevo';
+            submitBtn.disabled    = false;
+            setTimeout(() => { submitBtn.textContent = origText; }, 4000);
+        }
+    });
+}
+
 console.log('Dazenty App Loaded');

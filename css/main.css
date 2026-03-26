@@ -23,7 +23,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #00BFFF;
+    background: #d97762;
 }
 
 html.lenis {
@@ -56,7 +56,7 @@ html.lenis {
 .cursor-dot {
     width: 8px;
     height: 8px;
-    background-color: #00BFFF;
+    background-color: #d97762;
 }
 .cursor-outline {
     width: 40px;
@@ -117,11 +117,11 @@ html.lenis {
 /* Glow Button */
 .btn-glow {
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    box-shadow: 0 0 20px rgba(217, 119, 98, 0.5);
     transition: all 0.3s ease;
 }
 .btn-glow:hover {
-    box-shadow: 0 0 30px rgba(0, 191, 255, 0.8), 0 0 60px rgba(0, 191, 255, 0.4);
+    box-shadow: 0 0 30px rgba(217, 119, 98, 0.8), 0 0 60px rgba(217, 119, 98, 0.4);
     transform: translateY(-2px);
 }
 
@@ -147,6 +147,12 @@ html.lenis {
 /* Smooth Transitions for All Interactive Elements */
 a, button, .nav-link {
     transition: all 0.3s ease;
+}
+
+/* Fix select options background en dark theme */
+select option {
+    background-color: #121212;
+    color: #ffffff;
 }
 
 /* Fixed Navbar Transitions */
@@ -226,7 +232,7 @@ a, button, .nav-link {
     font-size: 4rem;
     font-weight: 700;
     font-family: 'Space Grotesk', sans-serif;
-    color: #00BFFF;
+    color: #d97762;
     letter-spacing: -0.02em;
     position: relative;
 }
@@ -560,12 +566,12 @@ select {
     content: attr(data-num);
     font-family: 'Courier New', monospace;
     font-size: 9px;
-    color: #00BFFF;
+    color: #d97762;
     vertical-align: super;
     margin-left: 3px;
     line-height: 0;
 }
-.dz-nav__links li.is-cta a { color: #00BFFF; font-weight: 600; }
+.dz-nav__links li.is-cta a { color: #d97762; font-weight: 600; }
 
 /* Botón X — siempre su tamaño real dentro del expand */
 .dz-nav__toggle {
@@ -640,4 +646,43 @@ select {
 @media (max-width: 380px) {
     .dz-nav__links li:nth-child(3) { display: none; }
 }/* ===================================================== */
+
+/* ===== WHATSAPP FLOATING BUTTON ===== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 9998;
+    width: 58px;
+    height: 58px;
+    background-color: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #ffffff;
+    text-decoration: none;
+}
+.whatsapp-float:hover {
+    transform: scale(1.12);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.65);
+}
+.whatsapp-float svg {
+    width: 30px;
+    height: 30px;
+}
+@media (max-width: 600px) {
+    .whatsapp-float {
+        bottom: 1.2rem;
+        left: 1.2rem;
+        width: 52px;
+        height: 52px;
+    }
+    .whatsapp-float svg {
+        width: 26px;
+        height: 26px;
+    }
+}
 
