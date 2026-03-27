@@ -655,19 +655,19 @@ select {
     z-index: 9998;
     width: 58px;
     height: 58px;
-    background-color: #25D366;
+    background-color: #d97762;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+    box-shadow: 0 4px 20px rgba(217, 119, 98, 0.45);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     color: #ffffff;
     text-decoration: none;
 }
 .whatsapp-float:hover {
     transform: scale(1.12);
-    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.65);
+    box-shadow: 0 6px 30px rgba(217, 119, 98, 0.65);
 }
 .whatsapp-float svg {
     width: 30px;
