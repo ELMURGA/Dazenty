@@ -26,6 +26,15 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
+// Logo → scroll suave al top
+const logoLink = document.querySelector('.dz-nav__logo');
+if (logoLink) {
+    logoLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        lenis.scrollTo(0);
+    });
+}
+
 // Custom Cursor
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
@@ -244,13 +253,6 @@ btns.forEach(btn => {
 // Contact Form — AJAX para evitar que la página navegue/suba al enviar
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-    // Pausar Lenis cuando el usuario interactúa con el formulario (evita scroll bug)
-    const formFields = contactForm.querySelectorAll('input, textarea, select');
-    formFields.forEach(el => {
-        el.addEventListener('focus', () => { if (lenis) lenis.stop(); });
-        el.addEventListener('blur',  () => { if (lenis) lenis.start(); });
-    });
-
     contactForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -286,5 +288,40 @@ if (contactForm) {
         }
     });
 }
+
+// Service Modals — scroll solo en el modal, body bloqueado (iOS-safe)
+let _svcScrollY = 0;
+
+function openServiceModal(id) {
+    const modal = document.getElementById('modal-' + id);
+    if (!modal) return;
+    _svcScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + _svcScrollY + 'px';
+    document.body.style.width = '100%';
+    modal.classList.remove('hidden');
+    if (lenis) lenis.stop();
+}
+
+function closeServiceModal(id) {
+    const modal = document.getElementById('modal-' + id);
+    if (!modal) return;
+    modal.classList.add('hidden');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, _svcScrollY);
+    if (lenis) lenis.start();
+}
+
+// Cerrar modal con Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        ['web', 'grafico', 'marketing'].forEach(id => {
+            const m = document.getElementById('modal-' + id);
+            if (m && !m.classList.contains('hidden')) closeServiceModal(id);
+        });
+    }
+});
 
 console.log('Dazenty App Loaded');

@@ -14,8 +14,8 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#d97762">
     <meta name="msapplication-TileColor" content="#050505">
-    <link rel="icon" type="image/png" href="img/logo.png">
-    <link rel="apple-touch-icon" href="img/logo.png">
+    <link rel="icon" type="image/webp" href="favicon.webp">
+    <link rel="apple-touch-icon" href="favicon.webp">
     <link rel="canonical" href="https://dazenty.vercel.app/">
 
     <!-- Open Graph / Facebook -->
@@ -24,7 +24,7 @@
     <meta property="og:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
     <meta property="og:description"
         content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
-    <meta property="og:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta property="og:image" content="https://dazenty.vercel.app/img/logodazenty.webp">
     <meta property="og:locale" content="es_ES">
     <meta property="og:site_name" content="Dazenty">
 
@@ -34,7 +34,7 @@
     <meta name="twitter:title" content="Dazenty - Diseño Web, Gráfico y Marketing Digital">
     <meta name="twitter:description"
         content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
-    <meta name="twitter:image" content="https://dazenty.vercel.app/img/logo.png">
+    <meta name="twitter:image" content="https://dazenty.vercel.app/img/logodazenty.webp">
     <meta name="twitter:site" content="@DAzenty">
 
     <!-- Rendimiento: DNS Prefetch y Preconnect -->
@@ -99,8 +99,8 @@
 
     <!-- Navegación flotante tattoox.es -->
     <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
-        <a href="#" class="dz-nav__logo">
-            <img src="img/logo.png" alt="Dazenty">
+        <a href="#" class="dz-nav__logo" id="logo-home">
+            <img src="img/logodazenty.webp" alt="Dazenty">
             <span>Dazenty</span>
         </a>
         <div class="dz-nav__expand">
@@ -193,8 +193,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-white/10">
                     <!-- Servicio 1 -->
-                    <a href="html/pagina_desarrollo_web.html"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-t border-b border-white/10 md:border-t-0 md:border-b-0 block">
+                    <button onclick="openServiceModal('web')"
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-t border-b border-white/10 md:border-t-0 md:border-b-0 block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,11 +220,11 @@
                                 <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>E-commerce
                             </li>
                         </ul>
-                    </a>
+                    </button>
 
                     <!-- Servicio 2 -->
-                    <a href="html/pagina_diseno_grafico.html"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block">
+                    <button onclick="openServiceModal('grafico')"
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,11 +249,11 @@
                                 <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Material Publicitario
                             </li>
                         </ul>
-                    </a>
+                    </button>
 
                     <!-- Servicio 3 -->
-                    <a href="html/pagina_marketing_digital.html"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block">
+                    <button onclick="openServiceModal('marketing')"
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -279,7 +279,7 @@
                                 <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Email Marketing
                             </li>
                         </ul>
-                    </a>
+                    </button>
                 </div>
             </div>
         </section>
@@ -504,7 +504,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="img/logo.png" alt="Dazenty" class="h-8 w-auto">
+                        <img src="img/logodazenty.webp" alt="Dazenty" class="h-8 w-auto">
                         <span class="font-display font-bold text-lg">Dazenty</span>
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.
@@ -580,6 +580,107 @@
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
         </svg>
     </a>
+
+    <!-- ===== MODALES DE SERVICIOS ===== -->
+
+    <!-- Modal: Diseño Web & UI/UX -->
+    <div id="modal-web" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('web')">
+        <div class="flex min-h-full items-center justify-center p-4 py-10">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('web')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold">Diseño Web & UI/UX</h2>
+                    </div>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-8">Creamos experiencias digitales que convierten visitantes en clientes. Cada proyecto se diseña desde cero con foco en velocidad, usabilidad y conversión, completamente optimizado para todos los dispositivos.</p>
+                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Sitios Corporativos</strong> — Webs profesionales que reflejan la identidad de tu empresa y generan confianza desde el primer clic.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Landing Pages</strong> — Páginas de aterrizaje optimizadas para maximizar conversiones en campañas publicitarias.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">E-commerce</strong> — Tiendas online completas con catálogo, pasarela de pago y gestión de pedidos.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">UI/UX Design</strong> — Interfaces intuitivas diseñadas para ofrecer la mejor experiencia de usuario posible.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEO Técnico</strong> — Código limpio, Core Web Vitals y velocidad de carga para posicionarte mejor en Google.</span></li>
+                </ul>
+                <a href="#contacto" onclick="closeServiceModal('web')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+                    Solicitar presupuesto
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Diseño Gráfico -->
+    <div id="modal-grafico" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('grafico')">
+        <div class="flex min-h-full items-center justify-center p-4 py-10">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('grafico')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold">Diseño Gráfico</h2>
+                    </div>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-8">Construimos identidades visuales memorables que comunican la esencia y los valores de tu marca. Desde el logotipo hasta el manual de identidad completo, cuidamos cada detalle visual para que tu marca transmita profesionalidad y diferenciación.</p>
+                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Branding e Identidad</strong> — Logotipo, paleta de colores, tipografía y manual de marca completo.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Diseño para Redes Sociales</strong> — Plantillas y contenido visual adaptado a cada plataforma para mantener coherencia de marca.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Material Publicitario</strong> — Carteles, flyers, banners digitales y cualquier pieza gráfica que necesite tu campaña.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Packaging y Papelería</strong> — Diseño de embalajes, tarjetas de visita, letterheads y material corporativo.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Ilustración Personalizada</strong> — Ilustraciones originales adaptadas al tono y la estética de tu proyecto.</span></li>
+                </ul>
+                <a href="#contacto" onclick="closeServiceModal('grafico')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+                    Solicitar presupuesto
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Marketing Digital -->
+    <div id="modal-marketing" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('marketing')">
+        <div class="flex min-h-full items-center justify-center p-4 py-10">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('marketing')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold">Marketing Digital</h2>
+                    </div>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-8">Estrategias basadas en datos para aumentar tu visibilidad, tráfico y conversiones online. Combinamos análisis, creatividad y tecnología para que cada euro invertido en publicidad genere el máximo retorno.</p>
+                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEO</strong> — Posicionamiento orgánico mediante auditorías técnicas, optimización on-page y estrategia de contenidos.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEM / Google Ads</strong> — Campañas de pago por clic en Google con segmentación precisa y optimización continua de ROI.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Gestión de Redes Sociales</strong> — Estrategia, creación de contenido y gestión de comunidad en Instagram, LinkedIn, TikTok y más.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Email Marketing</strong> — Campañas de email automatizadas y secuencias de nurturing para convertir leads en clientes.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Analítica y Reporting</strong> — Dashboards mensuales con KPIs claros para tomar decisiones basadas en datos reales.</span></li>
+                </ul>
+                <a href="#contacto" onclick="closeServiceModal('marketing')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+                    Solicitar presupuesto
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
