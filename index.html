@@ -45,6 +45,9 @@
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Fuentes con display=swap para no bloquear renderizado -->
     <link
@@ -78,8 +81,9 @@
         }
     </script>
 
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="css/main.css?v=2">
+    <!-- CSS Personalizado: preload para no bloquear renderizado -->
+    <link rel="preload" href="css/main.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/main.css?v=2"></noscript>
 </head>
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
@@ -100,7 +104,7 @@
     <!-- Navegación flotante tattoox.es -->
     <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
         <a href="#" class="dz-nav__logo" id="logo-home">
-            <img src="img/logodazenty.webp" alt="Dazenty">
+            <img src="favicon.webp" alt="Dazenty">
             <span>Dazenty</span>
         </a>
         <div class="dz-nav__expand">
@@ -504,7 +508,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="img/logodazenty.webp" alt="Dazenty" class="h-8 w-auto">
+                        <img src="img/logo-sm.webp" alt="Dazenty" class="h-14 w-auto">
                         <span class="font-display font-bold text-lg">Dazenty</span>
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.

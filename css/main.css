@@ -518,7 +518,7 @@ select {
     pointer-events: none;
 }
 .dz-nav.is-open .dz-nav__logo { pointer-events: auto; }
-.dz-nav__logo img  { height: 40px; width: auto; }
+.dz-nav__logo img  { height: 54px; width: auto; }
 .dz-nav__logo span {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -617,7 +617,7 @@ select {
         gap: 0;
     }
     .dz-nav__logo span { display: none; }
-    .dz-nav__logo img  { height: 34px; }
+    .dz-nav__logo img  { height: 46px; }
 
     /* Expand ocupa todo el espacio disponible */
     .dz-nav.is-open .dz-nav__expand {
