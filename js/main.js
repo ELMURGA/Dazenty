@@ -13,7 +13,8 @@ window.addEventListener('load', () => {
     }
 });
 
-// Initialize Lenis (Smooth Scroll)
+// Flag global: indica que un campo del formulario está activo (iOS keyboard)
+let _formActive = false;
 const lenis = new Lenis({
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -117,9 +118,10 @@ if (dzNav && dzToggle) {
         navClose();
     });
 
-    // Scroll: colapsar al bajar, expandir al volver arriba (desktop y móvil)
+    // Scroll: colapsar al bajar, expandir al volver arriba
     // Ignora el scroll causado por iOS al abrir/cerrar el teclado virtual
     window.addEventListener('scroll', function () {
+        if (_formActive) return;
         const active = document.activeElement;
         const isKeyboardOpen = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
         if (isKeyboardOpen) return;
@@ -259,6 +261,25 @@ btns.forEach(btn => {
 // Contact Form — AJAX para evitar que la página navegue/suba al enviar
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
+    // iOS fix: detener Lenis y el nav-scroll mientras un campo está activo
+    // para evitar que el teclado virtual cause scroll involuntario al top
+    contactForm.addEventListener('focusin', () => {
+        _formActive = true;
+        if (lenis) lenis.stop();
+    });
+    contactForm.addEventListener('focusout', () => {
+        // Esperar a que el teclado iOS cierre completamente (~400ms)
+        setTimeout(() => {
+            _formActive = false;
+            if (lenis) {
+                // Sincronizar posición de Lenis con la posición nativa actual
+                // para que no salte a la posición pre-teclado al reanudar
+                lenis.scrollTo(window.scrollY, { immediate: true });
+                lenis.start();
+            }
+        }, 450);
+    });
+
     contactForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         e.stopPropagation();
