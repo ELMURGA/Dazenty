@@ -108,15 +108,21 @@ if (dzNav && dzToggle) {
         navClose();
     });
 
-    // Cerrar al hacer clic fuera (solo cuando está abierto)
+    // Cerrar al hacer clic fuera (solo cuando está abierto, ignorar interacciones con formularios)
     document.addEventListener('click', function (e) {
-        if (dzNav.classList.contains('is-open') && !dzNav.contains(e.target)) {
-            navClose();
-        }
+        if (!dzNav.classList.contains('is-open')) return;
+        if (dzNav.contains(e.target)) return;
+        // No cerrar si el clic es dentro de un formulario o en un campo
+        if (e.target.closest('form, input, textarea, select, label')) return;
+        navClose();
     });
 
     // Scroll: colapsar al bajar, expandir al volver arriba (desktop y móvil)
+    // Ignora el scroll causado por iOS al abrir/cerrar el teclado virtual
     window.addEventListener('scroll', function () {
+        const active = document.activeElement;
+        const isKeyboardOpen = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
+        if (isKeyboardOpen) return;
         const y = window.scrollY;
         if (y > SCROLL_THRESHOLD) {
             if (dzNav.classList.contains('is-open')) navClose();
