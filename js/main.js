@@ -289,11 +289,18 @@ if (contactForm) {
         submitBtn.disabled    = true;
         submitBtn.textContent = 'Enviando...';
 
+        const payload = {
+            name:    contactForm.querySelector('[name="name"]').value.trim(),
+            email:   contactForm.querySelector('[name="email"]').value.trim(),
+            service: contactForm.querySelector('[name="service"]').value,
+            message: contactForm.querySelector('[name="message"]').value.trim(),
+        };
+
         try {
-            const res = await fetch(contactForm.action, {
+            const res = await fetch('/api/contact', {
                 method:  'POST',
-                body:    new FormData(contactForm),
-                headers: { 'Accept': 'application/json' }
+                body:    JSON.stringify(payload),
+                headers: { 'Content-Type': 'application/json' }
             });
 
             if (res.ok) {
