@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Cliente — Dazenty</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/webp" href="/img/favicon.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              blue:  '#d97762',
+              dark:  '#050505',
+              gray:  '#121212',
+              card:  '#0e0e0e',
+              light: '#EAEAEA',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d97762; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .fade-up-1 { animation-delay: 0.05s; }
+    .fade-up-2 { animation-delay: 0.12s; }
+    .fade-up-3 { animation-delay: 0.19s; }
+    .fade-up-4 { animation-delay: 0.26s; }
+    .fade-up-5 { animation-delay: 0.33s; }
+    .fade-up-6 { animation-delay: 0.40s; }
+
+    .plan-btn { transition: all 0.2s; }
+    .plan-btn.active {
+      border-color: #d97762 !important;
+      background: rgba(217,119,98,0.08) !important;
+    }
+    .plan-btn.active .plan-label { color: #d97762; }
+
+    input, textarea {
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #eaeaea;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+    input:focus, textarea:focus { border-color: #d97762; }
+    textarea { resize: vertical; min-height: 90px; }
+
+    .badge-active::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #4ade80;
+      margin-right: 6px;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: #050505;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50;
+      transition: opacity 0.4s;
+    }
+    .loader-ring {
+      width: 40px; height: 40px;
+      border: 2px solid rgba(217,119,98,0.2);
+      border-top-color: #d97762;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-brand-dark text-white overflow-x-hidden antialiased">
+
+  <!-- Pantalla de carga -->
+  <div id="loading-screen">
+    <div class="loader-ring"></div>
+  </div>
+
+  <!-- Gradiente de fondo decorativo -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden z-0" aria-hidden="true">
+    <div class="absolute top-[-200px] right-[-300px] w-[700px] h-[700px] rounded-full bg-brand-blue/5 blur-[120px]"></div>
+    <div class="absolute bottom-[10%] left-[-200px] w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="relative z-10 border-b border-white/5">
+    <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="https://dazenty.com" class="flex items-center gap-2.5 group">
+        <img src="/img/favicon.webp" alt="Dazenty" class="w-7 h-7 rounded-md">
+        <span class="font-display font-bold text-xl tracking-tight">
+          Daz<span class="text-brand-blue">enty</span>
+        </span>
+      </a>
+      <span class="badge-active text-xs text-gray-500 uppercase tracking-widest font-medium hidden sm:inline-flex items-center">
+        Portal Seguro
+      </span>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="relative z-10 max-w-3xl mx-auto px-6 py-16 pb-28 space-y-6" id="main-content" style="display:none">
+
+    <!-- BIENVENIDA -->
+    <section class="mb-10 fade-up fade-up-1">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Tu espacio personal</p>
+      <h1 class="font-display text-5xl sm:text-6xl font-bold tracking-tight leading-none mb-5">
+        Hola, <span class="text-brand-blue" id="clientNameEl">—</span>.
+      </h1>
+      <p class="text-gray-400 text-lg font-light leading-relaxed max-w-lg">
+        Este es tu portal personalizado de Dazenty. Aquí tienes el resumen de tu servicio y puedes gestionar el pago de forma segura.
+      </p>
+    </section>
+
+    <!-- SERVICIO -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-2 hover:border-white/10 transition-colors">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-5">Tu servicio</p>
+      <h2 class="font-display text-2xl font-bold mb-2" id="serviceNameEl">—</h2>
+      <p class="text-gray-400 text-[15px] leading-relaxed mb-5" id="serviceDescEl">—</p>
+      <div id="serviceTagsEl" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <!-- PROPUESTA / FACTURA PDFs -->
+    <div id="docsSection" class="grid sm:grid-cols-2 gap-4 fade-up fade-up-3" style="display:none">
+      <a id="btnProposal" href="#" target="_blank" rel="noopener noreferrer"
+         class="group flex items-center gap-4 bg-brand-gray border border-white/5 rounded-2xl p-5 hover:border-brand-blue/40 transition-colors" style="display:none">
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Propuesta</p>
+          <p class="font-display font-semibold text-sm text-white group-hover:text-brand-blue transition-colors">Descargar PDF →</p>
+        </div>
+      </a>
+      <a id="btnInvoice" href="#" target="_blank" rel="noopener noreferrer"
+         class="group flex items-center gap-4 bg-brand-gray border border-white/5 rounded-2xl p-5 hover:border-brand-blue/40 transition-colors" style="display:none">
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Factura</p>
+          <p class="font-display font-semibold text-sm text-white group-hover:text-brand-blue transition-colors">Descargar PDF →</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- PAGO -->
+    <div class="bg-brand-gray border border-brand-blue/20 rounded-2xl p-7 relative overflow-hidden fade-up fade-up-3">
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-blue/50 to-transparent"></div>
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-6">Pago</p>
+
+      <!-- Selector de plan -->
+      <div id="planSelector" class="flex flex-col sm:flex-row gap-3 mb-7" style="display:none !important"></div>
+
+      <!-- Importe seleccionado -->
+      <div class="flex items-baseline gap-1 mb-2">
+        <span class="text-brand-blue font-display text-2xl font-semibold mt-1">€</span>
+        <span class="font-display text-6xl sm:text-7xl font-bold tracking-tight leading-none" id="amountEl">—</span>
+        <span class="text-gray-500 text-base mb-1 ml-1" id="periodEl"></span>
+      </div>
+      <p class="text-gray-500 text-sm mb-7" id="paymentNoteEl"></p>
+
+      <!-- Botón de pago -->
+      <a id="payBtn" href="#" target="_blank" rel="noopener noreferrer"
+         class="group flex items-center justify-center gap-2 w-full bg-brand-blue text-black font-display font-bold text-base rounded-xl py-4 px-6 transition-all hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(217,119,98,0.35)]">
+        <span>Completar pago ahora</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </a>
+
+      <!-- Mensaje de seguridad Stripe -->
+      <div class="flex items-center justify-center gap-3 mt-4 text-xs text-gray-600">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        <span>Protegido por <strong class="text-[#635BFF]">Stripe</strong></span>
+        <span class="text-gray-700">·</span>
+        <span>SSL 256-bit</span>
+      </div>
+    </div>
+
+    <!-- CÓMO FUNCIONA -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-4">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-6">Cómo funciona</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
+          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">01</p>
+          <p class="font-display font-semibold text-sm mb-1">Propuesta</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Revisas el desglose de tu proyecto.</p>
+        </div>
+        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
+          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">02</p>
+          <p class="font-display font-semibold text-sm mb-1">Pago</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Completas el pago seguro con Stripe.</p>
+        </div>
+        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
+          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">03</p>
+          <p class="font-display font-semibold text-sm mb-1">Accesos</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Nos envías los accesos necesarios.</p>
+        </div>
+        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
+          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">04</p>
+          <p class="font-display font-semibold text-sm mb-1">Entrega</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Recibes tu proyecto en el plazo acordado.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE DATOS DEL CLIENTE -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-5">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-2">Tus datos</p>
+      <h2 class="font-display text-xl font-bold mb-1">Información de contacto</h2>
+      <p class="text-gray-500 text-sm mb-7">Rellena este formulario para que podamos coordinar el inicio del proyecto.</p>
+
+      <div id="clientFormWrapper">
+        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Nombre completo *</label>
+            <input type="text" id="f-name" placeholder="Juan García" autocomplete="name">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Empresa / Negocio</label>
+            <input type="text" id="f-company" placeholder="Mi Empresa SL" autocomplete="organization">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">WhatsApp / Teléfono</label>
+            <input type="tel" id="f-phone" placeholder="+34 600 000 000" autocomplete="tel">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Correo electrónico *</label>
+            <input type="email" id="f-email" placeholder="contacto@miempresa.com" autocomplete="email">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Web actual (si tienes)</label>
+            <input type="url" id="f-web" placeholder="https://miempresa.com" autocomplete="url">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">¿Qué necesitas exactamente?</label>
+            <textarea id="f-notes" placeholder="Cuéntame brevemente lo que buscas conseguir..."></textarea>
+          </div>
+        </div>
+
+        <button onclick="submitForm()" id="submitBtn"
+          class="group inline-flex items-center gap-2 border border-white/10 text-white font-display font-semibold text-sm rounded-xl px-6 py-3.5 hover:border-brand-blue hover:text-brand-blue transition-all">
+          <span>Enviar información</span>
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mensaje de éxito -->
+      <div id="formSuccess" class="text-center py-8" style="display:none">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 mb-4">
+          <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <p class="font-display font-bold text-lg">¡Información recibida!</p>
+        <p class="text-gray-500 text-sm mt-1">Me pondré en contacto contigo muy pronto.</p>
+      </div>
+    </div>
+
+    <!-- CONTACTO -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div>
+          <p class="font-display font-bold text-base mb-1">¿Tienes alguna duda?</p>
+          <p class="text-gray-500 text-sm">Estoy disponible para ti</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a id="waContactLink" href="#" target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-2 text-sm font-medium border border-white/10 rounded-full px-4 py-2 hover:border-brand-blue hover:text-brand-blue transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp
+          </a>
+          <a href="mailto:hola@dazenty.com"
+             class="flex items-center gap-2 text-sm font-medium border border-white/10 rounded-full px-4 py-2 hover:border-brand-blue hover:text-brand-blue transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Email
+          </a>
+          <a href="https://instagram.com/dazenty" target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-2 text-sm font-medium border border-white/10 rounded-full px-4 py-2 hover:border-brand-blue hover:text-brand-blue transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 text-center py-8 px-6 text-xs text-gray-700 border-t border-white/5">
+    © 2025 Dazenty · Portal de uso exclusivo y personal · <a href="https://dazenty.com" class="hover:text-brand-blue transition-colors">dazenty.com</a>
+  </footer>
+
+  <!-- PÁGINA DE ERROR -->
+  <div id="error-page" class="relative z-10 max-w-lg mx-auto px-6 py-32 text-center" style="display:none">
+    <div class="text-6xl mb-6">🔒</div>
+    <h1 class="font-display text-3xl font-bold mb-3">Portal no encontrado</h1>
+    <p class="text-gray-500 mb-8">Este enlace no existe o ya no está disponible. Contacta con Dazenty para obtener tu URL personalizada.</p>
+    <a href="https://dazenty.com" class="inline-flex items-center gap-2 bg-brand-blue text-black font-display font-bold rounded-full px-6 py-3 hover:opacity-90 transition-opacity">
+      Ir a dazenty.com →
+    </a>
+  </div>
+
+<script>
+// ─── Configuración ──────────────────────────────────────────────────────────
+const WA_NUMBER = '34624903256';
+
+// ─── Estado ─────────────────────────────────────────────────────────────────
+let clientData = null;
+let selectedPlan = null; // 'monthly' | 'annual' | 'onetime'
+
+// ─── Inicialización ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  const slug = new URLSearchParams(window.location.search).get('id');
+
+  if (!slug) {
+    showError();
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/clients?slug=${encodeURIComponent(slug)}`);
+    if (!res.ok) { showError(); return; }
+    clientData = await res.json();
+    renderPortal(clientData);
+  } catch (err) {
+    console.error('Error al cargar el portal:', err);
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('loading-screen').style.opacity = '0';
+  setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 400);
+  document.getElementById('error-page').style.display = 'block';
+}
+
+// ─── Render portal ───────────────────────────────────────────────────────────
+function renderPortal(d) {
+  // Título y saludo
+  document.title = `Portal ${d.client_name} — Dazenty`;
+  document.getElementById('clientNameEl').textContent = d.client_name || 'Cliente';
+
+  // Servicio
+  document.getElementById('serviceNameEl').textContent = d.service_name || 'Servicio Dazenty';
+  document.getElementById('serviceDescEl').textContent = d.service_desc || '';
+
+  const tags = Array.isArray(d.service_tags) ? d.service_tags : [];
+  const tagsEl = document.getElementById('serviceTagsEl');
+  tagsEl.innerHTML = tags.map(t =>
+    `<span class="text-xs px-3 py-1 rounded-full border border-brand-blue/30 text-brand-blue">${t}</span>`
+  ).join('');
+
+  // PDFs
+  let hasDocs = false;
+  if (d.pdf_proposal_url) {
+    const btn = document.getElementById('btnProposal');
+    btn.href = d.pdf_proposal_url;
+    btn.style.display = 'flex';
+    hasDocs = true;
+  }
+  if (d.pdf_invoice_url) {
+    const btn = document.getElementById('btnInvoice');
+    btn.href = d.pdf_invoice_url;
+    btn.style.display = 'flex';
+    hasDocs = true;
+  }
+  if (hasDocs) {
+    const sec = document.getElementById('docsSection');
+    sec.style.display = 'grid';
+    sec.style.removeProperty('display'); // Quita el inline none y usa la clase grid
+    sec.classList.add('grid');
+  }
+
+  // Pago — construir opciones disponibles
+  const plans = [];
+  if (d.amount_monthly) plans.push({ key: 'monthly', label: 'Mensual', amount: d.amount_monthly, period: '/mes', link: d.stripe_monthly_link, note: 'Se cobra automáticamente el mismo día cada mes. Cancela cuando quieras con 15 días de antelación.' });
+  if (d.amount_annual)  plans.push({ key: 'annual',  label: 'Anual',   amount: d.amount_annual,  period: '/año', link: d.stripe_annual_link,  note: 'Se cobra una vez al año en la misma fecha. Incluye todos los meses del año.' });
+  if (d.amount_onetime) plans.push({ key: 'onetime', label: 'Único',   amount: d.amount_onetime, period: '',     link: d.stripe_onetime_link, note: 'Pago único sin cuotas recurrentes. Recibirás tu proyecto en el plazo acordado.' });
+
+  renderPaymentSection(plans, d.payment_note);
+
+  // Enlace WhatsApp
+  document.getElementById('waContactLink').href = `https://wa.me/${WA_NUMBER}`;
+
+  // Mostrar contenido
+  document.getElementById('loading-screen').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  }, 350);
+}
+
+function renderPaymentSection(plans, customNote) {
+  const selector = document.getElementById('planSelector');
+  const amountEl = document.getElementById('amountEl');
+  const periodEl = document.getElementById('periodEl');
+  const noteEl   = document.getElementById('paymentNoteEl');
+  const payBtn   = document.getElementById('payBtn');
+
+  if (!plans.length) {
+    amountEl.textContent = '—';
+    periodEl.textContent = '';
+    noteEl.textContent = 'El enlace de pago estará disponible pronto.';
+    payBtn.style.opacity = '0.35';
+    payBtn.style.pointerEvents = 'none';
+    payBtn.querySelector('span').textContent = 'Pago pendiente de configurar';
+    return;
+  }
+
+  // Si hay más de un plan, mostrar selector
+  if (plans.length > 1) {
+    selector.style.removeProperty('display');
+    selector.style.display = 'flex';
+    plans.forEach(plan => {
+      const savings = plan.key === 'annual' && plans.find(p => p.key === 'monthly')
+        ? `<p class="text-xs text-green-400 mt-1.5">Ahorra ${(plans.find(p=>p.key==='monthly').amount * 2).toFixed(0)}€</p>`
+        : '';
+      const btn = document.createElement('button');
+      btn.className = 'plan-btn flex-1 p-4 rounded-xl border border-white/10 bg-[#0e0e0e] text-left transition-all hover:border-white/20';
+      btn.dataset.plan = plan.key;
+      btn.innerHTML = `
+        <p class="plan-label text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">${plan.label}</p>
+        <p class="font-display text-xl font-bold">${formatAmount(plan.amount)}<span class="text-gray-500 text-sm font-normal">${plan.period}</span></p>
+        ${savings}
+      `;
+      btn.addEventListener('click', () => selectPlan(plan, plans));
+      selector.appendChild(btn);
+    });
+    // Seleccionar el primero por defecto
+    selectPlan(plans[0], plans);
+  } else {
+    // Solo un plan — mostrar directamente sin selector
+    const plan = plans[0];
+    selectedPlan = plan;
+    amountEl.textContent = formatAmount(plan.amount);
+    periodEl.textContent = plan.period;
+    noteEl.textContent   = customNote || plan.note;
+    payBtn.href          = plan.link || '#';
+    setPayBtnState(plan.link);
+  }
+}
+
+function selectPlan(plan, allPlans) {
+  selectedPlan = plan;
+  // Actualizar UI selector
+  allPlans.forEach(p => {
+    const btn = document.querySelector(`[data-plan="${p.key}"]`);
+    if (btn) btn.classList.toggle('active', p.key === plan.key);
+  });
+  document.getElementById('amountEl').textContent = formatAmount(plan.amount);
+  document.getElementById('periodEl').textContent = plan.period;
+  document.getElementById('paymentNoteEl').textContent = clientData.payment_note || plan.note;
+  const payBtn = document.getElementById('payBtn');
+  payBtn.href = plan.link || '#';
+  setPayBtnState(plan.link);
+}
+
+function setPayBtnState(link) {
+  const btn = document.getElementById('payBtn');
+  if (link && link !== '#') {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.querySelector('span').textContent = 'Completar pago ahora';
+  } else {
+    btn.style.opacity = '0.35';
+    btn.style.pointerEvents = 'none';
+    btn.querySelector('span').textContent = 'Enlace de pago pendiente';
+  }
+}
+
+function formatAmount(n) {
+  return parseFloat(n).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+// ─── Formulario cliente ──────────────────────────────────────────────────────
+async function submitForm() {
+  const name    = document.getElementById('f-name').value.trim();
+  const company = document.getElementById('f-company').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const web     = document.getElementById('f-web').value.trim();
+  const notes   = document.getElementById('f-notes').value.trim();
+
+  if (!name || !email) {
+    alert('Por favor, rellena tu nombre y correo electrónico.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('El correo electrónico no es válido.');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'Enviando…';
+
+  try {
+    const slug = new URLSearchParams(window.location.search).get('id');
+    await fetch('/api/client-submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, name, company, phone, email, web, notes }),
+    });
+    document.getElementById('clientFormWrapper').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Enviar información';
+    alert('Error al enviar. Inténtalo de nuevo o contacta por WhatsApp.');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Dazenty</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/webp" href="/img/favicon.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: { blue: '#d97762', dark: '#050505', gray: '#121212', card: '#0e0e0e', light: '#EAEAEA' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d97762; }
+
+    input, textarea, select {
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #eaeaea;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+    input:focus, textarea:focus, select:focus { border-color: #d97762; }
+    textarea { resize: vertical; min-height: 70px; }
+    select option { background: #121212; }
+
+    /* Modal */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 40px;
+      overflow-y: auto;
+    }
+    #modal-overlay.open { display: flex; }
+    #modal-box {
+      background: #121212;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 680px;
+      padding: 36px;
+      position: relative;
+      animation: modalIn 0.25s cubic-bezier(0.16,1,0.3,1);
+      margin: auto;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Drag & Drop */
+    .dropzone {
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dropzone:hover, .dropzone.drag-over {
+      border-color: #d97762;
+      background: rgba(217,119,98,0.05);
+    }
+    .dropzone input[type="file"] { display: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 100;
+      background: #1e1e1e; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 14px 20px;
+      font-size: 14px; color: #eaeaea;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none; max-width: 320px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-anim { animation: fadeIn 0.3s ease both; }
+  </style>
+</head>
+<body class="bg-brand-dark text-white min-h-screen antialiased">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PANTALLA DE LOGIN
+════════════════════════════════════════════════════════════════ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-sm">
+    <!-- Logo -->
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2.5 mb-6">
+        <img src="/img/favicon.webp" alt="Dazenty" class="w-9 h-9 rounded-lg">
+        <span class="font-display font-bold text-2xl">Daz<span class="text-brand-blue">enty</span></span>
+      </div>
+      <h1 class="font-display font-bold text-2xl mb-2">Panel de administración</h1>
+      <p class="text-gray-500 text-sm">Introduce tu contraseña para acceder</p>
+    </div>
+    <!-- Formulario -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-8">
+      <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Contraseña</label>
+      <input type="password" id="loginPassword" placeholder="••••••••••••" class="mb-5"
+             onkeydown="if(event.key==='Enter') doLogin()">
+      <button onclick="doLogin()" id="loginBtn"
+        class="w-full bg-brand-blue text-black font-display font-bold rounded-xl py-3 hover:opacity-90 transition-opacity">
+        Acceder
+      </button>
+      <p id="loginError" class="text-red-400 text-sm text-center mt-4 hidden">Contraseña incorrecta</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DASHBOARD
+════════════════════════════════════════════════════════════════ -->
+<div id="dashboard" style="display:none">
+
+  <!-- Header -->
+  <header class="border-b border-white/5 sticky top-0 bg-brand-dark/95 backdrop-blur z-20">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="/img/favicon.webp" alt="" class="w-7 h-7 rounded-md">
+        <span class="font-display font-bold text-lg">Daz<span class="text-brand-blue">enty</span></span>
+        <span class="text-gray-700 text-xl font-light hidden sm:inline">/</span>
+        <span class="text-gray-500 text-sm hidden sm:inline">Clientes</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="openModal(null)"
+          class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span class="hidden sm:inline">Nuevo cliente</span>
+          <span class="sm:hidden">Nuevo</span>
+        </button>
+        <button onclick="logout()" class="text-gray-600 hover:text-white transition-colors text-sm">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- Barra de búsqueda + stats -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-8 items-start sm:items-center justify-between">
+      <div class="relative w-full sm:max-w-sm">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Buscar cliente..." class="pl-10 !rounded-full" oninput="renderClients()">
+      </div>
+      <p class="text-gray-600 text-sm flex-shrink-0">
+        <span id="clientCount">0</span> clientes
+      </p>
+    </div>
+
+    <!-- Grid de clientes -->
+    <div id="clientGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+
+    <!-- Estado vacío -->
+    <div id="emptyState" class="text-center py-24" style="display:none">
+      <div class="text-5xl mb-4">📋</div>
+      <p class="font-display font-semibold text-lg mb-2">Sin clientes aún</p>
+      <p class="text-gray-500 text-sm mb-6">Crea tu primer portal de cliente</p>
+      <button onclick="openModal(null)"
+        class="inline-flex items-center gap-2 bg-brand-blue text-black font-display font-semibold rounded-xl px-5 py-3">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+        </svg>
+        Crear cliente
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL CREAR / EDITAR CLIENTE
+════════════════════════════════════════════════════════════════ -->
+<div id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div id="modal-box">
+    <div class="flex items-center justify-between mb-7">
+      <h2 class="font-display font-bold text-xl" id="modalTitle">Nuevo cliente</h2>
+      <button onclick="closeModal()" class="text-gray-600 hover:text-white transition-colors p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- DATOS DEL CLIENTE -->
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Datos del cliente</p>
+    <div class="grid sm:grid-cols-2 gap-4 mb-6">
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Nombre del cliente *</label>
+        <input type="text" id="m-clientName" placeholder="Restaurante El Sol">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Empresa / Negocio</label>
+        <input type="text" id="m-company" placeholder="El Sol SL">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Slug URL (auto)</label>
+        <input type="text" id="m-slug" placeholder="restaurante-el-sol">
+        <p class="text-xs text-gray-600 mt-1">URL: dazenty.com/portal?id=<span id="slugPreview" class="text-brand-blue">—</span></p>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Estado</label>
+        <select id="m-status">
+          <option value="active">Activo</option>
+          <option value="inactive">Inactivo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+
+    <!-- SERVICIO -->
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Servicio</p>
+    <div class="grid gap-4 mb-6">
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Nombre del servicio *</label>
+        <input type="text" id="m-serviceName" placeholder="Web Corporativa Premium">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Descripción</label>
+        <textarea id="m-serviceDesc" placeholder="Web a medida con panel de gestión, SEO optimizado y soporte incluido."></textarea>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Tags (separados por comas)</label>
+        <input type="text" id="m-tags" placeholder="Diseño a medida, SEO incluido, Soporte 30 días">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Nota de pago personalizada</label>
+        <input type="text" id="m-payNote" placeholder="Deja en blanco para usar el texto automático">
+      </div>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+
+    <!-- PAGOS -->
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Importes y links de Stripe</p>
+    <div class="grid sm:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Mensual (€)</label>
+        <input type="number" id="m-amtMonthly" placeholder="99" min="0" step="0.01">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Anual (€)</label>
+        <input type="number" id="m-amtAnnual" placeholder="899" min="0" step="0.01">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Pago único (€)</label>
+        <input type="number" id="m-amtOnetime" placeholder="1200" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-4 mb-6">
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe mensual</label>
+        <input type="url" id="m-stripeMonthly" placeholder="https://buy.stripe.com/...">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe anual</label>
+        <input type="url" id="m-stripeAnnual" placeholder="https://buy.stripe.com/...">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe único</label>
+        <input type="url" id="m-stripeOnetime" placeholder="https://buy.stripe.com/...">
+      </div>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+
+    <!-- PDFs -->
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Documentos PDF</p>
+    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+      <!-- Propuesta -->
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Propuesta</label>
+        <div class="dropzone" id="dropProposal" onclick="document.getElementById('fileProposal').click()"
+             ondragover="dragOver(event,'dropProposal')" ondragleave="dragLeave('dropProposal')" ondrop="dropFile(event,'proposal')">
+          <input type="file" id="fileProposal" accept="application/pdf" onchange="handleFile(event,'proposal')">
+          <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <p class="text-xs text-gray-500" id="proposalLabel">Arrastra el PDF o haz clic</p>
+        </div>
+        <input type="url" id="m-pdfProposal" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+      </div>
+      <!-- Factura -->
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Factura</label>
+        <div class="dropzone" id="dropInvoice" onclick="document.getElementById('fileInvoice').click()"
+             ondragover="dragOver(event,'dropInvoice')" ondragleave="dragLeave('dropInvoice')" ondrop="dropFile(event,'invoice')">
+          <input type="file" id="fileInvoice" accept="application/pdf" onchange="handleFile(event,'invoice')">
+          <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <p class="text-xs text-gray-500" id="invoiceLabel">Arrastra el PDF o haz clic</p>
+        </div>
+        <input type="url" id="m-pdfInvoice" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+      </div>
+    </div>
+
+    <!-- Botones acción -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-end">
+      <button onclick="closeModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">
+        Cancelar
+      </button>
+      <button onclick="saveClient()" id="saveBtn"
+        class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">
+        <span id="saveBtnLabel">Crear cliente</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de borrado -->
+<div id="delete-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center px-6" style="display:none !important">
+  <div class="bg-brand-gray border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center">
+    <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+      </svg>
+    </div>
+    <h3 class="font-display font-bold text-lg mb-2">¿Eliminar cliente?</h3>
+    <p class="text-gray-500 text-sm mb-6">Esta acción no se puede deshacer.</p>
+    <div class="flex gap-3">
+      <button onclick="cancelDelete()" class="flex-1 py-3 text-sm border border-white/10 rounded-xl hover:border-white/20 transition-colors">Cancelar</button>
+      <button onclick="confirmDelete()" class="flex-1 py-3 text-sm bg-red-500/80 hover:bg-red-500 font-semibold rounded-xl transition-colors">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ─── Estado global ───────────────────────────────────────────────────────────
+let adminPass = '';
+let clients   = [];
+let editingId = null;
+let deleteId  = null;
+
+// ─── Login ───────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const btn = document.getElementById('loginBtn');
+  const pwd = document.getElementById('loginPassword').value;
+  if (!pwd) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Verificando…';
+
+  try {
+    const res = await fetch('/api/clients', {
+      headers: { 'x-admin-password': pwd }
+    });
+    if (res.ok) {
+      adminPass = pwd;
+      sessionStorage.setItem('dz_admin', pwd);
+      showDashboard();
+    } else {
+      document.getElementById('loginError').classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Acceder';
+      document.getElementById('loginPassword').value = '';
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Acceder';
+    showToast('Error de conexión', 'error');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('dz_admin');
+  adminPass = '';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ─── Dashboard ───────────────────────────────────────────────────────────────
+async function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  await loadClients();
+}
+
+async function loadClients() {
+  try {
+    const res = await fetch('/api/clients', {
+      headers: { 'x-admin-password': adminPass }
+    });
+    clients = await res.json();
+    renderClients();
+  } catch {
+    showToast('Error al cargar clientes', 'error');
+  }
+}
+
+function renderClients() {
+  const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const filtered = clients.filter(c =>
+    c.client_name?.toLowerCase().includes(query) ||
+    c.company_name?.toLowerCase().includes(query) ||
+    c.service_name?.toLowerCase().includes(query) ||
+    c.slug?.toLowerCase().includes(query)
+  );
+
+  document.getElementById('clientCount').textContent = filtered.length;
+  const grid = document.getElementById('clientGrid');
+  const empty = document.getElementById('emptyState');
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map((c, i) => {
+    const plans = [];
+    if (c.amount_monthly) plans.push(`${fmtAmt(c.amount_monthly)}€/mes`);
+    if (c.amount_annual)  plans.push(`${fmtAmt(c.amount_annual)}€/año`);
+    if (c.amount_onetime) plans.push(`${fmtAmt(c.amount_onetime)}€ único`);
+    const priceStr = plans.join(' · ') || 'Sin importe';
+    const portalUrl = `https://dazenty.com/portal?id=${c.slug}`;
+    const isActive = c.status === 'active';
+
+    return `
+    <div class="card-anim bg-brand-gray border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-colors flex flex-col gap-4"
+         style="animation-delay:${i * 0.04}s">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <h3 class="font-display font-bold text-base truncate">${esc(c.client_name)}</h3>
+          ${c.company_name ? `<p class="text-gray-500 text-xs truncate mt-0.5">${esc(c.company_name)}</p>` : ''}
+        </div>
+        <span class="flex-shrink-0 text-xs px-2.5 py-1 rounded-full font-medium ${isActive ? 'bg-green-500/10 text-green-400' : 'bg-gray-800 text-gray-500'}">
+          ${isActive ? 'Activo' : 'Inactivo'}
+        </span>
+      </div>
+
+      <div>
+        <p class="text-sm font-medium text-white/80 truncate">${esc(c.service_name || '—')}</p>
+        <p class="text-brand-blue text-sm font-semibold mt-0.5">${priceStr}</p>
+      </div>
+
+      <!-- URL del portal -->
+      <div class="flex items-center gap-2 bg-[#0a0a0a] rounded-xl px-3 py-2.5">
+        <p class="text-xs text-gray-600 truncate flex-1" title="${portalUrl}">portal?id=${c.slug}</p>
+        <button onclick="copyUrl('${portalUrl}')" class="flex-shrink-0 text-gray-600 hover:text-brand-blue transition-colors" title="Copiar URL">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </button>
+        <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 text-gray-600 hover:text-brand-blue transition-colors" title="Abrir portal">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Info cliente si ya envió formulario -->
+      ${c.client_contact_email ? `
+      <div class="bg-[#0a0a0a] rounded-xl px-3 py-2.5">
+        <p class="text-xs text-gray-600 mb-0.5">📩 Info recibida</p>
+        <p class="text-xs text-white/70">${esc(c.client_contact_name || '')} · ${esc(c.client_contact_email)}</p>
+        ${c.client_contact_phone ? `<p class="text-xs text-gray-500">${esc(c.client_contact_phone)}</p>` : ''}
+      </div>` : ''}
+
+      <!-- Acciones -->
+      <div class="flex gap-2 mt-auto">
+        <button onclick="openModal('${c.id}')"
+          class="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium border border-white/8 rounded-xl py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          Editar
+        </button>
+        <button onclick="askDelete('${c.id}')"
+          class="flex items-center justify-center gap-1.5 text-xs font-medium border border-white/8 rounded-xl px-4 py-2.5 hover:border-red-500/30 hover:text-red-400 transition-all text-gray-600">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Modal ───────────────────────────────────────────────────────────────────
+function openModal(id) {
+  editingId = id;
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.add('open');
+
+  // Limpiar campos
+  const fields = ['m-clientName','m-company','m-slug','m-serviceName','m-serviceDesc',
+    'm-tags','m-payNote','m-amtMonthly','m-amtAnnual','m-amtOnetime',
+    'm-stripeMonthly','m-stripeAnnual','m-stripeOnetime','m-pdfProposal','m-pdfInvoice'];
+  fields.forEach(f => { const el = document.getElementById(f); if (el) el.value = ''; });
+  document.getElementById('m-status').value = 'active';
+  document.getElementById('proposalLabel').textContent = 'Arrastra el PDF o haz clic';
+  document.getElementById('invoiceLabel').textContent  = 'Arrastra el PDF o haz clic';
+
+  if (id) {
+    // Modo edición
+    document.getElementById('modalTitle').textContent  = 'Editar cliente';
+    document.getElementById('saveBtnLabel').textContent = 'Guardar cambios';
+    const c = clients.find(x => x.id === id);
+    if (c) {
+      document.getElementById('m-clientName').value     = c.client_name || '';
+      document.getElementById('m-company').value        = c.company_name || '';
+      document.getElementById('m-slug').value           = c.slug || '';
+      document.getElementById('m-status').value         = c.status || 'active';
+      document.getElementById('m-serviceName').value    = c.service_name || '';
+      document.getElementById('m-serviceDesc').value    = c.service_desc || '';
+      document.getElementById('m-tags').value           = Array.isArray(c.service_tags) ? c.service_tags.join(', ') : '';
+      document.getElementById('m-payNote').value        = c.payment_note || '';
+      document.getElementById('m-amtMonthly').value     = c.amount_monthly || '';
+      document.getElementById('m-amtAnnual').value      = c.amount_annual || '';
+      document.getElementById('m-amtOnetime').value     = c.amount_onetime || '';
+      document.getElementById('m-stripeMonthly').value  = c.stripe_monthly_link || '';
+      document.getElementById('m-stripeAnnual').value   = c.stripe_annual_link || '';
+      document.getElementById('m-stripeOnetime').value  = c.stripe_onetime_link || '';
+      document.getElementById('m-pdfProposal').value    = c.pdf_proposal_url || '';
+      document.getElementById('m-pdfInvoice').value     = c.pdf_invoice_url || '';
+      updateSlugPreview(c.slug);
+    }
+  } else {
+    document.getElementById('modalTitle').textContent  = 'Nuevo cliente';
+    document.getElementById('saveBtnLabel').textContent = 'Crear cliente';
+    updateSlugPreview('');
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  editingId = null;
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// Auto-slug al escribir nombre
+document.addEventListener('DOMContentLoaded', () => {
+  const nameInput = document.getElementById('m-clientName');
+  const slugInput = document.getElementById('m-slug');
+  if (nameInput) {
+    nameInput.addEventListener('input', () => {
+      if (!editingId) { // Solo auto-genera en creación
+        const slug = toSlug(nameInput.value);
+        slugInput.value = slug;
+        updateSlugPreview(slug);
+      }
+    });
+  }
+  if (slugInput) {
+    slugInput.addEventListener('input', () => updateSlugPreview(slugInput.value));
+  }
+
+  // Recuperar sesión
+  const savedPass = sessionStorage.getItem('dz_admin');
+  if (savedPass) {
+    adminPass = savedPass;
+    showDashboard();
+  }
+});
+
+function updateSlugPreview(slug) {
+  document.getElementById('slugPreview').textContent = slug || '—';
+}
+
+function toSlug(name) {
+  return name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+// ─── Guardar cliente ──────────────────────────────────────────────────────────
+async function saveClient() {
+  const name = document.getElementById('m-clientName').value.trim();
+  if (!name) { showToast('El nombre del cliente es obligatorio', 'error'); return; }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  document.getElementById('saveBtnLabel').textContent = 'Guardando…';
+
+  const payload = {
+    client_name:        name,
+    company_name:       document.getElementById('m-company').value.trim(),
+    slug:               document.getElementById('m-slug').value.trim() || toSlug(name),
+    status:             document.getElementById('m-status').value,
+    service_name:       document.getElementById('m-serviceName').value.trim() || 'Servicio Dazenty',
+    service_desc:       document.getElementById('m-serviceDesc').value.trim(),
+    service_tags:       document.getElementById('m-tags').value.trim(),
+    payment_note:       document.getElementById('m-payNote').value.trim(),
+    amount_monthly:     parseFloatOrNull(document.getElementById('m-amtMonthly').value),
+    amount_annual:      parseFloatOrNull(document.getElementById('m-amtAnnual').value),
+    amount_onetime:     parseFloatOrNull(document.getElementById('m-amtOnetime').value),
+    stripe_monthly_link: document.getElementById('m-stripeMonthly').value.trim(),
+    stripe_annual_link:  document.getElementById('m-stripeAnnual').value.trim(),
+    stripe_onetime_link: document.getElementById('m-stripeOnetime').value.trim(),
+    pdf_proposal_url:    document.getElementById('m-pdfProposal').value.trim(),
+    pdf_invoice_url:     document.getElementById('m-pdfInvoice').value.trim(),
+  };
+
+  try {
+    const url    = editingId ? `/api/clients?id=${editingId}` : '/api/clients';
+    const method = editingId ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error al guardar');
+    }
+
+    closeModal();
+    await loadClients();
+    showToast(editingId ? '✓ Cliente actualizado' : '✓ Cliente creado correctamente');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('saveBtnLabel').textContent = editingId ? 'Guardar cambios' : 'Crear cliente';
+  }
+}
+
+// ─── Eliminar cliente ─────────────────────────────────────────────────────────
+function askDelete(id) {
+  deleteId = id;
+  const overlay = document.getElementById('delete-overlay');
+  overlay.style.removeProperty('display');
+  overlay.style.display = 'flex';
+}
+
+function cancelDelete() {
+  deleteId = null;
+  document.getElementById('delete-overlay').style.display = 'none';
+}
+
+async function confirmDelete() {
+  if (!deleteId) return;
+  try {
+    await fetch(`/api/clients?id=${deleteId}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-password': adminPass },
+    });
+    document.getElementById('delete-overlay').style.display = 'none';
+    deleteId = null;
+    await loadClients();
+    showToast('✓ Cliente eliminado');
+  } catch {
+    showToast('Error al eliminar', 'error');
+  }
+}
+
+// ─── PDF Upload ───────────────────────────────────────────────────────────────
+function dragOver(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.add('drag-over');
+}
+function dragLeave(zoneId) {
+  document.getElementById(zoneId).classList.remove('drag-over');
+}
+function dropFile(e, type) {
+  e.preventDefault();
+  const zoneId = type === 'proposal' ? 'dropProposal' : 'dropInvoice';
+  document.getElementById(zoneId).classList.remove('drag-over');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) processFile(file, type);
+}
+function handleFile(e, type) {
+  const file = e.target.files?.[0];
+  if (file) processFile(file, type);
+}
+
+async function processFile(file, type) {
+  if (file.type !== 'application/pdf') {
+    showToast('Solo se permiten archivos PDF', 'error');
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('El PDF no puede superar los 10 MB', 'error');
+    return;
+  }
+
+  const labelId = type === 'proposal' ? 'proposalLabel' : 'invoiceLabel';
+  const urlId   = type === 'proposal' ? 'm-pdfProposal' : 'm-pdfInvoice';
+  document.getElementById(labelId).textContent = '⏳ Subiendo…';
+
+  const slug = document.getElementById('m-slug').value.trim() ||
+               toSlug(document.getElementById('m-clientName').value.trim() || 'cliente');
+
+  try {
+    // Leer como base64
+    const base64 = await fileToBase64(file);
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ clientSlug: slug, docType: type, filename: file.name, data: base64 }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Error al subir');
+    const { publicUrl } = await res.json();
+    document.getElementById(urlId).value = publicUrl;
+    document.getElementById(labelId).textContent = `✓ ${file.name}`;
+    showToast('PDF subido correctamente');
+  } catch (err) {
+    document.getElementById(labelId).textContent = 'Arrastra el PDF o haz clic';
+    showToast(err.message, 'error');
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ─── Copiar URL ───────────────────────────────────────────────────────────────
+async function copyUrl(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('✓ URL copiada al portapapeles');
+  } catch {
+    showToast('No se pudo copiar', 'error');
+  }
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.borderColor = type === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(74,222,128,0.3)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function fmtAmt(n) {
+  return parseFloat(n).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+function parseFloatOrNull(v) {
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
