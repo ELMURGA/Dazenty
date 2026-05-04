@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Página Principal -->
   <url>
-    <loc>https://dazenty.vercel.app/</loc>
+    <loc>https://dazenty.com/</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -10,14 +10,14 @@
   
   <!-- Páginas Principales -->
   <url>
-    <loc>https://dazenty.vercel.app/html/portfolio.html</loc>
+    <loc>https://dazenty.com/html/portfolio.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://dazenty.vercel.app/html/about.html</loc>
+    <loc>https://dazenty.com/html/about.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -25,21 +25,21 @@
   
   <!-- Páginas de Proyectos Case Studies -->
   <url>
-    <loc>https://dazenty.vercel.app/html/proyecto-diseno-grafico.html</loc>
+    <loc>https://dazenty.com/html/proyecto-diseno-grafico.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://dazenty.vercel.app/html/proyecto-desarrollo-web.html</loc>
+    <loc>https://dazenty.com/html/proyecto-desarrollo-web.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://dazenty.vercel.app/html/proyecto-marketing-digital.html</loc>
+    <loc>https://dazenty.com/html/proyecto-marketing-digital.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -47,14 +47,14 @@
   
   <!-- Páginas Legales -->
   <url>
-    <loc>https://dazenty.vercel.app/html/privacidad.html</loc>
+    <loc>https://dazenty.com/html/privacidad.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   
   <url>
-    <loc>https://dazenty.vercel.app/html/terminos.html</loc>
+    <loc>https://dazenty.com/html/terminos.html</loc>
     <lastmod>2025-01-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

@@ -55,6 +55,7 @@ module.exports = async (req, res) => {
     // 3. Crear Payment Link
     const paymentLink = await stripe.paymentLinks.create({
       line_items: [{ price: price.id, quantity: 1 }],
+      metadata: { client_slug: slug || '' },
     });
 
     return res.json({ url: paymentLink.url, id: paymentLink.id });

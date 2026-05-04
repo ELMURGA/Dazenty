@@ -84,6 +84,7 @@ export default async function handler(req, res) {
         'amount_monthly','amount_annual','amount_onetime',
         'stripe_monthly_link','stripe_annual_link','stripe_onetime_link',
         'payment_note','pdf_proposal_url','pdf_invoice_url','status',
+        'stripe_subscription_id','stripe_subscription_status','stripe_current_period_end',
       ].join(',');
 
       const r = await fetch(

@@ -70,7 +70,7 @@ Las tres tarjetas de la seccion Servicios abren modales con scroll aislado:
 
 Push a main despliega automaticamente en Vercel.
 
-URL: https://dazenty.vercel.app
+URL: https://dazenty.com
 
 ---
 

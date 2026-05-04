@@ -74,32 +74,110 @@ export default async function handler(req, res) {
 
   // 2. Enviar email de notificación al admin
   try {
-    const emailHtml = `
-      <div style="font-family:'Segoe UI',sans-serif;background:#050505;padding:32px;border-radius:12px;max-width:560px;margin:0 auto">
-        <h2 style="color:#d97762;font-family:'Space Grotesk',sans-serif;margin-bottom:24px;font-size:22px">
-          📋 Nuevo cliente ha enviado su información
-        </h2>
-        <table style="width:100%;border-collapse:collapse">
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px;width:140px">Slug / Portal</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px">${esc(slug)}</td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px">Nombre</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px">${esc(name)}</td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px">Empresa</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px">${esc(company || '—')}</td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px">Teléfono</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px">${esc(phone || '—')}</td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px">Email</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px"><a href="mailto:${esc(email)}" style="color:#d97762">${esc(email)}</a></td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#888;font-size:13px">Web actual</td>
-              <td style="padding:10px 0;border-bottom:1px solid #1e1e1e;color:#eaeaea;font-size:14px">${esc(web || '—')}</td></tr>
-          <tr><td style="padding:10px 0;color:#888;font-size:13px;vertical-align:top">Notas</td>
-              <td style="padding:10px 0;color:#eaeaea;font-size:14px;white-space:pre-wrap">${esc(notes || '—')}</td></tr>
+    const emailHtml = `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Nuevo contacto — Dazenty</title></head>
+<body style="margin:0;padding:0;background:#050505;font-family:'Segoe UI',Arial,sans-serif;-webkit-font-smoothing:antialiased">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#050505;padding:48px 16px">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px">
+
+  <!-- LOGO -->
+  <tr><td align="center" style="padding-bottom:32px">
+    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="32" style="height:32px;width:auto;display:block">
+  </td></tr>
+
+  <!-- CARD -->
+  <tr><td style="background:#111111;border:1px solid #1e1e1e;border-radius:20px;overflow:hidden">
+    <!-- Línea de acento -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="25%" style="height:3px;background:#111"></td>
+      <td width="50%" style="height:3px;background:#d97762"></td>
+      <td width="25%" style="height:3px;background:#111"></td>
+    </tr></table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:36px">
+
+      <!-- Título -->
+      <tr><td style="padding-bottom:6px">
+        <p style="margin:0;font-size:11px;color:#d97762;letter-spacing:2.5px;text-transform:uppercase;font-weight:600">📋 Nuevo contacto</p>
+      </td></tr>
+      <tr><td style="padding-bottom:10px">
+        <h1 style="margin:0;font-size:26px;color:#eaeaea;font-weight:700;line-height:1.2">Un cliente ha enviado su información</h1>
+      </td></tr>
+      <tr><td style="padding-bottom:32px">
+        <p style="margin:0;font-size:14px;color:#555;line-height:1.6">Portal: <a href="https://dazenty.com/portal?id=${esc(slug)}" style="color:#d97762;text-decoration:none">dazenty.com/portal?id=${esc(slug)}</a></p>
+      </td></tr>
+
+      <!-- Datos del cliente -->
+      <tr><td style="padding-bottom:20px">
+        <p style="margin:0 0 16px;font-size:11px;color:#d97762;letter-spacing:2.5px;text-transform:uppercase;font-weight:600">Datos de contacto</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px;width:42%">Nombre</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#eaeaea;font-size:13px;text-align:right;font-weight:600">${esc(name)}</td>
+          </tr>
+          ${company ? `<tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Empresa</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px;text-align:right">${esc(company)}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Email</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;font-size:13px;text-align:right"><a href="mailto:${esc(email)}" style="color:#d97762;text-decoration:none">${esc(email)}</a></td>
+          </tr>
+          ${phone ? `<tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Teléfono</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;font-size:13px;text-align:right"><a href="tel:${esc(phone)}" style="color:#d97762;text-decoration:none">${esc(phone)}</a></td>
+          </tr>` : ''}
+          ${web ? `<tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Web actual</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px;text-align:right">${esc(web)}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding:11px 0;color:#444;font-size:12px">Slug / Portal</td>
+            <td style="padding:11px 0;color:#555;font-size:12px;text-align:right;font-family:'Courier New',monospace">${esc(slug)}</td>
+          </tr>
         </table>
-        <p style="margin-top:24px;font-size:12px;color:#555">
-          Portal: <a href="https://dazenty.com/portal?id=${esc(slug)}" style="color:#d97762">dazenty.com/portal?id=${esc(slug)}</a>
-        </p>
-      </div>
-    `;
+      </td></tr>
+
+      <!-- Notas (si las hay) -->
+      ${notes ? `<tr><td style="padding-bottom:28px">
+        <p style="margin:0 0 10px;font-size:11px;color:#d97762;letter-spacing:2.5px;text-transform:uppercase;font-weight:600">Notas del cliente</p>
+        <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:10px;padding:16px">
+          <p style="margin:0;font-size:13px;color:#888;line-height:1.65;white-space:pre-wrap">${esc(notes)}</p>
+        </div>
+      </td></tr>` : ''}
+
+      <!-- CTAs de respuesta -->
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="padding-right:8px" width="50%">
+              <a href="https://wa.me/34624903256?text=Hola%20${encodeURIComponent(String(name).split(' ')[0])}%2C%20soy%20Dazenty.%20He%20recibido%20tu%20información%20y%20me%20pongo%20en%20contacto%20contigo%20ahora." style="display:block;background:#d97762;color:#050505;text-decoration:none;text-align:center;padding:13px 16px;border-radius:10px;font-weight:700;font-size:13px">
+                Responder por WhatsApp →
+              </a>
+            </td>
+            <td width="50%">
+              <a href="mailto:${esc(email)}?subject=Tu portal Dazenty — ${esc(slug)}" style="display:block;background:transparent;color:#888;text-decoration:none;text-align:center;padding:13px 16px;border-radius:10px;font-weight:600;font-size:13px;border:1px solid #2a2a2a">
+                Responder por email →
+              </a>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+    </table>
+  </td></tr>
+
+  <!-- FOOTER -->
+  <tr><td align="center" style="padding:28px 0 0">
+    <p style="margin:0;font-size:11px;color:#2a2a2a">Dazenty · Notificación automática del portal</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`;
 
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -111,7 +189,7 @@ export default async function handler(req, res) {
         from: 'Dazenty Portal <noreply@dazenty.com>',
         to: [ADMIN_EMAIL],
         reply_to: email,
-        subject: `📋 Nuevo cliente en portal — ${esc(name)} (${esc(slug)})`,
+        subject: `📋 Nuevo contacto — ${esc(name)}${company ? ' · ' + esc(company) : ''} (${esc(slug)})`,
         html: emailHtml,
       }),
     });
@@ -123,6 +201,5 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('[client-submit] Email error:', err);
   }
-
   return res.status(200).json({ ok: true });
 }
