@@ -1,0 +1,178 @@
+═══════════════════════════════════════════════════════════════
+  DAZENTY — PORTAL DE CLIENTES · GUÍA DE CONFIGURACIÓN
+═══════════════════════════════════════════════════════════════
+
+PASO 1 — SUPABASE (base de datos)
+──────────────────────────────────
+1. Ve a https://supabase.com y crea una cuenta gratuita
+2. Crea un nuevo proyecto (guarda la contraseña que te pide)
+3. Ve a SQL Editor (menú izquierdo) y ejecuta este código:
+
+────────────────────────── COPIAR Y PEGAR EN SQL EDITOR ──────────────────────────
+
+CREATE TABLE clients (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  client_name TEXT NOT NULL,
+  company_name TEXT DEFAULT '',
+  service_name TEXT DEFAULT 'Servicio Dazenty',
+  service_desc TEXT DEFAULT '',
+  service_tags JSONB DEFAULT '[]',
+  amount_monthly NUMERIC,
+  amount_annual NUMERIC,
+  amount_onetime NUMERIC,
+  stripe_monthly_link TEXT DEFAULT '',
+  stripe_annual_link TEXT DEFAULT '',
+  stripe_onetime_link TEXT DEFAULT '',
+  payment_note TEXT DEFAULT '',
+  pdf_proposal_url TEXT DEFAULT '',
+  pdf_invoice_url TEXT DEFAULT '',
+  client_contact_name TEXT DEFAULT '',
+  client_contact_email TEXT DEFAULT '',
+  client_contact_phone TEXT DEFAULT '',
+  client_contact_web TEXT DEFAULT '',
+  client_notes TEXT DEFAULT '',
+  client_submitted_at TIMESTAMPTZ,
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "read_active" ON clients FOR SELECT USING (status = 'active');
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('client-docs', 'client-docs', true);
+
+CREATE POLICY "public_read_files" ON storage.objects
+FOR SELECT USING (bucket_id = 'client-docs');
+
+──────────────────────────────────────────────────────────────────────────────────
+
+4. Una vez ejecutado, ve a Project Settings → API
+   Copia estos dos valores (los necesitas en el Paso 3):
+   - Project URL  →  algo como https://abcdefgh.supabase.co
+   - service_role key  →  empieza por eyJh... (NO uses la anon key)
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+PASO 2 — STRIPE (pagos)
+────────────────────────
+Para cada cliente necesitas crear un Payment Link en Stripe.
+Puedes crear 1, 2 o los 3 tipos (mensual, anual, único).
+
+  A) Pago único:
+     - Ve a https://dashboard.stripe.com/payment-links
+     - Crea un nuevo enlace → tipo "One time"
+     - Pon el importe exacto del cliente
+     - Copia el enlace (https://buy.stripe.com/xxx)
+
+  B) Suscripción mensual:
+     - Mismo sitio → tipo "Recurring" → Monthly
+     - Pon el importe mensual
+
+  C) Suscripción anual:
+     - Mismo sitio → tipo "Recurring" → Yearly
+     - Pon el importe anual
+
+  Guarda esos links para pegarlos en el panel admin al crear el cliente.
+
+  WEBHOOK (para que te lleguen emails cuando paguen):
+  - Ve a https://dashboard.stripe.com/webhooks
+  - Clic en "Add endpoint"
+  - URL del endpoint: https://dazenty.com/api/stripe-webhook
+  - Selecciona estos eventos:
+      · checkout.session.completed
+      · invoice.paid
+  - Guarda y copia el "Signing secret" (empieza por whsec_...)
+     → Lo necesitas en el Paso 3
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+PASO 3 — VERCEL (variables de entorno)
+────────────────────────────────────────
+1. Ve a https://vercel.com → tu proyecto Dazenty
+2. Settings → Environment Variables
+3. Añade estas 5 variables (una por una):
+
+   SUPABASE_URL              → la Project URL de Supabase (Paso 1)
+   SUPABASE_SERVICE_KEY      → la service_role key de Supabase (Paso 1)
+   ADMIN_PASSWORD            → la contraseña que TÚ quieras para entrar al admin
+                               (ej: Dazenty@2026! — ponla difícil)
+   STRIPE_WEBHOOK_SECRET     → el Signing secret de Stripe (Paso 2)
+   RESEND_API_KEY            → ya lo tienes configurado, no hace falta tocarlo
+
+4. Después de añadir todas, haz un nuevo deploy:
+   - Ve a la pestaña Deployments → clic en los tres puntos del último deploy → Redeploy
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+PASO 4 — PRUEBA QUE TODO FUNCIONA
+───────────────────────────────────
+1. Ve a https://dazenty.com/admin
+2. Introduce la contraseña que pusiste en ADMIN_PASSWORD
+3. Crea un cliente de prueba:
+   - Nombre: Test Cliente
+   - Servicio: Web de prueba
+   - Importe único: 1
+   - Link Stripe: pega cualquier link de prueba
+4. Copia la URL generada y ábrela en otra pestaña
+5. Verifica que se ve el portal del cliente correctamente
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+USO DIARIO — CÓMO CREAR UN CLIENTE NUEVO
+──────────────────────────────────────────
+1. Abre https://dazenty.com/admin
+2. Clic en "Nuevo cliente"
+3. Rellena:
+   - Nombre del cliente y empresa
+   - Nombre y descripción del servicio
+   - Tags (ej: Diseño a medida, SEO incluido, Soporte 30 días)
+   - Los importes que apliquen (mensual, anual y/o único)
+   - Los links de Stripe correspondientes
+   - Sube el PDF de propuesta y/o factura (arrastra o haz clic)
+4. Clic en "Crear cliente"
+5. Copia la URL del portal → envíasela al cliente por WhatsApp
+
+Lo que recibe el cliente:
+   - Su portal personalizado con su nombre y servicio
+   - Propuesta descargable en PDF
+   - Selector de plan (mensual / anual / único)
+   - Botón de pago directo con Stripe
+   - Formulario para enviarte sus datos de contacto
+
+Lo que recibes tú:
+   - Email cuando el cliente rellena el formulario
+   - Email cuando el cliente completa el pago (con importe e info)
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+URLS DEL SISTEMA
+──────────────────
+  Tu panel admin:       https://dazenty.com/admin
+  Portal del cliente:   https://dazenty.com/portal?id=SLUG-DEL-CLIENTE
+
+  El SLUG se genera automático al escribir el nombre del cliente
+  (ej: "Restaurante El Sol" → slug: restaurante-el-sol)
+  URL resultante: https://dazenty.com/portal?id=restaurante-el-sol
+
+  Ambas páginas tienen noindex/nofollow → Google no las indexa
+
+
+──────────────────────────────────────────────────────────────────────────────────
+
+SOPORTE Y DUDAS
+────────────────
+  Si algo no funciona, comprueba primero:
+  1. Que las 5 variables de entorno están bien escritas en Vercel
+  2. Que hiciste Redeploy después de añadirlas
+  3. Que el SQL se ejecutó sin errores en Supabase
+
+═══════════════════════════════════════════════════════════════

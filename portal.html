@@ -139,77 +139,102 @@
 
     <!-- BIENVENIDA -->
     <section class="mb-10 fade-up fade-up-1">
-      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Tu espacio personal</p>
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Bienvenido a tu espacio</p>
       <h1 class="font-display text-5xl sm:text-6xl font-bold tracking-tight leading-none mb-5">
         Hola, <span class="text-brand-blue" id="clientNameEl">—</span>.
       </h1>
       <p class="text-gray-400 text-lg font-light leading-relaxed max-w-lg">
-        Este es tu portal personalizado de Dazenty. Aquí tienes el resumen de tu servicio y puedes gestionar el pago de forma segura.
+        Este es tu portal personalizado de Dazenty. Aquí encontrarás el resumen de tu servicio y podrás gestionar el pago de forma segura.
       </p>
     </section>
 
-    <!-- SERVICIO -->
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-2 hover:border-white/10 transition-colors">
-      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-5">Tu servicio</p>
-      <h2 class="font-display text-2xl font-bold mb-2" id="serviceNameEl">—</h2>
-      <p class="text-gray-400 text-[15px] leading-relaxed mb-5" id="serviceDescEl">—</p>
-      <div id="serviceTagsEl" class="flex flex-wrap gap-2"></div>
-    </div>
-
-    <!-- PROPUESTA / FACTURA PDFs -->
-    <div id="docsSection" class="grid sm:grid-cols-2 gap-4 fade-up fade-up-3" style="display:none">
-      <a id="btnProposal" href="#" target="_blank" rel="noopener noreferrer"
-         class="group flex items-center gap-4 bg-brand-gray border border-white/5 rounded-2xl p-5 hover:border-brand-blue/40 transition-colors" style="display:none">
-        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center">
-          <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Propuesta</p>
-          <p class="font-display font-semibold text-sm text-white group-hover:text-brand-blue transition-colors">Descargar PDF →</p>
-        </div>
-      </a>
-      <a id="btnInvoice" href="#" target="_blank" rel="noopener noreferrer"
-         class="group flex items-center gap-4 bg-brand-gray border border-white/5 rounded-2xl p-5 hover:border-brand-blue/40 transition-colors" style="display:none">
-        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center">
-          <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Factura</p>
-          <p class="font-display font-semibold text-sm text-white group-hover:text-brand-blue transition-colors">Descargar PDF →</p>
-        </div>
-      </a>
-    </div>
-
-    <!-- PAGO -->
-    <div class="bg-brand-gray border border-brand-blue/20 rounded-2xl p-7 relative overflow-hidden fade-up fade-up-3">
+    <!-- PLAN DE HOSTING ACTIVO -->
+    <div class="bg-brand-gray border border-brand-blue/20 rounded-2xl p-7 relative overflow-hidden fade-up fade-up-2">
       <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-blue/50 to-transparent"></div>
-      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-6">Pago</p>
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-6">Plan de hosting activo</p>
 
-      <!-- Selector de plan -->
-      <div id="planSelector" class="flex flex-col sm:flex-row gap-3 mb-7" style="display:none !important"></div>
+      <!-- Hosting header -->
+      <div class="flex items-start justify-between gap-4 flex-wrap mb-7">
+        <div>
+          <h2 class="font-display text-2xl font-bold tracking-tight mb-1" id="serviceNameEl">Hosting Profesional</h2>
+          <p class="text-gray-500 text-sm">Tu web activa, segura y gestionada cada mes</p>
+        </div>
+        <span class="flex items-center gap-2 text-xs font-semibold text-green-400 border border-green-500/20 bg-green-500/[0.08] rounded-full px-4 py-1.5 whitespace-nowrap mt-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80] animate-pulse"></span>
+          Activo
+        </span>
+      </div>
 
-      <!-- Importe seleccionado -->
+      <!-- Includes grid -->
+      <div class="flex flex-col gap-0.5 mb-7">
+        <div class="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-white/[0.03] transition-colors">
+          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <p class="font-display font-semibold text-sm mb-0.5">Infraestructura profesional</p>
+            <p class="text-gray-500 text-xs">Vercel — velocidad y uptime garantizados</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-white/[0.03] transition-colors">
+          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div>
+            <p class="font-display font-semibold text-sm mb-0.5">Dominio</p>
+            <p class="text-gray-500 text-xs">Gestión y configuración</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-white/[0.03] transition-colors">
+          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <p class="font-display font-semibold text-sm mb-0.5">Seguridad</p>
+            <p class="text-gray-500 text-xs">SSL + protección avanzada activa</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-white/[0.03] transition-colors">
+          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>
+            <p class="font-display font-semibold text-sm mb-0.5">Mantenimiento técnico</p>
+            <p class="text-gray-500 text-xs">Actualizaciones y monitoreo continuo</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-white/[0.03] transition-colors">
+          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <p class="font-display font-semibold text-sm mb-0.5">Soporte directo</p>
+            <p class="text-gray-500 text-xs">Acceso directo vía WhatsApp</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="h-px bg-white/5 mb-6"></div>
+
+      <!-- Importe -->
       <div class="flex items-baseline gap-1 mb-2">
         <span class="text-brand-blue font-display text-2xl font-semibold mt-1">€</span>
         <span class="font-display text-6xl sm:text-7xl font-bold tracking-tight leading-none" id="amountEl">—</span>
-        <span class="text-gray-500 text-base mb-1 ml-1" id="periodEl"></span>
+        <span class="text-gray-500 text-base mb-1 ml-1" id="periodEl">/mes</span>
       </div>
-      <p class="text-gray-500 text-sm mb-7" id="paymentNoteEl"></p>
+      <p class="text-gray-500 text-sm mb-7" id="paymentNoteEl">Suscripción mensual recurrente. Tu web se mantiene activa mientras el plan esté vigente. Puedes cancelar con 15 días de antelación.</p>
 
       <!-- Botón de pago -->
       <a id="payBtn" href="#" target="_blank" rel="noopener noreferrer"
          class="group flex items-center justify-center gap-2 w-full bg-brand-blue text-black font-display font-bold text-base rounded-xl py-4 px-6 transition-all hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(217,119,98,0.35)]">
-        <span>Completar pago ahora</span>
+        <span>Pagar mensualidad ahora</span>
         <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
         </svg>
       </a>
 
-      <!-- Mensaje de seguridad Stripe -->
+      <!-- Stripe notice -->
       <div class="flex items-center justify-center gap-3 mt-4 text-xs text-gray-600">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -220,38 +245,32 @@
       </div>
     </div>
 
-    <!-- CÓMO FUNCIONA -->
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-4">
-      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-6">Cómo funciona</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
-          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">01</p>
-          <p class="font-display font-semibold text-sm mb-1">Propuesta</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Revisas el desglose de tu proyecto.</p>
+    <!-- QUÉ INCLUYE EL PLAN -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-3 hover:border-white/10 transition-colors">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-5">Importante</p>
+      <h2 class="font-display text-xl font-bold mb-2">¿Qué incluye el plan?</h2>
+      <p class="text-gray-400 text-[15px] leading-relaxed mb-6">Mientras el plan esté activo, tu web estará online 24/7 con todo gestionado. Si el pago no se realiza en los primeros 5 días del mes, la web pasará a modo de mantenimiento hasta regularizar la situación.</p>
+      <div class="flex flex-col gap-1">
+        <div class="px-5 py-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
+          <p class="font-display font-semibold text-sm mb-1.5">¿Puedo cancelar cuando quiera?</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Sí, con 15 días de antelación antes del siguiente ciclo. Sin permanencia.</p>
         </div>
-        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
-          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">02</p>
-          <p class="font-display font-semibold text-sm mb-1">Pago</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Completas el pago seguro con Stripe.</p>
+        <div class="px-5 py-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
+          <p class="font-display font-semibold text-sm mb-1.5">¿Qué pasa si tengo algún problema técnico?</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Contáctame directamente por WhatsApp y lo resuelvo en el menor tiempo posible.</p>
         </div>
-        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
-          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">03</p>
-          <p class="font-display font-semibold text-sm mb-1">Accesos</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Nos envías los accesos necesarios.</p>
-        </div>
-        <div class="bg-[#0e0e0e] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
-          <p class="text-xs font-bold text-brand-blue tracking-widest mb-2">04</p>
-          <p class="font-display font-semibold text-sm mb-1">Entrega</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Recibes tu proyecto en el plazo acordado.</p>
+        <div class="px-5 py-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
+          <p class="font-display font-semibold text-sm mb-1.5">¿Recibiré factura?</p>
+          <p class="text-gray-500 text-xs leading-relaxed">Stripe envía automáticamente el recibo a tu email tras cada pago.</p>
         </div>
       </div>
     </div>
 
     <!-- FORMULARIO DE DATOS DEL CLIENTE -->
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-5">
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-4">
       <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-2">Tus datos</p>
-      <h2 class="font-display text-xl font-bold mb-1">Información de contacto</h2>
-      <p class="text-gray-500 text-sm mb-7">Rellena este formulario para que podamos coordinar el inicio del proyecto.</p>
+      <h2 class="font-display text-xl font-bold mb-1">Tus datos de contacto</h2>
+      <p class="text-gray-500 text-sm mb-7">Solo los usamos para enviarte la confirmación del servicio y poder contactarte si lo necesitamos.</p>
 
       <div id="clientFormWrapper">
         <div class="grid sm:grid-cols-2 gap-4 mb-4">
@@ -264,20 +283,12 @@
             <input type="text" id="f-company" placeholder="Mi Empresa SL" autocomplete="organization">
           </div>
           <div>
-            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">WhatsApp / Teléfono</label>
+            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Teléfono</label>
             <input type="tel" id="f-phone" placeholder="+34 600 000 000" autocomplete="tel">
           </div>
           <div>
             <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Correo electrónico *</label>
             <input type="email" id="f-email" placeholder="contacto@miempresa.com" autocomplete="email">
-          </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Web actual (si tienes)</label>
-            <input type="url" id="f-web" placeholder="https://miempresa.com" autocomplete="url">
-          </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">¿Qué necesitas exactamente?</label>
-            <textarea id="f-notes" placeholder="Cuéntame brevemente lo que buscas conseguir..."></textarea>
           </div>
         </div>
 
@@ -288,6 +299,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
           </svg>
         </button>
+        <p class="flex items-center gap-2 text-xs text-gray-600 mt-3">
+          <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          Tus datos están 100% seguros con nosotros y nunca serán compartidos con terceros.
+        </p>
       </div>
 
       <!-- Mensaje de éxito -->
@@ -297,17 +314,17 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>
         </div>
-        <p class="font-display font-bold text-lg">¡Información recibida!</p>
+        <p class="font-display font-bold text-lg">Información recibida. Nos ponemos en marcha.</p>
         <p class="text-gray-500 text-sm mt-1">Me pondré en contacto contigo muy pronto.</p>
       </div>
     </div>
 
     <!-- CONTACTO -->
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-6">
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-5">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
           <p class="font-display font-bold text-base mb-1">¿Tienes alguna duda?</p>
-          <p class="text-gray-500 text-sm">Estoy disponible para ti</p>
+          <p class="text-gray-500 text-sm">Estoy disponible para ayudarte</p>
         </div>
         <div class="flex flex-wrap gap-3">
           <a id="waContactLink" href="#" target="_blank" rel="noopener noreferrer"
@@ -324,13 +341,6 @@
             </svg>
             Email
           </a>
-          <a href="https://instagram.com/dazenty" target="_blank" rel="noopener noreferrer"
-             class="flex items-center gap-2 text-sm font-medium border border-white/10 rounded-full px-4 py-2 hover:border-brand-blue hover:text-brand-blue transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-            </svg>
-            Instagram
-          </a>
         </div>
       </div>
     </div>
@@ -339,7 +349,7 @@
 
   <!-- FOOTER -->
   <footer class="relative z-10 text-center py-8 px-6 text-xs text-gray-700 border-t border-white/5">
-    © 2025 Dazenty · Portal de uso exclusivo y personal · <a href="https://dazenty.com" class="hover:text-brand-blue transition-colors">dazenty.com</a>
+    © 2026 Dazenty · Portal de uso exclusivo y personal · <a href="https://dazenty.com" class="hover:text-brand-blue transition-colors">dazenty.com</a>
   </footer>
 
   <!-- PÁGINA DE ERROR -->
@@ -358,18 +368,13 @@ const WA_NUMBER = '34624903256';
 
 // ─── Estado ─────────────────────────────────────────────────────────────────
 let clientData = null;
-let selectedPlan = null; // 'monthly' | 'annual' | 'onetime'
 
 // ─── Inicialización ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   const slug = new URLSearchParams(window.location.search).get('id');
-
-  if (!slug) {
-    showError();
-    return;
-  }
+  if (!slug) { showError(); return; }
 
   try {
     const res = await fetch(`/api/clients?slug=${encodeURIComponent(slug)}`);
@@ -390,48 +395,42 @@ function showError() {
 
 // ─── Render portal ───────────────────────────────────────────────────────────
 function renderPortal(d) {
-  // Título y saludo
   document.title = `Portal ${d.client_name} — Dazenty`;
   document.getElementById('clientNameEl').textContent = d.client_name || 'Cliente';
+  document.getElementById('serviceNameEl').textContent = d.service_name || 'Hosting Profesional';
 
-  // Servicio
-  document.getElementById('serviceNameEl').textContent = d.service_name || 'Servicio Dazenty';
-  document.getElementById('serviceDescEl').textContent = d.service_desc || '';
+  // Importe — mensual primero, luego anual, luego único
+  const amount = d.amount_monthly || d.amount_annual || d.amount_onetime;
+  const period = d.amount_monthly ? '/mes' : d.amount_annual ? '/año' : '';
+  const link   = d.amount_monthly ? d.stripe_monthly_link
+               : d.amount_annual  ? d.stripe_annual_link
+               : d.stripe_onetime_link;
 
-  const tags = Array.isArray(d.service_tags) ? d.service_tags : [];
-  const tagsEl = document.getElementById('serviceTagsEl');
-  tagsEl.innerHTML = tags.map(t =>
-    `<span class="text-xs px-3 py-1 rounded-full border border-brand-blue/30 text-brand-blue">${t}</span>`
-  ).join('');
+  const amountEl = document.getElementById('amountEl');
+  const periodEl = document.getElementById('periodEl');
+  const noteEl   = document.getElementById('paymentNoteEl');
+  const payBtn   = document.getElementById('payBtn');
 
-  // PDFs
-  let hasDocs = false;
-  if (d.pdf_proposal_url) {
-    const btn = document.getElementById('btnProposal');
-    btn.href = d.pdf_proposal_url;
-    btn.style.display = 'flex';
-    hasDocs = true;
-  }
-  if (d.pdf_invoice_url) {
-    const btn = document.getElementById('btnInvoice');
-    btn.href = d.pdf_invoice_url;
-    btn.style.display = 'flex';
-    hasDocs = true;
-  }
-  if (hasDocs) {
-    const sec = document.getElementById('docsSection');
-    sec.style.display = 'grid';
-    sec.style.removeProperty('display'); // Quita el inline none y usa la clase grid
-    sec.classList.add('grid');
+  if (amount) {
+    amountEl.textContent = formatAmount(amount);
+    periodEl.textContent = period;
+  } else {
+    amountEl.textContent = '—';
+    periodEl.textContent = '';
   }
 
-  // Pago — construir opciones disponibles
-  const plans = [];
-  if (d.amount_monthly) plans.push({ key: 'monthly', label: 'Mensual', amount: d.amount_monthly, period: '/mes', link: d.stripe_monthly_link, note: 'Se cobra automáticamente el mismo día cada mes. Cancela cuando quieras con 15 días de antelación.' });
-  if (d.amount_annual)  plans.push({ key: 'annual',  label: 'Anual',   amount: d.amount_annual,  period: '/año', link: d.stripe_annual_link,  note: 'Se cobra una vez al año en la misma fecha. Incluye todos los meses del año.' });
-  if (d.amount_onetime) plans.push({ key: 'onetime', label: 'Único',   amount: d.amount_onetime, period: '',     link: d.stripe_onetime_link, note: 'Pago único sin cuotas recurrentes. Recibirás tu proyecto en el plazo acordado.' });
+  noteEl.textContent = d.payment_note || 'Suscripción mensual recurrente. Tu web se mantiene activa mientras el plan esté vigente. Puedes cancelar con 15 días de antelación.';
 
-  renderPaymentSection(plans, d.payment_note);
+  if (link) {
+    payBtn.href = link;
+    payBtn.style.opacity = '1';
+    payBtn.style.pointerEvents = 'auto';
+    payBtn.querySelector('span').textContent = 'Pagar mensualidad ahora';
+  } else {
+    payBtn.style.opacity = '0.35';
+    payBtn.style.pointerEvents = 'none';
+    payBtn.querySelector('span').textContent = 'Enlace de pago pendiente';
+  }
 
   // Enlace WhatsApp
   document.getElementById('waContactLink').href = `https://wa.me/${WA_NUMBER}`;
@@ -444,84 +443,6 @@ function renderPortal(d) {
   }, 350);
 }
 
-function renderPaymentSection(plans, customNote) {
-  const selector = document.getElementById('planSelector');
-  const amountEl = document.getElementById('amountEl');
-  const periodEl = document.getElementById('periodEl');
-  const noteEl   = document.getElementById('paymentNoteEl');
-  const payBtn   = document.getElementById('payBtn');
-
-  if (!plans.length) {
-    amountEl.textContent = '—';
-    periodEl.textContent = '';
-    noteEl.textContent = 'El enlace de pago estará disponible pronto.';
-    payBtn.style.opacity = '0.35';
-    payBtn.style.pointerEvents = 'none';
-    payBtn.querySelector('span').textContent = 'Pago pendiente de configurar';
-    return;
-  }
-
-  // Si hay más de un plan, mostrar selector
-  if (plans.length > 1) {
-    selector.style.removeProperty('display');
-    selector.style.display = 'flex';
-    plans.forEach(plan => {
-      const savings = plan.key === 'annual' && plans.find(p => p.key === 'monthly')
-        ? `<p class="text-xs text-green-400 mt-1.5">Ahorra ${(plans.find(p=>p.key==='monthly').amount * 2).toFixed(0)}€</p>`
-        : '';
-      const btn = document.createElement('button');
-      btn.className = 'plan-btn flex-1 p-4 rounded-xl border border-white/10 bg-[#0e0e0e] text-left transition-all hover:border-white/20';
-      btn.dataset.plan = plan.key;
-      btn.innerHTML = `
-        <p class="plan-label text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">${plan.label}</p>
-        <p class="font-display text-xl font-bold">${formatAmount(plan.amount)}<span class="text-gray-500 text-sm font-normal">${plan.period}</span></p>
-        ${savings}
-      `;
-      btn.addEventListener('click', () => selectPlan(plan, plans));
-      selector.appendChild(btn);
-    });
-    // Seleccionar el primero por defecto
-    selectPlan(plans[0], plans);
-  } else {
-    // Solo un plan — mostrar directamente sin selector
-    const plan = plans[0];
-    selectedPlan = plan;
-    amountEl.textContent = formatAmount(plan.amount);
-    periodEl.textContent = plan.period;
-    noteEl.textContent   = customNote || plan.note;
-    payBtn.href          = plan.link || '#';
-    setPayBtnState(plan.link);
-  }
-}
-
-function selectPlan(plan, allPlans) {
-  selectedPlan = plan;
-  // Actualizar UI selector
-  allPlans.forEach(p => {
-    const btn = document.querySelector(`[data-plan="${p.key}"]`);
-    if (btn) btn.classList.toggle('active', p.key === plan.key);
-  });
-  document.getElementById('amountEl').textContent = formatAmount(plan.amount);
-  document.getElementById('periodEl').textContent = plan.period;
-  document.getElementById('paymentNoteEl').textContent = clientData.payment_note || plan.note;
-  const payBtn = document.getElementById('payBtn');
-  payBtn.href = plan.link || '#';
-  setPayBtnState(plan.link);
-}
-
-function setPayBtnState(link) {
-  const btn = document.getElementById('payBtn');
-  if (link && link !== '#') {
-    btn.style.opacity = '1';
-    btn.style.pointerEvents = 'auto';
-    btn.querySelector('span').textContent = 'Completar pago ahora';
-  } else {
-    btn.style.opacity = '0.35';
-    btn.style.pointerEvents = 'none';
-    btn.querySelector('span').textContent = 'Enlace de pago pendiente';
-  }
-}
-
 function formatAmount(n) {
   return parseFloat(n).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
@@ -532,8 +453,6 @@ async function submitForm() {
   const company = document.getElementById('f-company').value.trim();
   const phone   = document.getElementById('f-phone').value.trim();
   const email   = document.getElementById('f-email').value.trim();
-  const web     = document.getElementById('f-web').value.trim();
-  const notes   = document.getElementById('f-notes').value.trim();
 
   if (!name || !email) {
     alert('Por favor, rellena tu nombre y correo electrónico.');
@@ -553,7 +472,7 @@ async function submitForm() {
     await fetch('/api/client-submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug, name, company, phone, email, web, notes }),
+      body: JSON.stringify({ slug, name, company, phone, email }),
     });
     document.getElementById('clientFormWrapper').style.display = 'none';
     document.getElementById('formSuccess').style.display = 'block';
