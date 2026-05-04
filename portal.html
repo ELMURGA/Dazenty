@@ -322,6 +322,13 @@
       </div>
     </div>
 
+    <!-- DOCUMENTOS PDF -->
+    <div id="docsSection" class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-3" style="display:none">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-2">Documentos</p>
+      <h2 class="font-display text-xl font-bold mb-5">Tus documentos</h2>
+      <div class="flex flex-col sm:flex-row gap-3" id="docsLinks"></div>
+    </div>
+
     <!-- FORMULARIO DE DATOS DEL CLIENTE -->
     <div class="bg-brand-gray border border-white/5 rounded-2xl p-7 fade-up fade-up-4">
       <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-2">Tus datos</p>
@@ -417,7 +424,13 @@
 
   <!-- PÁGINA DE ERROR -->
   <div id="error-page" class="relative z-10 max-w-lg mx-auto px-6 py-32 text-center" style="display:none">
-    <div class="text-6xl mb-6">🔒</div>
+    <div class="flex justify-center mb-6">
+      <div class="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/8 flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+    </div>
     <h1 class="font-display text-3xl font-bold mb-3">Portal no encontrado</h1>
     <p class="text-gray-500 mb-8">Este enlace no existe o ya no está disponible. Contacta con Dazenty para obtener tu URL personalizada.</p>
     <a href="https://dazenty.com" class="inline-flex items-center gap-2 bg-brand-blue text-black font-display font-bold rounded-full px-6 py-3 hover:opacity-90 transition-opacity">
@@ -507,6 +520,29 @@ function renderPortal(d) {
 
   // Enlace WhatsApp
   document.getElementById('waContactLink').href = `https://wa.me/${WA_NUMBER}`;
+
+  // Documentos PDF
+  const docsSection = document.getElementById('docsSection');
+  const docsLinks   = document.getElementById('docsLinks');
+  const docs = [];
+  if (d.pdf_proposal_url) docs.push({ url: d.pdf_proposal_url, label: 'Ver propuesta', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' });
+  if (d.pdf_invoice_url)  docs.push({ url: d.pdf_invoice_url,  label: 'Ver factura',   icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' });
+  if (docs.length > 0) {
+    docsSection.style.display = 'block';
+    docsLinks.innerHTML = docs.map(doc => `
+      <a href="${doc.url}" target="_blank" rel="noopener noreferrer"
+         class="flex items-center gap-3 flex-1 bg-[#0a0a0a] border border-white/5 rounded-xl px-5 py-4 hover:border-brand-blue/40 hover:bg-white/[0.02] transition-all group">
+        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="${doc.icon}"/>
+          </svg>
+        </span>
+        <span class="font-display font-semibold text-sm group-hover:text-white transition-colors">${doc.label}</span>
+        <svg class="w-4 h-4 text-gray-600 ml-auto group-hover:text-brand-blue transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </a>`).join('');
+  }
 
   // Mostrar contenido
   document.getElementById('loading-screen').style.opacity = '0';
