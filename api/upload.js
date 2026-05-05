@@ -90,28 +90,7 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Error al subir el archivo a Storage' });
   }
 
-  // El bucket es privado: generar URL firmada con 10 años de validez
-  const signRes = await fetch(
-    `${SB_URL}/storage/v1/object/sign/${BUCKET}/${path}`,
-    {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ expiresIn: 315360000 }), // ~10 años en segundos
-    }
-  );
-
-  let fileUrl;
-  if (signRes.ok) {
-    const signData = await signRes.json();
-    fileUrl = `${SB_URL}${signData.signedURL}`;
-  } else {
-    // Fallback a URL pública si falla la firma (por si el bucket es público)
-    fileUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
-  }
-
-  return res.json({ publicUrl: fileUrl });
+  // Guardar solo el path relativo en Supabase.
+  // El endpoint /api/get-doc genera la URL firmada al vuelo cada vez que el cliente accede.
+  return res.json({ publicUrl: path });
 }
