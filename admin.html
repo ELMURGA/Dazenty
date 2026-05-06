@@ -287,7 +287,7 @@
     <div class="grid sm:grid-cols-3 gap-4 mb-6">
       <div>
         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe mensual</label>
-        <input type="url" id="m-stripeMonthly" placeholder="https://buy.stripe.com/...">
+        <input type="text" id="m-stripeMonthly" placeholder="https://buy.stripe.com/...">
         <button type="button" onclick="autoGenStripe('monthly')" id="genMonthlyBtn"
           class="mt-1.5 flex items-center gap-1.5 text-xs text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue/60 rounded-lg px-3 py-1.5 transition-all w-full justify-center">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -296,7 +296,7 @@
       </div>
       <div>
         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe anual</label>
-        <input type="url" id="m-stripeAnnual" placeholder="https://buy.stripe.com/...">
+        <input type="text" id="m-stripeAnnual" placeholder="https://buy.stripe.com/...">
         <button type="button" onclick="autoGenStripe('annual')" id="genAnnualBtn"
           class="mt-1.5 flex items-center gap-1.5 text-xs text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue/60 rounded-lg px-3 py-1.5 transition-all w-full justify-center">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -305,7 +305,7 @@
       </div>
       <div>
         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Link Stripe único</label>
-        <input type="url" id="m-stripeOnetime" placeholder="https://buy.stripe.com/...">
+        <input type="text" id="m-stripeOnetime" placeholder="https://buy.stripe.com/...">
         <button type="button" onclick="autoGenStripe('onetime')" id="genOnetimeBtn"
           class="mt-1.5 flex items-center gap-1.5 text-xs text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue/60 rounded-lg px-3 py-1.5 transition-all w-full justify-center">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -330,7 +330,7 @@
           </svg>
           <p class="text-xs text-gray-500" id="proposalLabel">Arrastra el PDF o haz clic</p>
         </div>
-        <input type="url" id="m-pdfProposal" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+        <input type="text" id="m-pdfProposal" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
       </div>
       <!-- Factura -->
       <div>
@@ -343,7 +343,7 @@
           </svg>
           <p class="text-xs text-gray-500" id="invoiceLabel">Arrastra el PDF o haz clic</p>
         </div>
-        <input type="url" id="m-pdfInvoice" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+        <input type="text" id="m-pdfInvoice" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
       </div>
     </div>
 
