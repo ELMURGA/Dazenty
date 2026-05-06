@@ -2,7 +2,8 @@
 // Genera una URL firmada temporal para acceder al PDF del cliente
 // No requiere autenticación: el slug es el identificador del portal
 
-const SB_URL = process.env.SUPABASE_URL;
+// Normalizar SB_URL: quitar barra final para evitar URLs con //
+const SB_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SB_KEY = process.env.SUPABASE_SERVICE_KEY;
 const BUCKET = 'client-docs';
 const SLUG_RE = /^[a-z0-9-]+$/;
@@ -16,13 +17,14 @@ function extractPath(value) {
   const publicMarker = `/object/public/${BUCKET}/`;
   const signMarker   = `/object/sign/${BUCKET}/`;
   if (value.includes(publicMarker)) {
-    return value.split(publicMarker)[1];
+    // Quitar también query params o fragmentos que pudieran venir pegados
+    return value.split(publicMarker)[1].split('?')[0].split('#')[0];
   }
   if (value.includes(signMarker)) {
-    return value.split(signMarker)[1].split('?')[0];
+    return value.split(signMarker)[1].split('?')[0].split('#')[0];
   }
-  // Asumimos que ya es un path relativo
-  if (!value.startsWith('http')) return value;
+  // Asumimos que ya es un path relativo; limpiar barra inicial si existe
+  if (!value.startsWith('http')) return value.replace(/^\/+/, '');
   return null;
 }
 
@@ -71,10 +73,19 @@ export default async function handler(req, res) {
 
   if (!signRes.ok) {
     const err = await signRes.json().catch(() => ({}));
-    console.error('[get-doc] Error generando URL firmada:', err);
-    return res.status(502).json({ error: 'No se pudo generar el acceso al documento' });
+    const msg = err.error || err.message || 'Error desconocido';
+    console.error('[get-doc] Error generando URL firmada:', msg, '| path:', path);
+    return res.status(502).json({ error: `No se pudo generar el acceso al documento: ${msg}` });
   }
 
-  const { signedURL } = await signRes.json();
-  return res.redirect(302, `${SB_URL}${signedURL}`);
+  const body = await signRes.json();
+  const signedURL = body.signedURL || body.signedUrl;
+  if (!signedURL) {
+    console.error('[get-doc] Supabase no devolvió signedURL. Respuesta:', body);
+    return res.status(502).json({ error: 'URL firmada no recibida' });
+  }
+
+  // signedURL empieza con /storage/v1/... — lo anteponemos al base URL sin barra extra
+  const finalURL = signedURL.startsWith('http') ? signedURL : `${SB_URL}${signedURL}`;
+  return res.redirect(302, finalURL);
 }
