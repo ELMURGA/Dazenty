@@ -55,50 +55,9 @@ export default async function handler(req, res) {
   if (!storedValue) return res.status(404).json({ error: 'Documento no disponible' });
 
   const path = extractPath(storedValue);
-  console.log('[get-doc] storedValue:', storedValue, '| extractedPath:', path, '| bucket:', BUCKET);
-  if (!path) return res.status(400).json({ error: 'Ruta de archivo inválida', debug: storedValue });
+  if (!path) return res.status(400).json({ error: 'Ruta de archivo inválida' });
 
-  // Verificar que el archivo existe en Storage antes de intentar firmarlo
-  const infoRes = await fetch(
-    `${SB_URL}/storage/v1/object/info/authenticated/${BUCKET}/${path}`,
-    { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-  );
-  if (!infoRes.ok) {
-    const infoErr = await infoRes.json().catch(() => ({}));
-    console.error('[get-doc] Archivo no encontrado en Storage:', infoRes.status, JSON.stringify(infoErr), '| path:', path, '| bucket:', BUCKET);
-    return res.status(404).json({ error: 'Archivo no encontrado en Storage', debug: { path, bucket: BUCKET, status: infoRes.status, detail: infoErr } });
-  }
-  console.log('[get-doc] Archivo confirmado en Storage, generando URL firmada...');
-
-  // Generar URL firmada válida 1 hora
-  const signRes = await fetch(
-    `${SB_URL}/storage/v1/object/sign/${BUCKET}/${path}`,
-    {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ expiresIn: 3600 }),
-    }
-  );
-
-  if (!signRes.ok) {
-    const err = await signRes.json().catch(() => ({}));
-    const msg = err.error || err.message || 'Error desconocido';
-    console.error('[get-doc] Error generando URL firmada:', msg, '| path:', path);
-    return res.status(502).json({ error: `No se pudo generar el acceso al documento: ${msg}` });
-  }
-
-  const body = await signRes.json();
-  const signedURL = body.signedURL || body.signedUrl;
-  if (!signedURL) {
-    console.error('[get-doc] Supabase no devolvió signedURL. Respuesta:', body);
-    return res.status(502).json({ error: 'URL firmada no recibida' });
-  }
-
-  // signedURL empieza con /storage/v1/... — lo anteponemos al base URL sin barra extra
-  const finalURL = signedURL.startsWith('http') ? signedURL : `${SB_URL}${signedURL}`;
-  return res.redirect(302, finalURL);
+  // Bucket público: redirigir directamente a la URL pública de Supabase Storage
+  const publicURL = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  return res.redirect(302, publicURL);
 }

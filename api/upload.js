@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Error al subir el archivo a Storage' });
   }
 
-  // Guardar solo el path relativo en Supabase.
-  // El endpoint /api/get-doc genera la URL firmada al vuelo cada vez que el cliente accede.
-  return res.json({ publicUrl: path });
+  // Devolver la URL pública completa (bucket público)
+  const publicUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  return res.json({ publicUrl });
 }
