@@ -55,7 +55,8 @@ export default async function handler(req, res) {
   if (!storedValue) return res.status(404).json({ error: 'Documento no disponible' });
 
   const path = extractPath(storedValue);
-  if (!path) return res.status(400).json({ error: 'Ruta de archivo inválida' });
+  console.log('[get-doc] storedValue:', storedValue, '| extractedPath:', path, '| bucket:', BUCKET);
+  if (!path) return res.status(400).json({ error: 'Ruta de archivo inválida', debug: storedValue });
 
   // Generar URL firmada válida 1 hora
   const signRes = await fetch(
