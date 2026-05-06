@@ -5,3 +5,6 @@ OPTIMIZACIONES.txt
 .env
 .env.local
 .env*.local
+node_modules/
+input.css
+tailwind.config.js

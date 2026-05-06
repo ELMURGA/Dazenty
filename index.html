@@ -37,17 +37,13 @@
     <meta name="twitter:image" content="https://dazenty.com/img/favicon.webp">
     <meta name="twitter:site" content="@DAzenty">
 
-    <!-- Rendimiento: DNS Prefetch y Preconnect -->
+    <!-- Rendimiento: DNS Prefetch y Preconnect (solo orígenes críticos) -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Fuentes con display=swap para no bloquear renderizado -->
     <link
@@ -55,31 +51,9 @@
         rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            blue: '#d97762',
-                            dark: '#050505',
-                            gray: '#121212',
-                            light: '#EAEAEA'
-                        }
-                    },
-                    maxWidth: {
-                        'screen-2xl': '1440px',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS (purged, self-hosted) -->
+    <link rel="preload" href="css/tailwind.min.css" as="style">
+    <link rel="stylesheet" href="css/tailwind.min.css">
 
     <!-- CSS Personalizado -->
     <link rel="preload" href="css/main.css?v=2" as="style">
@@ -506,7 +480,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="img/logodazenty.webp" alt="Dazenty" class="h-14 w-auto">
+                        <img src="img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-14 w-auto">
                         <span class="font-display font-bold text-lg">Dazenty</span>
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.

@@ -2,7 +2,13 @@
   "name": "dazenty",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i input.css -o css/tailwind.min.css --minify"
+  },
   "dependencies": {
     "stripe": "^16.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
   }
 }
