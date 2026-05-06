@@ -2,14 +2,14 @@
 window.addEventListener('load', () => {
     const loader = document.querySelector('.page-loader');
     if (loader) {
-        // Wait for letter animations to complete
+        // Brief loader — keep it fast for LCP
         setTimeout(() => {
             loader.classList.add('hidden');
             // Remove from DOM after transition
             setTimeout(() => {
                 loader.style.display = 'none';
-            }, 800);
-        }, 2000); // 2 seconds for all letters to decompose
+            }, 300);
+        }, 400);
     }
 });
 

@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Fuentes */
 body {
     font-family: 'Inter', sans-serif;
@@ -220,7 +216,7 @@ select option {
     justify-content: center;
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .page-loader.hidden {
