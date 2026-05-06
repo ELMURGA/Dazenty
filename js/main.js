@@ -261,19 +261,48 @@ btns.forEach(btn => {
 // Contact Form — AJAX para evitar que la página navegue/suba al enviar
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-    // iOS fix: detener Lenis y el nav-scroll mientras un campo está activo
-    // para evitar que el teclado virtual cause scroll involuntario al top
+    // iOS FIX: el teclado virtual hace que Safari salte al top cuando el body
+    // tiene overflow:hidden (que Lenis aplica). Solución: guardar la posición
+    // en touchstart (antes de que el teclado abra), parar Lenis, y restaurar
+    // la posición inmediatamente con requestAnimationFrame + visualViewport.
+
+    let _savedScrollY = 0;
+
+    // touchstart se dispara ANTES de focusin → capturamos posición a tiempo
+    contactForm.addEventListener('touchstart', () => {
+        _savedScrollY = window.scrollY;
+    }, { passive: true });
+
     contactForm.addEventListener('focusin', () => {
         _formActive = true;
         if (lenis) lenis.stop();
+        // Restaurar posición en el siguiente frame (tras el salto de iOS)
+        requestAnimationFrame(() => {
+            window.scrollTo(0, _savedScrollY);
+            // Segundo frame por si iOS necesita dos ciclos
+            requestAnimationFrame(() => {
+                window.scrollTo(0, _savedScrollY);
+            });
+        });
     });
+
+    // visualViewport: detecta cuando el teclado abre/cierra para re-anclarse
+    if ('visualViewport' in window) {
+        window.visualViewport.addEventListener('resize', () => {
+            const active = document.activeElement;
+            const isField = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
+            if (isField) {
+                // Teclado acaba de abrirse → restaurar posición guardada
+                window.scrollTo(0, _savedScrollY);
+            }
+        });
+    }
+
     contactForm.addEventListener('focusout', () => {
         // Esperar a que el teclado iOS cierre completamente (~400ms)
         setTimeout(() => {
             _formActive = false;
             if (lenis) {
-                // Sincronizar posición de Lenis con la posición nativa actual
-                // para que no salte a la posición pre-teclado al reanudar
                 lenis.scrollTo(window.scrollY, { immediate: true });
                 lenis.start();
             }
