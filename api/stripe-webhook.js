@@ -75,11 +75,17 @@ function verifySignature(rawBody, signature, secret) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const rawBody  = await getRawBody(req);
+  const rawBody   = await getRawBody(req);
   const signature = req.headers['stripe-signature'];
 
+  // Si no hay webhook secret configurado, logueamos y rechazamos (no procesar sin verificar)
+  if (!STRIPE_WEBHOOK_SECRET) {
+    console.error('[stripe-webhook] STRIPE_WEBHOOK_SECRET no está configurado en las variables de entorno de Vercel');
+    return res.status(500).json({ error: 'Webhook secret no configurado' });
+  }
+
   if (!verifySignature(rawBody, signature, STRIPE_WEBHOOK_SECRET)) {
-    console.warn('[stripe-webhook] Firma inválida');
+    console.warn('[stripe-webhook] Firma inválida. Signature header:', signature?.substring(0, 40));
     return res.status(400).json({ error: 'Firma inválida' });
   }
 
@@ -91,24 +97,41 @@ export default async function handler(req, res) {
   }
 
   const type = event.type;
+  console.log('[stripe-webhook] Evento recibido:', type, '| ID:', event.id);
 
   // ── checkout.session.completed — primer pago (único o suscripción nueva) ──
   if (type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    // Si es suscripción, guardar el ID en Supabase
+    let nextBillingDate = null;
+
+    // Si es suscripción, guardar el ID en Supabase y obtener próximo cobro
     if (session.mode === 'subscription' && session.subscription && session.payment_link) {
       await saveSubscriptionFromPaymentLink(session.payment_link, session.subscription);
+      // Obtener el período actual para informar al cliente
+      try {
+        const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${session.subscription}`, {
+          headers: { 'Authorization': `Bearer ${STRIPE_SECRET_KEY}` },
+        });
+        const sub = await subRes.json();
+        if (sub.current_period_end) {
+          nextBillingDate = new Date(sub.current_period_end * 1000)
+            .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+      } catch (e) {
+        console.error('[stripe-webhook] Error obteniendo subscription para nextBillingDate:', e);
+      }
     }
 
     await sendPaymentEmail({
       type: 'Pago completado',
-      customerEmail: session.customer_details?.email || session.customer_email || '—',
-      customerName:  session.customer_details?.name  || '—',
-      amount:        formatAmount(session.amount_total, session.currency),
-      mode:          session.mode === 'subscription' ? 'Suscripción nueva' : 'Pago único',
-      paymentLinkId: session.payment_link || '—',
-      sessionId:     session.id,
+      customerEmail:   session.customer_details?.email || session.customer_email || '—',
+      customerName:    session.customer_details?.name  || '—',
+      amount:          formatAmount(session.amount_total, session.currency),
+      mode:            session.mode === 'subscription' ? 'Suscripción nueva' : 'Pago único',
+      paymentLinkId:   session.payment_link || '—',
+      sessionId:       session.id,
+      nextBillingDate,
     });
   }
 
@@ -116,21 +139,26 @@ export default async function handler(req, res) {
   if (type === 'invoice.paid') {
     const invoice = event.data.object;
 
+    let nextBillingDate = null;
     // Actualizar fecha de próximo cargo
     if (invoice.subscription && invoice.lines?.data?.[0]?.period?.end) {
-      await updateClientPeriodEnd(invoice.subscription, invoice.lines.data[0].period.end);
+      const periodEnd = invoice.lines.data[0].period.end;
+      await updateClientPeriodEnd(invoice.subscription, periodEnd);
+      nextBillingDate = new Date(periodEnd * 1000)
+        .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     const isFirstPayment = invoice.billing_reason === 'subscription_create';
     if (!isFirstPayment) { // Los primeros ya se notifican vía checkout.session.completed
       await sendPaymentEmail({
         type: 'Cobro recurrente de suscripción',
-        customerEmail: invoice.customer_email || '—',
-        customerName:  invoice.customer_name  || '—',
-        amount:        formatAmount(invoice.amount_paid, invoice.currency),
-        mode:          'Suscripción (renovación)',
-        paymentLinkId: '—',
-        sessionId:     invoice.id,
+        customerEmail:   invoice.customer_email || '—',
+        customerName:    invoice.customer_name  || '—',
+        amount:          formatAmount(invoice.amount_paid, invoice.currency),
+        mode:            'Suscripción (renovación)',
+        paymentLinkId:   '—',
+        sessionId:       invoice.id,
+        nextBillingDate,
       });
     }
   }
@@ -146,7 +174,10 @@ export default async function handler(req, res) {
 
 // ─── Supabase: guardar suscripción al completar pago ─────────────────────────
 async function saveSubscriptionFromPaymentLink(paymentLinkId, subscriptionId) {
-  if (!SB_URL || !SB_KEY || !STRIPE_SECRET_KEY) return;
+  if (!SB_URL || !SB_KEY || !STRIPE_SECRET_KEY) {
+    console.error('[stripe-webhook] saveSubscriptionFromPaymentLink: faltan variables de entorno', { SB_URL: !!SB_URL, SB_KEY: !!SB_KEY, STRIPE_SECRET_KEY: !!STRIPE_SECRET_KEY });
+    return;
+  }
   try {
     // Obtener metadata del payment link (contiene client_slug)
     const plRes = await fetch(`https://api.stripe.com/v1/payment_links/${paymentLinkId}`, {
@@ -154,7 +185,11 @@ async function saveSubscriptionFromPaymentLink(paymentLinkId, subscriptionId) {
     });
     const pl = await plRes.json();
     const slug = pl?.metadata?.client_slug;
-    if (!slug) return;
+    console.log('[stripe-webhook] Payment link metadata slug:', slug, '| paymentLinkId:', paymentLinkId);
+    if (!slug) {
+      console.error('[stripe-webhook] Sin client_slug en metadata del payment link:', JSON.stringify(pl?.metadata));
+      return;
+    }
 
     // Obtener el período actual de la suscripción
     const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${subscriptionId}`, {
@@ -176,6 +211,13 @@ async function saveSubscriptionFromPaymentLink(paymentLinkId, subscriptionId) {
         stripe_current_period_end:  sub.current_period_end || null,
         updated_at: new Date().toISOString(),
       }),
+    }).then(async r => {
+      if (!r.ok) {
+        const txt = await r.text();
+        console.error('[stripe-webhook] Error PATCH Supabase:', r.status, txt);
+      } else {
+        console.log('[stripe-webhook] Supabase actualizado OK para slug:', slug, '| sub:', subscriptionId);
+      }
     });
   } catch (err) {
     console.error('[stripe-webhook] saveSubscriptionFromPaymentLink error:', err);
@@ -218,7 +260,7 @@ async function updateClientSubscriptionStatus(subscriptionId, status) {
   }
 }
 
-async function sendPaymentEmail({ type, customerEmail, customerName, amount, mode, paymentLinkId, sessionId }) {
+async function sendPaymentEmail({ type, customerEmail, customerName, amount, mode, paymentLinkId, sessionId, nextBillingDate }) {
   const isRecurring = mode.toLowerCase().includes('renovación');
   const modeLabel   = isRecurring ? 'Renovación de suscripción' : mode;
 
@@ -234,7 +276,7 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
 
   <!-- LOGO -->
   <tr><td align="center" style="padding-bottom:36px">
-    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="34" style="height:34px;width:auto;display:block">
+    <img src="https://dazenty.com/img/logoheader.webp" alt="Dazenty" height="60" style="height:60px;width:auto;display:block">
   </td></tr>
 
   <!-- CARD PRINCIPAL -->
@@ -294,6 +336,10 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
             <td style="padding:11px 0;color:#444;font-size:12px">Referencia</td>
             <td style="padding:11px 0;color:#333;font-size:11px;text-align:right;font-family:'Courier New',monospace">${esc(sessionId)}</td>
           </tr>
+          ${nextBillingDate ? `<tr>
+            <td style="padding:11px 0;color:#555;font-size:13px">Próximo cobro</td>
+            <td style="padding:11px 0;color:#d97762;font-size:13px;text-align:right;font-weight:600">${esc(nextBillingDate)}</td>
+          </tr>` : ''}
         </table>
       </td></tr>
 
@@ -347,7 +393,7 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px">
 
   <tr><td align="center" style="padding-bottom:28px">
-    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="30" style="height:30px;width:auto;display:block">
+    <img src="https://dazenty.com/img/logoheader.webp" alt="Dazenty" height="60" style="height:60px;width:auto;display:block">
   </td></tr>
 
   <tr><td style="background:#111111;border:1px solid #1e1e1e;border-radius:16px;overflow:hidden">
