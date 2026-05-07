@@ -1,6 +1,6 @@
-const Stripe = require('stripe');
+import Stripe from 'stripe';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.method !== 'POST') {
