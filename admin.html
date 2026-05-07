@@ -134,9 +134,8 @@
       <div class="relative mb-5">
         <input type="password" id="loginPassword" placeholder="••••••••••••" class="w-full pr-11"
                onkeydown="if(event.key==='Enter') doLogin()">
-        <button type="button" id="togglePwdBtn"
-          onmousedown="event.preventDefault(); toggleLoginPwd()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 select-none">
+        <button type="button" id="togglePwdBtn" onclick="toggleLoginPwd()"
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:#9ca3af;background:none;border:none;cursor:pointer;padding:4px 8px">
           Ver
         </button>
       </div>
@@ -144,7 +143,7 @@
         class="w-full bg-brand-blue text-black font-display font-bold rounded-xl py-3 hover:opacity-90 transition-opacity">
         Acceder
       </button>
-      <p id="loginError" class="text-red-400 text-sm text-center mt-4 hidden">Contraseña incorrecta</p>
+      <p id="loginError" style="display:none;color:#f87171;font-size:14px;text-align:center;margin-top:16px"></p>
     </div>
   </div>
 </div>
@@ -472,8 +471,9 @@ async function doLogin() {
       sessionStorage.setItem('dz_admin', pwd);
       showDashboard();
     } else {
-      document.getElementById('loginError').textContent = res.status === 401 ? 'Contraseña incorrecta' : `Error ${res.status} — contacta soporte`;
-      document.getElementById('loginError').classList.remove('hidden');
+      const errEl = document.getElementById('loginError');
+      errEl.textContent = res.status === 401 ? 'Contraseña incorrecta' : `Error ${res.status} — revisa las variables de entorno en Vercel`;
+      errEl.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'Acceder';
       document.getElementById('loginPassword').value = '';
