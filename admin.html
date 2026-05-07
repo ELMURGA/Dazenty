@@ -322,28 +322,77 @@
       <!-- Propuesta -->
       <div>
         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Propuesta</label>
-        <div class="dropzone" id="dropProposal" onclick="document.getElementById('fileProposal').click()"
-             ondragover="dragOver(event,'dropProposal')" ondragleave="dragLeave('dropProposal')" ondrop="dropFile(event,'proposal')">
-          <input type="file" id="fileProposal" accept="application/pdf" onchange="handleFile(event,'proposal')">
-          <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-          </svg>
-          <p class="text-xs text-gray-500" id="proposalLabel">Arrastra el PDF o haz clic</p>
+        <!-- Estado: ya subido -->
+        <div id="proposalUploaded" style="display:none"
+             class="flex items-center justify-between gap-3 bg-green-500/5 border border-green-500/20 rounded-xl px-4 py-3 mb-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="proposalFileName" class="text-xs text-green-400 truncate">PDF subido</span>
+          </div>
+          <button type="button" onclick="replacePdf('proposal')" class="text-xs text-gray-500 hover:text-white shrink-0 underline transition-colors">Reemplazar</button>
         </div>
-        <input type="text" id="m-pdfProposal" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+        <!-- Estado: sin PDF / subir -->
+        <div id="dropProposalWrap">
+          <div class="dropzone" id="dropProposal" onclick="document.getElementById('fileProposal').click()"
+               ondragover="dragOver(event,'dropProposal')" ondragleave="dragLeave('dropProposal')" ondrop="dropFile(event,'proposal')">
+            <input type="file" id="fileProposal" accept="application/pdf" onchange="handleFile(event,'proposal')">
+            <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <p class="text-xs text-gray-500" id="proposalLabel">Arrastra el PDF o haz clic</p>
+          </div>
+        </div>
+        <input type="text" id="m-pdfProposal" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs" oninput="syncPdfUrl('proposal')">
       </div>
       <!-- Factura -->
       <div>
         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Factura</label>
-        <div class="dropzone" id="dropInvoice" onclick="document.getElementById('fileInvoice').click()"
-             ondragover="dragOver(event,'dropInvoice')" ondragleave="dragLeave('dropInvoice')" ondrop="dropFile(event,'invoice')">
-          <input type="file" id="fileInvoice" accept="application/pdf" onchange="handleFile(event,'invoice')">
-          <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-          </svg>
-          <p class="text-xs text-gray-500" id="invoiceLabel">Arrastra el PDF o haz clic</p>
+        <!-- Estado: ya subido -->
+        <div id="invoiceUploaded" style="display:none"
+             class="flex items-center justify-between gap-3 bg-green-500/5 border border-green-500/20 rounded-xl px-4 py-3 mb-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="invoiceFileName" class="text-xs text-green-400 truncate">PDF subido</span>
+          </div>
+          <button type="button" onclick="replacePdf('invoice')" class="text-xs text-gray-500 hover:text-white shrink-0 underline transition-colors">Reemplazar</button>
         </div>
-        <input type="text" id="m-pdfInvoice" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs">
+        <!-- Estado: sin PDF / subir -->
+        <div id="dropInvoiceWrap">
+          <div class="dropzone" id="dropInvoice" onclick="document.getElementById('fileInvoice').click()"
+               ondragover="dragOver(event,'dropInvoice')" ondragleave="dragLeave('dropInvoice')" ondrop="dropFile(event,'invoice')">
+            <input type="file" id="fileInvoice" accept="application/pdf" onchange="handleFile(event,'invoice')">
+            <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <p class="text-xs text-gray-500" id="invoiceLabel">Arrastra el PDF o haz clic</p>
+          </div>
+        </div>
+        <input type="text" id="m-pdfInvoice" placeholder="O pega la URL del PDF aquí" class="mt-2 text-xs" oninput="syncPdfUrl('invoice')">
+      </div>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+
+    <!-- SUSCRIPCIÓN STRIPE -->
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Estado de suscripción Stripe</p>
+    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">ID Suscripción Stripe</label>
+        <input type="text" id="m-subId" placeholder="sub_xxxxxxxxxxxx">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Estado</label>
+        <select id="m-subStatus" class="w-full bg-brand-gray border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-blue/50">
+          <option value="">Sin suscripción</option>
+          <option value="active">Activa</option>
+          <option value="canceling">Cancelando (activa hasta fin de período)</option>
+          <option value="canceled">Cancelada</option>
+          <option value="past_due">Pago vencido</option>
+        </select>
       </div>
     </div>
 
@@ -553,6 +602,8 @@ function openModal(id) {
   document.getElementById('m-status').value = 'active';
   document.getElementById('proposalLabel').textContent = 'Arrastra el PDF o haz clic';
   document.getElementById('invoiceLabel').textContent  = 'Arrastra el PDF o haz clic';
+  syncPdfUrl('proposal');
+  syncPdfUrl('invoice');
 
   if (id) {
     // Modo edición
@@ -576,6 +627,10 @@ function openModal(id) {
       document.getElementById('m-stripeOnetime').value  = c.stripe_onetime_link || '';
       document.getElementById('m-pdfProposal').value    = c.pdf_proposal_url || '';
       document.getElementById('m-pdfInvoice').value     = c.pdf_invoice_url || '';
+      syncPdfUrl('proposal');
+      syncPdfUrl('invoice');
+      document.getElementById('m-subId').value           = c.stripe_subscription_id || '';
+      document.getElementById('m-subStatus').value      = c.stripe_subscription_status || '';
       updateSlugPreview(c.slug);
     }
   } else {
@@ -655,8 +710,10 @@ async function saveClient() {
     stripe_monthly_link: document.getElementById('m-stripeMonthly').value.trim(),
     stripe_annual_link:  document.getElementById('m-stripeAnnual').value.trim(),
     stripe_onetime_link: document.getElementById('m-stripeOnetime').value.trim(),
-    pdf_proposal_url:    document.getElementById('m-pdfProposal').value.trim(),
-    pdf_invoice_url:     document.getElementById('m-pdfInvoice').value.trim(),
+    pdf_proposal_url:         document.getElementById('m-pdfProposal').value.trim(),
+    pdf_invoice_url:          document.getElementById('m-pdfInvoice').value.trim(),
+    stripe_subscription_id:   document.getElementById('m-subId').value.trim() || null,
+    stripe_subscription_status: document.getElementById('m-subStatus').value || null,
   };
 
   try {
@@ -714,7 +771,31 @@ async function confirmDelete() {
 }
 
 // ─── PDF Upload ───────────────────────────────────────────────────────────────
-function dragOver(e, zoneId) {
+// Actualiza la UI según si hay URL o no en el input de texto
+function syncPdfUrl(type) {
+  const urlId       = type === 'proposal' ? 'm-pdfProposal' : 'm-pdfInvoice';
+  const uploadedId  = type === 'proposal' ? 'proposalUploaded' : 'invoiceUploaded';
+  const wrapId      = type === 'proposal' ? 'dropProposalWrap' : 'dropInvoiceWrap';
+  const fileNameId  = type === 'proposal' ? 'proposalFileName' : 'invoiceFileName';
+  const url = document.getElementById(urlId).value.trim();
+  if (url) {
+    // Mostrar bloque "ya subido" con el nombre del archivo extraído de la URL
+    const name = url.split('/').pop().split('?')[0] || 'PDF subido';
+    document.getElementById(fileNameId).textContent = decodeURIComponent(name);
+    document.getElementById(uploadedId).style.display = 'flex';
+    document.getElementById(wrapId).style.display = 'none';
+  } else {
+    document.getElementById(uploadedId).style.display = 'none';
+    document.getElementById(wrapId).style.display = 'block';
+  }
+}
+
+// Botón "Reemplazar": limpia la URL y muestra el dropzone
+function replacePdf(type) {
+  const urlId = type === 'proposal' ? 'm-pdfProposal' : 'm-pdfInvoice';
+  document.getElementById(urlId).value = '';
+  syncPdfUrl(type);
+}
   e.preventDefault();
   document.getElementById(zoneId).classList.add('drag-over');
 }
@@ -761,7 +842,7 @@ async function processFile(file, type) {
     if (!res.ok) throw new Error((await res.json()).error || 'Error al subir');
     const { publicUrl } = await res.json();
     document.getElementById(urlId).value = publicUrl;
-    document.getElementById(labelId).textContent = file.name;
+    syncPdfUrl(type);
     showToast('PDF subido correctamente');
   } catch (err) {
     document.getElementById(labelId).textContent = 'Arrastra el PDF o haz clic';
