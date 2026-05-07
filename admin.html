@@ -454,10 +454,10 @@ let deleteId  = null;
 // ─── Login ───────────────────────────────────────────────────────────────────
 function toggleLoginPwd() {
   const input = document.getElementById('loginPassword');
-  const isHidden = input.type === 'password';
-  input.type = isHidden ? 'text' : 'password';
-  document.getElementById('eyeIcon').classList.toggle('hidden', isHidden);
-  document.getElementById('eyeOffIcon').classList.toggle('hidden', !isHidden);
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  document.getElementById('eyeIcon').style.display    = show ? 'none' : 'block';
+  document.getElementById('eyeOffIcon').style.display = show ? 'block' : 'none';
 }
 
 async function doLogin() {
