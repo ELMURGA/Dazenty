@@ -2,6 +2,7 @@
   "name": "dazenty",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build:css": "tailwindcss -i input.css -o css/tailwind.min.css --minify"
   },
