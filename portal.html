@@ -606,6 +606,7 @@ function setPayBtnState(link, type) {
     payBtn.style.opacity = '1';
     payBtn.style.pointerEvents = 'auto';
     payBtn.querySelector('span').textContent = labels[type] || 'Pagar ahora';
+    payBtn.onclick = () => { window.va && window.va('event', { name: 'Payment Link Click', data: { plan: type } }); };
   } else {
     payBtn.href = '#';
     payBtn.style.opacity = '0.35';
@@ -639,6 +640,7 @@ async function confirmCancel() {
   btn.textContent = 'Cancelando...';
 
   try {
+    window.va && window.va('event', { name: 'Cancel Subscription', data: { slug } });
     const res  = await fetch('/api/stripe-cancel', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -333,6 +333,7 @@ if (contactForm) {
             });
 
             if (res.ok) {
+                window.va && window.va('event', { name: 'Contact Form Submitted', data: { service: payload.service } });
                 contactForm.reset();
                 submitBtn.textContent = '✓ Mensaje enviado. ¡Gracias!';
                 submitBtn.style.background = '#22c55e';
