@@ -32,7 +32,8 @@ const sbHeaders = {
 function isAdmin(req) {
   const pass     = String(req.headers['x-admin-password'] || '');
   const expected = String(ADMIN_PW || '');
-  if (!pass || !expected) return false;
+  if (!expected) return 'no_env';
+  if (!pass) return false;
   const maxLen = Math.max(pass.length, expected.length);
   const a = Buffer.alloc(maxLen);
   const b = Buffer.alloc(maxLen);
@@ -107,7 +108,11 @@ export default async function handler(req, res) {
   }
 
   // ── A partir de aquí, se requiere autenticación admin ─────────────────────
-  if (!isAdmin(req)) {
+  const adminCheck = isAdmin(req);
+  if (adminCheck === 'no_env') {
+    return res.status(503).json({ error: 'ADMIN_PASSWORD no configurada en Vercel' });
+  }
+  if (!adminCheck) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
