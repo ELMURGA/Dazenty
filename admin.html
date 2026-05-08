@@ -132,7 +132,7 @@
     <div class="bg-brand-gray border border-white/5 rounded-2xl p-8">
       <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Contraseña</label>
       <div class="relative mb-5">
-        <input type="password" id="loginPassword" placeholder="Introduce tu contraseña" autocomplete="current-password" class="w-full pr-16"
+        <input type="password" id="loginPassword" placeholder="Introduce tu contraseña" autocomplete="off" class="w-full pr-16"
                onkeydown="if(event.key==='Enter') doLogin()">
         <button type="button" id="togglePwdBtn" onclick="toggleLoginPwd()"
           style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:#9ca3af;background:none;border:none;cursor:pointer;padding:4px 8px;z-index:10;user-select:none">
@@ -516,7 +516,18 @@ async function loadClients() {
     const res = await fetch('/api/clients', {
       headers: { 'x-admin-password': adminPass }
     });
-    clients = await res.json();
+    if (res.status === 401) {
+      sessionStorage.removeItem('dz_admin');
+      adminPass = '';
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      const errEl = document.getElementById('loginError');
+      errEl.textContent = 'Sesión caducada o contraseña incorrecta';
+      errEl.style.display = 'block';
+      return;
+    }
+    const data = await res.json();
+    clients = Array.isArray(data) ? data : [];
     renderClients();
   } catch {
     showToast('Error al cargar clientes', 'error');
@@ -696,11 +707,19 @@ document.addEventListener('DOMContentLoaded', () => {
     slugInput.addEventListener('input', () => updateSlugPreview(slugInput.value));
   }
 
-  // Recuperar sesión
+  // Recuperar sesión — validar contra el servidor antes de mostrar el dashboard
   const savedPass = sessionStorage.getItem('dz_admin');
   if (savedPass) {
-    adminPass = savedPass;
-    showDashboard();
+    fetch('/api/clients', { headers: { 'x-admin-password': savedPass } })
+      .then(r => {
+        if (r.ok) {
+          adminPass = savedPass;
+          showDashboard();
+        } else {
+          sessionStorage.removeItem('dz_admin');
+        }
+      })
+      .catch(() => { sessionStorage.removeItem('dz_admin'); });
   }
 });
 
