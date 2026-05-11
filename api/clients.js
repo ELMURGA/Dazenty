@@ -118,11 +118,23 @@ export default async function handler(req, res) {
 
   // ── GET todos (admin) ──────────────────────────────────────────────────────
   if (req.method === 'GET') {
-    const r = await fetch(
-      `${SB_URL}/rest/v1/clients?select=*&order=created_at.desc`,
-      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-    );
-    return res.json(await r.json());
+    try {
+      if (!SB_URL || !SB_KEY) {
+        return res.status(503).json({ error: 'Variables SUPABASE_URL o SUPABASE_SERVICE_KEY no configuradas en Vercel' });
+      }
+      const r = await fetch(
+        `${SB_URL}/rest/v1/clients?select=*&order=created_at.desc`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+      );
+      if (!r.ok) {
+        const errBody = await r.text();
+        return res.status(502).json({ error: `Supabase error ${r.status}`, detail: errBody.slice(0, 300) });
+      }
+      return res.json(await r.json());
+    } catch (err) {
+      console.error('[clients GET admin]', err);
+      return res.status(503).json({ error: 'No se pudo conectar con Supabase. El proyecto puede estar pausado (plan gratuito). Ve a supabase.com y reactívalo.', detail: err.message });
+    }
   }
 
   // ── POST crear (admin) ─────────────────────────────────────────────────────
