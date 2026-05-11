@@ -109,9 +109,9 @@
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased">
 
   <!-- Banner: pago en proceso -->
-  <div id="payment-processing-banner" style="display:none"
+  <div id="payment-processing-banner"
        class="fixed top-0 inset-x-0 z-40 border-b border-brand-blue/25 backdrop-blur-sm"
-       style="background:rgba(217,119,98,0.07)">
+       style="display:none;background:rgba(217,119,98,0.07)">
     <div class="max-w-3xl mx-auto px-6 py-3 flex items-center justify-center gap-3">
       <div class="w-3.5 h-3.5 border-2 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin flex-shrink-0"></div>
       <p class="text-sm text-brand-blue font-medium">Confirmando tu pago — tu suscripción se activará en segundos…</p>
@@ -685,6 +685,11 @@ function pollForSubscription(slug) {
 
 // ─── Cancelación de suscripción ──────────────────────────────────────────────
 function showCancelConfirm() {
+  // Copiar la fecha del próximo cobro al modal de confirmación
+  const nextBilling = document.getElementById('subNextBillingEl')?.textContent;
+  if (nextBilling && nextBilling !== '—') {
+    document.getElementById('cancelUntilEl').textContent = nextBilling;
+  }
   document.getElementById('subInfoArea').style.display      = 'none';
   document.getElementById('subCancelConfirm').style.display = 'block';
 }
@@ -715,6 +720,7 @@ async function confirmCancel() {
 
     if (data.active_until) {
       document.getElementById('canceledUntilEl').textContent = data.active_until;
+      document.getElementById('cancelUntilEl').textContent   = data.active_until;
     }
     document.getElementById('subCancelConfirm').style.display = 'none';
     document.getElementById('subCanceledState').style.display = 'block';

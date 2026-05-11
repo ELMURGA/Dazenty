@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 
   <!-- LOGO -->
   <tr><td align="center" style="padding-bottom:32px">
-    <img src="https://dazenty.com/img/logoheader.webp" alt="Dazenty" height="60" style="height:60px;width:auto;display:block">
+    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="90" style="height:90px;width:auto;display:block">
   </td></tr>
 
   <!-- CARD -->
