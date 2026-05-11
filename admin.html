@@ -428,28 +428,55 @@ async function showDashboard() {
 }
 
 async function loadClients() {
+  // Mostrar estado "cargando"
+  document.getElementById('clientGrid').innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#9ca3af;font-size:14px">
+      Cargando clientes…
+    </div>`;
+  document.getElementById('emptyState').style.display = 'none';
+
   try {
     const res = await fetch('/api/clients', {
       headers: { 'x-admin-password': adminPass }
     });
+
+    // Leer el body siempre para diagnóstico
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+
     if (res.status === 401 || res.status === 503) {
       const msg = res.status === 503
         ? 'La variable ADMIN_PASSWORD no está configurada en Vercel.'
-        : 'Contraseña incorrecta. La constante ADMIN_PASS en admin.html no coincide con ADMIN_PASSWORD en Vercel.';
+        : 'Contraseña incorrecta — ADMIN_PASS en admin.html ≠ ADMIN_PASSWORD en Vercel.';
       document.getElementById('clientGrid').innerHTML = `
         <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
           <p style="font-size:2rem;margin-bottom:12px">🔑</p>
-          <p style="color:#f87171;font-weight:600;margin-bottom:8px">Error de autenticación (${res.status})</p>
+          <p style="color:#f87171;font-weight:600;margin-bottom:8px">Error ${res.status}</p>
           <p style="color:#9ca3af;font-size:14px;max-width:400px;margin:0 auto">${msg}</p>
         </div>`;
-      document.getElementById('emptyState').style.display = 'none';
       return;
     }
-    const data = await res.json();
+
+    if (!res.ok) {
+      document.getElementById('clientGrid').innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+          <p style="font-size:2rem;margin-bottom:12px">⚠️</p>
+          <p style="color:#f87171;font-weight:600;margin-bottom:8px">Error ${res.status} de la API</p>
+          <p style="color:#9ca3af;font-size:13px;max-width:500px;margin:0 auto;word-break:break-all">${JSON.stringify(data)}</p>
+        </div>`;
+      return;
+    }
+
     clients = Array.isArray(data) ? data : [];
     renderClients();
-  } catch {
-    showToast('Error al cargar clientes', 'error');
+  } catch (err) {
+    document.getElementById('clientGrid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+        <p style="font-size:2rem;margin-bottom:12px">❌</p>
+        <p style="color:#f87171;font-weight:600;margin-bottom:8px">Error de conexión</p>
+        <p style="color:#9ca3af;font-size:13px;max-width:500px;margin:0 auto">${err.message}</p>
+      </div>`;
   }
 }
 
