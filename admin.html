@@ -115,43 +115,12 @@
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
 
-<!-- ═══════════════════════════════════════════════════════════════
-     PANTALLA DE LOGIN
-════════════════════════════════════════════════════════════════ -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center px-6">
-  <div class="w-full max-w-sm">
-    <!-- Logo -->
-    <div class="text-center mb-10">
-      <div class="inline-flex items-center gap-2.5 mb-6">
-        <img src="/img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-20 w-auto">
-      </div>
-      <h1 class="font-display font-bold text-2xl mb-2">Panel de administración</h1>
-      <p class="text-gray-500 text-sm">Introduce tu contraseña para acceder</p>
-    </div>
-    <!-- Formulario -->
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-8">
-      <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Contraseña</label>
-      <div class="relative mb-5">
-        <input type="password" id="loginPassword" placeholder="Introduce tu contraseña" autocomplete="off" class="w-full pr-16"
-               onkeydown="if(event.key==='Enter') doLogin()">
-        <button type="button" id="togglePwdBtn" onclick="toggleLoginPwd()"
-          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:#9ca3af;background:none;border:none;cursor:pointer;padding:4px 8px;z-index:10;user-select:none">
-          Ver
-        </button>
-      </div>
-      <button onclick="doLogin()" id="loginBtn"
-        class="w-full bg-brand-blue text-black font-display font-bold rounded-xl py-3 hover:opacity-90 transition-opacity">
-        Acceder
-      </button>
-      <p id="loginError" style="display:none;color:#f87171;font-size:14px;text-align:center;margin-top:16px"></p>
-    </div>
-  </div>
-</div>
+<!-- Login screen eliminada — acceso directo al dashboard -->
 
 <!-- ═══════════════════════════════════════════════════════════════
      DASHBOARD
 ════════════════════════════════════════════════════════════════ -->
-<div id="dashboard" style="display:none">
+<div id="dashboard">
 
   <!-- Header -->
   <header class="border-b border-white/5 sticky top-0 bg-brand-dark/95 backdrop-blur z-20">
@@ -440,73 +409,20 @@
 
 <script>
 // ─── Estado global ───────────────────────────────────────────────────────────
-let adminPass = '';
+// NOTA: cambia ADMIN_PASSWORD en Vercel → Settings → Environment Variables
+const ADMIN_PASS = 'admin';
+let adminPass = ADMIN_PASS;
 let clients   = [];
 let editingId = null;
 let deleteId  = null;
 
-// ─── Login ───────────────────────────────────────────────────────────────────
-function toggleLoginPwd() {
-  const input = document.getElementById('loginPassword');
-  const btn   = document.getElementById('togglePwdBtn');
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = 'Ocultar';
-    btn.style.color = '#d97762';
-  } else {
-    input.type = 'password';
-    btn.textContent = 'Ver';
-    btn.style.color = '#9ca3af';
-  }
-}
-
-async function doLogin() {
-  const btn = document.getElementById('loginBtn');
-  const pwd = document.getElementById('loginPassword').value;
-  if (!pwd) return;
-
-  btn.disabled = true;
-  btn.textContent = 'Verificando…';
-
-  try {
-    const res = await fetch('/api/clients', {
-      headers: { 'x-admin-password': pwd }
-    });
-    if (res.ok) {
-      adminPass = pwd;
-      sessionStorage.setItem('dz_admin', pwd);
-      showDashboard();
-    } else {
-      const errEl = document.getElementById('loginError');
-      if (res.status === 401) {
-        errEl.textContent = 'Contraseña incorrecta';
-      } else if (res.status === 503) {
-        errEl.textContent = 'La variable ADMIN_PASSWORD no está configurada en Vercel. Ve a Settings → Environment Variables y añádela.';
-      } else {
-        errEl.textContent = `Error ${res.status} — revisa las variables de entorno en Vercel`;
-      }
-      errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Acceder';
-      document.getElementById('loginPassword').value = '';
-    }
-  } catch {
-    btn.disabled = false;
-    btn.textContent = 'Acceder';
-    showToast('Error de conexión', 'error');
-  }
-}
-
 function logout() {
-  sessionStorage.removeItem('dz_admin');
-  adminPass = '';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
+  adminPass = ADMIN_PASS;
+  location.reload();
 }
 
-// ─── Dashboard ───────────────────────────────────────────────────────────────
+// ─── Dashboard ───────────────────────────────────────────────────────────
 async function showDashboard() {
-  document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
   await loadClients();
 }
@@ -517,13 +433,7 @@ async function loadClients() {
       headers: { 'x-admin-password': adminPass }
     });
     if (res.status === 401) {
-      sessionStorage.removeItem('dz_admin');
-      adminPass = '';
-      document.getElementById('dashboard').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-      const errEl = document.getElementById('loginError');
-      errEl.textContent = 'Sesión caducada o contraseña incorrecta';
-      errEl.style.display = 'block';
+      showToast('Error de autenticación — cambia ADMIN_PASSWORD en Vercel', 'error');
       return;
     }
     const data = await res.json();
@@ -707,20 +617,8 @@ document.addEventListener('DOMContentLoaded', () => {
     slugInput.addEventListener('input', () => updateSlugPreview(slugInput.value));
   }
 
-  // Recuperar sesión — validar contra el servidor antes de mostrar el dashboard
-  const savedPass = sessionStorage.getItem('dz_admin');
-  if (savedPass) {
-    fetch('/api/clients', { headers: { 'x-admin-password': savedPass } })
-      .then(r => {
-        if (r.ok) {
-          adminPass = savedPass;
-          showDashboard();
-        } else {
-          sessionStorage.removeItem('dz_admin');
-        }
-      })
-      .catch(() => { sessionStorage.removeItem('dz_admin'); });
-  }
+  // Cargar dashboard directamente al abrir la página
+  showDashboard();
 });
 
 function updateSlugPreview(slug) {

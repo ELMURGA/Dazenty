@@ -683,3 +683,64 @@ select {
     }
 }
 
+/* ===== iOS / MOBILE SAFARI FIXES ===== */
+
+/* Eliminar highlight azul al tocar elementos */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Botones y links: área mínima táctil de 44px (Apple HIG) */
+a, button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+}
+/* Excepciones: elementos inline que no deben cambiar su display */
+p a, li a, .dz-nav__links a {
+    display: inline;
+    min-height: unset;
+}
+
+/* Prevenir zoom al hacer focus en inputs en iOS (font-size mínimo 16px) */
+input, textarea, select {
+    font-size: 16px !important;
+}
+
+/* Safe area insets para iPhone con notch/Dynamic Island */
+.dz-nav {
+    top: max(1.8rem, env(safe-area-inset-top, 1.8rem));
+    right: max(1.8rem, env(safe-area-inset-right, 1.8rem));
+}
+@media (max-width: 600px) {
+    .dz-nav {
+        top: max(1rem, env(safe-area-inset-top, 1rem));
+        right: max(1rem, env(safe-area-inset-right, 1rem));
+    }
+    .whatsapp-float {
+        bottom: max(1.2rem, env(safe-area-inset-bottom, 1.2rem));
+        right: max(1.2rem, env(safe-area-inset-right, 1.2rem));
+    }
+}
+
+/* Momentum scroll en contenedores scrollables (iOS) */
+.overflow-y-auto, .overflow-x-auto, [class*="overflow-y-scroll"] {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix: backdrop-filter en iOS Safari necesita -webkit- */
+.dz-nav {
+    -webkit-backdrop-filter: blur(28px);
+    backdrop-filter: blur(28px);
+}
+
+/* Fix modales: overflow-y scroll en iOS */
+.modal-overlay {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Evitar que iOS Safari cambie el tamaño de texto automáticamente */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+

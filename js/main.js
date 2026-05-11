@@ -15,24 +15,36 @@ window.addEventListener('load', () => {
 
 // Flag global: indica que un campo del formulario está activo (iOS keyboard)
 let _formActive = false;
-const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smooth: true,
-});
 
-function raf(time) {
-    lenis.raf(time);
+// Detectar iOS — Lenis causa problemas graves en iOS Safari
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+let lenis = null;
+
+if (!isIOS) {
+    lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+    });
+
+    function raf(time) {
+        if (lenis) lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
     requestAnimationFrame(raf);
 }
-requestAnimationFrame(raf);
 
 // Logo → scroll suave al top
 const logoLink = document.querySelector('.dz-nav__logo');
 if (logoLink) {
     logoLink.addEventListener('click', (e) => {
         e.preventDefault();
-        lenis.scrollTo(0);
+        if (lenis) {
+            lenis.scrollTo(0);
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     });
 }
 
@@ -279,7 +291,6 @@ if (contactForm) {
         // Restaurar posición en el siguiente frame (tras el salto de iOS)
         requestAnimationFrame(() => {
             window.scrollTo(0, _savedScrollY);
-            // Segundo frame por si iOS necesita dos ciclos
             requestAnimationFrame(() => {
                 window.scrollTo(0, _savedScrollY);
             });
