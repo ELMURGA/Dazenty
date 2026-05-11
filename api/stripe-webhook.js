@@ -261,6 +261,11 @@ async function updateClientSubscriptionStatus(subscriptionId, status) {
 }
 
 async function sendPaymentEmail({ type, customerEmail, customerName, amount, mode, paymentLinkId, sessionId, nextBillingDate }) {
+  if (!RESEND_KEY) {
+    console.error('[stripe-webhook] RESEND_API_KEY no está configurado en las variables de entorno de Vercel — no se envían emails');
+    return;
+  }
+
   const isRecurring = mode.toLowerCase().includes('renovación');
   const modeLabel   = isRecurring ? 'Renovación de suscripción' : mode;
 
@@ -465,9 +470,16 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
           html: clientHtml,
         }),
       }).then(async r => {
-        if (!r.ok) console.error('[stripe-webhook] Error email cliente:', await r.json().catch(() => ({})));
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          console.error('[stripe-webhook] Error al enviar email al CLIENTE:', JSON.stringify(err));
+        } else {
+          console.log('[stripe-webhook] Email de confirmación enviado al cliente:', customerEmail);
+        }
       })
     );
+  } else {
+    console.warn('[stripe-webhook] Sin email de cliente — no se envía confirmación al cliente');
   }
 
   // Enviar notificación al admin
@@ -482,7 +494,12 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
         html: adminHtml,
       }),
     }).then(async r => {
-      if (!r.ok) console.error('[stripe-webhook] Error email admin:', await r.json().catch(() => ({})));
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        console.error('[stripe-webhook] Error al enviar email al ADMIN:', JSON.stringify(err));
+      } else {
+        console.log('[stripe-webhook] Email de notificación enviado al admin:', ADMIN_EMAIL);
+      }
     })
   );
 

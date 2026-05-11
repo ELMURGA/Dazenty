@@ -53,9 +53,17 @@ export default async function handler(req, res) {
     const price = await stripe.prices.create(priceParams);
 
     // 3. Crear Payment Link
+    const portalSuccessUrl = slug
+      ? `https://dazenty.com/portal.html?id=${encodeURIComponent(slug)}&payment_done=1`
+      : 'https://dazenty.com/portal.html?payment_done=1';
+
     const paymentLink = await stripe.paymentLinks.create({
       line_items: [{ price: price.id, quantity: 1 }],
       metadata: { client_slug: slug || '' },
+      after_completion: {
+        type: 'redirect',
+        redirect: { url: portalSuccessUrl },
+      },
     });
 
     return res.json({ url: paymentLink.url, id: paymentLink.id });

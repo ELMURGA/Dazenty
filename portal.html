@@ -108,6 +108,16 @@
 </head>
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased">
 
+  <!-- Banner: pago en proceso -->
+  <div id="payment-processing-banner" style="display:none"
+       class="fixed top-0 inset-x-0 z-40 border-b border-brand-blue/25 backdrop-blur-sm"
+       style="background:rgba(217,119,98,0.07)">
+    <div class="max-w-3xl mx-auto px-6 py-3 flex items-center justify-center gap-3">
+      <div class="w-3.5 h-3.5 border-2 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin flex-shrink-0"></div>
+      <p class="text-sm text-brand-blue font-medium">Confirmando tu pago — tu suscripción se activará en segundos…</p>
+    </div>
+  </div>
+
   <!-- Pantalla de carga -->
   <div id="loading-screen">
     <div class="loader-ring"></div>
@@ -457,6 +467,20 @@ async function init() {
     if (!res.ok) { showError(); return; }
     clientData = await res.json();
     renderPortal(clientData);
+
+    // Si el cliente acaba de pagar, detectar parámetro y esperar activación
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment_done') === '1') {
+      // Limpiar URL para evitar bucles al refrescar
+      history.replaceState({}, '', `${window.location.pathname}?id=${encodeURIComponent(slug)}`);
+      const subStatus = clientData.stripe_subscription_status;
+      const isAlreadyActive = clientData.stripe_subscription_id &&
+        (subStatus === 'active' || subStatus === 'canceling');
+      if (!isAlreadyActive) {
+        showPaymentProcessingBanner();
+        pollForSubscription(slug);
+      }
+    }
   } catch (err) {
     console.error('Error al cargar el portal:', err);
     showError();
@@ -617,6 +641,46 @@ function setPayBtnState(link, type) {
 
 function formatAmount(n) {
   return parseFloat(n).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+// ─── Polling tras pago ───────────────────────────────────────────────────────
+function showPaymentProcessingBanner() {
+  document.getElementById('payment-processing-banner').style.display = 'block';
+  // Desplazar el contenido principal para no quedar tapado por el banner
+  const main = document.getElementById('main-content');
+  if (main) main.style.paddingTop = '56px';
+}
+
+function hidePaymentProcessingBanner() {
+  document.getElementById('payment-processing-banner').style.display = 'none';
+  const main = document.getElementById('main-content');
+  if (main) main.style.paddingTop = '';
+}
+
+function pollForSubscription(slug) {
+  let attempts = 0;
+  const maxAttempts = 20; // ~40 segundos
+  const timer = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      clearInterval(timer);
+      hidePaymentProcessingBanner();
+      return;
+    }
+    try {
+      const res = await fetch(`/api/clients?slug=${encodeURIComponent(slug)}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const isActive = data.stripe_subscription_id &&
+        (data.stripe_subscription_status === 'active' || data.stripe_subscription_status === 'canceling');
+      if (isActive) {
+        clearInterval(timer);
+        clientData = data;
+        hidePaymentProcessingBanner();
+        renderPortal(data);
+      }
+    } catch (e) { /* continuar intentando */ }
+  }, 2000);
 }
 
 // ─── Cancelación de suscripción ──────────────────────────────────────────────
