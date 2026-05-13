@@ -690,14 +690,21 @@ select {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Botones y links: área mínima táctil de 44px (Apple HIG) */
-a, button {
+/* Botones: área mínima táctil 44px, contenido centrado */
+button {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Links: inline-flex para no romper el flujo de texto */
+a {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
-/* Excepciones: elementos inline que no deben cambiar su display */
+/* Excepciones: links dentro de párrafos, listas y nav */
 p a, li a, .dz-nav__links a {
     display: inline;
     min-height: unset;

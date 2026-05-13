@@ -154,129 +154,104 @@ if (dzNav && dzToggle) {
     }, { passive: true });
 }
 
-// Navbar Scroll Effect (legacy — ya no se usa el #navbar de ancho completo)
+// Navbar Scroll Effect (solo páginas con header legacy #navbar)
 const navbar = document.getElementById('navbar');
 if (navbar) {
+    const navAbsolute = navbar.querySelector('.absolute');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('bg-brand-dark/95', 'backdrop-blur-xl', 'shadow-lg');
-            navbar.querySelector('.absolute').classList.add('opacity-100');
+            if (navAbsolute) navAbsolute.classList.add('opacity-100');
         } else {
             navbar.classList.remove('bg-brand-dark/95', 'backdrop-blur-xl', 'shadow-lg');
-            navbar.querySelector('.absolute').classList.remove('opacity-100');
+            if (navAbsolute) navAbsolute.classList.remove('opacity-100');
         }
-    });
+    }, { passive: true });
 }
 
-// Mobile Menu
+// Mobile Menu (páginas internas con nav legacy)
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const closeMenuBtn = document.getElementById('close-menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const mobileLinks = document.querySelectorAll('.mobile-link');
+const closeMenuBtn  = document.getElementById('close-menu-btn');
+const mobileMenu    = document.getElementById('mobile-menu');
 
-function toggleMenu() {
-    mobileMenu.classList.toggle('translate-x-full');
-    document.body.classList.toggle('overflow-hidden');
-}
+if (mobileMenuBtn && closeMenuBtn && mobileMenu) {
+    function toggleMenu() {
+        mobileMenu.classList.toggle('translate-x-full');
+        document.body.classList.toggle('overflow-hidden');
+    }
 
-if (mobileMenuBtn) {
+    const mobileLinks = document.querySelectorAll('.mobile-link');
     mobileMenuBtn.addEventListener('click', toggleMenu);
     closeMenuBtn.addEventListener('click', toggleMenu);
-    
-    mobileLinks.forEach(link => {
-        link.addEventListener('click', toggleMenu);
-    });
+    mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
 }
 
-// GSAP Animations
-gsap.registerPlugin(ScrollTrigger);
+// GSAP Animations (solo en páginas que lo cargan)
+if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
 
-// Hero Text Reveal
-gsap.from('.hero-text-reveal', {
-    y: 100,
-    opacity: 0,
-    duration: 1,
-    stagger: 0.2,
-    ease: 'power4.out',
-    delay: 0.5
-});
-
-// Service Cards Stagger
-gsap.utils.toArray('.service-card').forEach((card, i) => {
-    gsap.from(card, {
-        scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        delay: i * 0.1,
-        ease: 'power3.out'
-    });
-});
-
-// Project Items Parallax/Reveal
-gsap.utils.toArray('.project-item').forEach((item) => {
-    gsap.from(item, {
-        scrollTrigger: {
-            trigger: item,
-            start: 'top 80%',
-        },
-        y: 60,
+    // Hero Text Reveal
+    gsap.from('.hero-text-reveal', {
+        y: 100,
         opacity: 0,
         duration: 1,
-        ease: 'power3.out'
+        stagger: 0.2,
+        ease: 'power4.out',
+        delay: 0.5
     });
-});
 
-// Scroll Reveal General
-gsap.utils.toArray('.scrol-reveal').forEach((item, i) => {
-    gsap.from(item, {
-        scrollTrigger: {
-            trigger: item,
-            start: 'top 90%',
-        },
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        delay: i * 0.1,
-        ease: 'power2.out'
+    // Service Cards Stagger
+    gsap.utils.toArray('.service-card').forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 85%' },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            delay: i * 0.1,
+            ease: 'power3.out'
+        });
     });
-});
 
-
-// Stats Counter
-const counters = document.querySelectorAll('.counter');
-counters.forEach(counter => {
-    const target = +counter.getAttribute('data-target');
-    
-    ScrollTrigger.create({
-        trigger: counter,
-        start: 'top 85%',
-        onEnter: () => {
-            gsap.to(counter, {
-                innerHTML: target,
-                duration: 2,
-                snap: { innerHTML: 1 },
-                ease: 'power1.inOut'
-            });
-        }
+    // Project Items Reveal
+    gsap.utils.toArray('.project-item').forEach((item) => {
+        gsap.from(item, {
+            scrollTrigger: { trigger: item, start: 'top 80%' },
+            y: 60,
+            opacity: 0,
+            duration: 1,
+            ease: 'power3.out'
+        });
     });
-});
 
-// Magnetic Buttons
-const btns = document.querySelectorAll('.btn-glow');
-btns.forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        btn.style.setProperty('--x', `${x}px`);
-        btn.style.setProperty('--y', `${y}px`);
+    // Scroll Reveal General
+    gsap.utils.toArray('.scrol-reveal').forEach((item, i) => {
+        gsap.from(item, {
+            scrollTrigger: { trigger: item, start: 'top 90%' },
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            delay: i * 0.1,
+            ease: 'power2.out'
+        });
     });
-});
+
+    // Stats Counter
+    document.querySelectorAll('.counter').forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        ScrollTrigger.create({
+            trigger: counter,
+            start: 'top 85%',
+            onEnter: () => {
+                gsap.to(counter, {
+                    innerHTML: target,
+                    duration: 2,
+                    snap: { innerHTML: 1 },
+                    ease: 'power1.inOut'
+                });
+            }
+        });
+    });
+}
 
 // Contact Form — AJAX para evitar que la página navegue/suba al enviar
 const contactForm = document.getElementById('contactForm');
@@ -296,22 +271,23 @@ if (contactForm) {
     contactForm.addEventListener('focusin', () => {
         _formActive = true;
         if (lenis) lenis.stop();
-        // Restaurar posición en el siguiente frame (tras el salto de iOS)
-        requestAnimationFrame(() => {
-            window.scrollTo(0, _savedScrollY);
+        // Solo restaurar posición en iOS (en desktop _savedScrollY sería 0 y saltaría al top)
+        if (isIOS) {
             requestAnimationFrame(() => {
                 window.scrollTo(0, _savedScrollY);
+                requestAnimationFrame(() => {
+                    window.scrollTo(0, _savedScrollY);
+                });
             });
-        });
+        }
     });
 
-    // visualViewport: detecta cuando el teclado abre/cierra para re-anclarse
-    if ('visualViewport' in window) {
+    // visualViewport: detecta cuando el teclado iOS abre/cierra para re-anclarse
+    if (isIOS && 'visualViewport' in window) {
         window.visualViewport.addEventListener('resize', () => {
             const active = document.activeElement;
             const isField = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
             if (isField) {
-                // Teclado acaba de abrirse → restaurar posición guardada
                 window.scrollTo(0, _savedScrollY);
             }
         });
@@ -406,5 +382,3 @@ document.addEventListener('keydown', (e) => {
         });
     }
 });
-
-console.log('Dazenty App Loaded');

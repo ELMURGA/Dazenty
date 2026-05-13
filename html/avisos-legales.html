@@ -55,32 +55,26 @@
 <div class="cursor-dot hidden md:block"></div>
 <div class="cursor-outline hidden md:block"></div>
 
-<!-- Navegación -->
-<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
-    <div class="absolute inset-0 bg-brand-dark/80 backdrop-blur-md border-b border-white/5"></div>
-    <div class="container mx-auto px-6 h-20 flex items-center justify-between relative z-10">
-        <a href="../index.html" class="flex items-center gap-2 group">
-            <img src="../img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-14 w-auto">
-            <span class="font-display font-bold text-xl tracking-tight">Dazenty</span>
-        </a>
-
-        <nav class="hidden md:flex items-center gap-8">
-            <a href="../index.html#servicios" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Servicios</a>
-            <a href="portfolio.html" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Portfolio</a>
-            <a href="about.html" class="nav-link text-sm font-medium text-gray-300 hover:text-brand-blue transition-colors">Nosotros</a>
-        </nav>
-
-        <div class="hidden md:block">
-            <a href="../index.html#contacto" class="btn-glow inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-black transition-all duration-200 bg-brand-blue rounded-full hover:bg-white">Hablemos</a>
-        </div>
-
-        <button class="md:hidden text-white p-2" id="mobile-menu-btn">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+<!-- Navegación flotante -->
+<nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
+    <a href="../index.html" class="dz-nav__logo" aria-label="Dazenty — volver al inicio">
+        <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400">
+        <span>Dazenty</span>
+    </a>
+    <div class="dz-nav__expand">
+        <ul class="dz-nav__links">
+            <li><a href="../index.html#servicios" data-num="01">Servicios</a></li>
+            <li><a href="portfolio.html" data-num="02">Portfolio</a></li>
+            <li><a href="about.html" data-num="03">Nosotros</a></li>
+            <li class="is-cta"><a href="../index.html#contacto">Hablemos</a></li>
+        </ul>
+        <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
+            <span></span><span></span>
         </button>
     </div>
-</header>
+</nav>
 
-<main class="pt-32 pb-24 min-h-screen">
+<main class="pt-24 pb-24 min-h-screen">
     <div class="container mx-auto px-6 max-w-4xl">
 
         <div class="mb-12">
@@ -294,6 +288,6 @@
     </div>
 </footer>
 
-<script src="../js/main.js"></script>
+<script src="../js/main.js?v=3" defer></script>
 </body>
 </html>
