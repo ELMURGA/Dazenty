@@ -695,6 +695,7 @@ a, button {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
 }
 /* Excepciones: elementos inline que no deben cambiar su display */
 p a, li a, .dz-nav__links a {
@@ -732,6 +733,14 @@ input, textarea, select {
 .dz-nav {
     -webkit-backdrop-filter: blur(28px);
     backdrop-filter: blur(28px);
+}
+
+/* Reducir blur en móvil para aliviar la GPU de Safari iOS */
+@media (max-width: 768px) {
+    .dz-nav {
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
 }
 
 /* Fix modales: overflow-y scroll en iOS */

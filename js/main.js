@@ -21,7 +21,7 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 let lenis = null;
 
-if (!isIOS) {
+function initLenis() {
     lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -33,6 +33,14 @@ if (!isIOS) {
         requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+}
+
+// Cargar Lenis solo en no-iOS (ahorra una petición CDN en Safari móvil)
+if (!isIOS) {
+    const lenisScript = document.createElement('script');
+    lenisScript.src = 'https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js';
+    lenisScript.onload = initLenis;
+    document.head.appendChild(lenisScript);
 }
 
 // Logo → scroll suave al top
