@@ -382,3 +382,28 @@ document.addEventListener('keydown', (e) => {
         });
     }
 });
+
+// Vercel Analytics — Custom Events
+function _va(name, data) {
+    if (typeof window.va === 'function') window.va('event', Object.assign({ name }, data || {}));
+}
+
+// WhatsApp clicks
+document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+    el.addEventListener('click', () => _va('WhatsApp Click'));
+});
+
+// Phone clicks
+document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+    el.addEventListener('click', () => _va('Phone Click'));
+});
+
+// "Solicitar presupuesto" desde modales de servicio
+const serviceLabels = { web: 'Diseño Web', grafico: 'Diseño Gráfico', marketing: 'Marketing Digital' };
+['web', 'grafico', 'marketing'].forEach(id => {
+    const modal = document.getElementById('modal-' + id);
+    if (!modal) return;
+    modal.querySelector('a[href="#contacto"]')?.addEventListener('click', () => {
+        _va('Request Budget', { service: serviceLabels[id] });
+    });
+});
