@@ -697,16 +697,12 @@ button {
     align-items: center;
     justify-content: center;
 }
-/* Links: inline-flex para no romper el flujo de texto */
+/* Links: solo área táctil mínima, sin tocar display (Tailwind lo gestiona) */
 a {
     min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }
-/* Excepciones: links dentro de párrafos, listas y nav */
-p a, li a, .dz-nav__links a {
-    display: inline;
+/* Excepciones: links inline (nav, párrafos, listas) */
+p a, li a, .dz-nav__links a, footer a {
     min-height: unset;
 }
 
