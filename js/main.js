@@ -22,10 +22,13 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let lenis = null;
 
 function initLenis() {
+    // Detectar Chrome/Chromium para ajustar duración
+    const isChrome = /Chrome/.test(navigator.userAgent) && !/Edg|OPR/.test(navigator.userAgent);
     lenis = new Lenis({
-        duration: 1.2,
+        duration: isChrome ? 0.85 : 1.0,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
+        smoothTouch: false,
     });
 
     function raf(time) {
@@ -64,17 +67,10 @@ if (cursorDot && cursorOutline) {
     window.addEventListener('mousemove', (e) => {
         const posX = e.clientX;
         const posY = e.clientY;
-
-        // Dot follows instantly
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
-
-        // Outline follows with slight delay
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: 'forwards' });
-    });
+        // Usar transform en lugar de top/left: solo dispara compositor (sin layout)
+        cursorDot.style.transform    = `translate(${posX}px,${posY}px) translate(-50%,-50%)`;
+        cursorOutline.style.transform = `translate(${posX}px,${posY}px) translate(-50%,-50%)`;
+    }, { passive: true });
 
     // Cursor interactions
     const interactiveElements = document.querySelectorAll('a, button, input, select, textarea');

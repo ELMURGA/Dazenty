@@ -38,16 +38,17 @@ html.lenis {
     pointer-events: none;
 }
 
-/* Custom Cursor */
+/* Custom Cursor — posicionado con transform (capa GPU, cero layout) */
 .cursor-dot,
 .cursor-outline {
     position: fixed;
     top: 0;
     left: 0;
-    transform: translate(-50%, -50%);
     border-radius: 50%;
     z-index: 9999;
     pointer-events: none;
+    will-change: transform;
+    contain: layout style;
 }
 .cursor-dot {
     width: 8px;
@@ -58,7 +59,8 @@ html.lenis {
     width: 40px;
     height: 40px;
     border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: width 0.2s, height 0.2s, background-color 0.2s;
+    /* transform gestionado vía JS; las demás propiedades en CSS */
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), width 0.2s, height 0.2s, background-color 0.2s;
 }
 
 /* Text Stroke */
@@ -74,6 +76,8 @@ html.lenis {
 }
 .animate-float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    contain: layout;
 }
 
 @keyframes pulse-slow {
@@ -82,6 +86,8 @@ html.lenis {
 }
 .animate-pulse-slow {
     animation: pulse-slow 8s ease-in-out infinite;
+    will-change: transform, opacity;
+    contain: layout;
 }
 
 @keyframes slide-up {
@@ -292,6 +298,8 @@ img, video {
     max-width: 100%;
     height: auto;
     -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    content-visibility: auto;
 }
 
 /* Mejora de renderizado de texto */
@@ -308,9 +316,10 @@ body {
     display: flex;
 }
 
-/* Scroll suave para todos los navegadores */
+/* Scroll suave gestionado por Lenis (JS) — no usar scroll-behavior:smooth aquí
+   ya que en Chrome ambos corren a la vez causando scroll lento */
 html {
-    scroll-behavior: smooth;
+    /* scroll-behavior manejado por Lenis */
     -webkit-overflow-scrolling: touch;
 }
 
