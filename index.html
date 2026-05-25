@@ -58,6 +58,290 @@
     <!-- CSS Personalizado -->
     <link rel="preload" href="css/main.css?v=4" as="style">
     <link rel="stylesheet" href="css/main.css?v=4">
+
+    <!-- Estilos Inline robustos para Slider de Reseñas (Estilo Carpama) -->
+    <style>
+        /* Bordes de proceso naranja sólido en hover (bypass tailwind cache/compilation) */
+        .process-step {
+            transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .process-step:hover {
+            border-color: #d97762 !important;
+            box-shadow: 0 4px 25px rgba(217, 119, 98, 0.15) !important;
+        }
+
+        .reviews-slider {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .reviews-slides-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .review-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.97);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .review-slide.active {
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            z-index: 2;
+        }
+        /* Controles: Dots de Progreso tipo Carpama (Píldora activa) */
+        .review-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: unset;
+        }
+        .review-dot.active {
+            width: 24px;
+            background: #d97762; /* Color brand-orange/blue */
+        }
+
+        /* Estilos de Bento Grid robustos para Sobre Nosotros */
+        .dz-bento-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 96px;
+        }
+        @media (min-width: 768px) {
+            .dz-bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .dz-bento-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dz-bento-card:hover {
+            border-color: rgba(217, 119, 98, 0.3) !important;
+            box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
+        }
+        @media (min-width: 768px) {
+            .dz-bento-card--span-2 {
+                grid-column: span 2;
+            }
+            .dz-bento-card--span-3 {
+                grid-column: span 3;
+            }
+        }
+        .dz-bento-card--image {
+            padding: 0;
+            min-height: 320px;
+        }
+        .dz-bento-card--image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: grayscale(100%) contrast(1.1);
+        }
+        .dz-bento-card--image:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%) contrast(1);
+        }
+        .dz-bento-card__overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0.2) 60%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .dz-bento-card__img-content {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            z-index: 2;
+        }
+        .dz-bento-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .dz-bento-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #a3a3a3;
+        }
+        .dz-pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d97762;
+            border-radius: 50%;
+            position: relative;
+        }
+        .dz-pulse-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 2px solid rgba(217, 119, 98, 0.4);
+            border-radius: 50%;
+            animation: dz-pulse-anim 2s infinite;
+        }
+        @keyframes dz-pulse-anim {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .dz-bento-glow {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(217, 119, 98, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.5s ease;
+        }
+        .dz-bento-card:hover .dz-bento-glow {
+            background: radial-gradient(circle, rgba(217, 119, 98, 0.15) 0%, transparent 70%);
+        }
+        .dz-values-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-top: 32px;
+        }
+        @media (min-width: 768px) {
+            .dz-values-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .dz-value-item {
+            display: flex;
+            gap: 16px;
+            align-items: start;
+        }
+        .dz-value-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(217, 119, 98, 0.1);
+            color: #d97762;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+        .dz-value-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .dz-value-item:hover .dz-value-icon {
+            background-color: #d97762 !important;
+            color: #050505 !important;
+            transform: translateY(-4px);
+        }
+
+        /* Estilos de Estadísticas Premium */
+        .dz-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 48px;
+            padding-top: 48px;
+            border-t: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @media (min-width: 640px) {
+            .dz-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .dz-stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .dz-stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dz-stat-card:hover {
+            border-color: rgba(217, 119, 98, 0.2) !important;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
+        }
+        .dz-stat-number {
+            font-size: 56px;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #d97762; /* color corporativo */
+            line-height: 1.1;
+            margin-bottom: 12px;
+            text-shadow: 0 0 30px rgba(217, 119, 98, 0.1);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .dz-stat-card:hover .dz-stat-number {
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+        }
+        .dz-stat-label {
+            font-size: 15px;
+            color: #a3a3a3;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            position: relative;
+            z-index: 1;
+        }
+        .dz-stat-glow {
+            position: absolute;
+            bottom: -50px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(217, 119, 98, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
 </head>
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
@@ -71,9 +355,6 @@
         </div>
     </div>
 
-    <!-- Cursor Personalizado -->
-    <div class="cursor-dot hidden md:block"></div>
-    <div class="cursor-outline hidden md:block"></div>
 
     <!-- Navegación flotante tattoox.es -->
     <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
@@ -82,9 +363,9 @@
         </a>
         <div class="dz-nav__expand">
             <ul class="dz-nav__links">
-                <li><a href="#servicios" data-num="01">Servicios</a></li>
-                <li><a href="html/portfolio.html" data-num="02">Portfolio</a></li>
-                <li><a href="html/about.html" data-num="03">Nosotros</a></li>
+                <li><a href="#inicio" data-num="01">Inicio</a></li>
+                <li><a href="#servicios" data-num="02">Servicios</a></li>
+                <li><a href="html/portfolio.html" data-num="03">Portfolio</a></li>
                 <li class="is-cta"><a href="#contacto">Hablemos</a></li>
             </ul>
             <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
@@ -253,7 +534,7 @@
                                 <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Gestión de Redes
                             </li>
                             <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Email Marketing
+                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Instagram Ads
                             </li>
                         </ul>
                     </button>
@@ -355,33 +636,373 @@
             </div>
         </section>
 
-        <!-- INFO / STATS SECTION -->
-        <section class="py-24 bg-brand-gray border-y border-white/5 relative overflow-hidden" id="nosotros">
-            <div class="absolute inset-0 bg-gradient-to-r from-brand-blue/5 to-transparent"></div>
+        <!-- SOBRE NOSOTROS BENTO SECTION (Diseño Premium y Futurista) -->
+        <section class="py-32 relative bg-brand-gray border-y border-white/5 overflow-hidden" id="nosotros">
+            <div class="absolute inset-0 bg-gradient-to-b from-brand-blue/5 to-transparent pointer-events-none"></div>
+            
             <div class="max-w-7xl mx-auto px-6 relative z-10">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
-                    <div class="scrol-reveal">
-                        <span class="block text-5xl font-display font-bold text-white mb-2 counter"
-                            data-target="5">0+</span>
-                        <span class="text-gray-400">Años de experiencia</span>
+                <!-- Bento Grid Layout -->
+                <div class="dz-bento-grid">
+                    
+                    <!-- Card 1: Main Intro (Col-span 2) -->
+                    <div class="dz-bento-card dz-bento-card--span-2">
+                        <div class="dz-bento-glow"></div>
+                        <div class="relative z-10">
+                            <span class="text-brand-blue font-mono text-xs uppercase tracking-widest mb-4 block">Sobre Nosotros</span>
+                            <h3 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight text-white mb-6">Somos Dazenty</h3>
+                            <p class="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl">
+                                Un estudio creativo donde la innovación digital y el diseño excepcional se encuentran para transformar ideas en experiencias memorables.
+                            </p>
+                        </div>
+                        <div class="dz-bento-features relative z-10">
+                            <span class="dz-bento-feature-item"><span class="dz-pulse-dot"></span> Diseño de Vanguardia</span>
+                            <span class="dz-bento-feature-item"><span class="dz-pulse-dot"></span> Experiencia de Usuario</span>
+                            <span class="dz-bento-feature-item"><span class="dz-pulse-dot"></span> Desarrollo a Medida</span>
+                        </div>
                     </div>
-                    <div class="scrol-reveal transition-delay-100">
-                        <span class="block text-5xl font-display font-bold text-white mb-2 counter"
-                            data-target="50">0+</span>
-                        <span class="text-gray-400">Proyectos Exitosos</span>
+
+                    <!-- Card 2: Interactive Photo (Col-span 1) -->
+                    <div class="dz-bento-card dz-bento-card--image">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2940&auto=format&fit=crop" alt="Equipo Dazenty" loading="lazy">
+                        <div class="dz-bento-card__overlay"></div>
+                        <div class="dz-bento-card__img-content">
+                            <span class="text-brand-blue font-mono text-xs uppercase tracking-widest block mb-1">Est. 2020</span>
+                            <h4 class="text-xl font-display font-bold text-white">Equipo de Creadores</h4>
+                        </div>
                     </div>
-                    <div class="scrol-reveal transition-delay-200">
-                        <span class="block text-5xl font-display font-bold text-white mb-2 counter"
-                            data-target="100">0%</span>
-                        <span class="text-gray-400">Clientes Satisfechos</span>
+
+                    <!-- Card 3: Our Story (Col-span 1) -->
+                    <div class="dz-bento-card">
+                        <div class="dz-bento-glow"></div>
+                        <div class="relative z-10">
+                            <h4 class="text-2xl font-display font-bold text-white mb-4">El Origen</h4>
+                            <p class="text-gray-400 leading-relaxed text-sm md:text-base">
+                                Dazenty nació en 2020 con una meta clara: crear experiencias digitales que no solo sean funcionales, sino que conecten emocionalmente e inspiren a las personas. Lo que comenzó como un pequeño grupo de apasionados, es hoy un estudio reconocido por su compromiso inquebrantable con la excelencia.
+                            </p>
+                        </div>
                     </div>
-                    <div class="scrol-reveal transition-delay-300">
-                        <span class="block text-5xl font-display font-bold text-white mb-2">24/7</span>
-                        <span class="text-gray-400">Soporte Dedicado</span>
+
+                    <!-- Card 4: Visión (Col-span 1) -->
+                    <div class="dz-bento-card">
+                        <div class="dz-bento-glow"></div>
+                        <div class="relative z-10">
+                            <div class="dz-value-icon mb-6">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </div>
+                            <h4 class="text-xl font-display font-bold text-white mb-3">Nuestra Visión</h4>
+                            <p class="text-gray-400 leading-relaxed text-sm">
+                                Convertirnos en el estudio de referencia para marcas que buscan elevar su presencia digital, fusionando creatividad ilimitada y tecnología puntera para experiencias perdurables.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Misión (Col-span 1) -->
+                    <div class="dz-bento-card">
+                        <div class="dz-bento-glow"></div>
+                        <div class="relative z-10">
+                            <div class="dz-value-icon mb-6">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <h4 class="text-xl font-display font-bold text-white mb-3">Nuestra Misión</h4>
+                            <p class="text-gray-400 leading-relaxed text-sm">
+                                Empoderar a nuestros clientes con soluciones digitales que cumplan con sus objetivos estratégicos y transformen la forma en la que se relacionan con sus audiencias.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Valores horizontales interactivos (Col-span 3) -->
+                    <div class="dz-bento-card dz-bento-card--span-3">
+                        <div class="dz-bento-glow"></div>
+                        <div class="relative z-10">
+                            <h4 class="text-2xl font-display font-bold text-white mb-8 text-center md:text-left">Nuestros Valores Esenciales</h4>
+                            <div class="dz-values-grid">
+                                <div class="dz-value-item">
+                                    <div class="dz-value-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-lg font-bold text-white mb-1">Innovación</h5>
+                                        <p class="text-gray-400 text-sm">Exploramos nuevas tecnologías para dar soluciones disruptivas en cada interfaz.</p>
+                                    </div>
+                                </div>
+                                <div class="dz-value-item">
+                                    <div class="dz-value-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-lg font-bold text-white mb-1">Excelencia</h5>
+                                        <p class="text-gray-400 text-sm">Cada detalle cuenta. Cuidamos el diseño y el código minuciosamente.</p>
+                                    </div>
+                                </div>
+                                <div class="dz-value-item">
+                                    <div class="dz-value-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-lg font-bold text-white mb-1">Colaboración</h5>
+                                        <p class="text-gray-400 text-sm">Trabajamos hombro a hombro contigo para co-crear tu éxito digital.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Estadísticas Bento (Con efecto de resplandor e interactividad) -->
+                <div class="dz-stats-grid">
+                    <div class="dz-stat-card scrol-reveal">
+                        <div class="dz-stat-glow"></div>
+                        <span class="dz-stat-number counter" data-target="5">0+</span>
+                        <span class="dz-stat-label">Años de experiencia</span>
+                    </div>
+                    <div class="dz-stat-card scrol-reveal transition-delay-100">
+                        <div class="dz-stat-glow"></div>
+                        <span class="dz-stat-number counter" data-target="50">0+</span>
+                        <span class="dz-stat-label">Proyectos Exitosos</span>
+                    </div>
+                    <div class="dz-stat-card scrol-reveal transition-delay-200">
+                        <div class="dz-stat-glow"></div>
+                        <span class="dz-stat-number counter" data-target="100">0%</span>
+                        <span class="dz-stat-label">Clientes Satisfechos</span>
+                    </div>
+                    <div class="dz-stat-card scrol-reveal transition-delay-300">
+                        <div class="dz-stat-glow"></div>
+                        <span class="dz-stat-number">24/7</span>
+                        <span class="dz-stat-label">Soporte Dedicado</span>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- CÓMO TRABAJAMOS SECTION -->
+        <section class="py-32 relative bg-brand-gray" id="proceso">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                    <div class="max-w-xl">
+                        <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Cómo Trabajamos Contigo</h2>
+                        <div class="h-1 w-20 bg-brand-blue rounded-full"></div>
+                    </div>
+                    <p class="text-gray-400 max-w-md text-lg">
+                        Un proceso claro, transparente y diseñado para que tu proyecto llegue al mercado sin sorpresas.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Paso 1 -->
+                    <div class="process-step group relative p-8 bg-white/3 border border-white/10 rounded-2xl hover:border-brand-blue transition-all duration-500 hover:-translate-y-1">
+                        <div class="text-6xl font-display font-bold text-brand-blue/15 mb-4 leading-none">01</div>
+                        <div class="h-12 w-12 bg-brand-blue/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue/20 transition-colors">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Primera Llamada</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Hablamos contigo para entender tu negocio, tus objetivos y qué necesitas exactamente. Sin compromiso.</p>
+                    </div>
+
+                    <!-- Paso 2 -->
+                    <div class="process-step group relative p-8 bg-white/3 border border-white/10 rounded-2xl hover:border-brand-blue transition-all duration-500 hover:-translate-y-1">
+                        <div class="text-6xl font-display font-bold text-brand-blue/15 mb-4 leading-none">02</div>
+                        <div class="h-12 w-12 bg-brand-blue/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue/20 transition-colors">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Propuesta a Medida</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Preparamos una propuesta personalizada con estrategia, plazos y presupuesto claro. Sin letras pequeñas.</p>
+                    </div>
+
+                    <!-- Paso 3 -->
+                    <div class="process-step group relative p-8 bg-white/3 border border-white/10 rounded-2xl hover:border-brand-blue transition-all duration-500 hover:-translate-y-1">
+                        <div class="text-6xl font-display font-bold text-brand-blue/15 mb-4 leading-none">03</div>
+                        <div class="h-12 w-12 bg-brand-blue/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue/20 transition-colors">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Producción & Revisiones</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Trabajamos contigo en cada fase. Revisiones incluidas hasta que el resultado sea exactamente lo que necesitas.</p>
+                    </div>
+
+                    <!-- Paso 4 -->
+                    <div class="process-step group relative p-8 bg-white/3 border border-white/10 rounded-2xl hover:border-brand-blue transition-all duration-500 hover:-translate-y-1">
+                        <div class="text-6xl font-display font-bold text-brand-blue/15 mb-4 leading-none">04</div>
+                        <div class="h-12 w-12 bg-brand-blue/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue/20 transition-colors">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Lanzamiento & Soporte</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Lanzamos tu proyecto y nos quedamos a tu lado. Soporte post-entrega para que todo funcione a la perfección.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESEÑAS SECTION (Estilo Premium Carpama Studios) -->
+        <section class="py-32 relative overflow-hidden" id="resenas">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-blue/5 rounded-full blur-[150px] pointer-events-none"></div>
+            
+            <div class="max-w-4xl mx-auto px-6 relative z-10">
+                <!-- Header de Reseñas unificado (Alineado a la Izquierda) -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+                    <div>
+                        <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Opiniones de nuestros clientes</h2>
+                        <div class="h-1 w-20 bg-brand-blue rounded-full"></div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/3 border border-white/5 px-4 py-2 rounded-full">
+                        <div class="flex text-yellow-400 text-base">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <span class="text-gray-400 text-xs ml-1">5.0 de valoración en Google</span>
+                    </div>
+                </div>
+
+                <!-- Contenedor del Slider -->
+                <div class="reviews-slider" id="reviews-slider">
+                    <div class="reviews-slides-wrapper relative">
+
+                        <!-- Reseña 1: Sevilla Tarjetas Plásticas -->
+                        <div class="review-slide active">
+                            <div class="review-slide-inner bg-white/3 border border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 relative">
+                                <!-- Comilla de diseño arriba a la izquierda -->
+                                <div class="absolute top-6 left-8 md:top-8 md:left-12 text-brand-blue/10 pointer-events-none">
+                                    <svg class="w-16 h-16 md:w-20 md:h-20 fill-current" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.988zm-12 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                    </svg>
+                                </div>
+                                
+                                <div class="relative z-10 pt-8 md:pt-10">
+                                    <p class="text-gray-200 leading-relaxed text-lg md:text-xl font-light italic mb-10">
+                                        "Hemos solicitado varios trabajos de diseño para nuestros clientes. Tanto nuestros clientes como nosotros estamos muy satisfechos de la profesionalidad y rapidez. Recomiendo 100%."
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-brand-blue/15 flex items-center justify-center text-brand-blue font-bold text-base">
+                                            S
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white text-base">Sevilla Tarjetas Plásticas</p>
+                                            <p class="text-gray-500 text-xs">E-Commerce & B2B · Cliente Google</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reseña 2: Nico Camacho -->
+                        <div class="review-slide">
+                            <div class="review-slide-inner bg-white/3 border border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 relative">
+                                <div class="absolute top-6 left-8 md:top-8 md:left-12 text-brand-blue/10 pointer-events-none">
+                                    <svg class="w-16 h-16 md:w-20 md:h-20 fill-current" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.988zm-12 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                    </svg>
+                                </div>
+                                <div class="relative z-10 pt-8 md:pt-10">
+                                    <p class="text-gray-200 leading-relaxed text-lg md:text-xl font-light italic mb-10">
+                                        "Al principio iba con dudas sobre la profesionalidad del trabajo pero superó mis expectativas con creces, muy profesional y rápido. Volveré sin duda."
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-brand-blue/15 flex items-center justify-center text-brand-blue font-bold text-base">
+                                            N
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white text-base">Nico Camacho Galán</p>
+                                            <p class="text-gray-500 text-xs">Cliente Particular · Cliente Google</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reseña 3: Joaquín García-Valdecasas -->
+                        <div class="review-slide">
+                            <div class="review-slide-inner bg-white/3 border border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 relative">
+                                <div class="absolute top-6 left-8 md:top-8 md:left-12 text-brand-blue/10 pointer-events-none">
+                                    <svg class="w-16 h-16 md:w-20 md:h-20 fill-current" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.988zm-12 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                    </svg>
+                                </div>
+                                <div class="relative z-10 pt-8 md:pt-10">
+                                    <p class="text-gray-200 leading-relaxed text-lg md:text-xl font-light italic mb-10">
+                                        "Un profesional de la cabeza a los pies, trabajo muy correcto y realizado en tiempos récord."
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-brand-blue/15 flex items-center justify-center text-brand-blue font-bold text-base">
+                                            J
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white text-base">Joaquín García-Valdecasas</p>
+                                            <p class="text-gray-500 text-xs">Profesional Independiente · Cliente Google</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reseña 4: Jose Manuel Portillo -->
+                        <div class="review-slide">
+                            <div class="review-slide-inner bg-white/3 border border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 relative">
+                                <div class="absolute top-6 left-8 md:top-8 md:left-12 text-brand-blue/10 pointer-events-none">
+                                    <svg class="w-16 h-16 md:w-20 md:h-20 fill-current" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.988zm-12 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                    </svg>
+                                </div>
+                                <div class="relative z-10 pt-8 md:pt-10">
+                                    <p class="text-gray-200 leading-relaxed text-lg md:text-xl font-light italic mb-10">
+                                        "Profesionalidad, buen servicio y amabilidad, sin duda volvería a confiar en ellos nuevamente."
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-brand-blue/15 flex items-center justify-center text-brand-blue font-bold text-base">
+                                            J
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white text-base">Jose Manuel Portillo</p>
+                                            <p class="text-gray-500 text-xs">Consultor · Cliente Google</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reseña 5: Esteban García -->
+                        <div class="review-slide">
+                            <div class="review-slide-inner bg-white/3 border border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 relative">
+                                <div class="absolute top-6 left-8 md:top-8 md:left-12 text-brand-blue/10 pointer-events-none">
+                                    <svg class="w-16 h-16 md:w-20 md:h-20 fill-current" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.988zm-12 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                    </svg>
+                                </div>
+                                <div class="relative z-10 pt-8 md:pt-10">
+                                    <p class="text-gray-200 leading-relaxed text-lg md:text-xl font-light italic mb-10">
+                                        "Un excelente trabajo, rápidos, profesionales y muy buena calidad 100% recomendable."
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-brand-blue/15 flex items-center justify-center text-brand-blue font-bold text-base">
+                                            E
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white text-base">Esteban García</p>
+                                            <p class="text-gray-500 text-xs">Emprendedor · Cliente Google</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Controles tipo Carpama con flechas y barra/pills -->
+                    <div class="flex items-center justify-center gap-6 mt-12">
+                        <button id="reviews-prev" onclick="moveReview(-1)" aria-label="Reseña anterior"
+                            class="w-12 h-12 rounded-full border border-white/10 bg-white/2 flex items-center justify-center hover:border-brand-blue hover:text-brand-blue transition-all duration-300 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        
+                        <!-- Barra de progreso/dots -->
+                        <div class="flex items-center gap-2" id="reviews-dots"></div>
+                        
+                        <button id="reviews-next" onclick="moveReview(1)" aria-label="Siguiente reseña"
+                            class="w-12 h-12 rounded-full border border-white/10 bg-white/2 flex items-center justify-center hover:border-brand-blue hover:text-brand-blue transition-all duration-300 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <!-- CTA / CONTACT SECTION -->
         <section class="py-32 relative" id="contacto">
@@ -521,8 +1142,7 @@
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
                         <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
-                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a>
-                        </li>
+                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a></li>
                     </ul>
                 </div>
                 <div>
@@ -627,7 +1247,7 @@
         </div>
     </div>
 
-    <!-- Modal: Marketing Digital -->
+    <!-- Modal: Marketing & Ads -->
     <div id="modal-marketing" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('marketing')">
         <div class="flex min-h-full items-center justify-center p-4 py-10">
             <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
@@ -636,21 +1256,20 @@
                 </button>
                 <div class="flex items-center gap-4 mb-8">
                     <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
-                        <h2 class="text-2xl md:text-3xl font-display font-bold">Marketing Digital</h2>
+                         <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold">Marketing & Ads</h2>
                     </div>
                 </div>
-                <p class="text-gray-400 leading-relaxed mb-8">Estrategias basadas en datos para aumentar tu visibilidad, tráfico y conversiones online. Combinamos análisis, creatividad y tecnología para que cada euro invertido en publicidad genere el máximo retorno.</p>
+                <p class="text-gray-400 leading-relaxed mb-8">Diseñamos y ejecutamos estrategias de marketing digital 360º enfocadas en generar conversiones y aumentar tus ventas. Combinamos publicidad de alta rentabilidad (Meta, Google, TikTok Ads) con embudos de venta y optimización de conversión.</p>
                 <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
                 <ul class="space-y-4 mb-10">
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEO</strong> — Posicionamiento orgánico mediante auditorías técnicas, optimización on-page y estrategia de contenidos.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEM / Google Ads</strong> — Campañas de pago por clic en Google con segmentación precisa y optimización continua de ROI.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Gestión de Redes Sociales</strong> — Estrategia, creación de contenido y gestión de comunidad en Instagram, LinkedIn, TikTok y más.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Email Marketing</strong> — Campañas de email automatizadas y secuencias de nurturing para convertir leads en clientes.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Analítica y Reporting</strong> — Dashboards mensuales con KPIs claros para tomar decisiones basadas en datos reales.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Publicidad de Pago (Google & Meta Ads)</strong> — Campañas optimizadas en Google Search, Facebook, Instagram y TikTok para atraer leads cualificados al menor coste.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Embudos de Venta (Funnels)</strong> — Diseño y desarrollo de la estructura de páginas y automatizaciones necesarias para convertir visitas en clientes de forma automática.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Email Marketing Automático</strong> — Secuencias de correos para recuperar carritos abandonados, educar a clientes potenciales y automatizar tus ventas recurrentes.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Analítica & CRO</strong> — Monitorización diaria del tráfico para detectar oportunidades de mejora en tu web y exprimir el retorno de tu inversión (ROI).</span></li>
                 </ul>
                 <a href="#contacto" onclick="closeServiceModal('marketing')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
                     Solicitar presupuesto
@@ -664,6 +1283,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     <script src="js/main.js?v=3" defer></script>
+    <!-- Slider de reseñas con transición suave -->
+    <script>
+        (function() {
+            const slides = document.querySelectorAll('.review-slide');
+            const dotsContainer = document.getElementById('reviews-dots');
+            let current = 0;
+            let timer;
+
+            // Crear dots
+            slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'review-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Ir a reseña ' + (i + 1));
+                dot.addEventListener('click', () => goTo(i));
+                dotsContainer.appendChild(dot);
+            });
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                dotsContainer.children[current].classList.remove('active');
+                current = (index + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dotsContainer.children[current].classList.add('active');
+                setTimeout(updateHeight, 50); // Recalcular con un micro-delay para permitir el renderizado
+                resetTimer();
+            }
+
+            function resetTimer() {
+                clearInterval(timer);
+                timer = setInterval(() => goTo(current + 1), 6000);
+            }
+
+            window.moveReview = function(dir) { goTo(current + dir); };
+
+            // Calcular altura dinámica del wrapper para transición suave
+            function updateHeight() {
+                const wrapper = document.querySelector('.reviews-slides-wrapper');
+                const active = document.querySelector('.review-slide.active');
+                if (wrapper && active) {
+                    wrapper.style.height = active.scrollHeight + 'px';
+                }
+            }
+            window.addEventListener('resize', updateHeight);
+            window.addEventListener('load', updateHeight);
+            setTimeout(updateHeight, 500); // Respaldo para carga tardía de fuentes
+            
+            resetTimer();
+        })();
+    </script>
     <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
 </body>

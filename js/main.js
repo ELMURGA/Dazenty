@@ -59,34 +59,6 @@ if (logoLink) {
     });
 }
 
-// Custom Cursor
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
-
-if (cursorDot && cursorOutline) {
-    window.addEventListener('mousemove', (e) => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-        // Usar transform en lugar de top/left: solo dispara compositor (sin layout)
-        cursorDot.style.transform    = `translate(${posX}px,${posY}px) translate(-50%,-50%)`;
-        cursorOutline.style.transform = `translate(${posX}px,${posY}px) translate(-50%,-50%)`;
-    }, { passive: true });
-
-    // Cursor interactions
-    const interactiveElements = document.querySelectorAll('a, button, input, select, textarea');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursorOutline.style.width = '60px';
-            cursorOutline.style.height = '60px';
-            cursorOutline.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-        });
-        el.addEventListener('mouseleave', () => {
-            cursorOutline.style.width = '40px';
-            cursorOutline.style.height = '40px';
-            cursorOutline.style.backgroundColor = 'transparent';
-        });
-    });
-}
 
 // Floating Nav — toggle + scroll collapse
 const dzNav    = document.getElementById('dz-nav');

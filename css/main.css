@@ -38,30 +38,6 @@ html.lenis {
     pointer-events: none;
 }
 
-/* Custom Cursor — posicionado con transform (capa GPU, cero layout) */
-.cursor-dot,
-.cursor-outline {
-    position: fixed;
-    top: 0;
-    left: 0;
-    border-radius: 50%;
-    z-index: 9999;
-    pointer-events: none;
-    will-change: transform;
-    contain: layout style;
-}
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #d97762;
-}
-.cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    /* transform gestionado vía JS; las demás propiedades en CSS */
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), width 0.2s, height 0.2s, background-color 0.2s;
-}
 
 /* Text Stroke */
 .text-stroke {
@@ -438,8 +414,6 @@ select {
 /* ===== PRINT STYLES ===== */
 @media print {
     .page-loader,
-    .cursor-dot,
-    .cursor-outline,
     #navbar,
     #mobile-menu,
     footer {
@@ -536,11 +510,12 @@ select {
 .dz-nav__expand {
     display: flex;
     align-items: center;
-    width: 0;
+    width: auto;
+    max-width: 0;
     overflow: hidden;
-    transition: width 0.52s cubic-bezier(0.77, 0, 0.175, 1);
+    transition: max-width 0.52s cubic-bezier(0.77, 0, 0.175, 1);
 }
-.dz-nav.is-open .dz-nav__expand { width: 400px; }
+.dz-nav.is-open .dz-nav__expand { max-width: 400px; }
 
 /* Links */
 .dz-nav__links {
@@ -550,7 +525,6 @@ select {
     list-style: none;
     margin: 0;
     padding: 0;
-    flex: 1;
 }
 .dz-nav__links li { flex-shrink: 0; }
 .dz-nav__links a {
@@ -581,7 +555,7 @@ select {
 /* Botón X — siempre su tamaño real dentro del expand */
 .dz-nav__toggle {
     flex-shrink: 0;
-    width: 56px;
+    width: 40px;
     height: 72px;
     background: transparent;
     border: 0;
@@ -642,7 +616,7 @@ select {
 
     /* Botón X más pequeño */
     .dz-nav__toggle {
-        width: 44px;
+        width: 36px;
         height: 58px;
     }
 }
@@ -736,6 +710,55 @@ input, textarea, select {
     }
 }
 
+/* ===== REVIEWS SLIDER (Estilo Premium Carpama Studios) ===== */
+.reviews-slider {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.reviews-slides-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.review-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.97);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+    pointer-events: none;
+    z-index: 1;
+}
+.review-slide.active {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    z-index: 2;
+}
+/* Controles: Dots de Progreso tipo Carpama (Píldora activa) */
+.review-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-height: unset;
+}
+.review-dot.active {
+    width: 24px;
+    background: #d97762; /* Color brand-orange/blue */
+}
 /* Momentum scroll en contenedores scrollables (iOS) */
 .overflow-y-auto, .overflow-x-auto, [class*="overflow-y-scroll"] {
     -webkit-overflow-scrolling: touch;
