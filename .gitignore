@@ -2,9 +2,17 @@
 .vscode/
 optimize-images.sh
 OPTIMIZACIONES.txt
+SETUP.txt
+
+# Variables de entorno
 .env
 .env.local
+.env.*
 .env*.local
+
+# Dependencias
 node_modules/
+
+# Build sources (generados desde input.css)
 input.css
 tailwind.config.js

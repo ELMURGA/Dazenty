@@ -34,6 +34,9 @@ CREATE TABLE clients (
   client_notes TEXT DEFAULT '',
   client_submitted_at TIMESTAMPTZ,
   status TEXT DEFAULT 'active',
+  stripe_subscription_id TEXT DEFAULT '',
+  stripe_subscription_status TEXT DEFAULT '',
+  stripe_current_period_end BIGINT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -86,6 +89,7 @@ Puedes crear 1, 2 o los 3 tipos (mensual, anual, único).
   - Selecciona estos eventos:
       · checkout.session.completed
       · invoice.paid
+      · customer.subscription.deleted
   - Guarda y copia el "Signing secret" (empieza por whsec_...)
      → Lo necesitas en el Paso 3
 
@@ -96,12 +100,14 @@ PASO 3 — VERCEL (variables de entorno)
 ────────────────────────────────────────
 1. Ve a https://vercel.com → tu proyecto Dazenty
 2. Settings → Environment Variables
-3. Añade estas 5 variables (una por una):
+3. Añade estas 6 variables (una por una):
 
    SUPABASE_URL              → la Project URL de Supabase (Paso 1)
    SUPABASE_SERVICE_KEY      → la service_role key de Supabase (Paso 1)
    ADMIN_PASSWORD            → la contraseña que TÚ quieras para entrar al admin
                                (ej: Dazenty@2026! — ponla difícil)
+   STRIPE_SECRET_KEY         → la clave secreta de Stripe (sk_live_...)
+                               Dashboard Stripe → Developers → API keys
    STRIPE_WEBHOOK_SECRET     → el Signing secret de Stripe (Paso 2)
    RESEND_API_KEY            → ya lo tienes configurado, no hace falta tocarlo
 
