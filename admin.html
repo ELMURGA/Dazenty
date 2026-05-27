@@ -388,6 +388,14 @@
 
     <div class="h-px bg-white/5 mb-6"></div>
 
+    <!-- NOTAS INTERNAS -->
+    <div class="h-px bg-white/5 mb-6"></div>
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Notas internas</p>
+    <div class="mb-8">
+      <label class="block text-xs text-gray-500 uppercase tracking-wider mb-1.5">Notas privadas <span class="normal-case text-gray-600">(solo visibles en el admin)</span></label>
+      <textarea id="m-clientNotes" placeholder="Historial de pagos, acuerdos especiales, observaciones..."></textarea>
+    </div>
+
     <!-- SUSCRIPCIÓN STRIPE -->
     <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-4">Estado de suscripción Stripe</p>
     <div class="grid sm:grid-cols-2 gap-4 mb-8">
@@ -710,6 +718,7 @@ function openModal(id) {
       syncPdfUrl('invoice');
       document.getElementById('m-subId').value           = c.stripe_subscription_id || '';
       document.getElementById('m-subStatus').value      = c.stripe_subscription_status || '';
+      document.getElementById('m-clientNotes').value    = c.client_notes || '';
       updateSlugPreview(c.slug);
     }
   } else {
@@ -788,6 +797,7 @@ async function saveClient() {
     pdf_invoice_url:          document.getElementById('m-pdfInvoice').value.trim(),
     stripe_subscription_id:   document.getElementById('m-subId').value.trim() || null,
     stripe_subscription_status: document.getElementById('m-subStatus').value || null,
+    client_notes:               document.getElementById('m-clientNotes').value.trim(),
   };
 
   try {
