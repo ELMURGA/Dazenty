@@ -119,7 +119,7 @@ export default async function handler(req, res) {
 
   <!-- LOGO -->
   <tr><td align="center" style="padding-bottom:36px">
-    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="90" style="height:90px;width:auto;display:block">
+    <span style="display:inline-block;font-family:'Segoe UI',Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:5px;color:#ffffff;text-transform:uppercase">DAZENTY</span>
   </td></tr>
 
   <!-- CARD PRINCIPAL -->
@@ -214,7 +214,7 @@ export default async function handler(req, res) {
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px">
 
   <tr><td align="center" style="padding-bottom:28px">
-    <img src="https://dazenty.com/img/logodazenty.webp" alt="Dazenty" height="90" style="height:90px;width:auto;display:block">
+    <span style="display:inline-block;font-family:'Segoe UI',Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:5px;color:#ffffff;text-transform:uppercase">DAZENTY</span>
   </td></tr>
 
   <tr><td style="background:#111111;border:1px solid #1e1e1e;border-radius:16px;overflow:hidden">
