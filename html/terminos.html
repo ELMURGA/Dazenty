@@ -42,6 +42,22 @@
         <span class="loader-letter">D</span><span class="loader-letter">A</span><span class="loader-letter">Z</span><span class="loader-letter">E</span><span class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
     </div>
 </div>
+<script>
+    // Inline safety fallback to prevent loader from hanging
+    (function() {
+        var loader = document.querySelector('.page-loader');
+        if (loader) {
+            setTimeout(function() {
+                if (!loader.classList.contains('hidden')) {
+                    loader.classList.add('hidden');
+                    setTimeout(function() {
+                        loader.style.display = 'none';
+                    }, 300);
+                }
+            }, 1000);
+        }
+    })();
+</script>
 
 
 <!-- Navegación flotante -->

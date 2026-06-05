@@ -363,6 +363,22 @@
                 class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
         </div>
     </div>
+    <script>
+        // Inline safety fallback to prevent loader from hanging
+        (function() {
+            var loader = document.querySelector('.page-loader');
+            if (loader) {
+                setTimeout(function() {
+                    if (!loader.classList.contains('hidden')) {
+                        loader.classList.add('hidden');
+                        setTimeout(function() {
+                            loader.style.display = 'none';
+                        }, 300);
+                    }
+                }, 1000);
+            }
+        })();
+    </script>
 
 
     <!-- Navegación flotante tattoox.es -->
@@ -672,7 +688,7 @@
 
                     <!-- Card 2: Interactive Photo (Col-span 1) -->
                     <div class="dz-bento-card dz-bento-card--image">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2940&auto=format&fit=crop" alt="Equipo Dazenty" width="2940" height="1960" loading="lazy">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop" alt="Equipo Dazenty" width="1000" height="667" loading="lazy">
                         <div class="dz-bento-card__overlay"></div>
                         <div class="dz-bento-card__img-content">
                             <span class="text-brand-blue font-mono text-xs uppercase tracking-widest block mb-1">Est. 2020</span>

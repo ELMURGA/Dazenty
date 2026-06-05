@@ -1,7 +1,7 @@
 // Page Loader Animation
-window.addEventListener('load', () => {
+const dismissLoader = () => {
     const loader = document.querySelector('.page-loader');
-    if (loader) {
+    if (loader && !loader.classList.contains('hidden')) {
         // Brief loader — keep it fast for LCP
         setTimeout(() => {
             loader.classList.add('hidden');
@@ -9,9 +9,22 @@ window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.style.display = 'none';
             }, 300);
-        }, 400);
+        }, 200);
     }
-});
+};
+
+// Dismiss loader as soon as DOM is ready (main.js runs deferred)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dismissLoader);
+} else {
+    dismissLoader();
+}
+
+// Safety fallback: force hide loader after 1 second max
+setTimeout(dismissLoader, 1000);
+
+// Also bind to window load as a fallback
+window.addEventListener('load', dismissLoader);
 
 // Flag global: indica que un campo del formulario está activo (iOS keyboard)
 let _formActive = false;
