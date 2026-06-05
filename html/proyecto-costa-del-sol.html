@@ -19,8 +19,16 @@
     <meta property="og:url" content="https://dazenty.com/html/proyecto-costa-del-sol.html">
     <meta property="og:title" content="Costa del Sol Foods & Beverages — Caso de Éxito | Dazenty">
     <meta property="og:description" content="Web corporativa B2B internacional y estrategia SEM con +180% de ventas online en 6 meses.">
-    <meta property="og:image" content="https://dazenty.com/proyectos/web_costadelsol.webp">
+    <meta property="og:image" content="https://dazenty.com/proyectos/web_costadelsol.webp">    <meta property="og:locale" content="es_ES">
+    <meta property="og:site_name" content="Dazenty">
 
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://dazenty.com/html/proyecto-costa-del-sol.html">
+    <meta name="twitter:title" content="Costa del Sol Foods &amp; Beverages — Caso de Éxito | Dazenty">
+    <meta name="twitter:description" content="Web corporativa B2B internacional y estrategia SEM con +180% de ventas online en 6 meses.">
+    <meta name="twitter:image" content="https://dazenty.com/proyectos/web_costadelsol.webp">
+    <meta name="twitter:site" content="@DAzenty">
     <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -31,29 +39,20 @@
         rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            blue: '#d97762',
-                            dark: '#050505',
-                            gray: '#121212',
-                            light: '#EAEAEA'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS (self-hosted, compilado) -->
+    <link rel="preload" href="../css/tailwind.min.css" as="style">
+    <link rel="stylesheet" href="../css/tailwind.min.css">
 
     <link rel="stylesheet" href="../css/main.css?v=4">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QKRJPJPMF7');
+    </script>
 </head>
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
@@ -62,7 +61,7 @@
     <!-- Navegación flotante tattoox.es -->
     <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
         <a href="../index.html" class="dz-nav__logo">
-            <img src="../favicon.webp" alt="Dazenty">
+            <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400" class="h-10 w-auto">
             <span>Dazenty</span>
         </a>
         <div class="dz-nav__expand">
