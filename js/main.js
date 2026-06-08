@@ -43,6 +43,7 @@ function initLenis() {
         smooth: true,
         smoothTouch: false,
     });
+    window.lenis = lenis; // Export global for other scripts (like portfolio.html drawer)
 
     function raf(time) {
         if (lenis) lenis.raf(time);
@@ -79,14 +80,37 @@ const dzToggle = document.getElementById('dz-toggle');
 if (dzNav && dzToggle) {
 
     const SCROLL_THRESHOLD = 80;
+    let _navScrollY = 0;
+
+    function preventDefault(e) {
+        e.preventDefault();
+    }
 
     function navOpen() {
         dzNav.classList.add('is-open');
         dzToggle.setAttribute('aria-expanded', 'true');
+        if (window.innerWidth < 768) {
+            _navScrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = '-' + _navScrollY + 'px';
+            document.body.style.width = '100%';
+            document.body.classList.add('overflow-hidden');
+            document.addEventListener('touchmove', preventDefault, { passive: false });
+            if (lenis) lenis.stop();
+        }
     }
     function navClose() {
         dzNav.classList.remove('is-open');
         dzToggle.setAttribute('aria-expanded', 'false');
+        if (window.innerWidth < 768) {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, _navScrollY);
+            document.body.classList.remove('overflow-hidden');
+            document.removeEventListener('touchmove', preventDefault);
+            if (lenis) lenis.start();
+        }
     }
 
     // Estado inicial: abierto en desktop, cerrado en móvil
