@@ -1,7 +1,7 @@
 {
-  "name": "Dazenty - Diseño Web, Branding y Marketing Digital",
+  "name": "Dazenty - Diseño Web, Desarrollo y Automatización n8n",
   "short_name": "Dazenty",
-  "description": "Agencia digital especializada en diseño web, branding y marketing digital. Creamos experiencias visuales únicas y estrategias efectivas.",
+  "description": "Agencia digital especializada en diseño y desarrollo web a medida y automatización de procesos con n8n. También branding y marketing digital.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
@@ -11,13 +11,13 @@
     {
       "src": "/img/logodazenty.webp",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/webp",
       "purpose": "any maskable"
     },
     {
       "src": "/img/logodazenty.webp",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/webp",
       "purpose": "any maskable"
     }
   ],

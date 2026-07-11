@@ -29,6 +29,11 @@ window.addEventListener('load', dismissLoader);
 // Flag global: indica que un campo del formulario está activo (iOS keyboard)
 let _formActive = false;
 
+// Flag global: indica que hay un modal de servicio abierto (evita que el
+// listener de scroll del nav reaccione al reset de scrollY a 0 que provoca
+// el bloqueo del body con position:fixed al abrir el modal)
+let _modalActive = false;
+
 // Detectar iOS — Lenis causa problemas graves en iOS Safari
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
@@ -146,7 +151,7 @@ if (dzNav && dzToggle) {
     // Scroll: colapsar al bajar, expandir al volver arriba
     // Ignora el scroll causado por iOS al abrir/cerrar el teclado virtual
     window.addEventListener('scroll', function () {
-        if (_formActive) return;
+        if (_formActive || _modalActive) return;
         const active = document.activeElement;
         const isKeyboardOpen = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
         if (isKeyboardOpen) return;
@@ -205,11 +210,11 @@ if (typeof gsap !== 'undefined') {
         delay: 0.5
     });
 
-    // Service Cards Stagger
+    // Service Cards Stagger (solo fade, sin desplazamiento vertical
+    // para que los iconos de cada servicio queden siempre a la misma altura)
     gsap.utils.toArray('.service-card').forEach((card, i) => {
         gsap.from(card, {
             scrollTrigger: { trigger: card, start: 'top 85%' },
-            y: 50,
             opacity: 0,
             duration: 0.8,
             delay: i * 0.1,
@@ -359,6 +364,7 @@ let _svcScrollY = 0;
 function openServiceModal(id) {
     const modal = document.getElementById('modal-' + id);
     if (!modal) return;
+    _modalActive = true;
     _svcScrollY = window.scrollY;
     document.body.style.position = 'fixed';
     document.body.style.top = '-' + _svcScrollY + 'px';
@@ -376,12 +382,13 @@ function closeServiceModal(id) {
     document.body.style.width = '';
     window.scrollTo(0, _svcScrollY);
     if (lenis) lenis.start();
+    _modalActive = false;
 }
 
 // Cerrar modal con Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        ['web', 'grafico', 'marketing'].forEach(id => {
+        ['web', 'grafico', 'marketing', 'n8n'].forEach(id => {
             const m = document.getElementById('modal-' + id);
             if (m && !m.classList.contains('hidden')) closeServiceModal(id);
         });
@@ -404,8 +411,8 @@ document.querySelectorAll('a[href^="tel:"]').forEach(el => {
 });
 
 // "Solicitar presupuesto" desde modales de servicio
-const serviceLabels = { web: 'Diseño Web', grafico: 'Diseño Gráfico', marketing: 'Marketing Digital' };
-['web', 'grafico', 'marketing'].forEach(id => {
+const serviceLabels = { web: 'Diseño Web', grafico: 'Diseño Gráfico', marketing: 'Marketing Digital', n8n: 'Automatización n8n' };
+['web', 'grafico', 'marketing', 'n8n'].forEach(id => {
     const modal = document.getElementById('modal-' + id);
     if (!modal) return;
     modal.querySelector('a[href="#contacto"]')?.addEventListener('click', () => {

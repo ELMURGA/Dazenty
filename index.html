@@ -5,36 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Dazenty | Diseño Web, Branding y Marketing Digital</title>
+    <title>Dazenty | Agencia de Diseño y Desarrollo Web + Automatización n8n</title>
     <meta name="description"
-        content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
+        content="Agencia especializada en diseño y desarrollo de páginas web a medida. Creamos webs corporativas, tiendas online y automatizamos tus procesos con n8n. También branding y marketing digital.">
     <meta name="keywords"
-        content="diseño web, marketing digital, diseño gráfico, branding, SEO, desarrollo web, agencia digital">
+        content="diseño web, desarrollo web, páginas web a medida, agencia de diseño web, automatización n8n, n8n, branding, diseño gráfico, marketing digital, agencia digital">
     <meta name="author" content="Dazenty">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#d97762">
     <meta name="msapplication-TileColor" content="#050505">
     <link rel="icon" type="image/webp" href="img/favicon.webp">
     <link rel="apple-touch-icon" href="img/favicon.webp">
+    <link rel="manifest" href="/manifest.json">
     <link rel="canonical" href="https://dazenty.com/">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dazenty.com/">
-    <meta property="og:title" content="Dazenty - Diseño Web, Branding y Marketing Digital">
+    <meta property="og:title" content="Dazenty - Agencia de Diseño y Desarrollo Web + Automatización n8n">
     <meta property="og:description"
-        content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
-    <meta property="og:image" content="https://dazenty.com/img/favicon.webp">
+        content="Agencia especializada en diseño y desarrollo de páginas web a medida. Creamos webs corporativas, tiendas online y automatizamos tus procesos con n8n.">
+    <meta property="og:image" content="https://dazenty.com/img/logodazenty.webp">
     <meta property="og:locale" content="es_ES">
     <meta property="og:site_name" content="Dazenty">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://dazenty.com">
-    <meta name="twitter:title" content="Dazenty - Diseño Web, Branding y Marketing Digital">
+    <meta name="twitter:title" content="Dazenty - Agencia de Diseño y Desarrollo Web + Automatización n8n">
     <meta name="twitter:description"
-        content="Agencia de diseño web y marketing digital. Creamos identidades visuales únicas y estrategias efectivas.">
-    <meta name="twitter:image" content="https://dazenty.com/img/favicon.webp">
+        content="Agencia especializada en diseño y desarrollo de páginas web a medida. Creamos webs corporativas, tiendas online y automatizamos tus procesos con n8n.">
+    <meta name="twitter:image" content="https://dazenty.com/img/logodazenty.webp">
     <meta name="twitter:site" content="@DAzenty">
 
     <!-- Rendimiento: DNS Prefetch y Preconnect (solo orígenes críticos) -->
@@ -56,292 +57,8 @@
     <link rel="stylesheet" href="css/tailwind.min.css">
 
     <!-- CSS Personalizado -->
-    <link rel="preload" href="css/main.css?v=4" as="style">
-    <link rel="stylesheet" href="css/main.css?v=4">
-
-    <!-- Estilos Inline robustos para Slider de Reseñas (Estilo Carpama) -->
-    <style>
-        /* Bordes de proceso naranja sólido en hover (bypass tailwind cache/compilation) */
-        .process-step {
-            transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        }
-        .process-step:hover {
-            border-color: #d97762 !important;
-            box-shadow: 0 4px 25px rgba(217, 119, 98, 0.15) !important;
-        }
-
-        .reviews-slider {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .reviews-slides-wrapper {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .review-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px) scale(0.97);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .review-slide.active {
-            position: relative;
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-            z-index: 2;
-        }
-        /* Controles: Dots de Progreso tipo Carpama (Píldora activa) */
-        .review-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            min-height: unset;
-        }
-        .review-dot.active {
-            width: 24px;
-            background: #d97762; /* Color brand-orange/blue */
-        }
-
-        /* Estilos de Bento Grid robustos para Sobre Nosotros */
-        .dz-bento-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-bottom: 96px;
-        }
-        @media (min-width: 768px) {
-            .dz-bento-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        .dz-bento-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 32px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .dz-bento-card:hover {
-            border-color: rgba(217, 119, 98, 0.3) !important;
-            box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
-        }
-        @media (min-width: 768px) {
-            .dz-bento-card--span-2 {
-                grid-column: span 2;
-            }
-            .dz-bento-card--span-3 {
-                grid-column: span 3;
-            }
-        }
-        .dz-bento-card--image {
-            padding: 0;
-            min-height: 320px;
-        }
-        .dz-bento-card--image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            inset: 0;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            filter: grayscale(100%) contrast(1.1);
-        }
-        .dz-bento-card--image:hover img {
-            transform: scale(1.05);
-            filter: grayscale(0%) contrast(1);
-        }
-        .dz-bento-card__overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0.2) 60%, transparent 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .dz-bento-card__img-content {
-            position: absolute;
-            bottom: 24px;
-            left: 24px;
-            right: 24px;
-            z-index: 2;
-        }
-        .dz-bento-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            margin-top: 32px;
-        }
-        .dz-bento-feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #a3a3a3;
-        }
-        .dz-pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #d97762;
-            border-radius: 50%;
-            position: relative;
-        }
-        .dz-pulse-dot::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border: 2px solid rgba(217, 119, 98, 0.4);
-            border-radius: 50%;
-            animation: dz-pulse-anim 2s infinite;
-        }
-        @keyframes dz-pulse-anim {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-        .dz-bento-glow {
-            position: absolute;
-            top: -100px;
-            left: -100px;
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(217, 119, 98, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-            transition: background 0.5s ease;
-        }
-        .dz-bento-card:hover .dz-bento-glow {
-            background: radial-gradient(circle, rgba(217, 119, 98, 0.15) 0%, transparent 70%);
-        }
-        .dz-values-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 32px;
-            margin-top: 32px;
-        }
-        @media (min-width: 768px) {
-            .dz-values-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        .dz-value-item {
-            display: flex;
-            gap: 16px;
-            align-items: start;
-        }
-        .dz-value-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(217, 119, 98, 0.1);
-            color: #d97762;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-        }
-        .dz-value-icon svg {
-            width: 24px;
-            height: 24px;
-        }
-        .dz-value-item:hover .dz-value-icon {
-            background-color: #d97762 !important;
-            color: #050505 !important;
-            transform: translateY(-4px);
-        }
-
-        /* Estilos de Estadísticas Premium */
-        .dz-stats-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-top: 48px;
-            padding-top: 48px;
-            border-t: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        @media (min-width: 640px) {
-            .dz-stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (min-width: 1024px) {
-            .dz-stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        .dz-stat-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 32px 24px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .dz-stat-card:hover {
-            border-color: rgba(217, 119, 98, 0.2) !important;
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
-        }
-        .dz-stat-number {
-            font-size: 56px;
-            font-weight: 800;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #d97762; /* color corporativo */
-            line-height: 1.1;
-            margin-bottom: 12px;
-            text-shadow: 0 0 30px rgba(217, 119, 98, 0.1);
-            transition: color 0.4s ease, text-shadow 0.4s ease;
-            position: relative;
-            z-index: 1;
-        }
-        .dz-stat-card:hover .dz-stat-number {
-            color: #ffffff;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
-        }
-        .dz-stat-label {
-            font-size: 15px;
-            color: #a3a3a3;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            position: relative;
-            z-index: 1;
-        }
-        .dz-stat-glow {
-            position: absolute;
-            bottom: -50px;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, rgba(217, 119, 98, 0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-    </style>
+    <link rel="preload" href="css/main.css?v=5" as="style">
+    <link rel="stylesheet" href="css/main.css?v=5">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
@@ -350,6 +67,38 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-QKRJPJPMF7');
+    </script>
+
+    <!-- Datos estructurados Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://dazenty.com/#organization",
+        "name": "Dazenty",
+        "url": "https://dazenty.com/",
+        "logo": "https://dazenty.com/img/logodazenty.webp",
+        "image": "https://dazenty.com/img/logodazenty.webp",
+        "description": "Agencia especializada en diseño y desarrollo de páginas web a medida, automatización de procesos con n8n, branding y marketing digital.",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "ES"
+        },
+        "sameAs": [
+            "https://www.instagram.com/dazen.ty",
+            "https://twitter.com/DAzenty"
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://dazenty.com/",
+        "name": "Dazenty",
+        "publisher": { "@id": "https://dazenty.com/#organization" },
+        "inLanguage": "es-ES"
+    }
     </script>
 </head>
 
@@ -383,14 +132,14 @@
 
     <!-- Navegación flotante tattoox.es -->
     <nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
-        <a href="index.html" class="dz-nav__logo" id="logo-home" aria-label="Dazenty — volver al inicio">
+        <a href="/" class="dz-nav__logo" id="logo-home" aria-label="Dazenty — volver al inicio">
             <img src="img/logoheader.webp" alt="Dazenty" width="400" height="400" class="h-10 w-auto">
         </a>
         <div class="dz-nav__expand">
             <ul class="dz-nav__links">
                 <li><a href="#inicio" data-num="01">Inicio</a></li>
                 <li><a href="#servicios" data-num="02">Servicios</a></li>
-                <li><a href="html/portfolio.html" data-num="03">Portfolio</a></li>
+                <li><a href="/html/portfolio" data-num="03">Portfolio</a></li>
                 <li class="is-cta"><a href="#contacto">Hablemos</a></li>
             </ul>
             <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
@@ -432,8 +181,7 @@
 
                 <p class="mt-8 text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed animate-fade-in"
                     style="animation-delay: 0.4s;">
-                    Somos una agencia creativa especializada en <span class="text-brand-blue">Diseño Web</span>, <span
-                        class="text-brand-blue">Branding</span> y <span class="text-brand-blue">Marketing
+                    Somos una agencia especializada en <span class="text-brand-blue">Diseño y Desarrollo Web</span>. También creamos <span class="text-brand-blue">Automatizaciones con n8n</span>, <span class="text-brand-blue">Branding</span> y <span class="text-brand-blue">Marketing
                         Digital</span>. Creamos experiencias que conectan y venden.
                 </p>
 
@@ -446,7 +194,7 @@
                         </div>
                         <span class="relative">Iniciar Proyecto</span>
                     </a>
-                    <a href="html/portfolio.html"
+                    <a href="/html/portfolio"
                         class="group flex items-center gap-2 text-white font-medium hover:text-brand-blue transition-colors">
                         <span>Ver Portfolio</span>
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
@@ -474,10 +222,10 @@
 
                 <div class="hidden md:block w-full h-[1px] bg-white/10 mb-12"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-white/10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Servicio 1 -->
                     <button onclick="openServiceModal('web')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-t border-b border-white/10 md:border-t-0 md:border-b-0 block text-left w-full">
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -507,7 +255,7 @@
 
                     <!-- Servicio 2 -->
                     <button onclick="openServiceModal('grafico')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block text-left w-full">
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -536,7 +284,7 @@
 
                     <!-- Servicio 3 -->
                     <button onclick="openServiceModal('marketing')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border-b border-white/10 md:border-b-0 block text-left w-full">
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
                         <div
                             class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -563,6 +311,35 @@
                             </li>
                         </ul>
                     </button>
+
+                    <!-- Servicio 4 -->
+                    <button onclick="openServiceModal('n8n')"
+                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
+                        <div
+                            class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold mb-4 group-hover:text-brand-blue transition-colors">
+                            Automatizaciones n8n</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">
+                            Conectamos tus aplicaciones y automatizamos tareas repetitivas para que tu negocio funcione solo.
+                        </p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Automatización de Procesos
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Integraciones (CRM, Email...)
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Agentes con IA
+                            </li>
+                        </ul>
+                    </button>
                 </div>
             </div>
         </section>
@@ -572,7 +349,7 @@
             <div class="max-w-7xl mx-auto px-6">
                 <div class="mb-24 flex items-center justify-between">
                     <h2 class="font-display text-4xl md:text-6xl font-bold">Trabajos Recientes</h2>
-                    <a href="html/portfolio.html"
+                    <a href="/html/portfolio"
                         class="hidden md:flex items-center gap-2 text-sm font-medium uppercase tracking-widest hover:text-brand-blue transition-colors">
                         Ver todos
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -584,7 +361,7 @@
 
                 <div class="space-y-24 md:space-y-32">
                     <!-- Proyecto 1 — Hermanos Hervás -->
-                    <a href="html/proyecto-hermanos-hervas.html" class="project-item group block">
+                    <a href="/html/proyecto-hermanos-hervas" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
@@ -609,7 +386,7 @@
                     </a>
 
                     <!-- Proyecto 2 — Sevilla Tarjetas Plásticas -->
-                    <a href="html/proyecto-sevilla-tp.html" class="project-item group block">
+                    <a href="/html/proyecto-sevilla-tp" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
@@ -634,7 +411,7 @@
                     </a>
 
                     <!-- Proyecto 3 — Costa del Sol Foods -->
-                    <a href="html/proyecto-costa-del-sol.html" class="project-item group block">
+                    <a href="/html/proyecto-costa-del-sol" class="project-item group block">
                         <div class="relative aspect-[16/9] overflow-hidden rounded-2xl mb-8 bg-gray-800">
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
@@ -1096,6 +873,7 @@
                                 <select id="contact-service" name="service"
                                     class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue transition-colors appearance-none">
                                     <option value="Desarrollo Web">Desarrollo Web</option>
+                                    <option value="Automatización n8n">Automatización n8n</option>
                                     <option value="Diseño Gráfico">Diseño Gráfico</option>
                                     <option value="Marketing Digital">Marketing Digital</option>
                                 </select>
@@ -1158,6 +936,7 @@
                     <h4 class="font-bold mb-4">Servicios</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
+                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Automatización n8n</a></li>
                         <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
                         <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a></li>
                     </ul>
@@ -1166,7 +945,7 @@
                     <h4 class="font-bold mb-4">Empresa</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li><a href="#nosotros" class="hover:text-brand-blue transition-colors">Nosotros</a></li>
-                        <li><a href="html/portfolio.html" class="hover:text-brand-blue transition-colors">Portfolio</a>
+                        <li><a href="/html/portfolio" class="hover:text-brand-blue transition-colors">Portfolio</a>
                         </li>
                         <li><a href="#contacto" class="hover:text-brand-blue transition-colors">Contacto</a></li>
                     </ul>
@@ -1174,11 +953,11 @@
                 <div>
                     <h4 class="font-bold mb-4">Legal</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="html/privacidad.html" class="hover:text-brand-blue transition-colors">Política de
+                        <li><a href="/html/privacidad" class="hover:text-brand-blue transition-colors">Política de
                                 Privacidad</a></li>
-                        <li><a href="html/terminos.html" class="hover:text-brand-blue transition-colors">Términos de
+                        <li><a href="/html/terminos" class="hover:text-brand-blue transition-colors">Términos de
                                 Servicio</a></li>
-                        <li><a href="html/avisos-legales.html" class="hover:text-brand-blue transition-colors">Aviso Legal</a></li>
+                        <li><a href="/html/avisos-legales" class="hover:text-brand-blue transition-colors">Aviso Legal</a></li>
                     </ul>
                 </div>
             </div>
@@ -1201,10 +980,11 @@
     <!-- Modal: Diseño Web & UI/UX -->
     <div id="modal-web" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('web')">
         <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('web')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('web')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
+                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
                 <div class="flex items-center gap-4 mb-8">
                     <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -1227,6 +1007,7 @@
                     Solicitar presupuesto
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1234,10 +1015,11 @@
     <!-- Modal: Diseño Gráfico -->
     <div id="modal-grafico" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('grafico')">
         <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('grafico')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('grafico')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
+                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
                 <div class="flex items-center gap-4 mb-8">
                     <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
@@ -1260,6 +1042,7 @@
                     Solicitar presupuesto
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1267,10 +1050,11 @@
     <!-- Modal: Marketing & Ads -->
     <div id="modal-marketing" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('marketing')">
         <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl p-8 md:p-12" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('marketing')" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('marketing')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
+                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
                 <div class="flex items-center gap-4 mb-8">
                     <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
@@ -1292,6 +1076,42 @@
                     Solicitar presupuesto
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Automatizaciones n8n -->
+    <div id="modal-n8n" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('n8n')">
+        <div class="flex min-h-full items-center justify-center p-4 py-10">
+            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <button onclick="closeServiceModal('n8n')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Nuevo Servicio</p>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold">Automatizaciones n8n</h2>
+                    </div>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-8">Diseñamos flujos de automatización con n8n para eliminar tareas repetitivas de tu negocio: conectamos tus herramientas, sincronizamos datos y hacemos que la información fluya sola entre tus sistemas, sin necesidad de que nadie lo haga a mano.</p>
+                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Conexión entre tus apps</strong> — Integramos cientos de herramientas (CRM, email, hojas de cálculo, WhatsApp, redes sociales, ERPs...) para que trabajen juntas automáticamente.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Automatización de procesos</strong> — Gestión de leads, envío de emails y notificaciones, generación de facturas, sincronización de pedidos y mucho más, sin tocar una sola fila manualmente.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Agentes con IA</strong> — Chatbots y asistentes que responden consultas, analizan documentos o clasifican información conectados directamente a tus datos.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Disparadores inteligentes</strong> — Flujos que se activan por horario, por un webhook, por un formulario enviado o por cualquier evento de tus clientes en tiempo real.</span></li>
+                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Monitorización y alertas</strong> — Supervisamos cada automatización con notificaciones de error para que todo siga funcionando sin sorpresas.</span></li>
+                </ul>
+                <a href="#contacto" onclick="closeServiceModal('n8n')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+                    Solicitar presupuesto
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1299,7 +1119,7 @@
     <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="js/main.js?v=3" defer></script>
+    <script src="js/main.js?v=4" defer></script>
     <!-- Slider de reseñas con transición suave -->
     <script>
         (function() {

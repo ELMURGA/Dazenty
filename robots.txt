@@ -5,9 +5,9 @@ Allow: /
 # Sitemap
 Sitemap: https://dazenty.com/sitemap.xml
 
-# Bloquear archivos innecesarios
-Disallow: /css/
-Disallow: /js/
+# Bloquear solo archivos de control de versiones/entorno (nunca CSS/JS:
+# Google necesita poder descargarlos para renderizar e indexar la web)
 Disallow: /.git/
 Disallow: /.DS_Store
 Disallow: /.vscode/
+Disallow: /api/
