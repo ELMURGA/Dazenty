@@ -198,6 +198,11 @@ select option {
     justify-content: center;
     opacity: 1;
     visibility: visible;
+    /* No debe capturar toques/scroll nunca (es puramente decorativo).
+       Sin esto, mientras se desvanece (hasta 0.3s tras "hidden", o hasta
+       1s en el fallback) sigue interceptando el primer scroll/tap del
+       usuario justo al recargar la página — más notorio en Safari. */
+    pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
