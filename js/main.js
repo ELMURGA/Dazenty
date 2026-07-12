@@ -37,6 +37,14 @@ let _modalActive = false;
 // Detectar iOS — Lenis causa problemas graves en iOS Safari
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+// Detectar cualquier dispositivo táctil — Lenis (scroll virtualizado) también
+// puede "trabar"/ralentizar el scroll con el dedo en Android/Chrome móvil,
+// no solo en iOS. En táctil dejamos el scroll nativo (ya es fluido de por sí).
+const isTouchDevice = isIOS
+    || ('ontouchstart' in window)
+    || navigator.maxTouchPoints > 0
+    || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
 let lenis = null;
 
 function initLenis() {
@@ -57,8 +65,9 @@ function initLenis() {
     requestAnimationFrame(raf);
 }
 
-// Cargar Lenis solo en no-iOS (ahorra una petición CDN en Safari móvil)
-if (!isIOS) {
+// Cargar Lenis solo en desktop/no-táctil (ahorra una petición CDN en móvil
+// y evita el scroll trabado que provoca en dispositivos táctiles)
+if (!isTouchDevice) {
     const lenisScript = document.createElement('script');
     lenisScript.src = 'https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js';
     lenisScript.onload = initLenis;
