@@ -26,14 +26,6 @@ setTimeout(dismissLoader, 1000);
 // Also bind to window load as a fallback
 window.addEventListener('load', dismissLoader);
 
-// Flag global: indica que un campo del formulario está activo (iOS keyboard)
-let _formActive = false;
-
-// Flag global: indica que hay un modal de servicio abierto (evita que el
-// listener de scroll del nav reaccione al reset de scrollY a 0 que provoca
-// el bloqueo del body con position:fixed al abrir el modal)
-let _modalActive = false;
-
 // Detectar iOS — Lenis causa problemas graves en iOS Safari
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
@@ -74,9 +66,10 @@ if (!isTouchDevice) {
     document.head.appendChild(lenisScript);
 }
 
-// Logo → scroll suave al top
-const logoLink = document.querySelector('.dz-nav__logo');
-if (logoLink) {
+// Logo → scroll suave al top (solo en la home; en el resto navega a "/")
+const logoLink = document.querySelector('.site-header__logo');
+const isHomePage = window.location.pathname === '/' || /\/index\.html$/.test(window.location.pathname);
+if (logoLink && isHomePage) {
     logoLink.addEventListener('click', (e) => {
         e.preventDefault();
         if (lenis) {
@@ -87,122 +80,44 @@ if (logoLink) {
     });
 }
 
+// Header — menú móvil (panel a pantalla completa, sin overflow posible)
+const navToggle = document.getElementById('nav-toggle');
+const mobileNav  = document.getElementById('mobile-nav');
+if (navToggle && mobileNav) {
 
-// Floating Nav — toggle + scroll collapse
-const dzNav    = document.getElementById('dz-nav');
-const dzToggle = document.getElementById('dz-toggle');
-if (dzNav && dzToggle) {
-
-    const SCROLL_THRESHOLD = 80;
-    let _navScrollY = 0;
-
-    function preventDefault(e) {
-        e.preventDefault();
+    function closeMobileNav() {
+        navToggle.classList.remove('is-active');
+        navToggle.setAttribute('aria-expanded', 'false');
+        mobileNav.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+    }
+    function openMobileNav() {
+        navToggle.classList.add('is-active');
+        navToggle.setAttribute('aria-expanded', 'true');
+        mobileNav.classList.add('is-open');
+        document.body.classList.add('nav-open');
     }
 
-    function navOpen() {
-        dzNav.classList.add('is-open');
-        dzToggle.setAttribute('aria-expanded', 'true');
-        if (window.innerWidth < 768) {
-            _navScrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = '-' + _navScrollY + 'px';
-            document.body.style.width = '100%';
-            document.body.classList.add('overflow-hidden');
-            document.addEventListener('touchmove', preventDefault, { passive: false });
-            if (lenis) lenis.stop();
-        }
-    }
-    function navClose() {
-        dzNav.classList.remove('is-open');
-        dzToggle.setAttribute('aria-expanded', 'false');
-        if (window.innerWidth < 768) {
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, _navScrollY);
-            document.body.classList.remove('overflow-hidden');
-            document.removeEventListener('touchmove', preventDefault);
-            if (lenis) lenis.start();
-        }
-    }
-
-    // Estado inicial: abierto en desktop, cerrado en móvil
-    if (window.innerWidth >= 768) {
-        navOpen();
-    } else {
-        navClose();
-    }
-
-    // Clic en la pill cuando está cerrada → abrir
-    dzNav.addEventListener('click', function (e) {
-        if (!dzNav.classList.contains('is-open')) {
-            e.preventDefault();
-            navOpen();
-        }
-    });
-
-    // Botón X → cerrar
-    dzToggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        navClose();
-    });
-
-    // Cerrar al hacer clic fuera (solo cuando está abierto, ignorar interacciones con formularios)
-    document.addEventListener('click', function (e) {
-        if (!dzNav.classList.contains('is-open')) return;
-        if (dzNav.contains(e.target)) return;
-        // No cerrar si el clic es dentro de un formulario o en un campo
-        if (e.target.closest('form, input, textarea, select, label')) return;
-        navClose();
-    });
-
-    // Scroll: colapsar al bajar, expandir al volver arriba
-    // Ignora el scroll causado por iOS al abrir/cerrar el teclado virtual
-    window.addEventListener('scroll', function () {
-        if (_formActive || _modalActive) return;
-        const active = document.activeElement;
-        const isKeyboardOpen = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
-        if (isKeyboardOpen) return;
-        const y = window.scrollY;
-        if (y > SCROLL_THRESHOLD) {
-            if (dzNav.classList.contains('is-open')) navClose();
+    navToggle.addEventListener('click', () => {
+        if (mobileNav.classList.contains('is-open')) {
+            closeMobileNav();
         } else {
-            if (!dzNav.classList.contains('is-open')) navOpen();
+            openMobileNav();
         }
-    }, { passive: true });
-}
+    });
 
-// Navbar Scroll Effect (solo páginas con header legacy #navbar)
-const navbar = document.getElementById('navbar');
-if (navbar) {
-    const navAbsolute = navbar.querySelector('.absolute');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('bg-brand-dark/95', 'backdrop-blur-xl', 'shadow-lg');
-            if (navAbsolute) navAbsolute.classList.add('opacity-100');
-        } else {
-            navbar.classList.remove('bg-brand-dark/95', 'backdrop-blur-xl', 'shadow-lg');
-            if (navAbsolute) navAbsolute.classList.remove('opacity-100');
-        }
-    }, { passive: true });
-}
+    // Cerrar al pulsar un enlace del menú
+    mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMobileNav));
 
-// Mobile Menu (páginas internas con nav legacy)
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const closeMenuBtn  = document.getElementById('close-menu-btn');
-const mobileMenu    = document.getElementById('mobile-menu');
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMobileNav();
+    });
 
-if (mobileMenuBtn && closeMenuBtn && mobileMenu) {
-    function toggleMenu() {
-        mobileMenu.classList.toggle('translate-x-full');
-        document.body.classList.toggle('overflow-hidden');
-    }
-
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-    mobileMenuBtn.addEventListener('click', toggleMenu);
-    closeMenuBtn.addEventListener('click', toggleMenu);
-    mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+    // Si se pasa a escritorio con el menú abierto, cerrarlo
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) closeMobileNav();
+    });
 }
 
 // GSAP Animations (solo en páginas que lo cargan)
@@ -288,7 +203,6 @@ if (contactForm) {
     }, { passive: true });
 
     contactForm.addEventListener('focusin', () => {
-        _formActive = true;
         if (lenis) lenis.stop();
         // Solo restaurar posición en iOS (en desktop _savedScrollY sería 0 y saltaría al top)
         if (isIOS) {
@@ -315,7 +229,6 @@ if (contactForm) {
     contactForm.addEventListener('focusout', () => {
         // Esperar a que el teclado iOS cierre completamente (~400ms)
         setTimeout(() => {
-            _formActive = false;
             if (lenis) {
                 lenis.scrollTo(window.scrollY, { immediate: true });
                 lenis.start();
@@ -373,7 +286,6 @@ let _svcScrollY = 0;
 function openServiceModal(id) {
     const modal = document.getElementById('modal-' + id);
     if (!modal) return;
-    _modalActive = true;
     _svcScrollY = window.scrollY;
     document.body.style.position = 'fixed';
     document.body.style.top = '-' + _svcScrollY + 'px';
@@ -391,7 +303,6 @@ function closeServiceModal(id) {
     document.body.style.width = '';
     window.scrollTo(0, _svcScrollY);
     if (lenis) lenis.start();
-    _modalActive = false;
 }
 
 // Cerrar modal con Escape

@@ -1,3 +1,9 @@
+/* Reservar siempre el espacio del scrollbar para que al bloquear el
+   scroll (menú móvil abierto) el ancho de la página no salte */
+html {
+    scrollbar-gutter: stable;
+}
+
 /* Fuentes */
 body {
     font-family: 'Inter', sans-serif;
@@ -468,168 +474,180 @@ select {
 }
 
 /* =====================================================
-   DAZENTY — Floating Nav  (tattoox style)
-   Logo fijo | .dz-nav__expand anima su propio ancho
+   DAZENTY — Header (barra fija, ancho completo)
+   Simple, robusto y sin overflows en ningún viewport.
    ===================================================== */
-.dz-nav {
+:root { --dz-header-h: 80px; }
+
+.site-header {
     position: fixed;
-    top: 1.8rem;
-    right: 1.8rem;
-    z-index: 99999;
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    background: rgba(12, 12, 12, 0.97);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.75);
-    height: 72px;
-    overflow: hidden;
-    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    height: var(--dz-header-h);
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.dz-nav.is-open { cursor: default; }
-
-/* Logo — siempre visible, nunca se recorta */
-.dz-nav__logo {
+.site-header__inner {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    padding-left: max(1.5rem, env(safe-area-inset-left, 1.5rem));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    text-decoration: none;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.site-header__logo {
+    display: flex;
+    align-items: center;
     flex-shrink: 0;
-    padding: 0 1.1rem 0 1.3rem;
-    pointer-events: none;
+    text-decoration: none;
 }
-.dz-nav.is-open .dz-nav__logo { pointer-events: auto; }
-.dz-nav__logo img  { height: 54px; width: auto; }
-.dz-nav__logo span {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    color: #ffffff;
-    white-space: nowrap;
-}
+.site-header__logo img { height: 46px; width: auto; display: block; }
 
-/* Zona expandible: links + botón X */
-.dz-nav__expand {
-    display: flex;
+/* Links — visibles en escritorio, ocultos en móvil */
+.site-header__nav {
+    display: none;
     align-items: center;
-    width: auto;
-    max-width: 0;
-    overflow: hidden;
-    transition: max-width 0.52s cubic-bezier(0.77, 0, 0.175, 1);
+    gap: 2.25rem;
 }
-.dz-nav.is-open .dz-nav__expand { max-width: 400px; }
-
-/* Links */
-.dz-nav__links {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.dz-nav__links li { flex-shrink: 0; }
-.dz-nav__links a {
-    display: block;
-    padding: 0 0.85rem;
-    line-height: 72px;
-    color: rgba(255, 255, 255, 0.6);
+.site-header__nav a {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 13.5px;
+    font-size: 14px;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
     text-decoration: none;
     white-space: nowrap;
-    transition: color 0.18s;
+    transition: color 0.2s ease;
 }
-.dz-nav__links a:hover,
-.dz-nav__links a.is-active { color: #ffffff; }
-.dz-nav__links a[data-num]::after {
-    content: attr(data-num);
-    font-family: 'Courier New', monospace;
-    font-size: 9px;
-    color: #d97762;
-    vertical-align: super;
-    margin-left: 3px;
-    line-height: 0;
+.site-header__nav a:hover,
+.site-header__nav a.is-active { color: #ffffff; }
+.site-header__nav a.site-header__cta {
+    color: #000000;
+    background: #d97762;
+    padding: 0.6rem 1.4rem;
+    border-radius: 9999px;
+    font-weight: 600;
 }
-.dz-nav__links li.is-cta a { color: #d97762; font-weight: 600; }
+.site-header__nav a.site-header__cta:hover { background: #e08c78; color: #000000; }
 
-/* Botón X — siempre su tamaño real dentro del expand */
-.dz-nav__toggle {
+/* Botón hamburguesa — solo móvil/tablet */
+.nav-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
-    width: 40px;
-    height: 72px;
     background: transparent;
-    border: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
     cursor: pointer;
-    position: relative;
     padding: 0;
 }
-.dz-nav__toggle span {
-    position: absolute;
-    width: 16px;
-    height: 1.5px;
+.nav-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
     background: #ffffff;
-    left: 50%;
-    top: 50%;
-    transition: 0.25s ease;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
-.dz-nav__toggle span:first-child {
-    transform: translate(-50%, -50%) rotate(45deg);
+.nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Menú móvil — panel a pantalla completa, nunca se recorta */
+.mobile-nav {
+    position: fixed;
+    top: var(--dz-header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(8, 8, 8, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
 }
-.dz-nav__toggle span:last-child  {
-    transform: translate(-50%, -50%) rotate(-45deg);
-}/* =====================================================
-   RESPONSIVE — móvil
-   Ocultar texto del logo, reducir fuente y padding
-   para que la pill quepa en pantallas pequeñas
-   ===================================================== */
-@media (max-width: 600px) {
-    .dz-nav {
-        top: 1rem;
-        right: 1rem;
-        height: 58px;
-        /* nunca se sale de pantalla */
-        max-width: calc(100vw - 1rem);
-    }
-    /* Solo icono en móvil, sin texto "Dazenty" */
-    .dz-nav__logo {
-        padding: 0 0.7rem 0 0.9rem;
-        gap: 0;
-    }
-    .dz-nav__logo span { display: none; }
-    .dz-nav__logo img  { height: 46px; }
-
-    /* Expand ocupa todo el espacio disponible */
-    .dz-nav.is-open .dz-nav__expand {
-        /* pantalla - margen derecho*2 - logo ~42px */
-        width: calc(100vw - 2rem - 42px);
-        max-width: 340px;
-    }
-
-    /* Links más compactos */
-    .dz-nav__links a {
-        padding: 0 0.5rem;
-        font-size: 12px;
-        line-height: 58px;
-    }
-    /* Ocultar números en móvil para ahorrar espacio */
-    .dz-nav__links a[data-num]::after { display: none; }
-
-    /* Botón X más pequeño */
-    .dz-nav__toggle {
-        width: 36px;
-        height: 58px;
-    }
+.mobile-nav.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.mobile-nav a {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+}
+.mobile-nav a.mobile-nav__cta {
+    color: #000000;
+    background: #d97762;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
 }
 
-/* Pantallas muy pequeñas (< 380px): ocultar ítem Nosotros */
-@media (max-width: 380px) {
-    .dz-nav__links li:nth-child(3) { display: none; }
-}/* ===================================================== */
+@media (min-width: 768px) {
+    .site-header__nav { display: flex; }
+    .nav-toggle { display: none; }
+    .mobile-nav { display: none; }
+
+    /* Escritorio: header flotante tipo píldora, separado del borde */
+    .site-header {
+        top: 20px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: calc(100% - 3rem);
+        max-width: 1200px;
+        height: 76px;
+        border-radius: 9999px;
+        background: rgba(12, 12, 12, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.45);
+    }
+    .site-header__inner {
+        padding: 0 2rem;
+    }
+    .site-header__logo img { height: 58px; }
+    .site-header__nav a:not(.site-header__cta) {
+        text-transform: uppercase;
+        font-size: 12.5px;
+        letter-spacing: 0.08em;
+    }
+}
+
+/* Bloquear scroll del body mientras el menú móvil está abierto */
+body.nav-open { overflow: hidden; }
+
+/* Reducir blur en móvil para aliviar la GPU de Safari iOS */
+@media (max-width: 768px) {
+    .site-header,
+    .mobile-nav {
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+}
+/* ===================================================== */
 
 /* ===== WHATSAPP FLOATING BUTTON ===== */
 /* ===== WHATSAPP FLOATING BUTTON ===== */
@@ -690,7 +708,7 @@ a {
     min-height: 44px;
 }
 /* Excepciones: links inline (nav, párrafos, listas) */
-p a, li a, .dz-nav__links a, footer a {
+p a, li a, .site-header__nav a, .mobile-nav a, footer a {
     min-height: unset;
 }
 
@@ -700,15 +718,7 @@ input, textarea, select {
 }
 
 /* Safe area insets para iPhone con notch/Dynamic Island */
-.dz-nav {
-    top: max(1.8rem, env(safe-area-inset-top, 1.8rem));
-    right: max(1.8rem, env(safe-area-inset-right, 1.8rem));
-}
 @media (max-width: 600px) {
-    .dz-nav {
-        top: max(1rem, env(safe-area-inset-top, 1rem));
-        right: max(1rem, env(safe-area-inset-right, 1rem));
-    }
     .whatsapp-float {
         bottom: max(1.2rem, env(safe-area-inset-bottom, 1.2rem));
         right: max(1.2rem, env(safe-area-inset-right, 1.2rem));
@@ -767,20 +777,6 @@ input, textarea, select {
 /* Momentum scroll en contenedores scrollables (iOS) */
 .overflow-y-auto, .overflow-x-auto, [class*="overflow-y-scroll"] {
     -webkit-overflow-scrolling: touch;
-}
-
-/* Fix: backdrop-filter en iOS Safari necesita -webkit- */
-.dz-nav {
-    -webkit-backdrop-filter: blur(28px);
-    backdrop-filter: blur(28px);
-}
-
-/* Reducir blur en móvil para aliviar la GPU de Safari iOS */
-@media (max-width: 768px) {
-    .dz-nav {
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-    }
 }
 
 /* Fix modales: overflow-y scroll en iOS */

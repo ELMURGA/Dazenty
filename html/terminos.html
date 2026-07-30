@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../css/tailwind.min.css">
 
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="../css/main.css?v=6">
+    <link rel="stylesheet" href="../css/main.css?v=9">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
@@ -60,26 +60,34 @@
 </script>
 
 
-<!-- Navegación flotante -->
-<nav class="dz-nav" id="dz-nav" role="navigation" aria-label="Navegación principal">
-    <a href="/" class="dz-nav__logo" aria-label="Dazenty — volver al inicio">
-        <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400">
-        <span>Dazenty</span>
-    </a>
-    <div class="dz-nav__expand">
-        <ul class="dz-nav__links">
-            <li><a href="/#inicio" data-num="01">Inicio</a></li>
-            <li><a href="/#servicios" data-num="02">Servicios</a></li>
-            <li><a href="/html/portfolio" data-num="03">Portfolio</a></li>
-            <li class="is-cta"><a href="/#contacto">Hablemos</a></li>
-        </ul>
-        <button class="dz-nav__toggle" id="dz-toggle" aria-label="Cerrar menú" aria-expanded="false">
-            <span></span><span></span>
+<!-- Header -->
+<header class="site-header">
+    <div class="site-header__inner">
+        <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
+            <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400">
+        </a>
+
+        <nav class="site-header__nav" aria-label="Navegación principal">
+            <a href="/#inicio">Inicio</a>
+            <a href="/#servicios">Servicios</a>
+            <a href="/html/portfolio">Portfolio</a>
+            <a href="/#contacto" class="site-header__cta">Hablemos</a>
+        </nav>
+
+        <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-nav">
+            <span></span><span></span><span></span>
         </button>
     </div>
-</nav>
+</header>
 
-<main class="pt-24 pb-24 min-h-screen">
+<div class="mobile-nav" id="mobile-nav">
+    <a href="/#inicio">Inicio</a>
+    <a href="/#servicios">Servicios</a>
+    <a href="/html/portfolio">Portfolio</a>
+    <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+</div>
+
+<main class="pt-32 pb-24 min-h-screen">
     <div class="container mx-auto px-6 max-w-4xl">
         
         <div class="mb-12">
@@ -362,7 +370,7 @@
         </div>
     </footer>
 
-<script src="../js/main.js?v=5" defer></script>
+<script src="../js/main.js?v=6" defer></script>
 <!-- Vercel Analytics -->
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
