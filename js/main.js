@@ -190,6 +190,10 @@ if (typeof gsap !== 'undefined') {
 // Contact Form — AJAX para evitar que la página navegue/suba al enviar
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
+    // Anti-bot: marca timestamp de carga; el servidor rechaza envíos demasiado rápidos
+    const tsField = contactForm.querySelector('[name="ts"]');
+    if (tsField) tsField.value = Date.now();
+
     // iOS FIX: el teclado virtual hace que Safari salte al top cuando el body
     // tiene overflow:hidden (que Lenis aplica). Solución: guardar la posición
     // en touchstart (antes de que el teclado abra), parar Lenis, y restaurar
@@ -250,6 +254,8 @@ if (contactForm) {
             email:   contactForm.querySelector('[name="email"]').value.trim(),
             service: contactForm.querySelector('[name="service"]').value,
             message: contactForm.querySelector('[name="message"]').value.trim(),
+            website: contactForm.querySelector('[name="website"]').value,
+            ts:      contactForm.querySelector('[name="ts"]').value,
         };
 
         try {

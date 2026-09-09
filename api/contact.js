@@ -4,11 +4,27 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { name, email, service, message } = req.body ?? {};
+    const { name, email, service, message, website, ts } = req.body ?? {};
+
+    // Anti-bot: campo honeypot relleno = bot. Respondemos éxito falso para no delatarlo.
+    if (website) {
+        return res.status(200).json({ ok: true });
+    }
+
+    // Anti-bot: envíos más rápidos que el tiempo humano mínimo de relleno = bot
+    const elapsed = Date.now() - Number(ts);
+    if (!ts || !Number.isFinite(elapsed) || elapsed < 3000) {
+        return res.status(200).json({ ok: true });
+    }
 
     // Validación básica
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    // Validación básica de formato de email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Email inválido' });
     }
 
     // Anti-XSS: escapar valores antes de inyectarlos en el HTML del email
