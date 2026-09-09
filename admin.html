@@ -597,6 +597,31 @@ function fmtDate(unixSeconds) {
   return new Date(unixSeconds * 1000).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function fmtMonthYear(unixSeconds) {
+  if (!unixSeconds) return '—';
+  const s = new Date(unixSeconds * 1000).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Etiqueta legible del periodo cubierto por una factura (mes único o rango anual)
+function invoicePeriodLabel(inv, interval) {
+  if (!inv.period_start) return fmtDate(inv.paid_at);
+  if (interval === 'year' && inv.period_end) {
+    const endInclusive = inv.period_end - 86400; // -1 día para no mostrar el mes siguiente
+    return `${fmtMonthYear(inv.period_start)} – ${fmtMonthYear(endInclusive)}`;
+  }
+  return fmtMonthYear(inv.period_start);
+}
+
+function toggleMonths(slug) {
+  const row = document.getElementById(`monthsRow-${slug}`);
+  const chevron = document.getElementById(`monthsChevron-${slug}`);
+  if (!row) return;
+  const show = row.style.display === 'none';
+  row.style.display = show ? 'table-row' : 'none';
+  if (chevron) chevron.style.transform = show ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
 async function loadPayments() {
   const tbody = document.getElementById('paymentsBody');
   const empty = document.getElementById('paymentsEmptyState');
@@ -653,6 +678,14 @@ function renderPayments() {
       ? `${fmtAmt(p.amount_monthly)}€/mes`
       : (p.amount_annual ? `${fmtAmt(p.amount_annual)}€/año` : '—');
     const st = STATUS_LABELS[p.status] || { label: p.status || '—', cls: 'bg-gray-800 text-gray-500' };
+    const invoices = Array.isArray(p.invoices) ? p.invoices : [];
+    const monthsChips = invoices.length
+      ? invoices.map(inv => `
+          <span class="inline-flex items-center gap-1.5 text-xs bg-white/5 border border-white/10 rounded-full px-3 py-1 mr-1.5 mb-1.5">
+            ${esc(invoicePeriodLabel(inv, p.interval))}
+            <span class="text-gray-500">· ${fmtAmt(inv.amount)}€</span>
+          </span>`).join('')
+      : '<p class="text-xs text-gray-600">Sin facturas registradas en Stripe.</p>';
     return `
     <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
       <td class="px-4 py-3">
@@ -662,13 +695,25 @@ function renderPayments() {
       <td class="px-4 py-3 text-gray-400">${esc(p.service_name || '—')}</td>
       <td class="px-4 py-3 text-brand-blue font-medium">${cuota}</td>
       <td class="px-4 py-3 text-center">
-        <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-full bg-white/5 font-semibold">${p.months_paid ?? 0}</span>
+        <button type="button" onclick="toggleMonths('${p.slug}')" title="Ver meses pagados"
+          class="inline-flex items-center gap-1.5 justify-center min-w-[2.75rem] px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 font-semibold transition-colors">
+          <span>${p.months_paid ?? 0}</span>
+          <svg id="monthsChevron-${p.slug}" class="w-3 h-3" style="transition:transform .2s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
       </td>
       <td class="px-4 py-3 text-right font-medium">${fmtAmt(p.total_paid || 0)}€</td>
       <td class="px-4 py-3 text-gray-400">${fmtDate(p.last_payment_at)}</td>
       <td class="px-4 py-3 text-gray-400">${fmtDate(p.current_period_end)}${p.cancel_at_period_end ? ' <span class="text-yellow-400">(cancela)</span>' : ''}</td>
       <td class="px-4 py-3">
         <span class="text-xs px-2.5 py-1 rounded-full font-medium ${st.cls}">${st.label}</span>
+      </td>
+    </tr>
+    <tr id="monthsRow-${p.slug}" style="display:none" class="border-b border-white/5 bg-white/[0.015]">
+      <td colspan="8" class="px-4 py-4">
+        <p class="text-xs text-gray-500 uppercase tracking-wider mb-2.5">Meses pagados (${p.paid_invoices ?? 0} facturas)</p>
+        <div>${monthsChips}</div>
       </td>
     </tr>`;
   }).join('');

@@ -92,6 +92,16 @@ export default async function handler(req, res) {
         const firstPaymentAt = paidAtDates.length ? Math.min(...paidAtDates) : (sub.start_date || null);
         const lastPaymentAt  = paidAtDates.length ? Math.max(...paidAtDates) : null;
 
+        // Detalle por factura — permite listar exactamente qué meses se pagaron
+        const invoiceDetails = paidInvoices
+          .map(inv => ({
+            paid_at:      inv.status_transitions?.paid_at || inv.created,
+            amount:       (inv.amount_paid || 0) / 100,
+            period_start: inv.lines?.data?.[0]?.period?.start || null,
+            period_end:   inv.lines?.data?.[0]?.period?.end || null,
+          }))
+          .sort((a, b) => (a.period_start || a.paid_at) - (b.period_start || b.paid_at));
+
         return {
           id: c.id,
           slug: c.slug,
@@ -112,6 +122,7 @@ export default async function handler(req, res) {
           first_payment_at: firstPaymentAt,
           last_payment_at: lastPaymentAt,
           current_period_end: sub.current_period_end || null,
+          invoices: invoiceDetails,
         };
       } catch (err) {
         return {
