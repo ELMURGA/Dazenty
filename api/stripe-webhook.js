@@ -3,7 +3,9 @@
 // POST /api/stripe-webhook
 // Registrar en Stripe Dashboard: https://dashboard.stripe.com/webhooks
 // URL del webhook: https://dazenty.com/api/stripe-webhook
-// Eventos a escuchar: checkout.session.completed, invoice.paid
+// Eventos a escuchar: checkout.session.completed, invoice.paid,
+//   invoice.payment_failed, customer.subscription.updated,
+//   customer.subscription.deleted
 // ==========================================================
 
 import { createHmac, timingSafeEqual } from 'crypto';
@@ -167,6 +169,32 @@ export default async function handler(req, res) {
   if (type === 'customer.subscription.deleted') {
     const sub = event.data.object;
     await updateClientSubscriptionStatus(sub.id, 'canceled');
+  }
+
+  // ── invoice.payment_failed — cobro rechazado (tarjeta caducada, fondos, etc.) ──
+  if (type === 'invoice.payment_failed') {
+    const invoice = event.data.object;
+    if (invoice.subscription) {
+      await updateClientSubscriptionStatus(invoice.subscription, 'past_due');
+    }
+    await sendPaymentFailedEmail({
+      customerEmail: invoice.customer_email || '—',
+      customerName:  invoice.customer_name  || '—',
+      amount:        formatAmount(invoice.amount_due, invoice.currency),
+      attemptCount:  invoice.attempt_count || 1,
+      nextAttempt:   invoice.next_payment_attempt
+        ? new Date(invoice.next_payment_attempt * 1000).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+        : null,
+      invoiceId: invoice.id,
+    });
+  }
+
+  // ── customer.subscription.updated — sincroniza el estado real (past_due, cancelando, reactivada...) ──
+  if (type === 'customer.subscription.updated') {
+    const sub = event.data.object;
+    const statusMap = { active: 'active', trialing: 'active', past_due: 'past_due', unpaid: 'past_due', canceled: 'canceled' };
+    const mapped = sub.cancel_at_period_end ? 'canceling' : (statusMap[sub.status] || sub.status);
+    await updateClientSubscriptionStatus(sub.id, mapped);
   }
 
   return res.status(200).json({ received: true });
@@ -507,5 +535,102 @@ async function sendPaymentEmail({ type, customerEmail, customerName, amount, mod
     await Promise.all(sends);
   } catch (err) {
     console.error('[stripe-webhook] Error al enviar emails:', err);
+  }
+}
+
+// ─── Alerta al admin cuando Stripe no puede cobrar una factura ───────────────
+async function sendPaymentFailedEmail({ customerEmail, customerName, amount, attemptCount, nextAttempt, invoiceId }) {
+  if (!RESEND_KEY) {
+    console.error('[stripe-webhook] RESEND_API_KEY no configurado — no se envía alerta de pago fallido');
+    return;
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Pago fallido — Dazenty</title></head>
+<body style="margin:0;padding:0;background:#050505;font-family:'Segoe UI',Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#050505;padding:40px 16px">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px">
+
+  <tr><td align="center" style="padding-bottom:28px">
+    <span style="display:inline-block;font-size:22px;font-weight:700;letter-spacing:5px;color:#ffffff;text-transform:uppercase">DAZENTY</span>
+  </td></tr>
+
+  <tr><td style="background:#111111;border:1px solid #3a1515;border-radius:16px;overflow:hidden">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="25%" style="height:3px;background:#111"></td>
+      <td width="50%" style="height:3px;background:#ef4444"></td>
+      <td width="25%" style="height:3px;background:#111"></td>
+    </tr></table>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:32px">
+      <tr><td style="padding-bottom:4px">
+        <p style="margin:0;font-size:11px;color:#ef4444;letter-spacing:2px;text-transform:uppercase;font-weight:600">⚠️ Pago fallido</p>
+      </td></tr>
+      <tr><td style="padding-bottom:28px">
+        <h1 style="margin:0;font-size:24px;color:#eaeaea;font-weight:700">Un cobro no se ha podido completar</h1>
+      </td></tr>
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px;width:45%">Importe</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ef4444;font-size:20px;font-weight:700;text-align:right">${esc(amount)}</td>
+          </tr>
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Cliente</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px;text-align:right">${esc(customerName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Email</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;font-size:13px;text-align:right"><a href="mailto:${esc(customerEmail)}" style="color:#ef4444;text-decoration:none">${esc(customerEmail)}</a></td>
+          </tr>
+          <tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Intento nº</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px;text-align:right">${esc(attemptCount)}</td>
+          </tr>
+          ${nextAttempt ? `<tr>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#555;font-size:13px">Próximo reintento</td>
+            <td style="padding:11px 0;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px;text-align:right">${esc(nextAttempt)}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding:11px 0;color:#444;font-size:12px">ID Factura</td>
+            <td style="padding:11px 0;color:#333;font-size:11px;text-align:right;font-family:'Courier New',monospace">${esc(invoiceId)}</td>
+          </tr>
+        </table>
+      </td></tr>
+      <tr><td style="padding-top:24px">
+        <a href="https://dashboard.stripe.com/invoices" style="display:inline-block;border:1px solid #2a2a2a;color:#888;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13px">
+          Ver en Stripe Dashboard →
+        </a>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td align="center" style="padding:24px 0 0">
+    <p style="margin:0;font-size:11px;color:#2a2a2a">Dazenty · Notificación automática</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`;
+
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Dazenty Pagos <noreply@dazenty.com>',
+        to: [ADMIN_EMAIL],
+        subject: `⚠️ Pago fallido — ${esc(amount)} · ${esc(customerName)}`,
+        html,
+      }),
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      console.error('[stripe-webhook] Error al enviar alerta de pago fallido:', JSON.stringify(err));
+    }
+  } catch (err) {
+    console.error('[stripe-webhook] sendPaymentFailedEmail error:', err);
   }
 }

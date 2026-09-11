@@ -191,6 +191,12 @@
 
   <main class="max-w-6xl mx-auto px-6 py-8">
 
+    <!-- Alertas de pago vencido / cancelando -->
+    <div id="alertBanner" class="mb-6 flex flex-col gap-3" style="display:none"></div>
+
+    <!-- Resumen general -->
+    <div id="summaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"></div>
+
     <!-- ═══ VISTA: CLIENTES ═══ -->
     <div id="clientsView">
 
@@ -557,6 +563,7 @@ async function doLogin(e) {
       const data = await res.json().catch(() => []);
       clients = Array.isArray(data) ? data : [];
       renderClients();
+      renderSummary();
     } else {
       err.style.display = 'block';
       document.getElementById('loginInput').value = '';
@@ -724,6 +731,8 @@ function logout() {
   clients = [];
   paymentsData = [];
   paymentsLoaded = false;
+  document.getElementById('summaryCards').innerHTML = '';
+  document.getElementById('alertBanner').style.display = 'none';
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginInput').value = '';
@@ -783,6 +792,7 @@ async function loadClients() {
 
     clients = Array.isArray(data) ? data : [];
     renderClients();
+    renderSummary();
   } catch (err) {
     document.getElementById('clientGrid').innerHTML = `
       <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
@@ -791,6 +801,57 @@ async function loadClients() {
         <p style="color:#9ca3af;font-size:13px;max-width:500px;margin:0 auto">${err.message}</p>
       </div>`;
   }
+}
+
+// ─── Resumen general + alertas (MRR, activos, pago vencido, cancelando) ─────
+function renderSummary() {
+  const activeCount = clients.filter(c => c.status === 'active').length;
+  const mrr = clients.reduce((sum, c) => {
+    if (c.stripe_subscription_status === 'canceled') return sum;
+    if (c.amount_monthly) return sum + parseFloat(c.amount_monthly);
+    if (c.amount_annual)  return sum + parseFloat(c.amount_annual) / 12;
+    return sum;
+  }, 0);
+  const pastDue   = clients.filter(c => c.stripe_subscription_status === 'past_due');
+  const canceling = clients.filter(c => c.stripe_subscription_status === 'canceling');
+
+  document.getElementById('summaryCards').innerHTML = `
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <p class="text-gray-500 text-xs uppercase tracking-wider mb-1.5">Ingreso mensual (MRR)</p>
+      <p class="font-display font-bold text-2xl text-brand-blue">${fmtAmt(mrr)}€</p>
+    </div>
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <p class="text-gray-500 text-xs uppercase tracking-wider mb-1.5">Clientes activos</p>
+      <p class="font-display font-bold text-2xl">${activeCount}</p>
+    </div>
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <p class="text-gray-500 text-xs uppercase tracking-wider mb-1.5">Pago vencido</p>
+      <p class="font-display font-bold text-2xl ${pastDue.length ? 'text-red-400' : ''}">${pastDue.length}</p>
+    </div>
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <p class="text-gray-500 text-xs uppercase tracking-wider mb-1.5">Cancelando</p>
+      <p class="font-display font-bold text-2xl ${canceling.length ? 'text-yellow-400' : ''}">${canceling.length}</p>
+    </div>
+  `;
+
+  const banner = document.getElementById('alertBanner');
+  const alerts = [];
+  if (pastDue.length) {
+    alerts.push(`
+      <div class="flex items-start gap-3 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+        <span>⚠️</span>
+        <p class="text-sm text-red-300"><strong>${pastDue.length} cliente(s) con pago vencido:</strong> ${pastDue.map(c => esc(c.client_name)).join(', ')}</p>
+      </div>`);
+  }
+  if (canceling.length) {
+    alerts.push(`
+      <div class="flex items-start gap-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3">
+        <span>⏳</span>
+        <p class="text-sm text-yellow-300"><strong>${canceling.length} suscripción(es) cancelando:</strong> ${canceling.map(c => esc(c.client_name)).join(', ')}</p>
+      </div>`);
+  }
+  banner.innerHTML = alerts.join('');
+  banner.style.display = alerts.length ? 'flex' : 'none';
 }
 
 function renderClients() {
