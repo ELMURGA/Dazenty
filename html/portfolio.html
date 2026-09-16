@@ -33,28 +33,9 @@
     <meta name="twitter:description" content="Descubre nuestros proyectos de diseño y desarrollo web y branding.">
     <meta name="twitter:image" content="https://dazenty.com/img/logodazenty.webp">
 
-    <!-- Rendimiento: DNS Prefetch -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Fuentes con display=swap -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-
-    <!-- Tailwind CSS (self-hosted, compilado) -->
-    <link rel="preload" href="../css/tailwind.min.css" as="style">
-    <link rel="stylesheet" href="../css/tailwind.min.css">
-
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="../css/main.css?v=9">
-
-    <!-- AOS CSS (non-blocking) -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
+    <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/site.min.css?v=1">
 
     <style>
         /* Ocultar barra de scroll para un look más limpio */
@@ -62,15 +43,19 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #333333; border-radius: 10px; }
         
-        /* Efecto de reveal en scroll */
+        /* El contenido permanece visible sin JavaScript y en dispositivos táctiles. */
         .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
+        }
+        @media (min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+            .reveal.active {
+                animation: portfolio-reveal 1s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            @keyframes portfolio-reveal {
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
         }
 
         /* Hover de enlaces del filtro */
@@ -212,48 +197,16 @@
         }
     </style>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-QKRJPJPMF7');
-    </script>
+    <script defer src="/js/analytics.js?v=1"></script>
 </head>
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
-
-    <!-- Page Loader -->
-    <div class="page-loader">
-        <div class="loader-logo">
-            <span class="loader-letter">D</span><span class="loader-letter">A</span><span
-                class="loader-letter">Z</span><span class="loader-letter">E</span><span
-                class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
-        </div>
-    </div>
-    <script>
-        // Inline safety fallback to prevent loader from hanging
-        (function() {
-            var loader = document.querySelector('.page-loader');
-            if (loader) {
-                setTimeout(function() {
-                    if (!loader.classList.contains('hidden')) {
-                        loader.classList.add('hidden');
-                        setTimeout(function() {
-                            loader.style.display = 'none';
-                        }, 300);
-                    }
-                }, 1000);
-            }
-        })();
-    </script>
 
     <!-- Header -->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400">
+                <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
@@ -312,7 +265,7 @@
                 <!-- Proyecto 1 - JC Autos -->
                 <article class="project-card group cursor-pointer reveal" data-category="web" data-id="jcautos">
                     <div class="relative overflow-hidden aspect-square bg-neutral-900 mb-4 rounded-lg">
-                        <img src="../proyectos/web_jcautos.webp" alt="JOCARS AUTOMOVILES" width="1200" height="750" class="project-img w-full h-full object-cover" loading="lazy">
+                        <img src="../proyectos/web_jcautos.webp" alt="JOCARS AUTOMOVILES" width="1200" height="750" class="project-img w-full h-full object-cover" loading="eager" fetchpriority="high" decoding="async">
                         <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/20 backdrop-blur-[1px]">
                             <span class="project-hover-badge transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">Ver Detalles</span>
                         </div>
@@ -605,7 +558,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400" class="h-14 w-auto">
+                        <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160" class="h-14 w-auto" loading="lazy" decoding="async">
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.
                     </p>
@@ -712,10 +665,7 @@
         </div>
     </aside>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-    <script defer>document.addEventListener('DOMContentLoaded',()=>AOS.init());</script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
-    <script src="../js/main.js?v=7" defer></script>
+    <script src="../js/main.js?v=8" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
@@ -736,37 +686,26 @@
                     const filterValue = button.getAttribute('data-filter');
 
                     portfolioItems.forEach(item => {
-                        item.style.opacity = '0';
-                        item.style.transform = 'translateY(20px)';
-                        
-                        setTimeout(() => {
-                            const categories = item.getAttribute('data-category').split(' ');
-                            if (filterValue === 'all' || categories.includes(filterValue)) {
-                                item.style.display = 'block';
-                                setTimeout(() => {
-                                    item.style.opacity = '1';
-                                    item.style.transform = 'translateY(0)';
-                                }, 50);
-                            } else {
-                                item.style.display = 'none';
-                            }
-                        }, 400); // Sincronizado con la transición CSS
+                        const categories = item.getAttribute('data-category').split(' ');
+                        item.style.display = filterValue === 'all' || categories.includes(filterValue) ? '' : 'none';
                     });
                 });
             });
 
             // --- 2. Scroll Reveal Animations ---
-            const revealElements = document.querySelectorAll('.reveal');
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: "0px 0px -100px 0px" });
+            if (window.matchMedia('(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches &&
+                'IntersectionObserver' in window) {
+                const revealObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1, rootMargin: "0px 0px -100px 0px" });
 
-            revealElements.forEach(el => revealObserver.observe(el));
+                document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+            }
 
             // --- 3. Lógica del Drawer Modal (Cajón) con 15 proyectos de Dazenty ---
             const projectData = {
@@ -1000,8 +939,6 @@
             });
         });
     </script>
-    <!-- Vercel Analytics -->
-    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 
 </html>

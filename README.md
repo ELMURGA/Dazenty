@@ -8,7 +8,7 @@ Sitio corporativo y sistema de portal privado para clientes de **Dazenty**, agen
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | HTML5 semántico, Tailwind CSS, GSAP 3, Lenis |
+| Frontend | HTML5 semántico, Tailwind CSS, animaciones nativas, Lenis solo en escritorio |
 | Backend / API | Vercel Serverless Functions (Node.js ESM) |
 | Base de datos | Supabase (PostgreSQL + Storage) |
 | Pagos | Stripe (Payment Links + Webhooks) |
@@ -35,8 +35,13 @@ Dazenty/
 │   └── upload.js            → Subida de PDFs a Supabase Storage
 ├── css/
 │   ├── main.css
-│   └── tailwind.min.css
-├── js/main.js
+│   └── site.min.css      → CSS público compilado y minificado
+├── input.css            → Entrada del CSS público
+├── tailwind.config.js    → Clases utilizadas en las páginas públicas
+├── js/
+│   ├── main.js
+│   └── analytics.js      → Analítica diferida con cola de eventos
+├── fonts/               → Fuentes WOFF2 locales y licencias OFL
 ├── html/                → Páginas legales y proyectos
 ├── img/                 → Imágenes WebP
 ├── proyectos/           → Imágenes de proyectos WebP
@@ -89,6 +94,44 @@ Eventos registrados:
 Cualquier push a `main` despliega automáticamente en Vercel.
 
 URL: https://dazenty.com
+
+---
+
+## Rendimiento y compilación del sitio público
+
+Después de cambiar HTML, clases Tailwind o CSS, ejecutar:
+
+```sh
+npm run build:css
+```
+
+Publicar también `css/site.min.css`, las fuentes y las imágenes nuevas. `input.css`
+y `tailwind.config.js` son fuentes de compilación y deben mantenerse en Git.
+El portal privado y el panel de administración conservan su configuración independiente.
+
+- Las páginas públicas usan una sola hoja de estilos minificada y fuentes locales
+  Inter y Space Grotesk. Las licencias se incluyen en `fonts/`.
+- No hay pantalla de carga que tape el contenido. En móvil, la cabecera principal
+  se muestra sin animaciones de entrada; el desplazamiento es nativo.
+- La portada no descarga GSAP ni ScrollTrigger. Las animaciones de escritorio
+  se activan al entrar en pantalla y respetan la preferencia de movimiento reducido.
+- El carrusel mantiene una altura estable, sin medir el diseño en cada transición,
+  y solo avanza automáticamente cuando está visible.
+- Google Analytics y Vercel Analytics se cargan después de `load`, en un periodo
+  libre del navegador. Los eventos se encolan mientras cargan; no se elimina la
+  medición ni se retrasa artificialmente hasta un clic para mejorar Lighthouse.
+- El logo tiene una versión de 160 px y las imágenes destacadas ofrecen variantes
+  de 720 px mediante `srcset`, conservando los originales para pantallas grandes.
+
+Vercel configura caché inmutable para los recursos estáticos. Al modificar un
+CSS o JS publicado, incrementar su parámetro `?v=` en **todas** las páginas que
+lo usan. Para imágenes y fuentes nuevas, utilizar nombres versionados.
+
+Para comparar rendimiento, usar Lighthouse móvil con caché fría y las mismas
+condiciones de red/CPU antes y después, repetir las mediciones y validar también
+en WebKit. PageSpeed analiza la versión **publicada**, no los cambios locales.
+Los resultados varían según red, CPU y scripts externos; no hay garantía de un
+100 constante ni equivalencia entre la puntuación de Chrome y un iPhone real.
 
 ---
 

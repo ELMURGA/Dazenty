@@ -12,7 +12,3 @@ SETUP.txt
 
 # Dependencias
 node_modules/
-
-# Build sources (generados desde input.css)
-input.css
-tailwind.config.js

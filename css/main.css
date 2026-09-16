@@ -5,6 +5,22 @@ html {
 }
 
 /* Fuentes */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300 800;
+    font-display: swap;
+    src: url('/fonts/inter-latin-v20.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url('/fonts/space-grotesk-latin-v22.woff2') format('woff2');
+}
+
 body {
     font-family: 'Inter', sans-serif;
 }
@@ -112,7 +128,6 @@ html.lenis {
 /* Service Card Hover - Fixed to prevent page jumping */
 .service-card {
     transition: all 0.3s ease;
-    will-change: transform;
 }
 .service-card:hover {
     transform: translateY(-2px);
@@ -190,79 +205,6 @@ select option {
     transform: scale(1.1);
 }
 
-/* Page Loader - April Ford Style */
-.page-loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #050505;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    visibility: visible;
-    /* No debe capturar toques/scroll nunca (es puramente decorativo).
-       Sin esto, mientras se desvanece (hasta 0.3s tras "hidden", o hasta
-       1s en el fallback) sigue interceptando el primer scroll/tap del
-       usuario justo al recargar la página — más notorio en Safari. */
-    pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.page-loader.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.loader-logo {
-    font-size: 4rem;
-    font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
-    color: #d97762;
-    letter-spacing: -0.02em;
-    position: relative;
-}
-
-.loader-letter {
-    display: inline-block;
-    opacity: 1;
-    transform: translateY(0);
-    animation: letterDecompose 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.loader-letter:nth-child(1) { animation-delay: 0s; }
-.loader-letter:nth-child(2) { animation-delay: 0.1s; }
-.loader-letter:nth-child(3) { animation-delay: 0.2s; }
-.loader-letter:nth-child(4) { animation-delay: 0.3s; }
-.loader-letter:nth-child(5) { animation-delay: 0.4s; }
-.loader-letter:nth-child(6) { animation-delay: 0.5s; }
-.loader-letter:nth-child(7) { animation-delay: 0.6s; }
-
-@keyframes letterDecompose {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
-    }
-    50% {
-        opacity: 0.5;
-        transform: translateY(-20px) scale(1.1) rotate(5deg);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-100px) scale(0.5) rotate(15deg);
-    }
-}
-
-/* Responsive Loader */
-@media (max-width: 768px) {
-    .loader-logo {
-        font-size: 2.5rem;
-    }
-}
-
 /* ===== CROSS-BROWSER COMPATIBILITY ===== */
 
 /* Reset y normalización */
@@ -284,9 +226,6 @@ html, body {
 img, video {
     max-width: 100%;
     height: auto;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    content-visibility: auto;
 }
 
 /* Mejora de renderizado de texto */
@@ -424,7 +363,6 @@ select {
 
 /* ===== PRINT STYLES ===== */
 @media print {
-    .page-loader,
     #navbar,
     #mobile-menu,
     footer {
@@ -443,13 +381,10 @@ select {
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
-    }
-    
-    .page-loader {
-        display: none;
     }
 }
 
@@ -639,12 +574,42 @@ select {
 /* Bloquear scroll del body mientras el menú móvil está abierto */
 body.nav-open { overflow: hidden; }
 
-/* Reducir blur en móvil para aliviar la GPU de Safari iOS */
+/* Avoid repainting fixed backdrop filters while scrolling on mobile Safari. */
 @media (max-width: 768px) {
     .site-header,
     .mobile-nav {
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background-color: rgba(10, 10, 10, 0.97);
+    }
+
+    #inicio {
+        background:
+            radial-gradient(ellipse at 40% 40%, rgba(217, 119, 98, 0.12), transparent 65%),
+            radial-gradient(ellipse at 65% 65%, rgba(168, 85, 247, 0.07), transparent 60%);
+    }
+    #inicio .hero-orb {
+        display: none;
+    }
+    #inicio .animate-slide-up,
+    #inicio .animate-fade-in,
+    #inicio .animate-fade-in-up {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    #resenas,
+    #contacto {
+        background: radial-gradient(ellipse at center, rgba(217, 119, 98, 0.05), transparent 70%);
+    }
+    #resenas > .absolute,
+    #contacto > .absolute {
+        display: none;
+    }
+    #contacto .backdrop-blur-xl {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
 }
 /* ===================================================== */
@@ -733,15 +698,14 @@ input, textarea, select {
 }
 .reviews-slides-wrapper {
     position: relative;
+    display: grid;
     width: 100%;
     overflow: hidden;
-    transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .review-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: relative;
+    grid-area: 1 / 1;
+    min-width: 0;
     width: 100%;
     opacity: 0;
     visibility: hidden;
@@ -781,6 +745,7 @@ input, textarea, select {
 
 /* Fix modales: overflow-y scroll en iOS */
 .modal-overlay {
+    z-index: 10000;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -1020,4 +985,3 @@ html {
     pointer-events: none;
     z-index: 0;
 }
-

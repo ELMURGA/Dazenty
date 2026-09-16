@@ -31,30 +31,10 @@
     <meta name="twitter:image" content="https://dazenty.com/proyectos/web_hermanoshervas.webp">
     <meta name="twitter:site" content="@DAzenty">
 
-    <!-- DNS Prefetch -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-
-    <!-- Tailwind CSS (self-hosted, compilado) -->
-    <link rel="preload" href="../css/tailwind.min.css" as="style">
-    <link rel="stylesheet" href="../css/tailwind.min.css">
-
-    <link rel="stylesheet" href="../css/main.css?v=9">
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-QKRJPJPMF7');
-    </script>
+    <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/site.min.css?v=1">
+    <script defer src="/js/analytics.js?v=1"></script>
 </head>
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
@@ -64,7 +44,7 @@
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400">
+                <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
@@ -209,7 +189,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="../img/logoheader.webp" alt="Dazenty" width="400" height="400" class="h-14 w-auto">
+                        <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160" class="h-14 w-auto" loading="lazy" decoding="async">
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.
                     </p>
@@ -265,10 +245,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
-    <script src="../js/main.js?v=7" defer></script>
-    <!-- Vercel Analytics -->
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script src="../js/main.js?v=8" defer></script>
 </body>
 
 </html>

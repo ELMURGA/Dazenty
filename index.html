@@ -38,36 +38,10 @@
     <meta name="twitter:image" content="https://dazenty.com/img/logodazenty.webp">
     <meta name="twitter:site" content="@DAzenty">
 
-    <!-- Rendimiento: DNS Prefetch y Preconnect (solo orígenes críticos) -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Fuentes con display=swap para no bloquear renderizado -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-
-    <!-- Tailwind CSS (purged, self-hosted) -->
-    <link rel="preload" href="css/tailwind.min.css" as="style">
-    <link rel="stylesheet" href="css/tailwind.min.css">
-
-    <!-- CSS Personalizado -->
-    <link rel="preload" href="css/main.css?v=9" as="style">
-    <link rel="stylesheet" href="css/main.css?v=9">
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRJPJPMF7"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-QKRJPJPMF7');
-    </script>
+    <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/site.min.css?v=1">
+    <script defer src="/js/analytics.js?v=1"></script>
 
     <!-- Datos estructurados Schema.org -->
     <script type="application/ld+json">
@@ -116,37 +90,11 @@
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
 
-    <!-- Page Loader -->
-    <div class="page-loader">
-        <div class="loader-logo">
-            <span class="loader-letter">D</span><span class="loader-letter">A</span><span
-                class="loader-letter">Z</span><span class="loader-letter">E</span><span
-                class="loader-letter">N</span><span class="loader-letter">T</span><span class="loader-letter">Y</span>
-        </div>
-    </div>
-    <script>
-        // Inline safety fallback to prevent loader from hanging
-        (function() {
-            var loader = document.querySelector('.page-loader');
-            if (loader) {
-                setTimeout(function() {
-                    if (!loader.classList.contains('hidden')) {
-                        loader.classList.add('hidden');
-                        setTimeout(function() {
-                            loader.style.display = 'none';
-                        }, 300);
-                    }
-                }, 1000);
-            }
-        })();
-    </script>
-
-
     <!-- Header -->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="img/logoheader.webp" alt="Dazenty" width="400" height="400">
+                <img src="img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
@@ -175,10 +123,10 @@
         <section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-32" id="inicio">
             <!-- Background Gradients -->
             <div
-                class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-blue/20 rounded-full blur-[120px] animate-pulse-slow">
+                class="hero-orb absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-blue/20 rounded-full blur-[120px] animate-pulse-slow">
             </div>
             <div
-                class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] animate-float">
+                class="hero-orb absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] animate-float">
             </div>
 
             <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
@@ -388,8 +336,10 @@
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
                             <img src="proyectos/web_davidvillalba.webp" alt="David Villalba"
+                                srcset="proyectos/web_davidvillalba-720.webp 720w, proyectos/web_davidvillalba.webp 1200w"
+                                sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                                width="1200" height="750" loading="lazy">
+                                width="1200" height="750" loading="lazy" decoding="async">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
@@ -413,8 +363,10 @@
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
                             <img src="proyectos/newweb-jandula.webp" alt="Jándula Moda"
+                                srcset="proyectos/newweb-jandula-720.webp 720w, proyectos/newweb-jandula.webp 1200w"
+                                sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                                width="1000" height="625" loading="lazy">
+                                width="1200" height="682" loading="lazy" decoding="async">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
@@ -438,8 +390,10 @@
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
                             <img src="proyectos/web_jcautos.webp" alt="Jocars Automóviles"
+                                srcset="proyectos/web_jcautos-720.webp 720w, proyectos/web_jcautos.webp 1200w"
+                                sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                                width="1200" height="750" loading="lazy">
+                                width="1200" height="750" loading="lazy" decoding="async">
                         </div>
                         <div
                             class="flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-6">
@@ -576,17 +530,17 @@
                 <div class="dz-stats-grid">
                     <div class="dz-stat-card scrol-reveal">
                         <div class="dz-stat-glow"></div>
-                        <span class="dz-stat-number counter" data-target="6">0+</span>
+                        <span class="dz-stat-number counter" data-target="6" data-suffix="+">6+</span>
                         <span class="dz-stat-label">Años de experiencia</span>
                     </div>
                     <div class="dz-stat-card scrol-reveal transition-delay-100">
                         <div class="dz-stat-glow"></div>
-                        <span class="dz-stat-number counter" data-target="50">0+</span>
+                        <span class="dz-stat-number counter" data-target="50" data-suffix="+">50+</span>
                         <span class="dz-stat-label">Proyectos Exitosos</span>
                     </div>
                     <div class="dz-stat-card scrol-reveal transition-delay-200">
                         <div class="dz-stat-glow"></div>
-                        <span class="dz-stat-number counter" data-target="100">0%</span>
+                        <span class="dz-stat-number counter" data-target="100" data-suffix="%">100%</span>
                         <span class="dz-stat-label">Clientes Satisfechos</span>
                     </div>
                     <div class="dz-stat-card scrol-reveal transition-delay-300">
@@ -930,7 +884,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="img/logoheader.webp" alt="Dazenty" width="400" height="400" class="h-14 w-auto">
+                        <img src="img/logoheader-160.webp" alt="Dazenty" width="160" height="160" class="h-14 w-auto" loading="lazy" decoding="async">
                     </div>
                     <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.
                     </p>
@@ -1136,9 +1090,7 @@
     </div>
 
     <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="js/main.js?v=7" defer></script>
+    <script src="js/main.js?v=8" defer></script>
     <!-- Slider de reseñas con transición suave -->
     <script>
         (function() {
@@ -1146,6 +1098,8 @@
             const dotsContainer = document.getElementById('reviews-dots');
             let current = 0;
             let timer;
+            let inView = false;
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
             // Crear dots
             slides.forEach((_, i) => {
@@ -1162,34 +1116,27 @@
                 current = (index + slides.length) % slides.length;
                 slides[current].classList.add('active');
                 dotsContainer.children[current].classList.add('active');
-                setTimeout(updateHeight, 50); // Recalcular con un micro-delay para permitir el renderizado
                 resetTimer();
             }
 
             function resetTimer() {
                 clearInterval(timer);
-                timer = setInterval(() => goTo(current + 1), 6000);
+                if (inView && !document.hidden && !reducedMotion.matches) {
+                    timer = setInterval(() => goTo(current + 1), 6000);
+                }
             }
 
             window.moveReview = function(dir) { goTo(current + dir); };
 
-            // Calcular altura dinámica del wrapper para transición suave
-            function updateHeight() {
-                const wrapper = document.querySelector('.reviews-slides-wrapper');
-                const active = document.querySelector('.review-slide.active');
-                if (wrapper && active) {
-                    wrapper.style.height = active.scrollHeight + 'px';
-                }
-            }
-            window.addEventListener('resize', updateHeight);
-            window.addEventListener('load', updateHeight);
-            setTimeout(updateHeight, 500); // Respaldo para carga tardía de fuentes
-            
-            resetTimer();
+            const observer = new IntersectionObserver(([entry]) => {
+                inView = entry.isIntersecting;
+                resetTimer();
+            });
+            observer.observe(document.querySelector('.reviews-slider'));
+            document.addEventListener('visibilitychange', resetTimer);
+            reducedMotion.addEventListener('change', resetTimer);
         })();
     </script>
-    <!-- Vercel Analytics -->
-    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 
 </html>

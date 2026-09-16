@@ -1,31 +1,3 @@
-// Page Loader Animation
-const dismissLoader = () => {
-    const loader = document.querySelector('.page-loader');
-    if (loader && !loader.classList.contains('hidden')) {
-        // Brief loader — keep it fast for LCP
-        setTimeout(() => {
-            loader.classList.add('hidden');
-            // Remove from DOM after transition
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 300);
-        }, 200);
-    }
-};
-
-// Dismiss loader as soon as DOM is ready (main.js runs deferred)
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', dismissLoader);
-} else {
-    dismissLoader();
-}
-
-// Safety fallback: force hide loader after 1 second max
-setTimeout(dismissLoader, 1000);
-
-// Also bind to window load as a fallback
-window.addEventListener('load', dismissLoader);
-
 // Detectar iOS — Lenis causa problemas graves en iOS Safari
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
@@ -36,6 +8,7 @@ const isTouchDevice = isIOS
     || ('ontouchstart' in window)
     || navigator.maxTouchPoints > 0
     || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let lenis = null;
 
@@ -59,10 +32,11 @@ function initLenis() {
 
 // Cargar Lenis solo en desktop/no-táctil (ahorra una petición CDN en móvil
 // y evita el scroll trabado que provoca en dispositivos táctiles)
-if (!isTouchDevice) {
+if (!isTouchDevice && !reducedMotion.matches) {
     const lenisScript = document.createElement('script');
     lenisScript.src = 'https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js';
     lenisScript.onload = initLenis;
+    lenisScript.onerror = () => console.warn('No se pudo cargar Lenis; se mantiene el scroll nativo.');
     document.head.appendChild(lenisScript);
 }
 
@@ -120,70 +94,40 @@ if (navToggle && mobileNav) {
     });
 }
 
-// GSAP Animations (solo en páginas que lo cargan)
-if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Hero Text Reveal
-    gsap.from('.hero-text-reveal', {
-        y: 100,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power4.out',
-        delay: 0.5
-    });
-
-    // Service Cards Stagger (solo fade, sin desplazamiento vertical
-    // para que los iconos de cada servicio queden siempre a la misma altura)
-    gsap.utils.toArray('.service-card').forEach((card, i) => {
-        gsap.from(card, {
-            scrollTrigger: { trigger: card, start: 'top 85%' },
-            opacity: 0,
-            duration: 0.8,
-            delay: i * 0.1,
-            ease: 'power3.out'
+// Desktop reveals are progressive enhancements; mobile content is always visible.
+if (!isTouchDevice && !reducedMotion.matches && 'IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.animate(
+                [{ opacity: 0 }, { opacity: 1 }],
+                { duration: 800, easing: 'ease-out' }
+            );
+            revealObserver.unobserve(entry.target);
         });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.service-card, .project-item, .scrol-reveal').forEach(item => {
+        revealObserver.observe(item);
     });
 
-    // Project Items Reveal
-    gsap.utils.toArray('.project-item').forEach((item) => {
-        gsap.from(item, {
-            scrollTrigger: { trigger: item, start: 'top 80%' },
-            y: 60,
-            opacity: 0,
-            duration: 1,
-            ease: 'power3.out'
-        });
-    });
-
-    // Scroll Reveal General
-    gsap.utils.toArray('.scrol-reveal').forEach((item, i) => {
-        gsap.from(item, {
-            scrollTrigger: { trigger: item, start: 'top 90%' },
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            delay: i * 0.1,
-            ease: 'power2.out'
-        });
-    });
-
-    // Stats Counter
-    document.querySelectorAll('.counter').forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        ScrollTrigger.create({
-            trigger: counter,
-            start: 'top 85%',
-            onEnter: () => {
-                gsap.to(counter, {
-                    innerHTML: target,
-                    duration: 2,
-                    snap: { innerHTML: 1 },
-                    ease: 'power1.inOut'
-                });
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const counter = entry.target;
+            const target = Number(counter.dataset.target);
+            const suffix = counter.dataset.suffix || '';
+            const start = performance.now();
+            function tick(now) {
+                const progress = Math.min((now - start) / 2000, 1);
+                counter.textContent = Math.round(target * (1 - (1 - progress) ** 3)) + suffix;
+                if (progress < 1) requestAnimationFrame(tick);
             }
+            requestAnimationFrame(tick);
+            counterObserver.unobserve(counter);
         });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.counter').forEach(counter => {
+        counterObserver.observe(counter);
     });
 }
 
