@@ -115,6 +115,27 @@
     /* Tabs vista Clientes / Pagos */
     .view-tab { color: rgba(255,255,255,0.45); }
     .view-tab.active { background: #d97762; color: #000; }
+
+    /* Sidebar Dazenty OS */
+    .sidenav-item {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; text-align: left; padding: 9px 12px; border-radius: 10px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55);
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidenav-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+    .sidenav-item.active { background: rgba(217,119,98,0.12); color: #d97762; }
+    @media (min-width: 1024px) {
+      #sidebarOverlay { display: none !important; }
+    }
+
+    /* Kanban leads */
+    .lead-col { min-width: 220px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 10px; }
+    .lead-card { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+    .lead-card:hover { border-color: rgba(217,119,98,0.4); }
+
+    /* Entity modal */
+    .entity-field label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:6px; }
   </style>
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
@@ -158,24 +179,100 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     DASHBOARD
+     DASHBOARD (Dazenty OS)
 ════════════════════════════════════════════════════════════════ -->
 <div id="dashboard" style="display:none">
 
-  <!-- Header -->
-  <header class="border-b border-white/5 sticky top-0 bg-brand-dark/95 backdrop-blur z-20">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <img src="/img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-14 w-auto">
-        <span class="text-gray-700 text-xl font-light hidden sm:inline">/</span>
-        <nav class="flex items-center gap-1 bg-white/5 rounded-full p-1">
-          <button type="button" onclick="switchView('clients')" id="tabClients"
-            class="view-tab active text-xs font-medium px-3.5 py-1.5 rounded-full transition-colors">Clientes</button>
-          <button type="button" onclick="switchView('payments')" id="tabPayments"
-            class="view-tab text-xs font-medium px-3.5 py-1.5 rounded-full transition-colors">Pagos</button>
-        </nav>
+  <!-- Overlay móvil para cerrar sidebar -->
+  <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-20 lg:hidden" style="display:none"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 shrink-0 bg-brand-gray border-r border-white/5 flex flex-col z-30 -translate-x-full lg:translate-x-0 transition-transform duration-200">
+    <div class="px-5 py-5 flex items-center gap-2.5 border-b border-white/5">
+      <img src="/img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-9 w-auto">
+      <span class="font-display font-semibold text-sm text-white">Dazenty OS</span>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+      <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Resumen</p>
+        <button type="button" onclick="switchView('home')" id="navHome" class="sidenav-item active">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Inicio
+        </button>
       </div>
-      <div class="flex items-center gap-3">
+      <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Ventas</p>
+        <button type="button" onclick="switchView('leads')" id="navLeads" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-1a4 4 0 00-3-3.87M9 20H4v-1a4 4 0 013-3.87m6-5.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
+          Leads (CRM)
+        </button>
+        <button type="button" onclick="switchView('opportunities')" id="navOpportunities" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Oportunidades
+        </button>
+      </div>
+      <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Clientes</p>
+        <button type="button" onclick="switchView('clients')" id="tabClients" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-1a4 4 0 00-3-3.87M9 20H4v-1a4 4 0 013-3.87m6-5.13a4 4 0 10-4-4 4 4 0 004 4zm0 7v-1a4 4 0 00-3-3.87"/></svg>
+          Clientes
+        </button>
+        <button type="button" onclick="switchView('projects')" id="navProjects" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+          Proyectos
+        </button>
+        <button type="button" onclick="switchView('tasks')" id="navTasks" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Tareas
+        </button>
+      </div>
+      <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Finanzas</p>
+        <button type="button" onclick="switchView('invoices')" id="navInvoices" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 14l2 2 4-4m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Facturación
+        </button>
+        <button type="button" onclick="switchView('payments')" id="tabPayments" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10h18M7 15h1m4 0h1m-9 4h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pagos
+        </button>
+        <button type="button" onclick="switchView('expenses')" id="navExpenses" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-9c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Gastos
+        </button>
+      </div>
+      <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Otros</p>
+        <button type="button" onclick="switchView('calendar')" id="navCalendar" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Calendario
+        </button>
+        <button type="button" onclick="switchView('activity')" id="navActivity" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Actividad
+        </button>
+      </div>
+    </nav>
+    <div class="px-3 py-4 border-t border-white/5">
+      <button type="button" onclick="logout()" class="sidenav-item !text-gray-600 hover:!text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Salir
+      </button>
+    </div>
+  </aside>
+
+  <div class="flex-1 min-w-0">
+
+  <!-- Header -->
+  <header class="border-b border-white/5 sticky top-0 bg-brand-dark/95 backdrop-blur z-10">
+    <div class="px-4 sm:px-8 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <button type="button" onclick="toggleSidebar(true)" class="lg:hidden text-gray-400 hover:text-white p-1 shrink-0" aria-label="Abrir menú">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1 id="viewTitle" class="font-display font-bold text-lg truncate">Inicio</h1>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
         <button onclick="openModal(null)" id="newClientBtn"
           class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,21 +281,20 @@
           <span class="hidden sm:inline">Nuevo cliente</span>
           <span class="sm:hidden">Nuevo</span>
         </button>
-        <a href="/" class="text-gray-600 hover:text-white transition-colors text-sm">Salir</a>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 py-8">
-
-    <!-- Alertas de pago vencido / cancelando -->
-    <div id="alertBanner" class="mb-6 flex flex-col gap-3" style="display:none"></div>
-
-    <!-- Resumen general -->
-    <div id="summaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"></div>
+  <main class="max-w-6xl mx-auto px-4 sm:px-8 py-8">
 
     <!-- ═══ VISTA: CLIENTES ═══ -->
     <div id="clientsView">
+
+      <!-- Alertas de pago vencido / cancelando -->
+      <div id="alertBanner" class="mb-6 flex flex-col gap-3" style="display:none"></div>
+
+      <!-- Resumen general -->
+      <div id="summaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"></div>
 
       <!-- Barra de búsqueda + stats -->
       <div class="flex flex-col sm:flex-row gap-4 mb-8 items-start sm:items-center justify-between">
@@ -276,7 +372,181 @@
 
     </div>
 
+    <!-- ═══ VISTA: INICIO (DASHBOARD REAL) ═══ -->
+    <div id="homeView" style="display:none">
+      <div id="homeKpis" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"></div>
+      <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display font-semibold text-sm">Urgente hoy</h2>
+            <button onclick="switchView('tasks')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver tareas →</button>
+          </div>
+          <div id="homeUrgentTasks" class="space-y-2"></div>
+        </div>
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display font-semibold text-sm">Próximos eventos</h2>
+            <button onclick="switchView('calendar')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver todo →</button>
+          </div>
+          <div id="homeUpcomingEvents" class="space-y-2"></div>
+        </div>
+      </div>
+      <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-display font-semibold text-sm">Actividad reciente</h2>
+          <button onclick="switchView('activity')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver todo →</button>
+        </div>
+        <div id="homeActivity" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- ═══ VISTA: LEADS (CRM) ═══ -->
+    <div id="leadsView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Leads</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Pipeline de entrada: nuevo → contactada → propuesta → reunión → ganado/perdido</p>
+        </div>
+        <button onclick="openEntityModal('lead')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nuevo lead
+        </button>
+      </div>
+      <div id="leadsBoard" class="grid gap-4" style="grid-template-columns:repeat(6,minmax(200px,1fr));overflow-x:auto"></div>
+    </div>
+
+    <!-- ═══ VISTA: OPORTUNIDADES ═══ -->
+    <div id="opportunitiesView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Oportunidades</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Negociaciones y propuestas en curso</p>
+        </div>
+        <button onclick="openEntityModal('opportunity')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nueva oportunidad
+        </button>
+      </div>
+      <div id="opportunitiesGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+    </div>
+
+    <!-- ═══ VISTA: PROYECTOS ═══ -->
+    <div id="projectsView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Proyectos</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Entregas en curso por cliente</p>
+        </div>
+        <button onclick="openEntityModal('project')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nuevo proyecto
+        </button>
+      </div>
+      <div id="projectsGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+    </div>
+
+    <!-- ═══ VISTA: TAREAS ═══ -->
+    <div id="tasksView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Tareas</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Pendientes y en curso</p>
+        </div>
+        <button onclick="openEntityModal('task')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nueva tarea
+        </button>
+      </div>
+      <div id="tasksList" class="space-y-2"></div>
+    </div>
+
+    <!-- ═══ VISTA: FACTURACIÓN ═══ -->
+    <div id="invoicesView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Facturación</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Facturas emitidas y su estado de cobro</p>
+        </div>
+        <button onclick="openInvoiceModal()" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nueva factura
+        </button>
+      </div>
+      <div id="invoicesTableWrap" class="overflow-x-auto rounded-2xl border border-white/5">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/5 text-left text-xs text-gray-500 uppercase tracking-wider">
+              <th class="px-4 py-3 font-medium">Factura</th>
+              <th class="px-4 py-3 font-medium">Cliente</th>
+              <th class="px-4 py-3 font-medium">Emisión</th>
+              <th class="px-4 py-3 font-medium text-right">Total</th>
+              <th class="px-4 py-3 font-medium text-right">Pendiente</th>
+              <th class="px-4 py-3 font-medium">Estado</th>
+              <th class="px-4 py-3 font-medium"></th>
+            </tr>
+          </thead>
+          <tbody id="invoicesBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ VISTA: GASTOS ═══ -->
+    <div id="expensesView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Gastos</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Gastos reales del negocio</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openEntityModal('expense_category')" class="flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
+            Nueva categoría
+          </button>
+          <button onclick="openEntityModal('expense')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Nuevo gasto
+          </button>
+        </div>
+      </div>
+      <div id="expensesTableWrap" class="overflow-x-auto rounded-2xl border border-white/5">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/5 text-left text-xs text-gray-500 uppercase tracking-wider">
+              <th class="px-4 py-3 font-medium">Descripción</th>
+              <th class="px-4 py-3 font-medium">Categoría</th>
+              <th class="px-4 py-3 font-medium">Fecha</th>
+              <th class="px-4 py-3 font-medium text-right">Importe</th>
+              <th class="px-4 py-3 font-medium"></th>
+            </tr>
+          </thead>
+          <tbody id="expensesBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ VISTA: CALENDARIO ═══ -->
+    <div id="calendarView" style="display:none">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Calendario</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Próximos eventos y reuniones</p>
+        </div>
+        <button onclick="openEntityModal('event')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nuevo evento
+        </button>
+      </div>
+      <div id="eventsList" class="space-y-2"></div>
+    </div>
+
+    <!-- ═══ VISTA: ACTIVIDAD ═══ -->
+    <div id="activityView" style="display:none">
+      <h2 class="font-display font-bold text-lg mb-1">Actividad</h2>
+      <p class="text-gray-500 text-sm mt-0.5 mb-6">Historial de todo lo que ocurre en Dazenty OS</p>
+      <div id="activityFeed" class="space-y-3"></div>
+    </div>
+
   </main>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -503,7 +773,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
       </svg>
     </div>
-    <h3 class="font-display font-bold text-lg mb-2">¿Eliminar cliente?</h3>
+    <h3 class="font-display font-bold text-lg mb-2" id="deleteConfirmTitle">¿Eliminar cliente?</h3>
     <p class="text-gray-500 text-sm mb-6">Esta acción no se puede deshacer.</p>
     <div class="flex gap-3">
       <button onclick="cancelDelete()" class="flex-1 py-3 text-sm border border-white/10 rounded-xl hover:border-white/20 transition-colors">Cancelar</button>
@@ -512,8 +782,148 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL GENÉRICO: Leads / Oportunidades / Proyectos / Tareas / Gastos / Categorías / Eventos
+════════════════════════════════════════════════════════════════ -->
+<div id="entity-modal-overlay" onclick="closeEntityModalOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-start justify-center px-4 py-10 overflow-y-auto" style="display:none">
+  <div id="entity-modal-box" class="bg-brand-dark border border-white/10 rounded-2xl w-full p-8 m-auto" style="max-width:560px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
+    <div class="flex items-center justify-between mb-7">
+      <h2 class="font-display font-bold text-xl" id="entityModalTitle">Nuevo elemento</h2>
+      <button onclick="closeEntityModal()" class="text-gray-600 hover:text-white transition-colors p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="entityModalFields" class="grid sm:grid-cols-2 gap-4 mb-6"></div>
+    <div class="flex items-center justify-end gap-3">
+      <button onclick="closeEntityModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
+      <button onclick="saveEntity()" id="entitySaveBtn"
+        class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">
+        <span id="entitySaveBtnLabel">Crear</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL FACTURACIÓN (bespoke: líneas de factura repetibles)
+════════════════════════════════════════════════════════════════ -->
+<div id="invoice-modal-overlay" onclick="closeInvoiceModalOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-start justify-center px-4 py-10 overflow-y-auto" style="display:none">
+  <div id="invoice-modal-box" class="bg-brand-dark border border-white/10 rounded-2xl w-full p-8 m-auto" style="max-width:720px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
+    <div class="flex items-center justify-between mb-7">
+      <h2 class="font-display font-bold text-xl" id="invoiceModalTitle">Nueva factura</h2>
+      <button onclick="closeInvoiceModal()" class="text-gray-600 hover:text-white transition-colors p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4 mb-6">
+      <div class="entity-field">
+        <label>Cliente *</label>
+        <select id="inv-clientId"></select>
+      </div>
+      <div class="entity-field">
+        <label>Nº factura</label>
+        <input type="text" id="inv-number" placeholder="Auto si se deja vacío">
+      </div>
+      <div class="entity-field">
+        <label>Fecha de emisión</label>
+        <input type="date" id="inv-issueDate">
+      </div>
+      <div class="entity-field">
+        <label>Fecha de vencimiento</label>
+        <input type="date" id="inv-dueDate">
+      </div>
+      <div class="entity-field">
+        <label>IVA (%)</label>
+        <input type="number" id="inv-taxRate" value="21" step="0.01">
+      </div>
+      <div class="entity-field">
+        <label>Estado</label>
+        <select id="inv-status">
+          <option value="pendiente">Pendiente</option>
+          <option value="parcial">Parcial</option>
+          <option value="pagada">Pagada</option>
+          <option value="vencida">Vencida</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest">Líneas de factura</p>
+      <button type="button" onclick="addInvoiceItemRow()" class="text-xs text-brand-blue hover:text-white transition-colors">+ Añadir línea</button>
+    </div>
+    <div id="invoiceItemsRows" class="space-y-2 mb-4"></div>
+    <div class="flex justify-end gap-6 text-sm mb-6">
+      <p class="text-gray-500">Subtotal: <span id="inv-subtotalPreview" class="text-white font-medium">0,00€</span></p>
+      <p class="text-gray-500">IVA: <span id="inv-taxPreview" class="text-white font-medium">0,00€</span></p>
+      <p class="text-gray-500">Total: <span id="inv-totalPreview" class="text-brand-blue font-bold">0,00€</span></p>
+    </div>
+
+    <div class="entity-field mb-6">
+      <label>Notas</label>
+      <textarea id="inv-notes" placeholder="Notas internas (opcional)"></textarea>
+    </div>
+
+    <div class="flex items-center justify-end gap-3">
+      <button onclick="closeInvoiceModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
+      <button onclick="saveInvoice()" id="invoiceSaveBtn"
+        class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">
+        <span id="invoiceSaveBtnLabel">Crear factura</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL REGISTRAR PAGO (ligado a una factura)
+════════════════════════════════════════════════════════════════ -->
+<div id="payment-modal-overlay" onclick="closePaymentModalOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-center justify-center px-4" style="display:none">
+  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-8" style="max-width:420px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display font-bold text-lg">Registrar pago</h2>
+      <button onclick="closePaymentModal()" class="text-gray-600 hover:text-white transition-colors p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="space-y-4 mb-6">
+      <div class="entity-field">
+        <label>Importe (€) *</label>
+        <input type="number" id="pay-amount" step="0.01" min="0.01">
+      </div>
+      <div class="entity-field">
+        <label>Fecha</label>
+        <input type="date" id="pay-date">
+      </div>
+      <div class="entity-field">
+        <label>Método</label>
+        <select id="pay-method">
+          <option value="transferencia">Transferencia</option>
+          <option value="stripe">Stripe</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="bizum">Bizum</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-3">
+      <button onclick="closePaymentModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
+      <button onclick="savePayment()" class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">Registrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast"></div>
+
 
 <script>
 // ─── Estado global ───────────────────────────────────────────────────────────
@@ -524,6 +934,19 @@ let deleteId  = null;
 let currentView    = 'clients';
 let paymentsData   = [];
 let paymentsLoaded = false;
+
+// Estado Dazenty OS (nuevos módulos)
+let leadsData             = [];
+let opportunitiesData     = [];
+let projectsData          = [];
+let tasksData             = [];
+let invoicesData          = [];
+let expensesData          = [];
+let expenseCategoriesData = [];
+let eventsData            = [];
+let activitiesData        = [];
+let editingEntity          = null; // { type, id } cuando el modal genérico edita
+let editingInvoiceId       = null;
 
 // ─── Login ───────────────────────────────────────────────────────────────────
 function toggleLoginPassword() {
@@ -559,11 +982,12 @@ async function doLogin(e) {
     if (res.ok || res.status === 200) {
       adminPass = pass;
       document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('dashboard').style.display = 'flex';
       const data = await res.json().catch(() => []);
       clients = Array.isArray(data) ? data : [];
       renderClients();
       renderSummary();
+      switchView('home');
     } else {
       err.style.display = 'block';
       document.getElementById('loginInput').value = '';
@@ -578,16 +1002,64 @@ async function doLogin(e) {
   }
 }
 
-// ─── Cambio de vista: Clientes / Pagos ────────────────────────────────────────
+// ─── Cambio de vista: navegación lateral (Dazenty OS) ─────────────────────────
+const VIEW_CONTAINER_IDS = {
+  home: 'homeView', leads: 'leadsView', opportunities: 'opportunitiesView', clients: 'clientsView',
+  projects: 'projectsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
+  expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView',
+};
+const VIEW_NAV_IDS = {
+  home: 'navHome', leads: 'navLeads', opportunities: 'navOpportunities', clients: 'tabClients',
+  projects: 'navProjects', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
+  expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity',
+};
+const VIEW_TITLES = {
+  home: 'Inicio', leads: 'Leads (CRM)', opportunities: 'Oportunidades', clients: 'Clientes',
+  projects: 'Proyectos', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
+  expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad',
+};
+
 function switchView(view) {
+  if (!VIEW_CONTAINER_IDS[view]) view = 'home';
   currentView = view;
-  document.getElementById('clientsView').style.display  = view === 'clients'  ? 'block' : 'none';
-  document.getElementById('paymentsView').style.display  = view === 'payments' ? 'block' : 'none';
-  document.getElementById('tabClients').classList.toggle('active', view === 'clients');
-  document.getElementById('tabPayments').classList.toggle('active', view === 'payments');
+  Object.keys(VIEW_CONTAINER_IDS).forEach(v => {
+    const el = document.getElementById(VIEW_CONTAINER_IDS[v]);
+    if (el) el.style.display = v === view ? 'block' : 'none';
+    const nav = document.getElementById(VIEW_NAV_IDS[v]);
+    if (nav) nav.classList.toggle('active', v === view);
+  });
+  const titleEl = document.getElementById('viewTitle');
+  if (titleEl) titleEl.textContent = VIEW_TITLES[view] || 'Dazenty OS';
   const newBtn = document.getElementById('newClientBtn');
   if (newBtn) newBtn.style.display = view === 'clients' ? 'flex' : 'none';
+  toggleSidebar(false);
+  loadViewData(view);
+}
+
+function loadViewData(view) {
   if (view === 'payments' && !paymentsLoaded) loadPayments();
+  else if (view === 'home') loadHome();
+  else if (view === 'leads') loadLeads();
+  else if (view === 'opportunities') loadOpportunities();
+  else if (view === 'projects') loadProjects();
+  else if (view === 'tasks') loadTasks();
+  else if (view === 'invoices') loadInvoices();
+  else if (view === 'expenses') loadExpensesView();
+  else if (view === 'calendar') loadEventsView();
+  else if (view === 'activity') loadActivityView();
+}
+
+function toggleSidebar(open) {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar || !overlay) return;
+  if (open) {
+    sidebar.classList.remove('-translate-x-full');
+    overlay.style.display = 'block';
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    overlay.style.display = 'none';
+  }
 }
 
 const STATUS_LABELS = {
@@ -731,6 +1203,8 @@ function logout() {
   clients = [];
   paymentsData = [];
   paymentsLoaded = false;
+  leadsData = []; opportunitiesData = []; projectsData = []; tasksData = [];
+  invoicesData = []; expensesData = []; expenseCategoriesData = []; eventsData = []; activitiesData = [];
   document.getElementById('summaryCards').innerHTML = '';
   document.getElementById('alertBanner').style.display = 'none';
   document.getElementById('dashboard').style.display = 'none';
@@ -742,7 +1216,7 @@ function logout() {
 
 // ─── Dashboard ───────────────────────────────────────────────────────────
 async function showDashboard() {
-  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'flex';
   await loadClients();
 }
 
@@ -1097,9 +1571,21 @@ async function saveClient() {
   }
 }
 
-// ─── Eliminar cliente ─────────────────────────────────────────────────────────
+// ─── Eliminar cliente / entidades genéricas ────────────────────────────────────
 function askDelete(id) {
-  deleteId = id;
+  deleteId = { type: 'client', id };
+  const title = document.getElementById('deleteConfirmTitle');
+  if (title) title.textContent = '¿Eliminar cliente?';
+  const overlay = document.getElementById('delete-overlay');
+  overlay.style.removeProperty('display');
+  overlay.style.display = 'flex';
+}
+
+// Pide confirmación para borrar cualquier entidad del nuevo sistema (leads, tareas, facturas…)
+function askDeleteEntity(type, id, label) {
+  deleteId = { type, id };
+  const title = document.getElementById('deleteConfirmTitle');
+  if (title) title.textContent = label || '¿Eliminar este elemento?';
   const overlay = document.getElementById('delete-overlay');
   overlay.style.removeProperty('display');
   overlay.style.display = 'flex';
@@ -1112,15 +1598,26 @@ function cancelDelete() {
 
 async function confirmDelete() {
   if (!deleteId) return;
+  const { type, id } = deleteId;
   try {
-    await fetch(`/api/clients?id=${deleteId}`, {
-      method: 'DELETE',
-      headers: { 'x-admin-password': adminPass },
-    });
+    if (type === 'client') {
+      await fetch(`/api/clients?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': adminPass },
+      });
+      document.getElementById('delete-overlay').style.display = 'none';
+      deleteId = null;
+      await loadClients();
+      showToast('✓ Cliente eliminado');
+      return;
+    }
+    const url = ENTITY_CONFIG[type].itemUrl(id);
+    await fetch(url, { method: 'DELETE', headers: { 'x-admin-password': adminPass } });
     document.getElementById('delete-overlay').style.display = 'none';
     deleteId = null;
-    await loadClients();
-    showToast('✓ Cliente eliminado');
+    showToast('✓ Eliminado');
+    loadViewData(currentView);
+    if (currentView !== 'home') loadHome(); // mantiene KPIs/actividad al día en segundo plano
   } catch {
     showToast('Error al eliminar', 'error');
   }
@@ -1292,6 +1789,860 @@ function parseFloatOrNull(v) {
 }
 function esc(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DAZENTY OS — Leads, Oportunidades, Proyectos, Tareas, Facturación, Gastos,
+// Calendario, Actividad e Inicio (dashboard real)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── Config genérica por tipo de entidad (alimenta el modal reutilizable) ──────
+const ENTITY_CONFIG = {
+  lead: {
+    label: 'lead',
+    listUrl: () => '/api/leads',
+    itemUrl: id => `/api/leads?id=${id}`,
+    fields: [
+      { key: 'name', label: 'Nombre', type: 'text', required: true, placeholder: 'Nombre del lead' },
+      { key: 'company', label: 'Empresa', type: 'text' },
+      { key: 'email', label: 'Email', type: 'email' },
+      { key: 'phone', label: 'Teléfono', type: 'text' },
+      { key: 'stage', label: 'Fase', type: 'select', default: 'nuevo', options: [
+          ['nuevo','Nuevo'], ['contactada','Contactada'], ['propuesta','Propuesta'],
+          ['reunion','Reunión'], ['ganado','Ganado'], ['perdido','Perdido'] ] },
+      { key: 'source', label: 'Origen', type: 'text', placeholder: 'web, referido, redes…' },
+      { key: 'value_estimate', label: 'Valor estimado (€)', type: 'number' },
+      { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+    ],
+  },
+  opportunity: {
+    label: 'oportunidad',
+    listUrl: () => '/api/opportunities',
+    itemUrl: id => `/api/opportunities?id=${id}`,
+    fields: [
+      { key: 'title', label: 'Título', type: 'text', required: true },
+      { key: 'client_id', label: 'Cliente', type: 'client_select' },
+      { key: 'value', label: 'Valor (€)', type: 'number' },
+      { key: 'probability', label: 'Probabilidad (%)', type: 'number', default: 50 },
+      { key: 'status', label: 'Estado', type: 'select', default: 'abierta', options: [
+          ['abierta','Abierta'], ['en_progreso','En progreso'], ['ganada','Ganada'], ['perdida','Perdida'] ] },
+      { key: 'expected_close_date', label: 'Cierre previsto', type: 'date' },
+      { key: 'description', label: 'Descripción', type: 'textarea', span: 2 },
+    ],
+  },
+  project: {
+    label: 'proyecto',
+    listUrl: () => '/api/projects',
+    itemUrl: id => `/api/projects?id=${id}`,
+    fields: [
+      { key: 'client_id', label: 'Cliente', type: 'client_select', required: true },
+      { key: 'name', label: 'Nombre del proyecto', type: 'text', required: true },
+      { key: 'status', label: 'Estado', type: 'select', default: 'planificacion', options: [
+          ['planificacion','Planificación'], ['en_progreso','En progreso'], ['en_revision','En revisión'],
+          ['entregado','Entregado'], ['pausado','Pausado'], ['cancelado','Cancelado'] ] },
+      { key: 'budget', label: 'Presupuesto (€)', type: 'number' },
+      { key: 'progress', label: 'Progreso (%)', type: 'number', default: 0 },
+      { key: 'start_date', label: 'Inicio', type: 'date' },
+      { key: 'due_date', label: 'Entrega prevista', type: 'date' },
+      { key: 'description', label: 'Descripción', type: 'textarea', span: 2 },
+    ],
+  },
+  task: {
+    label: 'tarea',
+    listUrl: () => '/api/tasks',
+    itemUrl: id => `/api/tasks?id=${id}`,
+    fields: [
+      { key: 'title', label: 'Título', type: 'text', required: true },
+      { key: 'client_id', label: 'Cliente', type: 'client_select' },
+      { key: 'project_id', label: 'Proyecto', type: 'project_select' },
+      { key: 'status', label: 'Estado', type: 'select', default: 'pendiente', options: [
+          ['pendiente','Pendiente'], ['en_progreso','En progreso'], ['completada','Completada'], ['cancelada','Cancelada'] ] },
+      { key: 'priority', label: 'Prioridad', type: 'select', default: 'media', options: [
+          ['baja','Baja'], ['media','Media'], ['alta','Alta'], ['urgente','Urgente'] ] },
+      { key: 'due_date', label: 'Fecha límite', type: 'date' },
+      { key: 'description', label: 'Descripción', type: 'textarea', span: 2 },
+    ],
+  },
+  expense: {
+    label: 'gasto',
+    listUrl: () => '/api/expenses',
+    itemUrl: id => `/api/expenses?id=${id}`,
+    fields: [
+      { key: 'description', label: 'Descripción', type: 'text', required: true },
+      { key: 'amount', label: 'Importe (€)', type: 'number', required: true },
+      { key: 'category_id', label: 'Categoría', type: 'expense_category_select' },
+      { key: 'expense_date', label: 'Fecha', type: 'date' },
+      { key: 'vendor', label: 'Proveedor', type: 'text' },
+      { key: 'payment_method', label: 'Método de pago', type: 'select', default: 'otro', options: [
+          ['transferencia','Transferencia'], ['stripe','Stripe'], ['efectivo','Efectivo'], ['bizum','Bizum'], ['otro','Otro'] ] },
+      { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+    ],
+  },
+  expense_category: {
+    label: 'categoría',
+    listUrl: () => '/api/expenses?type=categories',
+    itemUrl: id => `/api/expenses?id=${id}&type=categories`,
+    fields: [
+      { key: 'name', label: 'Nombre', type: 'text', required: true },
+      { key: 'color', label: 'Color', type: 'color', default: '#d97762' },
+    ],
+  },
+  event: {
+    label: 'evento',
+    listUrl: () => '/api/events',
+    itemUrl: id => `/api/events?id=${id}`,
+    fields: [
+      { key: 'title', label: 'Título', type: 'text', required: true },
+      { key: 'event_type', label: 'Tipo', type: 'select', default: 'reunion', options: [
+          ['reunion','Reunión'], ['entrega','Entrega'], ['pago','Pago'], ['recordatorio','Recordatorio'], ['otro','Otro'] ] },
+      { key: 'client_id', label: 'Cliente', type: 'client_select' },
+      { key: 'start_at', label: 'Inicio', type: 'datetime', required: true },
+      { key: 'end_at', label: 'Fin', type: 'datetime' },
+      { key: 'location', label: 'Lugar', type: 'text' },
+      { key: 'description', label: 'Descripción', type: 'textarea', span: 2 },
+    ],
+  },
+  invoice: { itemUrl: id => `/api/invoices?id=${id}` }, // la factura usa un modal propio (líneas repetibles)
+};
+
+const ENTITY_DATA_SOURCE = {
+  lead: () => leadsData,
+  opportunity: () => opportunitiesData,
+  project: () => projectsData,
+  task: () => tasksData,
+  expense: () => expensesData,
+  expense_category: () => expenseCategoriesData,
+  event: () => eventsData,
+};
+
+function toDatetimeLocal(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function renderEntityField(f, item) {
+  const dflt = typeof f.default === 'function' ? f.default() : f.default;
+  const value = item ? (item[f.key] ?? '') : (dflt ?? '');
+  const spanClass = f.span === 2 ? 'sm:col-span-2' : '';
+  const id = `ef-${f.key}`;
+  let control;
+  if (f.type === 'select') {
+    control = `<select id="${id}">${f.options.map(([v,l]) => `<option value="${v}" ${v===value?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+  } else if (f.type === 'textarea') {
+    control = `<textarea id="${id}" placeholder="${esc(f.placeholder||'')}">${esc(value)}</textarea>`;
+  } else if (f.type === 'client_select') {
+    control = `<select id="${id}"><option value="">— Ninguno —</option>${clients.map(c => `<option value="${c.id}" ${c.id===value?'selected':''}>${esc(c.client_name)}</option>`).join('')}</select>`;
+  } else if (f.type === 'project_select') {
+    control = `<select id="${id}"><option value="">— Ninguno —</option>${projectsData.map(p => `<option value="${p.id}" ${p.id===value?'selected':''}>${esc(p.name)}</option>`).join('')}</select>`;
+  } else if (f.type === 'expense_category_select') {
+    control = `<select id="${id}"><option value="">— Ninguna —</option>${expenseCategoriesData.map(c => `<option value="${c.id}" ${c.id===value?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`;
+  } else if (f.type === 'color') {
+    control = `<input type="color" id="${id}" value="${value || '#d97762'}" style="height:42px;padding:4px">`;
+  } else if (f.type === 'datetime') {
+    control = `<input type="datetime-local" id="${id}" value="${toDatetimeLocal(value)}">`;
+  } else {
+    control = `<input type="${f.type}" id="${id}" value="${esc(value)}" placeholder="${esc(f.placeholder||'')}">`;
+  }
+  return `<div class="entity-field ${spanClass}"><label>${esc(f.label)}${f.required ? ' *' : ''}</label>${control}</div>`;
+}
+
+// Abre el modal genérico. `id` nulo = crear; con id busca el registro ya cargado en memoria.
+async function openEntityModal(type, id = null) {
+  const cfg = ENTITY_CONFIG[type];
+  if (!cfg || !cfg.fields) return;
+  // Carga perezosa de datos relacionados que el formulario pueda necesitar
+  if (type === 'task' && !projectsData.length) {
+    try {
+      const r = await fetch('/api/projects', { headers: { 'x-admin-password': adminPass } });
+      projectsData = await r.json().catch(() => []);
+    } catch { /* noop: el select de proyecto quedará vacío */ }
+  }
+  if (type === 'expense' && !expenseCategoriesData.length) {
+    try {
+      const r = await fetch('/api/expenses?type=categories', { headers: { 'x-admin-password': adminPass } });
+      expenseCategoriesData = await r.json().catch(() => []);
+    } catch { /* noop */ }
+  }
+  const item = id ? (ENTITY_DATA_SOURCE[type]?.() || []).find(x => x.id === id) : null;
+  editingEntity = { type, id: id || null };
+  document.getElementById('entityModalTitle').textContent = item ? `Editar ${cfg.label}` : `Nuevo/a ${cfg.label}`;
+  document.getElementById('entitySaveBtnLabel').textContent = item ? 'Guardar cambios' : 'Crear';
+  document.getElementById('entityModalFields').innerHTML = cfg.fields.map(f => renderEntityField(f, item)).join('');
+  document.getElementById('entity-modal-overlay').style.display = 'flex';
+}
+
+function closeEntityModal() {
+  document.getElementById('entity-modal-overlay').style.display = 'none';
+  editingEntity = null;
+}
+function closeEntityModalOnOverlay(e) {
+  if (e.target === document.getElementById('entity-modal-overlay')) closeEntityModal();
+}
+
+async function saveEntity() {
+  if (!editingEntity) return;
+  const { type, id } = editingEntity;
+  const cfg = ENTITY_CONFIG[type];
+  const body = {};
+  for (const f of cfg.fields) {
+    const el = document.getElementById(`ef-${f.key}`);
+    if (!el) continue;
+    let v = el.value;
+    if (f.type === 'number') v = v === '' ? null : Number(v);
+    else if (f.type === 'datetime') v = v ? new Date(v).toISOString() : null;
+    else if (v === '') v = null;
+    if (f.required && (v === null || v === '')) {
+      showToast(`${f.label} es obligatorio`, 'error');
+      return;
+    }
+    // Al crear, omitimos los campos opcionales vacíos para que la BD aplique su propio
+    // default (p.ej. expense_date/issue_date = current_date) en vez de forzar NULL.
+    if (v === null && !id) continue;
+    body[f.key] = v;
+  }
+  const btn = document.getElementById('entitySaveBtn');
+  btn.disabled = true;
+  try {
+    const url = id ? cfg.itemUrl(id) : cfg.listUrl();
+    const res = await fetch(url, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error al guardar');
+    }
+    closeEntityModal();
+    showToast(id ? '✓ Guardado' : '✓ Creado');
+    loadViewData(currentView);
+    if (currentView !== 'home') loadHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ─── Leads (kanban por fase) ────────────────────────────────────────────────────
+const LEAD_STAGES = [
+  ['nuevo', 'Nuevo'], ['contactada', 'Contactada'], ['propuesta', 'Propuesta'],
+  ['reunion', 'Reunión'], ['ganado', 'Ganado'], ['perdido', 'Perdido'],
+];
+
+async function loadLeads() {
+  try {
+    const res = await fetch('/api/leads', { headers: { 'x-admin-password': adminPass } });
+    leadsData = await res.json().catch(() => []);
+    renderLeadsBoard();
+  } catch {
+    showToast('Error al cargar leads', 'error');
+  }
+}
+
+function renderLeadsBoard() {
+  const board = document.getElementById('leadsBoard');
+  board.innerHTML = LEAD_STAGES.map(([stage, label]) => {
+    const items = leadsData.filter(l => l.stage === stage);
+    const cards = items.map(l => `
+        <div class="lead-card" onclick="openEntityModal('lead','${l.id}')">
+          <p class="font-medium text-sm mb-1">${esc(l.name)}</p>
+          ${l.company ? `<p class="text-xs text-gray-500 mb-1">${esc(l.company)}</p>` : ''}
+          ${l.value_estimate ? `<p class="text-xs text-brand-blue">${fmtAmt(l.value_estimate)}€</p>` : ''}
+          <div class="flex items-center gap-2 mt-2">
+            <select onclick="event.stopPropagation()" onchange="quickChangeLeadStage('${l.id}', this.value)" style="font-size:11px;padding:4px 6px" class="flex-1">
+              ${LEAD_STAGES.map(([s,lb]) => `<option value="${s}" ${s===stage?'selected':''}>${lb}</option>`).join('')}
+            </select>
+            <button onclick="event.stopPropagation(); askDeleteEntity('lead','${l.id}','¿Eliminar este lead?')" class="text-gray-600 hover:text-red-400 transition-colors p-1 shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>`).join('') || '<p class="text-xs text-gray-700 text-center py-6">Vacío</p>';
+    return `
+    <div class="lead-col">
+      <div class="flex items-center justify-between mb-3 px-1">
+        <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">${label}</p>
+        <span class="text-xs text-gray-600">${items.length}</span>
+      </div>
+      ${cards}
+    </div>`;
+  }).join('');
+}
+
+async function quickChangeLeadStage(id, stage) {
+  try {
+    await fetch(`/api/leads?id=${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ stage }),
+    });
+    await loadLeads();
+    showToast('✓ Fase actualizada');
+    if (currentView !== 'home') loadHome();
+  } catch {
+    showToast('Error al actualizar', 'error');
+  }
+}
+
+// ─── Oportunidades ──────────────────────────────────────────────────────────────
+const OPP_STATUS_LABELS = {
+  abierta:     { label: 'Abierta',     cls: 'bg-blue-500/10 text-blue-400' },
+  en_progreso: { label: 'En progreso', cls: 'bg-yellow-500/10 text-yellow-400' },
+  ganada:      { label: 'Ganada',      cls: 'bg-green-500/10 text-green-400' },
+  perdida:     { label: 'Perdida',     cls: 'bg-gray-800 text-gray-500' },
+};
+
+async function loadOpportunities() {
+  try {
+    const res = await fetch('/api/opportunities', { headers: { 'x-admin-password': adminPass } });
+    opportunitiesData = await res.json().catch(() => []);
+    renderOpportunitiesGrid();
+  } catch {
+    showToast('Error al cargar oportunidades', 'error');
+  }
+}
+
+function renderOpportunitiesGrid() {
+  const grid = document.getElementById('opportunitiesGrid');
+  if (!opportunitiesData.length) {
+    grid.innerHTML = '<p class="text-gray-600 text-sm col-span-full text-center py-16">Sin oportunidades todavía.</p>';
+    return;
+  }
+  grid.innerHTML = opportunitiesData.map(o => {
+    const st = OPP_STATUS_LABELS[o.status] || { label: o.status, cls: 'bg-gray-800 text-gray-500' };
+    const client = clients.find(c => c.id === o.client_id);
+    return `
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 card-anim">
+      <div class="flex items-start justify-between gap-2 mb-2">
+        <h3 class="font-display font-semibold text-sm">${esc(o.title)}</h3>
+        <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${st.cls}">${st.label}</span>
+      </div>
+      ${client ? `<p class="text-xs text-gray-500 mb-2">${esc(client.client_name)}</p>` : ''}
+      ${o.value ? `<p class="text-brand-blue font-semibold text-sm mb-1">${fmtAmt(o.value)}€</p>` : ''}
+      <p class="text-xs text-gray-600 mb-4">Probabilidad: ${o.probability ?? 50}%</p>
+      <div class="flex items-center gap-2">
+        <button onclick="openEntityModal('opportunity','${o.id}')" class="flex-1 text-xs border border-white/10 rounded-lg py-2 hover:border-white/20 transition-colors">Editar</button>
+        <button onclick="askDeleteEntity('opportunity','${o.id}','¿Eliminar esta oportunidad?')" class="text-gray-600 hover:text-red-400 transition-colors p-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Proyectos ──────────────────────────────────────────────────────────────────
+const PROJECT_STATUS_LABELS = {
+  planificacion: { label: 'Planificación', cls: 'bg-gray-700 text-gray-300' },
+  en_progreso:   { label: 'En progreso',   cls: 'bg-yellow-500/10 text-yellow-400' },
+  en_revision:   { label: 'En revisión',   cls: 'bg-blue-500/10 text-blue-400' },
+  entregado:     { label: 'Entregado',     cls: 'bg-green-500/10 text-green-400' },
+  pausado:       { label: 'Pausado',       cls: 'bg-orange-500/10 text-orange-400' },
+  cancelado:     { label: 'Cancelado',     cls: 'bg-red-500/10 text-red-400' },
+};
+
+async function loadProjects() {
+  try {
+    const res = await fetch('/api/projects', { headers: { 'x-admin-password': adminPass } });
+    projectsData = await res.json().catch(() => []);
+    renderProjectsGrid();
+  } catch {
+    showToast('Error al cargar proyectos', 'error');
+  }
+}
+
+function renderProjectsGrid() {
+  const grid = document.getElementById('projectsGrid');
+  if (!projectsData.length) {
+    grid.innerHTML = '<p class="text-gray-600 text-sm col-span-full text-center py-16">Sin proyectos todavía.</p>';
+    return;
+  }
+  grid.innerHTML = projectsData.map(p => {
+    const st = PROJECT_STATUS_LABELS[p.status] || { label: p.status, cls: 'bg-gray-800 text-gray-500' };
+    const client = clients.find(c => c.id === p.client_id);
+    return `
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 card-anim">
+      <div class="flex items-start justify-between gap-2 mb-2">
+        <h3 class="font-display font-semibold text-sm">${esc(p.name)}</h3>
+        <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${st.cls}">${st.label}</span>
+      </div>
+      <p class="text-xs text-gray-500 mb-3">${client ? esc(client.client_name) : 'Sin cliente'}</p>
+      <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
+        <div class="h-full bg-brand-blue" style="width:${p.progress || 0}%"></div>
+      </div>
+      <p class="text-xs text-gray-600 mb-4">${p.progress || 0}% completado${p.due_date ? ` · Entrega: ${esc(p.due_date)}` : ''}</p>
+      <div class="flex items-center gap-2">
+        <button onclick="openEntityModal('project','${p.id}')" class="flex-1 text-xs border border-white/10 rounded-lg py-2 hover:border-white/20 transition-colors">Editar</button>
+        <button onclick="askDeleteEntity('project','${p.id}','¿Eliminar este proyecto?')" class="text-gray-600 hover:text-red-400 transition-colors p-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Tareas ─────────────────────────────────────────────────────────────────────
+const TASK_PRIORITY_LABELS = {
+  baja:    { label: 'Baja',    cls: 'bg-gray-700 text-gray-300' },
+  media:   { label: 'Media',   cls: 'bg-blue-500/10 text-blue-400' },
+  alta:    { label: 'Alta',    cls: 'bg-orange-500/10 text-orange-400' },
+  urgente: { label: 'Urgente', cls: 'bg-red-500/10 text-red-400' },
+};
+
+async function loadTasks() {
+  try {
+    const res = await fetch('/api/tasks', { headers: { 'x-admin-password': adminPass } });
+    tasksData = await res.json().catch(() => []);
+    renderTasksList();
+  } catch {
+    showToast('Error al cargar tareas', 'error');
+  }
+}
+
+function renderTasksList() {
+  const list = document.getElementById('tasksList');
+  if (!tasksData.length) {
+    list.innerHTML = '<p class="text-gray-600 text-sm text-center py-16">Sin tareas todavía.</p>';
+    return;
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  list.innerHTML = tasksData.map(t => {
+    const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
+    const done = t.status === 'completada';
+    const overdue = t.due_date && t.due_date < today && !done;
+    return `
+    <div class="flex items-center gap-3 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim">
+      <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleTaskDone('${t.id}', this.checked)"
+        style="width:16px;height:16px;padding:0;border-radius:4px" class="accent-brand-blue shrink-0">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm ${done ? 'line-through text-gray-600' : ''} truncate">${esc(t.title)}</p>
+        <p class="text-xs ${overdue ? 'text-red-400' : 'text-gray-600'}">${t.due_date ? esc(t.due_date) : 'Sin fecha'}</p>
+      </div>
+      <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
+      <button onclick="openEntityModal('task','${t.id}')" class="text-gray-600 hover:text-white transition-colors p-1.5 shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      </button>
+      <button onclick="askDeleteEntity('task','${t.id}','¿Eliminar esta tarea?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+async function toggleTaskDone(id, checked) {
+  try {
+    await fetch(`/api/tasks?id=${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ status: checked ? 'completada' : 'pendiente' }),
+    });
+    await loadTasks();
+    if (currentView !== 'home') loadHome();
+  } catch {
+    showToast('Error al actualizar tarea', 'error');
+  }
+}
+
+// ─── Facturación (modal propio con líneas repetibles) ──────────────────────────
+const INVOICE_STATUS_LABELS = {
+  pendiente: { label: 'Pendiente', cls: 'bg-yellow-500/10 text-yellow-400' },
+  parcial:   { label: 'Parcial',   cls: 'bg-blue-500/10 text-blue-400' },
+  pagada:    { label: 'Pagada',    cls: 'bg-green-500/10 text-green-400' },
+  vencida:   { label: 'Vencida',   cls: 'bg-red-500/10 text-red-400' },
+  cancelada: { label: 'Cancelada', cls: 'bg-gray-800 text-gray-500' },
+};
+
+async function loadInvoices() {
+  try {
+    const res = await fetch('/api/invoices', { headers: { 'x-admin-password': adminPass } });
+    invoicesData = await res.json().catch(() => []);
+    renderInvoicesTable();
+  } catch {
+    showToast('Error al cargar facturas', 'error');
+  }
+}
+
+function renderInvoicesTable() {
+  const tbody = document.getElementById('invoicesBody');
+  if (!invoicesData.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-16 text-gray-600 text-sm">Sin facturas todavía.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = invoicesData.map(inv => {
+    const st = INVOICE_STATUS_LABELS[inv.status] || { label: inv.status, cls: 'bg-gray-800 text-gray-500' };
+    const client = clients.find(c => c.id === inv.client_id);
+    const pending = Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0));
+    return `
+    <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+      <td class="px-4 py-3 font-medium">${esc(inv.invoice_number || inv.id.slice(0,8))}</td>
+      <td class="px-4 py-3 text-gray-400">${client ? esc(client.client_name) : '—'}</td>
+      <td class="px-4 py-3 text-gray-500">${esc(inv.issue_date)}</td>
+      <td class="px-4 py-3 text-right font-medium">${fmtAmt(inv.total)}€</td>
+      <td class="px-4 py-3 text-right ${pending > 0 ? 'text-red-400' : 'text-gray-600'}">${fmtAmt(pending)}€</td>
+      <td class="px-4 py-3"><span class="text-xs px-2 py-0.5 rounded-full ${st.cls}">${st.label}</span></td>
+      <td class="px-4 py-3 text-right whitespace-nowrap">
+        ${pending > 0 ? `<button onclick="openPaymentModal('${inv.id}')" class="text-xs text-brand-blue hover:text-white transition-colors mr-3">Registrar pago</button>` : ''}
+        <button onclick="openInvoiceModal('${inv.id}')" class="text-gray-600 hover:text-white transition-colors p-1 inline-flex align-middle mr-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </button>
+        <button onclick="askDeleteEntity('invoice','${inv.id}','¿Eliminar esta factura?')" class="text-gray-600 hover:text-red-400 transition-colors p-1 inline-flex align-middle">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+let invoiceItemsState = [];
+
+async function openInvoiceModal(id = null) {
+  editingInvoiceId = id;
+  const inv = id ? invoicesData.find(i => i.id === id) : null;
+  document.getElementById('invoiceModalTitle').textContent = id ? 'Editar factura' : 'Nueva factura';
+  document.getElementById('invoiceSaveBtnLabel').textContent = id ? 'Guardar cambios' : 'Crear factura';
+  document.getElementById('inv-clientId').innerHTML = clients.map(c =>
+    `<option value="${c.id}" ${inv && inv.client_id === c.id ? 'selected' : ''}>${esc(c.client_name)}</option>`).join('');
+  document.getElementById('inv-number').value = inv?.invoice_number || '';
+  document.getElementById('inv-issueDate').value = inv?.issue_date || new Date().toISOString().slice(0, 10);
+  document.getElementById('inv-dueDate').value = inv?.due_date || '';
+  document.getElementById('inv-taxRate').value = inv?.tax_rate ?? 21;
+  document.getElementById('inv-status').value = inv?.status || 'pendiente';
+  document.getElementById('inv-notes').value = inv?.notes || '';
+
+  if (id) {
+    await fetchInvoiceItemsAndRender(id);
+  } else {
+    invoiceItemsState = [{ description: '', quantity: 1, unit_price: 0 }];
+    renderInvoiceItemsRows();
+  }
+  document.getElementById('invoice-modal-overlay').style.display = 'flex';
+}
+
+async function fetchInvoiceItemsAndRender(id) {
+  try {
+    const res = await fetch(`/api/invoices?id=${id}`, { headers: { 'x-admin-password': adminPass } });
+    const full = await res.json();
+    invoiceItemsState = (full.items || []).map(it => ({
+      description: it.description, quantity: Number(it.quantity), unit_price: Number(it.unit_price),
+    }));
+  } catch {
+    invoiceItemsState = [];
+  }
+  if (!invoiceItemsState.length) invoiceItemsState = [{ description: '', quantity: 1, unit_price: 0 }];
+  renderInvoiceItemsRows();
+}
+
+function renderInvoiceItemsRows() {
+  const wrap = document.getElementById('invoiceItemsRows');
+  wrap.innerHTML = invoiceItemsState.map((it, i) => `
+    <div class="flex items-center gap-2">
+      <input type="text" placeholder="Descripción" value="${esc(it.description)}" oninput="updateInvoiceItem(${i},'description',this.value)" class="flex-1">
+      <input type="number" placeholder="Cant." value="${it.quantity}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'quantity',this.value)" style="width:80px">
+      <input type="number" placeholder="Precio €" value="${it.unit_price}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'unit_price',this.value)" style="width:100px">
+      <button type="button" onclick="removeInvoiceItemRow(${i})" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>`).join('');
+  updateInvoiceTotalsPreview();
+}
+
+function addInvoiceItemRow() {
+  invoiceItemsState.push({ description: '', quantity: 1, unit_price: 0 });
+  renderInvoiceItemsRows();
+}
+
+function removeInvoiceItemRow(i) {
+  invoiceItemsState.splice(i, 1);
+  if (!invoiceItemsState.length) invoiceItemsState.push({ description: '', quantity: 1, unit_price: 0 });
+  renderInvoiceItemsRows();
+}
+
+function updateInvoiceItem(i, key, value) {
+  invoiceItemsState[i][key] = key === 'description' ? value : (parseFloat(value) || 0);
+  updateInvoiceTotalsPreview();
+}
+
+function updateInvoiceTotalsPreview() {
+  const taxRate = parseFloat(document.getElementById('inv-taxRate').value) || 0;
+  const subtotal = invoiceItemsState.reduce((s, it) => s + (Number(it.quantity) || 0) * (Number(it.unit_price) || 0), 0);
+  const tax = subtotal * taxRate / 100;
+  document.getElementById('inv-subtotalPreview').textContent = `${fmtAmt(subtotal)}€`;
+  document.getElementById('inv-taxPreview').textContent = `${fmtAmt(tax)}€`;
+  document.getElementById('inv-totalPreview').textContent = `${fmtAmt(subtotal + tax)}€`;
+}
+
+function closeInvoiceModal() {
+  document.getElementById('invoice-modal-overlay').style.display = 'none';
+  editingInvoiceId = null;
+}
+function closeInvoiceModalOnOverlay(e) {
+  if (e.target === document.getElementById('invoice-modal-overlay')) closeInvoiceModal();
+}
+
+async function saveInvoice() {
+  const clientId = document.getElementById('inv-clientId').value;
+  if (!clientId) { showToast('Selecciona un cliente', 'error'); return; }
+  const items = invoiceItemsState.filter(it => it.description.trim());
+  if (!items.length) { showToast('Añade al menos una línea con descripción', 'error'); return; }
+  const body = {
+    client_id: clientId,
+    invoice_number: document.getElementById('inv-number').value || null,
+    issue_date: document.getElementById('inv-issueDate').value || null,
+    due_date: document.getElementById('inv-dueDate').value || null,
+    tax_rate: parseFloat(document.getElementById('inv-taxRate').value) || 0,
+    status: document.getElementById('inv-status').value,
+    notes: document.getElementById('inv-notes').value || null,
+    items,
+  };
+  const btn = document.getElementById('invoiceSaveBtn');
+  btn.disabled = true;
+  try {
+    const url = editingInvoiceId ? `/api/invoices?id=${editingInvoiceId}` : '/api/invoices';
+    const res = await fetch(url, {
+      method: editingInvoiceId ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error al guardar la factura');
+    }
+    closeInvoiceModal();
+    showToast(editingInvoiceId ? '✓ Factura actualizada' : '✓ Factura creada');
+    await loadInvoices();
+    if (currentView === 'home') loadHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ─── Registrar pago (ligado a una factura) ─────────────────────────────────────
+let payingInvoiceId = null;
+
+function openPaymentModal(invoiceId) {
+  payingInvoiceId = invoiceId;
+  const inv = invoicesData.find(i => i.id === invoiceId);
+  const pending = inv ? Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0)) : 0;
+  document.getElementById('pay-amount').value = pending || '';
+  document.getElementById('pay-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('pay-method').value = 'transferencia';
+  document.getElementById('payment-modal-overlay').style.display = 'flex';
+}
+
+function closePaymentModal() {
+  document.getElementById('payment-modal-overlay').style.display = 'none';
+  payingInvoiceId = null;
+}
+function closePaymentModalOnOverlay(e) {
+  if (e.target === document.getElementById('payment-modal-overlay')) closePaymentModal();
+}
+
+async function savePayment() {
+  if (!payingInvoiceId) return;
+  const inv = invoicesData.find(i => i.id === payingInvoiceId);
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  if (!amount || amount <= 0) { showToast('Importe inválido', 'error'); return; }
+  const body = {
+    invoice_id: payingInvoiceId,
+    client_id: inv.client_id,
+    amount,
+    payment_date: document.getElementById('pay-date').value || new Date().toISOString().slice(0, 10),
+    payment_method: document.getElementById('pay-method').value,
+  };
+  try {
+    const res = await fetch('/api/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error al registrar el pago');
+    }
+    closePaymentModal();
+    showToast('✓ Pago registrado');
+    await loadInvoices();
+    if (currentView === 'home') loadHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─── Gastos ─────────────────────────────────────────────────────────────────────
+async function loadExpensesView() {
+  try {
+    const [expRes, catRes] = await Promise.all([
+      fetch('/api/expenses', { headers: { 'x-admin-password': adminPass } }),
+      fetch('/api/expenses?type=categories', { headers: { 'x-admin-password': adminPass } }),
+    ]);
+    expensesData = await expRes.json().catch(() => []);
+    expenseCategoriesData = await catRes.json().catch(() => []);
+    renderExpensesTable();
+  } catch {
+    showToast('Error al cargar gastos', 'error');
+  }
+}
+
+function renderExpensesTable() {
+  const tbody = document.getElementById('expensesBody');
+  if (!expensesData.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-16 text-gray-600 text-sm">Sin gastos todavía.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = expensesData.map(e => {
+    const cat = expenseCategoriesData.find(c => c.id === e.category_id);
+    return `
+    <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+      <td class="px-4 py-3">${esc(e.description)}</td>
+      <td class="px-4 py-3">${cat ? `<span class="text-xs px-2 py-0.5 rounded-full" style="background:${cat.color}22;color:${cat.color}">${esc(cat.name)}</span>` : '<span class="text-gray-600 text-xs">—</span>'}</td>
+      <td class="px-4 py-3 text-gray-500">${esc(e.expense_date)}</td>
+      <td class="px-4 py-3 text-right font-medium text-red-400">-${fmtAmt(e.amount)}€</td>
+      <td class="px-4 py-3 text-right whitespace-nowrap">
+        <button onclick="openEntityModal('expense','${e.id}')" class="text-gray-600 hover:text-white transition-colors p-1 inline-flex align-middle mr-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </button>
+        <button onclick="askDeleteEntity('expense','${e.id}','¿Eliminar este gasto?')" class="text-gray-600 hover:text-red-400 transition-colors p-1 inline-flex align-middle">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── Calendario (agenda de próximos eventos) ───────────────────────────────────
+const EVENT_TYPE_LABELS = {
+  reunion: '🗓️ Reunión', entrega: '📦 Entrega', pago: '💶 Pago', recordatorio: '🔔 Recordatorio', otro: '•',
+};
+
+async function loadEventsView() {
+  try {
+    const now = new Date().toISOString();
+    const res = await fetch(`/api/events?from=${encodeURIComponent(now)}`, { headers: { 'x-admin-password': adminPass } });
+    eventsData = await res.json().catch(() => []);
+    renderEventsList();
+  } catch {
+    showToast('Error al cargar eventos', 'error');
+  }
+}
+
+function renderEventsList() {
+  const list = document.getElementById('eventsList');
+  if (!eventsData.length) {
+    list.innerHTML = '<p class="text-gray-600 text-sm text-center py-16">Sin eventos próximos.</p>';
+    return;
+  }
+  list.innerHTML = eventsData.map(ev => {
+    const client = clients.find(c => c.id === ev.client_id);
+    const d = new Date(ev.start_at);
+    const dateLabel = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+    const timeLabel = ev.all_day ? 'Todo el día' : d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return `
+    <div class="flex items-center gap-4 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim">
+      <div class="text-center shrink-0 w-14">
+        <p class="text-xs text-gray-500 uppercase">${dateLabel}</p>
+        <p class="text-xs text-brand-blue">${timeLabel}</p>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">${EVENT_TYPE_LABELS[ev.event_type] || ''} ${esc(ev.title)}</p>
+        <p class="text-xs text-gray-600 truncate">${client ? esc(client.client_name) : ''}${ev.location ? (client ? ' · ' : '') + esc(ev.location) : ''}</p>
+      </div>
+      <button onclick="openEntityModal('event','${ev.id}')" class="text-gray-600 hover:text-white transition-colors p-1.5 shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      </button>
+      <button onclick="askDeleteEntity('event','${ev.id}','¿Eliminar este evento?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ─── Actividad (feed) ───────────────────────────────────────────────────────────
+async function loadActivityView() {
+  try {
+    const res = await fetch('/api/activities?limit=100', { headers: { 'x-admin-password': adminPass } });
+    activitiesData = await res.json().catch(() => []);
+    renderActivityItems(document.getElementById('activityFeed'), activitiesData, 'Sin actividad registrada todavía.');
+  } catch {
+    showToast('Error al cargar actividad', 'error');
+  }
+}
+
+function renderActivityItems(container, items, emptyMsg) {
+  if (!container) return;
+  if (!items.length) {
+    container.innerHTML = `<p class="text-gray-600 text-sm text-center py-10">${emptyMsg}</p>`;
+    return;
+  }
+  container.innerHTML = items.map(a => `
+    <div class="flex items-start gap-3">
+      <div class="w-2 h-2 rounded-full bg-brand-blue mt-1.5 shrink-0"></div>
+      <div class="min-w-0">
+        <p class="text-sm">${esc(a.description || a.action)}</p>
+        <p class="text-xs text-gray-600">${new Date(a.created_at).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+      </div>
+    </div>`).join('');
+}
+
+// ─── Inicio (dashboard real con KPIs agregados) ────────────────────────────────
+async function loadHome() {
+  try {
+    const res = await fetch('/api/dashboard', { headers: { 'x-admin-password': adminPass } });
+    const data = await res.json();
+    renderHomeKpis(data);
+    renderHomeUrgentTasks(data.tareas_urgentes_hoy || []);
+    renderHomeUpcomingEvents(data.proximos_eventos || []);
+    renderActivityItems(document.getElementById('homeActivity'), data.actividad_reciente || [], 'Sin actividad reciente.');
+  } catch {
+    showToast('Error al cargar el panel de inicio', 'error');
+  }
+}
+
+function renderHomeKpis(d) {
+  const cards = [
+    { label: 'Facturado este mes',   value: `${fmtAmt(d.facturado_mes)}€`,   cls: 'text-white' },
+    { label: 'Pendiente de cobro',   value: `${fmtAmt(d.pendiente_cobro)}€`, cls: 'text-yellow-400' },
+    { label: 'Gastos este mes',      value: `${fmtAmt(d.gastos_mes)}€`,      cls: 'text-red-400' },
+    { label: 'Beneficio este mes',   value: `${fmtAmt(d.beneficio_mes)}€`,   cls: d.beneficio_mes >= 0 ? 'text-green-400' : 'text-red-400' },
+  ];
+  document.getElementById('homeKpis').innerHTML = cards.map(c => `
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">${c.label}</p>
+      <p class="font-display font-bold text-2xl ${c.cls}">${c.value}</p>
+    </div>`).join('');
+}
+
+function renderHomeUrgentTasks(tasks) {
+  const el = document.getElementById('homeUrgentTasks');
+  if (!tasks.length) {
+    el.innerHTML = '<p class="text-gray-600 text-sm text-center py-6">Nada urgente hoy 🎉</p>';
+    return;
+  }
+  el.innerHTML = tasks.map(t => {
+    const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
+    return `
+    <div class="flex items-center gap-3 px-1 py-2 border-b border-white/5 last:border-0">
+      <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
+      <p class="text-sm flex-1 truncate">${esc(t.title)}</p>
+      <p class="text-xs text-gray-600 shrink-0">${t.due_date || ''}</p>
+    </div>`;
+  }).join('');
+}
+
+function renderHomeUpcomingEvents(events) {
+  const el = document.getElementById('homeUpcomingEvents');
+  if (!events.length) {
+    el.innerHTML = '<p class="text-gray-600 text-sm text-center py-6">Sin eventos próximos.</p>';
+    return;
+  }
+  el.innerHTML = events.map(ev => `
+    <div class="flex items-center gap-3 px-1 py-2 border-b border-white/5 last:border-0">
+      <p class="text-xs text-brand-blue shrink-0">${new Date(ev.start_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</p>
+      <p class="text-sm flex-1 truncate">${esc(ev.title)}</p>
+    </div>`).join('');
 }
 </script>
 <!-- Vercel Analytics -->

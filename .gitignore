@@ -12,3 +12,8 @@ SETUP.txt
 
 # Dependencias
 node_modules/
+.vercel
+
+# Vídeos de referencia subidos por el usuario (no forman parte del proyecto)
+*.MP4
+*.mp4
