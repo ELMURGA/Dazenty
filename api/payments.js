@@ -7,6 +7,7 @@
 // ==========================================================
 
 import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity } from '../lib/db.js';
+import { validatePayment } from '../lib/payment-validation.js';
 
 const METHODS = ['stripe', 'transferencia', 'efectivo', 'bizum', 'otro'];
 
@@ -39,14 +40,25 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       const body = { ...req.body };
-      if (!body.client_id) return res.status(400).json({ error: 'client_id es obligatorio' });
-      if (!body.amount || Number(body.amount) <= 0) return res.status(400).json({ error: 'amount debe ser mayor que 0' });
+      const validationError = validatePayment(body);
+      if (validationError) return res.status(400).json({ error: validationError });
       if (body.payment_method && !METHODS.includes(body.payment_method)) {
         return res.status(400).json({ error: `payment_method inválido. Usa: ${METHODS.join(', ')}` });
       }
+      if (body.invoice_id) {
+        const [invoice] = await sbSelect('invoices', `id=eq.${encodeURIComponent(body.invoice_id)}&select=client_id`);
+        if (!invoice || invoice.client_id !== body.client_id) {
+          return res.status(400).json({ error: 'La factura no pertenece al cliente seleccionado' });
+        }
+      }
+      body.amount = Number(body.amount);
+      if (body.service_concept) body.service_concept = body.service_concept.trim();
       const created = await sbInsert('payments', body);
       if (created.invoice_id) await recalcInvoice(created.invoice_id);
-      await logActivity('payment', created.id, 'created', `Pago recibido de ${created.amount}€`);
+      await logActivity('payment', created.id, 'created',
+        `Pago recibido de ${created.amount}€${created.service_concept ? ` · ${created.service_concept}` : ''}`,
+        { client_id: created.client_id, payment_method: created.payment_method,
+          coverage_start: created.coverage_start, coverage_end: created.coverage_end });
       return res.status(201).json(created);
     }
 

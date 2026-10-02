@@ -333,18 +333,34 @@
 
       <div class="flex flex-col sm:flex-row gap-4 mb-8 items-start sm:items-center justify-between">
         <div>
-          <h2 class="font-display font-bold text-lg">Pagos y meses activos</h2>
-          <p class="text-gray-500 text-sm mt-0.5">Datos leídos en tiempo real desde Stripe</p>
+          <h2 class="font-display font-bold text-lg">Cobros y servicios pagados</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Registra efectivo, transferencias o Bizum, también sin factura asociada.</p>
         </div>
-        <button onclick="loadPayments()" id="refreshPaymentsBtn"
+        <div class="flex flex-wrap gap-2">
+        <button type="button" onclick="openPaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
+        <button onclick="refreshAllPayments()" id="refreshPaymentsBtn"
           class="flex items-center gap-2 text-xs font-medium border border-white/8 rounded-xl px-4 py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
           Actualizar
         </button>
+        </div>
       </div>
 
+      <h3 class="font-display font-semibold text-sm mb-3">Cobros registrados en Dazenty OS</h3>
+      <p class="text-gray-500 text-xs mb-4">Estos cobros cuentan como ingresos en Inicio. El período indica los días cubiertos, incluidos ambos extremos; no modifica ni cancela suscripciones de Stripe.</p>
+      <div class="overflow-x-auto rounded-2xl border border-white/5 mb-8">
+        <table class="w-full text-sm">
+          <thead><tr class="border-b border-white/5 text-left text-xs text-gray-500 uppercase tracking-wider">
+            <th class="px-4 py-3">Cliente / concepto</th><th class="px-4 py-3">Importe</th>
+            <th class="px-4 py-3">Fecha de cobro</th><th class="px-4 py-3">Método</th>
+            <th class="px-4 py-3">Período cubierto</th>
+          </tr></thead>
+          <tbody id="registeredPaymentsBody"></tbody>
+        </table>
+      </div>
+      <h3 class="font-display font-semibold text-sm mb-3">Suscripciones y pagos de Stripe</h3>
       <div id="paymentsTableWrap" class="overflow-x-auto rounded-2xl border border-white/5">
         <table class="w-full text-sm">
           <thead>
@@ -883,18 +899,27 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     MODAL REGISTRAR PAGO (ligado a una factura)
+     MODAL REGISTRAR PAGO (con o sin factura)
 ════════════════════════════════════════════════════════════════ -->
 <div id="payment-modal-overlay" onclick="closePaymentModalOnOverlay(event)"
-  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-center justify-center px-4" style="display:none">
-  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-8" style="max-width:420px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-start justify-center px-4 py-6 overflow-y-auto" style="display:none">
+  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-5 sm:p-8 my-auto" style="max-width:540px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
     <div class="flex items-center justify-between mb-6">
       <h2 class="font-display font-bold text-lg">Registrar pago</h2>
       <button onclick="closePaymentModal()" class="text-gray-600 hover:text-white transition-colors p-1">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
+    <p id="pay-invoiceContext" class="text-gray-500 text-sm mb-4" style="display:none"></p>
     <div class="space-y-4 mb-6">
+      <div id="pay-clientField" class="entity-field">
+        <label for="pay-client">Cliente *</label>
+        <select id="pay-client" onchange="updatePaymentClient()"></select>
+      </div>
+      <div class="entity-field">
+        <label for="pay-concept">Concepto</label>
+        <input id="pay-concept" type="text" maxlength="200" placeholder="Mantenimiento y hosting">
+      </div>
       <div class="entity-field">
         <label>Importe (€) *</label>
         <input type="number" id="pay-amount" step="0.01" min="0.01">
@@ -913,10 +938,26 @@
           <option value="otro">Otro</option>
         </select>
       </div>
+      <div class="entity-field">
+        <label for="pay-period">Período cubierto</label>
+        <select id="pay-period" onchange="if (['month','year'].includes(this.value)) updatePaymentClient(); updatePaymentCoverage()">
+          <option value="none">Sin período</option>
+          <option value="month">Mensual</option>
+          <option value="year">Anual</option>
+          <option value="custom">Personalizado</option>
+        </select>
+      </div>
+      <div id="pay-coverageFields" class="grid sm:grid-cols-2 gap-4" style="display:none">
+        <div class="entity-field"><label for="pay-coverageStart">Desde (incluido) *</label>
+          <input type="date" id="pay-coverageStart" onchange="updatePaymentCoverage()"></div>
+        <div class="entity-field"><label for="pay-coverageEnd">Hasta (incluido) *</label>
+          <input type="date" id="pay-coverageEnd"></div>
+      </div>
+      <div class="entity-field"><label for="pay-notes">Notas</label><textarea id="pay-notes" placeholder="Observaciones del cobro"></textarea></div>
     </div>
     <div class="flex items-center justify-end gap-3">
       <button onclick="closePaymentModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
-      <button onclick="savePayment()" class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">Registrar</button>
+      <button id="paymentSaveBtn" onclick="savePayment()" class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-6 py-3 hover:opacity-90 transition-opacity">Registrar</button>
     </div>
   </div>
 </div>
@@ -1037,7 +1078,7 @@ function switchView(view) {
 }
 
 function loadViewData(view) {
-  if (view === 'payments' && !paymentsLoaded) loadPayments();
+  if (view === 'payments') refreshAllPayments();
   else if (view === 'home') loadHome();
   else if (view === 'leads') loadLeads();
   else if (view === 'opportunities') loadOpportunities();
@@ -1099,6 +1140,35 @@ function toggleMonths(slug) {
   const show = row.style.display === 'none';
   row.style.display = show ? 'table-row' : 'none';
   if (chevron) chevron.style.transform = show ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+async function refreshAllPayments() {
+  await Promise.all([loadPayments(), loadRegisteredPayments()]);
+}
+
+async function loadRegisteredPayments() {
+  const tbody = document.getElementById('registeredPaymentsBody');
+  tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Cargando cobros…</td></tr>';
+  try {
+    const res = await fetch('/api/payments', { headers: { 'x-admin-password': adminPass } });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'No se pudieron cargar los cobros');
+    tbody.innerHTML = data.length ? data.map(p => {
+      const client = clients.find(c => c.id === p.client_id);
+      const methods = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
+      return `<tr class="border-b border-white/5">
+        <td class="px-4 py-3 min-w-[180px]"><p class="font-medium">${esc(client?.client_name || 'Cliente')}</p>
+          <p class="text-gray-400 text-xs break-words">${esc(p.service_concept || (p.invoice_id ? 'Pago de factura' : 'Cobro sin concepto'))}</p>
+          ${p.notes ? `<p class="text-gray-500 text-xs break-words">${esc(p.notes)}</p>` : ''}</td>
+        <td class="px-4 py-3 whitespace-nowrap text-brand-blue">${fmtAmt(p.amount)}€</td>
+        <td class="px-4 py-3 whitespace-nowrap">${esc(p.payment_date)}</td>
+        <td class="px-4 py-3">${esc(methods[p.payment_method] || p.payment_method || '—')}</td>
+        <td class="px-4 py-3 whitespace-nowrap">${p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Sin cobros registrados. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
+  }
 }
 
 async function loadPayments() {
@@ -1402,6 +1472,8 @@ function renderClients() {
       </div>` : ''}
 
       <!-- Acciones -->
+      <button type="button" onclick="openPaymentModal(null, '${c.id}')"
+        class="text-xs font-medium text-brand-blue border border-brand-blue/20 rounded-xl py-2.5 hover:border-brand-blue/50">Registrar cobro</button>
       <div class="flex gap-2 mt-auto">
         <button onclick="openModal('${c.id}')"
           class="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium border border-white/8 rounded-xl py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
@@ -2423,14 +2495,56 @@ async function saveInvoice() {
 // ─── Registrar pago (ligado a una factura) ─────────────────────────────────────
 let payingInvoiceId = null;
 
-function openPaymentModal(invoiceId) {
-  payingInvoiceId = invoiceId;
+function paymentToday() {
+  const date = new Date();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function openPaymentModal(invoiceId = null, clientId = '') {
   const inv = invoicesData.find(i => i.id === invoiceId);
+  if (invoiceId && !inv) { showToast('No se encontró la factura', 'error'); return; }
+  payingInvoiceId = invoiceId;
   const pending = inv ? Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0)) : 0;
+  document.getElementById('pay-client').innerHTML = '<option value="">Selecciona un cliente</option>' +
+    clients.map(c => `<option value="${esc(c.id)}">${esc(c.client_name)}</option>`).join('');
+  document.getElementById('pay-client').value = inv ? inv.client_id : clientId;
+  document.getElementById('pay-clientField').style.display = inv ? 'none' : 'block';
+  document.getElementById('pay-invoiceContext').style.display = inv ? 'block' : 'none';
+  document.getElementById('pay-invoiceContext').textContent = inv ? `Cobro de factura ${inv.invoice_number || ''}` : '';
   document.getElementById('pay-amount').value = pending || '';
-  document.getElementById('pay-date').value = new Date().toISOString().slice(0, 10);
-  document.getElementById('pay-method').value = 'transferencia';
+  document.getElementById('pay-date').value = paymentToday();
+  document.getElementById('pay-method').value = inv ? 'transferencia' : 'efectivo';
+  document.getElementById('pay-concept').value = inv ? '' : 'Mantenimiento y hosting';
+  document.getElementById('pay-notes').value = '';
+  document.getElementById('pay-period').value = inv ? 'none' : 'year';
+  document.getElementById('pay-coverageStart').value = paymentToday();
+  document.getElementById('pay-coverageEnd').value = '';
+  if (!inv) updatePaymentClient();
+  updatePaymentCoverage();
   document.getElementById('payment-modal-overlay').style.display = 'flex';
+}
+
+function updatePaymentClient() {
+  if (payingInvoiceId) return;
+  const client = clients.find(c => c.id === document.getElementById('pay-client').value);
+  const period = document.getElementById('pay-period').value;
+  document.getElementById('pay-amount').value = client
+    ? (period === 'year' ? client.amount_annual : period === 'month' ? client.amount_monthly : '') || ''
+    : '';
+}
+
+function updatePaymentCoverage() {
+  const period = document.getElementById('pay-period').value;
+  document.getElementById('pay-coverageFields').style.display = period === 'none' ? 'none' : 'grid';
+  const start = document.getElementById('pay-coverageStart').value;
+  if (start && (period === 'month' || period === 'year')) {
+    const [year, month, day] = start.split('-').map(Number);
+    const targetMonth = month - 1 + (period === 'year' ? 12 : 1);
+    const lastDay = new Date(Date.UTC(year, targetMonth + 1, 0)).getUTCDate();
+    const end = new Date(Date.UTC(year, targetMonth, Math.min(day, lastDay)));
+    end.setUTCDate(end.getUTCDate() - 1);
+    document.getElementById('pay-coverageEnd').value = end.toISOString().slice(0, 10);
+  }
 }
 
 function closePaymentModal() {
@@ -2442,17 +2556,31 @@ function closePaymentModalOnOverlay(e) {
 }
 
 async function savePayment() {
-  if (!payingInvoiceId) return;
   const inv = invoicesData.find(i => i.id === payingInvoiceId);
-  const amount = parseFloat(document.getElementById('pay-amount').value);
-  if (!amount || amount <= 0) { showToast('Importe inválido', 'error'); return; }
+  const clientId = inv ? inv.client_id : document.getElementById('pay-client').value;
+  const amount = Number(document.getElementById('pay-amount').value);
+  if (!clientId) { showToast('Selecciona un cliente', 'error'); return; }
+  if (!Number.isFinite(amount) || amount <= 0) { showToast('Importe inválido', 'error'); return; }
   const body = {
-    invoice_id: payingInvoiceId,
-    client_id: inv.client_id,
+    client_id: clientId,
     amount,
-    payment_date: document.getElementById('pay-date').value || new Date().toISOString().slice(0, 10),
+    payment_date: document.getElementById('pay-date').value,
     payment_method: document.getElementById('pay-method').value,
+    service_concept: document.getElementById('pay-concept').value.trim() || null,
+    notes: document.getElementById('pay-notes').value.trim() || null,
   };
+  if (!body.payment_date) { showToast('Indica la fecha de cobro', 'error'); return; }
+  if (payingInvoiceId) body.invoice_id = payingInvoiceId;
+  if (document.getElementById('pay-period').value !== 'none') {
+    body.coverage_start = document.getElementById('pay-coverageStart').value;
+    body.coverage_end = document.getElementById('pay-coverageEnd').value;
+    if (!body.service_concept || !body.coverage_start || !body.coverage_end || body.coverage_end < body.coverage_start) {
+      showToast('Indica concepto y un período cubierto válido', 'error'); return;
+    }
+  }
+  const btn = document.getElementById('paymentSaveBtn');
+  if (btn.disabled) return;
+  btn.disabled = true;
   try {
     const res = await fetch('/api/payments', {
       method: 'POST',
@@ -2465,10 +2593,13 @@ async function savePayment() {
     }
     closePaymentModal();
     showToast('✓ Pago registrado');
-    await loadInvoices();
-    if (currentView === 'home') loadHome();
+    if (inv) await loadInvoices();
+    if (currentView === 'payments') await loadRegisteredPayments();
+    if (currentView === 'home') await loadHome();
   } catch (err) {
     showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
   }
 }
 

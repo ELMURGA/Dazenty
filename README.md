@@ -89,6 +89,33 @@ Eventos registrados:
 
 ---
 
+## Cobros en efectivo y servicios pagados
+
+En `/admin`, abrir **Pagos → Registrar cobro**, o usar **Registrar cobro** en
+la ficha del cliente. Seleccionar cliente, importe, fecha, método y concepto
+(por ejemplo, mantenimiento y hosting). Para un servicio mensual o anual,
+indicar el período cubierto: las fechas inicial y final son inclusivas.
+El importe anual/mensual se propone a partir de la tarifa del cliente, pero
+debe comprobarse antes de guardar.
+
+Los cobros se guardan en `payments`, aparecen en el historial de Pagos y
+cuentan como ingresos en Inicio. No requieren una factura; desde Facturación
+se conserva el registro de pagos asociado a una factura y su actualización
+automática de saldo/estado. No crear otro cobro por el mismo pago.
+Registrar efectivo no crea una factura fiscal ni modifica o cancela una
+suscripción de Stripe; los datos de Stripe se muestran por separado.
+
+Antes de desplegar esta funcionalidad, aplicar
+`supabase/migrations/002_payment_coverage.sql` en el proyecto Supabase que
+ya tiene la migración inicial. Añade concepto y fechas de cobertura sin
+modificar pagos existentes. Pruebas de validación y regresión:
+
+```sh
+node --test tests/payments.test.js
+```
+
+---
+
 ## Deploy
 
 Cualquier push a `main` despliega automáticamente en Vercel.
