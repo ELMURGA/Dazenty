@@ -518,6 +518,26 @@
           <tbody id="invoicesBody"></tbody>
         </table>
       </div>
+
+      <!-- ═══ ARCHIVO DE FACTURAS EN PDF (organizadas por cliente) ═══ -->
+      <div class="h-px bg-white/5 my-8"></div>
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-4">
+        <div>
+          <h3 class="font-display font-bold text-base">Archivo de facturas en PDF</h3>
+          <p class="text-gray-500 text-sm mt-0.5">Sube las facturas que emites fuera de Dazenty OS y consúltalas por cliente</p>
+        </div>
+        <button onclick="openInvoicePdfModal()" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Subir factura PDF
+        </button>
+      </div>
+      <div class="entity-field mb-4" style="max-width:320px">
+        <label>Filtrar por cliente</label>
+        <select id="invoicePdfClientFilter" onchange="invoicePdfClientFilter=this.value; renderInvoicePdfArchive()">
+          <option value="">Todos los clientes</option>
+        </select>
+      </div>
+      <div id="invoicePdfArchive" class="space-y-6"></div>
     </div>
 
     <!-- ═══ VISTA: GASTOS ═══ -->
@@ -913,6 +933,57 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
+     MODAL SUBIR FACTURA PDF (archivo organizado por cliente)
+════════════════════════════════════════════════════════════════ -->
+<div id="invoicepdf-modal-overlay" onclick="closeInvoicePdfModalOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 items-start justify-center px-4 py-10 overflow-y-auto" style="display:none">
+  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-8 m-auto" style="max-width:480px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)">
+    <div class="flex items-center justify-between mb-7">
+      <h2 class="font-display font-bold text-xl">Subir factura PDF</h2>
+      <button onclick="closeInvoicePdfModal()" class="text-gray-600 hover:text-white transition-colors p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="space-y-4 mb-6">
+      <div class="entity-field">
+        <label>Cliente *</label>
+        <select id="ipdf-clientId"></select>
+      </div>
+      <div class="entity-field">
+        <label>Descripción / Nº factura</label>
+        <input type="text" id="ipdf-label" placeholder="Ej. Factura anual 2026">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="entity-field">
+          <label>Importe (€)</label>
+          <input type="number" id="ipdf-amount" step="0.01" placeholder="0,00">
+        </div>
+        <div class="entity-field">
+          <label>Fecha</label>
+          <input type="date" id="ipdf-issueDate">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">PDF de la factura *</label>
+        <div class="dropzone" id="dropInvoicePdf" onclick="document.getElementById('fileInvoicePdf').click()"
+             ondragover="dragOver(event,'dropInvoicePdf')" ondragleave="dragLeave('dropInvoicePdf')" ondrop="dropInvoicePdfFile(event)">
+          <input type="file" id="fileInvoicePdf" accept="application/pdf" onchange="handleInvoicePdfFile(event)">
+          <svg class="w-8 h-8 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <p class="text-xs text-gray-500" id="invoicePdfLabel">Arrastra el PDF o haz clic</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-3">
+      <button onclick="closeInvoicePdfModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
      MODAL REGISTRAR PAGO (con o sin factura)
 ════════════════════════════════════════════════════════════════ -->
 <div id="payment-modal-overlay" onclick="closePaymentModalOnOverlay(event)"
@@ -1001,6 +1072,8 @@ let expensesData          = [];
 let expenseCategoriesData = [];
 let eventsData            = [];
 let activitiesData        = [];
+let invoicePdfsData       = [];
+let invoicePdfClientFilter = '';
 let editingEntity          = null; // { type, id } cuando el modal genérico edita
 let editingInvoiceId       = null;
 
@@ -1099,7 +1172,7 @@ function loadViewData(view) {
   else if (view === 'opportunities') loadOpportunities();
   else if (view === 'projects') loadProjects();
   else if (view === 'tasks') loadTasks();
-  else if (view === 'invoices') loadInvoices();
+  else if (view === 'invoices') { loadInvoices(); loadInvoicePdfs(); }
   else if (view === 'expenses') loadExpensesView();
   else if (view === 'calendar') loadEventsView();
   else if (view === 'activity') loadActivityView();
@@ -1298,6 +1371,7 @@ function logout() {
   registeredPaymentsData = [];
   leadsData = []; opportunitiesData = []; projectsData = []; tasksData = [];
   invoicesData = []; expensesData = []; expenseCategoriesData = []; eventsData = []; activitiesData = [];
+  invoicePdfsData = []; invoicePdfClientFilter = '';
   document.getElementById('summaryCards').innerHTML = '';
   document.getElementById('alertBanner').style.display = 'none';
   document.getElementById('dashboard').style.display = 'none';
@@ -2309,18 +2383,15 @@ function renderTasksList() {
     const done = t.status === 'completada';
     const overdue = t.due_date && t.due_date < today && !done;
     return `
-    <div class="flex items-center gap-3 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim">
-      <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleTaskDone('${t.id}', this.checked)"
+    <div class="flex items-center gap-3 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim cursor-pointer hover:border-brand-blue/30 transition-colors" onclick="openEntityModal('task','${t.id}')">
+      <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTaskDone('${t.id}', this.checked)"
         style="width:16px;height:16px;padding:0;border-radius:4px" class="accent-brand-blue shrink-0">
       <div class="flex-1 min-w-0">
         <p class="text-sm ${done ? 'line-through text-gray-600' : ''} truncate">${esc(t.title)}</p>
         <p class="text-xs ${overdue ? 'text-red-400' : 'text-gray-600'}">${t.due_date ? esc(t.due_date) : 'Sin fecha'}</p>
       </div>
       <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
-      <button onclick="openEntityModal('task','${t.id}')" class="text-gray-600 hover:text-white transition-colors p-1.5 shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-      </button>
-      <button onclick="askDeleteEntity('task','${t.id}','¿Eliminar esta tarea?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
+      <button onclick="event.stopPropagation(); askDeleteEntity('task','${t.id}','¿Eliminar esta tarea?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
       </button>
     </div>`;
@@ -2513,6 +2584,142 @@ async function saveInvoice() {
     showToast(err.message, 'error');
   } finally {
     btn.disabled = false;
+  }
+}
+
+// ─── Archivo de facturas en PDF (organizadas por cliente) ──────────────────────
+async function loadInvoicePdfs() {
+  try {
+    const res = await fetch('/api/invoice-pdfs', { headers: { 'x-admin-password': adminPass } });
+    invoicePdfsData = await res.json().catch(() => []);
+  } catch {
+    invoicePdfsData = [];
+  }
+  const filterSel = document.getElementById('invoicePdfClientFilter');
+  if (filterSel) {
+    filterSel.innerHTML = '<option value="">Todos los clientes</option>' +
+      clients.map(c => `<option value="${c.id}" ${invoicePdfClientFilter === c.id ? 'selected' : ''}>${esc(c.client_name)}</option>`).join('');
+  }
+  renderInvoicePdfArchive();
+}
+
+function renderInvoicePdfArchive() {
+  const wrap = document.getElementById('invoicePdfArchive');
+  if (!wrap) return;
+  let items = invoicePdfsData;
+  if (invoicePdfClientFilter) items = items.filter(p => p.client_id === invoicePdfClientFilter);
+  if (!items.length) {
+    wrap.innerHTML = '<p class="text-gray-600 text-sm text-center py-10">Sin facturas PDF subidas todavía.</p>';
+    return;
+  }
+  // Agrupa por cliente para que sea fácil de recorrer visualmente
+  const byClient = new Map();
+  for (const p of items) {
+    if (!byClient.has(p.client_id)) byClient.set(p.client_id, []);
+    byClient.get(p.client_id).push(p);
+  }
+  wrap.innerHTML = [...byClient.entries()].map(([clientId, docs]) => {
+    const client = clients.find(c => c.id === clientId);
+    const rows = docs.map(d => `
+      <div class="flex flex-wrap items-center gap-3 bg-brand-gray border border-white/5 rounded-xl px-4 py-3">
+        <svg class="w-5 h-5 text-brand-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm truncate">${esc(d.label || d.file_name)}</p>
+          <p class="text-xs text-gray-600">${d.issue_date ? esc(d.issue_date) : 'Sin fecha'}${d.amount ? ` · ${fmtAmt(d.amount)}€` : ''}</p>
+        </div>
+        <a href="${d.file_url}" target="_blank" rel="noopener" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0">Ver PDF</a>
+        <button onclick="deleteInvoicePdf('${d.id}')" class="text-gray-600 hover:text-red-400 transition-colors p-1 shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>`).join('');
+    return `
+    <div>
+      <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-2">${client ? esc(client.client_name) : 'Cliente eliminado'}</p>
+      <div class="space-y-2">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+function openInvoicePdfModal() {
+  document.getElementById('ipdf-clientId').innerHTML = clients.map(c =>
+    `<option value="${c.id}" ${invoicePdfClientFilter === c.id ? 'selected' : ''}>${esc(c.client_name)}</option>`).join('');
+  document.getElementById('ipdf-label').value = '';
+  document.getElementById('ipdf-amount').value = '';
+  document.getElementById('ipdf-issueDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('invoicePdfLabel').textContent = 'Arrastra el PDF o haz clic';
+  document.getElementById('fileInvoicePdf').value = '';
+  document.getElementById('invoicepdf-modal-overlay').style.display = 'flex';
+}
+function closeInvoicePdfModal() {
+  document.getElementById('invoicepdf-modal-overlay').style.display = 'none';
+}
+function closeInvoicePdfModalOnOverlay(e) {
+  if (e.target === document.getElementById('invoicepdf-modal-overlay')) closeInvoicePdfModal();
+}
+
+function dropInvoicePdfFile(e) {
+  e.preventDefault();
+  document.getElementById('dropInvoicePdf').classList.remove('drag-over');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) processInvoicePdfFile(file);
+}
+function handleInvoicePdfFile(e) {
+  const file = e.target.files?.[0];
+  if (file) processInvoicePdfFile(file);
+}
+
+async function processInvoicePdfFile(file) {
+  const clientId = document.getElementById('ipdf-clientId').value;
+  if (!clientId) { showToast('Selecciona un cliente', 'error'); return; }
+  if (file.type !== 'application/pdf') { showToast('Solo se permiten archivos PDF', 'error'); return; }
+  if (file.size > 10 * 1024 * 1024) { showToast('El PDF no puede superar los 10 MB', 'error'); return; }
+
+  const client = clients.find(c => c.id === clientId);
+  const slug = client?.slug || toSlug(client?.client_name || 'cliente');
+  document.getElementById('invoicePdfLabel').textContent = 'Subiendo...';
+
+  try {
+    const base64 = await fileToBase64(file);
+    const upRes = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ clientSlug: slug, docType: 'invoice-archive', filename: file.name, data: base64 }),
+    });
+    if (!upRes.ok) throw new Error((await upRes.json()).error || 'Error al subir el PDF');
+    const { publicUrl } = await upRes.json();
+
+    const body = {
+      client_id: clientId,
+      file_name: file.name,
+      file_url: publicUrl,
+      label: document.getElementById('ipdf-label').value || null,
+      amount: document.getElementById('ipdf-amount').value ? Number(document.getElementById('ipdf-amount').value) : null,
+      issue_date: document.getElementById('ipdf-issueDate').value || null,
+    };
+    const res = await fetch('/api/invoice-pdfs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Error al registrar la factura');
+
+    closeInvoicePdfModal();
+    showToast('✓ Factura PDF subida');
+    await loadInvoicePdfs();
+  } catch (err) {
+    document.getElementById('invoicePdfLabel').textContent = 'Arrastra el PDF o haz clic';
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteInvoicePdf(id) {
+  if (!confirm('¿Eliminar esta factura PDF del archivo?')) return;
+  try {
+    await fetch(`/api/invoice-pdfs?id=${id}`, { method: 'DELETE', headers: { 'x-admin-password': adminPass } });
+    showToast('✓ Eliminada');
+    await loadInvoicePdfs();
+  } catch {
+    showToast('Error al eliminar', 'error');
   }
 }
 

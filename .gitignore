@@ -17,3 +17,4 @@ node_modules/
 # Vídeos de referencia subidos por el usuario (no forman parte del proyecto)
 *.MP4
 *.mp4
+supabase/.temp/

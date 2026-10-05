@@ -2,7 +2,7 @@
 // ==========================================================
 // POST /api/upload
 // Body JSON:
-//   { clientSlug, docType: "proposal"|"invoice", filename, data: "<base64>" }
+//   { clientSlug, docType: "proposal"|"invoice"|"invoice-archive", filename, data: "<base64>" }
 // Header: x-admin-password
 //
 // Devuelve: { publicUrl }
@@ -50,8 +50,8 @@ export default async function handler(req, res) {
   if (!clientSlug || !docType || !filename || !data) {
     return res.status(400).json({ error: 'Faltan campos: clientSlug, docType, filename, data' });
   }
-  if (!['proposal', 'invoice'].includes(docType)) {
-    return res.status(400).json({ error: 'docType debe ser "proposal" o "invoice"' });
+  if (!['proposal', 'invoice', 'invoice-archive'].includes(docType)) {
+    return res.status(400).json({ error: 'docType debe ser "proposal", "invoice" o "invoice-archive"' });
   }
   // Solo permitir PDFs
   const ext = filename.split('.').pop().toLowerCase();
