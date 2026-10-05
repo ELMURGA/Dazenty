@@ -130,7 +130,20 @@
     }
 
     /* Kanban leads */
-    .lead-col { min-width: 220px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 10px; }
+    .leads-board {
+      grid-template-columns: repeat(6, minmax(200px, 1fr));
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    @media (max-width: 1023px) {
+      .leads-board { grid-template-columns: repeat(6, minmax(82vw, 1fr)); scroll-snap-type: x mandatory; }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .leads-board { grid-template-columns: repeat(6, minmax(46vw, 1fr)); }
+    }
+    .lead-col { min-width: 220px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 10px; scroll-snap-align: start; }
     .lead-card { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
     .lead-card:hover { border-color: rgba(217,119,98,0.4); }
 
@@ -355,7 +368,7 @@
           <thead><tr class="border-b border-white/5 text-left text-xs text-gray-500 uppercase tracking-wider">
             <th class="px-4 py-3">Cliente / concepto</th><th class="px-4 py-3">Importe</th>
             <th class="px-4 py-3">Fecha de cobro</th><th class="px-4 py-3">Método</th>
-            <th class="px-4 py-3">Período cubierto</th>
+            <th class="px-4 py-3">Período cubierto</th><th class="px-4 py-3"></th>
           </tr></thead>
           <tbody id="registeredPaymentsBody"></tbody>
         </table>
@@ -390,7 +403,7 @@
 
     <!-- ═══ VISTA: INICIO (DASHBOARD REAL) ═══ -->
     <div id="homeView" style="display:none">
-      <div id="homeKpis" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"></div>
+      <div id="homeKpis" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"></div>
       <div class="grid lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-5">
           <div class="flex items-center justify-between mb-4">
@@ -418,27 +431,28 @@
 
     <!-- ═══ VISTA: LEADS (CRM) ═══ -->
     <div id="leadsView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Leads</h2>
           <p class="text-gray-500 text-sm mt-0.5">Pipeline de entrada: nuevo → contactada → propuesta → reunión → ganado/perdido</p>
         </div>
-        <button onclick="openEntityModal('lead')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openEntityModal('lead')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nuevo lead
         </button>
       </div>
-      <div id="leadsBoard" class="grid gap-4" style="grid-template-columns:repeat(6,minmax(200px,1fr));overflow-x:auto"></div>
+      <p class="text-xs text-gray-600 mb-2 sm:hidden">Desliza la tabla hacia los lados para ver todas las fases →</p>
+      <div id="leadsBoard" class="leads-board grid gap-3"></div>
     </div>
 
     <!-- ═══ VISTA: OPORTUNIDADES ═══ -->
     <div id="opportunitiesView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Oportunidades</h2>
           <p class="text-gray-500 text-sm mt-0.5">Negociaciones y propuestas en curso</p>
         </div>
-        <button onclick="openEntityModal('opportunity')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openEntityModal('opportunity')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nueva oportunidad
         </button>
@@ -448,12 +462,12 @@
 
     <!-- ═══ VISTA: PROYECTOS ═══ -->
     <div id="projectsView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Proyectos</h2>
           <p class="text-gray-500 text-sm mt-0.5">Entregas en curso por cliente</p>
         </div>
-        <button onclick="openEntityModal('project')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openEntityModal('project')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nuevo proyecto
         </button>
@@ -463,12 +477,12 @@
 
     <!-- ═══ VISTA: TAREAS ═══ -->
     <div id="tasksView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Tareas</h2>
           <p class="text-gray-500 text-sm mt-0.5">Pendientes y en curso</p>
         </div>
-        <button onclick="openEntityModal('task')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openEntityModal('task')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nueva tarea
         </button>
@@ -478,12 +492,12 @@
 
     <!-- ═══ VISTA: FACTURACIÓN ═══ -->
     <div id="invoicesView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Facturación</h2>
           <p class="text-gray-500 text-sm mt-0.5">Facturas emitidas y su estado de cobro</p>
         </div>
-        <button onclick="openInvoiceModal()" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openInvoiceModal()" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nueva factura
         </button>
@@ -508,12 +522,12 @@
 
     <!-- ═══ VISTA: GASTOS ═══ -->
     <div id="expensesView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Gastos</h2>
           <p class="text-gray-500 text-sm mt-0.5">Gastos reales del negocio</p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <button onclick="openEntityModal('expense_category')" class="flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
             Nueva categoría
           </button>
@@ -541,12 +555,12 @@
 
     <!-- ═══ VISTA: CALENDARIO ═══ -->
     <div id="calendarView" style="display:none">
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Calendario</h2>
           <p class="text-gray-500 text-sm mt-0.5">Próximos eventos y reuniones</p>
         </div>
-        <button onclick="openEntityModal('event')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+        <button onclick="openEntityModal('event')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
           Nuevo evento
         </button>
@@ -975,6 +989,7 @@ let deleteId  = null;
 let currentView    = 'clients';
 let paymentsData   = [];
 let paymentsLoaded = false;
+let registeredPaymentsData = [];
 
 // Estado Dazenty OS (nuevos módulos)
 let leadsData             = [];
@@ -1153,6 +1168,7 @@ async function loadRegisteredPayments() {
     const res = await fetch('/api/payments', { headers: { 'x-admin-password': adminPass } });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'No se pudieron cargar los cobros');
+    registeredPaymentsData = Array.isArray(data) ? data : [];
     tbody.innerHTML = data.length ? data.map(p => {
       const client = clients.find(c => c.id === p.client_id);
       const methods = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
@@ -1164,10 +1180,16 @@ async function loadRegisteredPayments() {
         <td class="px-4 py-3 whitespace-nowrap">${esc(p.payment_date)}</td>
         <td class="px-4 py-3">${esc(methods[p.payment_method] || p.payment_method || '—')}</td>
         <td class="px-4 py-3 whitespace-nowrap">${p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
+        <td class="px-4 py-3 text-right whitespace-nowrap">
+          <button type="button" onclick="askDeleteEntity('payment','${p.id}','¿Eliminar este cobro?')"
+            class="text-gray-600 hover:text-red-400 transition-colors p-1" title="Eliminar cobro">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </td>
       </tr>`;
-    }).join('') : '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Sin cobros registrados. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
+    }).join('') : '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Sin cobros registrados. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
   }
 }
 
@@ -1273,6 +1295,7 @@ function logout() {
   clients = [];
   paymentsData = [];
   paymentsLoaded = false;
+  registeredPaymentsData = [];
   leadsData = []; opportunitiesData = []; projectsData = []; tasksData = [];
   invoicesData = []; expensesData = []; expenseCategoriesData = []; eventsData = []; activitiesData = [];
   document.getElementById('summaryCards').innerHTML = '';
@@ -1975,6 +1998,7 @@ const ENTITY_CONFIG = {
     ],
   },
   invoice: { itemUrl: id => `/api/invoices?id=${id}` }, // la factura usa un modal propio (líneas repetibles)
+  payment: { itemUrl: id => `/api/payments?id=${id}` }, // los cobros usan su propio modal (registrar pago)
 };
 
 const ENTITY_DATA_SOURCE = {
@@ -2409,10 +2433,10 @@ async function fetchInvoiceItemsAndRender(id) {
 function renderInvoiceItemsRows() {
   const wrap = document.getElementById('invoiceItemsRows');
   wrap.innerHTML = invoiceItemsState.map((it, i) => `
-    <div class="flex items-center gap-2">
-      <input type="text" placeholder="Descripción" value="${esc(it.description)}" oninput="updateInvoiceItem(${i},'description',this.value)" class="flex-1">
-      <input type="number" placeholder="Cant." value="${it.quantity}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'quantity',this.value)" style="width:80px">
-      <input type="number" placeholder="Precio €" value="${it.unit_price}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'unit_price',this.value)" style="width:100px">
+    <div class="flex flex-wrap items-center gap-2">
+      <input type="text" placeholder="Descripción" value="${esc(it.description)}" oninput="updateInvoiceItem(${i},'description',this.value)" class="w-full sm:w-auto sm:flex-1">
+      <input type="number" placeholder="Cant." value="${it.quantity}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'quantity',this.value)" class="flex-1 sm:flex-none sm:w-20">
+      <input type="number" placeholder="Precio €" value="${it.unit_price}" min="0" step="0.01" oninput="updateInvoiceItem(${i},'unit_price',this.value)" class="flex-1 sm:flex-none sm:w-[100px]">
       <button type="button" onclick="removeInvoiceItemRow(${i})" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
