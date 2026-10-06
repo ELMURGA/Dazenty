@@ -129,26 +129,29 @@
       #sidebarOverlay { display: none !important; }
     }
 
-    /* Kanban leads */
-    .leads-board {
-      grid-template-columns: repeat(6, minmax(200px, 1fr));
-      overflow-x: auto;
-      scroll-snap-type: x proximity;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
+    /* Leads: lista única con color por fase (en vez de columnas kanban) */
+    .leads-board { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .lead-card {
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid var(--stage-color, #6b7280);
+      border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, transform 0.1s;
     }
-    @media (max-width: 1023px) {
-      .leads-board { grid-template-columns: repeat(6, minmax(82vw, 1fr)); scroll-snap-type: x mandatory; }
+    .lead-card:hover { border-color: rgba(217,119,98,0.4); border-left-color: var(--stage-color, #d97762); }
+    .lead-stage-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot-color, #6b7280); display: inline-block; flex-shrink: 0; }
+    .lead-stage-pill {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 6px 12px;
+      border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
+      color: #9ca3af; cursor: pointer; transition: all 0.15s; white-space: nowrap;
     }
-    @media (min-width: 640px) and (max-width: 1023px) {
-      .leads-board { grid-template-columns: repeat(6, minmax(46vw, 1fr)); }
+    .lead-stage-pill:hover { border-color: rgba(255,255,255,0.18); color: #fff; }
+    .lead-stage-pill.active { background: var(--pill-bg); border-color: var(--pill-border); color: var(--pill-text); }
+    .lead-stage-badge {
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;
+      background: var(--badge-bg, rgba(107,114,128,0.15)); color: var(--badge-text, #9ca3af);
     }
-    .lead-col { min-width: 220px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 10px; scroll-snap-align: start; }
-    .lead-card { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
-    .lead-card:hover { border-color: rgba(217,119,98,0.4); }
 
     /* Entity modal */
     .entity-field label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:6px; }
+    .entity-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #d97762; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
   </style>
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
@@ -441,7 +444,13 @@
           Nuevo lead
         </button>
       </div>
-      <p class="text-xs text-gray-600 mb-2 sm:hidden">Desliza la tabla hacia los lados para ver todas las fases →</p>
+      <div class="relative mb-4">
+        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+        <input id="leadSearchInput" type="text" placeholder="Buscar lead por nombre, empresa, email, teléfono, ciudad…"
+          oninput="handleLeadSearch(this.value)" class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl">
+      </div>
+      <div id="leadStageLegend" class="flex flex-wrap gap-2 mb-5"></div>
+      <p id="leadCountLabel" class="text-xs text-gray-600 mb-3"></p>
       <div id="leadsBoard" class="leads-board grid gap-3"></div>
     </div>
 
@@ -1969,8 +1978,14 @@ function esc(str) {
 const ENTITY_CONFIG = {
   lead: {
     label: 'lead',
+    modalWidth: '720px',
     listUrl: () => '/api/leads',
     itemUrl: id => `/api/leads?id=${id}`,
+    sections: [
+      { title: 'Contacto', keys: ['name', 'company', 'email', 'phone', 'whatsapp', 'website', 'instagram'] },
+      { title: 'Datos comerciales', keys: ['stage', 'source', 'value_estimate', 'city', 'sector'] },
+      { title: 'Notas (incluye textos generados por IA, si los hay)', keys: ['notes'] },
+    ],
     fields: [
       { key: 'name', label: 'Nombre', type: 'text', required: true, placeholder: 'Nombre del lead' },
       { key: 'company', label: 'Empresa', type: 'text' },
@@ -1986,7 +2001,7 @@ const ENTITY_CONFIG = {
       { key: 'sector', label: 'Sector', type: 'text' },
       { key: 'instagram', label: 'Instagram', type: 'text', placeholder: '@usuario' },
       { key: 'whatsapp', label: 'WhatsApp', type: 'text' },
-      { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+      { key: 'notes', label: 'Notas', type: 'textarea', span: 2, tall: true },
     ],
   },
   opportunity: {
@@ -2107,7 +2122,7 @@ function renderEntityField(f, item) {
   if (f.type === 'select') {
     control = `<select id="${id}">${f.options.map(([v,l]) => `<option value="${v}" ${v===value?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
   } else if (f.type === 'textarea') {
-    control = `<textarea id="${id}" placeholder="${esc(f.placeholder||'')}">${esc(value)}</textarea>`;
+    control = `<textarea id="${id}" placeholder="${esc(f.placeholder||'')}" style="${f.tall ? 'min-height:260px' : ''}">${esc(value)}</textarea>`;
   } else if (f.type === 'client_select') {
     control = `<select id="${id}"><option value="">— Ninguno —</option>${clients.map(c => `<option value="${c.id}" ${c.id===value?'selected':''}>${esc(c.client_name)}</option>`).join('')}</select>`;
   } else if (f.type === 'project_select') {
@@ -2145,7 +2160,23 @@ async function openEntityModal(type, id = null) {
   editingEntity = { type, id: id || null };
   document.getElementById('entityModalTitle').textContent = item ? `Editar ${cfg.label}` : `Nuevo/a ${cfg.label}`;
   document.getElementById('entitySaveBtnLabel').textContent = item ? 'Guardar cambios' : 'Crear';
-  document.getElementById('entityModalFields').innerHTML = cfg.fields.map(f => renderEntityField(f, item)).join('');
+  document.getElementById('entity-modal-box').style.maxWidth = cfg.modalWidth || '560px';
+  const fieldsBox = document.getElementById('entityModalFields');
+  if (cfg.sections) {
+    // Entidades con muchos campos (p.ej. lead) se agrupan en secciones para que se
+    // lea más claro en vez de un bloque único de inputs.
+    fieldsBox.className = 'flex flex-col gap-5 mb-6';
+    fieldsBox.innerHTML = cfg.sections.map(sec => {
+      const fields = sec.keys.map(k => cfg.fields.find(f => f.key === k)).filter(Boolean);
+      return `<div>
+        <p class="entity-section-title">${esc(sec.title)}</p>
+        <div class="grid sm:grid-cols-2 gap-4">${fields.map(f => renderEntityField(f, item)).join('')}</div>
+      </div>`;
+    }).join('');
+  } else {
+    fieldsBox.className = 'grid sm:grid-cols-2 gap-4 mb-6';
+    fieldsBox.innerHTML = cfg.fields.map(f => renderEntityField(f, item)).join('');
+  }
   document.getElementById('entity-modal-overlay').style.display = 'flex';
 }
 
@@ -2202,51 +2233,116 @@ async function saveEntity() {
   }
 }
 
-// ─── Leads (kanban por fase) ────────────────────────────────────────────────────
-const LEAD_STAGES = [
-  ['nuevo', 'Nuevo'], ['contactada', 'Contactada'], ['propuesta', 'Propuesta'],
-  ['reunion', 'Reunión'], ['ganado', 'Ganado'], ['perdido', 'Perdido'],
-];
+// ─── Leads (lista única con color por fase + búsqueda) ──────────────────────────
+// Un color fijo por fase: se usa como borde/punto en cada tarjeta y en la leyenda
+// de arriba (que también sirve de filtro rápido al hacer click).
+const LEAD_STAGE_META = {
+  nuevo:      { label: 'Nuevo',      color: '#38bdf8' },
+  contactada: { label: 'Contactada', color: '#fbbf24' },
+  propuesta:  { label: 'Propuesta',  color: '#a78bfa' },
+  reunion:    { label: 'Reunión',    color: '#fb923c' },
+  ganado:     { label: 'Ganado',     color: '#34d399' },
+  perdido:    { label: 'Perdido',    color: '#f87171' },
+};
+const LEAD_STAGES = Object.entries(LEAD_STAGE_META).map(([k, v]) => [k, v.label]);
+
+let leadStageFilter = null; // null = todas las fases
+let leadSearchQuery = '';
 
 async function loadLeads() {
   try {
     const res = await fetch('/api/leads', { headers: { 'x-admin-password': adminPass } });
     leadsData = await res.json().catch(() => []);
+    renderLeadStageLegend();
     renderLeadsBoard();
   } catch {
     showToast('Error al cargar leads', 'error');
   }
 }
 
+function renderLeadStageLegend() {
+  const legend = document.getElementById('leadStageLegend');
+  const counts = {};
+  for (const l of leadsData) counts[l.stage] = (counts[l.stage] || 0) + 1;
+  const allPill = `
+    <button class="lead-stage-pill ${leadStageFilter === null ? 'active' : ''}"
+      style="--pill-bg:rgba(217,119,98,0.15); --pill-border:rgba(217,119,98,0.4); --pill-text:#d97762"
+      onclick="setLeadStageFilter(null)">Todas <span class="opacity-60">${leadsData.length}</span></button>`;
+  const stagePills = Object.entries(LEAD_STAGE_META).map(([stage, meta]) => {
+    const active = leadStageFilter === stage;
+    const bg = meta.color + '26'; // ~15% opacity hex suffix
+    return `
+    <button class="lead-stage-pill ${active ? 'active' : ''}"
+      style="--dot-color:${meta.color}; --pill-bg:${bg}; --pill-border:${meta.color}66; --pill-text:${meta.color}"
+      onclick="setLeadStageFilter('${stage}')">
+      <span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>
+      ${meta.label} <span class="opacity-60">${counts[stage] || 0}</span>
+    </button>`;
+  }).join('');
+  legend.innerHTML = allPill + stagePills;
+}
+
+function setLeadStageFilter(stage) {
+  leadStageFilter = stage;
+  renderLeadStageLegend();
+  renderLeadsBoard();
+}
+
+function handleLeadSearch(value) {
+  leadSearchQuery = value.trim().toLowerCase();
+  renderLeadsBoard();
+}
+
+function getFilteredLeads() {
+  let items = leadsData;
+  if (leadStageFilter) items = items.filter(l => l.stage === leadStageFilter);
+  if (leadSearchQuery) {
+    const q = leadSearchQuery;
+    items = items.filter(l => [l.name, l.company, l.email, l.phone, l.city, l.sector, l.whatsapp]
+      .some(v => v && String(v).toLowerCase().includes(q)));
+  }
+  // Más recientes primero (por actividad), para encontrar fácilmente lo último tocado
+  return [...items].sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
+}
+
 function renderLeadsBoard() {
   const board = document.getElementById('leadsBoard');
-  board.innerHTML = LEAD_STAGES.map(([stage, label]) => {
-    const items = leadsData.filter(l => l.stage === stage);
-    const cards = items.map(l => `
-        <div class="lead-card" onclick="openEntityModal('lead','${l.id}')">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <p class="font-medium text-sm">${esc(l.name)}</p>
+  const countLabel = document.getElementById('leadCountLabel');
+  const items = getFilteredLeads();
+  countLabel.textContent = (leadStageFilter || leadSearchQuery)
+    ? `Mostrando ${items.length} de ${leadsData.length} leads`
+    : `${leadsData.length} leads en total`;
+
+  if (!items.length) {
+    board.innerHTML = '<p class="text-sm text-gray-600 text-center py-12 sm:col-span-2 xl:col-span-3">No hay leads que coincidan con la búsqueda/filtro.</p>';
+    return;
+  }
+
+  board.innerHTML = items.map(l => {
+    const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
+    return `
+        <div class="lead-card" style="--stage-color:${meta.color}" onclick="openEntityModal('lead','${l.id}')">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <p class="font-medium text-sm truncate">${esc(l.name)}</p>
             ${l.source && l.source.startsWith('n8n') ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-blue/10 text-brand-blue shrink-0" title="Creado automáticamente por n8n (${esc(l.source)})">🤖 n8n</span>` : ''}
           </div>
-          ${l.company ? `<p class="text-xs text-gray-500 mb-1">${esc(l.company)}</p>` : ''}
-          ${l.value_estimate ? `<p class="text-xs text-brand-blue">${fmtAmt(l.value_estimate)}€</p>` : ''}
+          ${l.company && l.company !== l.name ? `<p class="text-xs text-gray-500 mb-1 truncate">${esc(l.company)}</p>` : ''}
+          <div class="flex items-center gap-2 flex-wrap mb-2">
+            <span class="lead-stage-badge" style="--badge-bg:${meta.color}26; --badge-text:${meta.color}">
+              <span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}
+            </span>
+            ${l.city ? `<span class="text-[11px] text-gray-600">📍 ${esc(l.city)}</span>` : ''}
+            ${l.value_estimate ? `<span class="text-[11px] text-brand-blue">${fmtAmt(l.value_estimate)}€</span>` : ''}
+          </div>
           <div class="flex items-center gap-2 mt-2">
             <select onclick="event.stopPropagation()" onchange="quickChangeLeadStage('${l.id}', this.value)" style="font-size:11px;padding:4px 6px" class="flex-1">
-              ${LEAD_STAGES.map(([s,lb]) => `<option value="${s}" ${s===stage?'selected':''}>${lb}</option>`).join('')}
+              ${LEAD_STAGES.map(([s,lb]) => `<option value="${s}" ${s===l.stage?'selected':''}>${lb}</option>`).join('')}
             </select>
             <button onclick="event.stopPropagation(); askDeleteEntity('lead','${l.id}','¿Eliminar este lead?')" class="text-gray-600 hover:text-red-400 transition-colors p-1 shrink-0">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </button>
           </div>
-        </div>`).join('') || '<p class="text-xs text-gray-700 text-center py-6">Vacío</p>';
-    return `
-    <div class="lead-col">
-      <div class="flex items-center justify-between mb-3 px-1">
-        <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">${label}</p>
-        <span class="text-xs text-gray-600">${items.length}</span>
-      </div>
-      ${cards}
-    </div>`;
+        </div>`;
   }).join('');
 }
 
