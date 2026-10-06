@@ -152,6 +152,24 @@
     /* Entity modal */
     .entity-field label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:6px; }
     .entity-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #d97762; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* Panel de detalle de lead: se abre deslizando desde la derecha (solo lectura;
+       el botón "Editar" de dentro es el que abre el modal de edición real). */
+    .lead-detail-panel {
+      width: 100%; max-width: 560px; transform: translateX(100%);
+      transition: transform 0.32s cubic-bezier(0.16,1,0.3,1);
+    }
+    .lead-detail-panel.open { transform: translateX(0); }
+    .lead-detail-row { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .lead-detail-row:last-child { border-bottom: none; }
+    .lead-detail-row label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:4px; }
+    .lead-detail-row .val { font-size: 14px; color: #eaeaea; word-break: break-word; }
+    .lead-detail-row .val a { color: #38bdf8; }
+    .lead-detail-row .val a:hover { text-decoration: underline; }
+    .lead-detail-notes { white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; color: #d1d5db; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 0.8s linear infinite; }
   </style>
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
@@ -439,10 +457,16 @@
           <h2 class="font-display font-bold text-lg">Leads</h2>
           <p class="text-gray-500 text-sm mt-0.5">Pipeline de entrada: nuevo → contactada → propuesta → reunión → ganado/perdido</p>
         </div>
-        <button onclick="openEntityModal('lead')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          Nuevo lead
-        </button>
+        <div class="flex items-center gap-2">
+          <button id="refreshLeadsBtn" onclick="refreshLeadsManual()" class="self-start flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
+            <svg id="refreshLeadsIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Actualizar CRM
+          </button>
+          <button onclick="openEntityModal('lead')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Nuevo lead
+          </button>
+        </div>
       </div>
       <div class="relative mb-4">
         <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
@@ -837,6 +861,36 @@
     <div class="flex gap-3">
       <button onclick="cancelDelete()" class="flex-1 py-3 text-sm border border-white/10 rounded-xl hover:border-white/20 transition-colors">Cancelar</button>
       <button onclick="confirmDelete()" class="flex-1 py-3 text-sm bg-red-500/80 hover:bg-red-500 font-semibold rounded-xl transition-colors">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PANEL DE DETALLE DE LEAD (solo lectura, se abre deslizando desde la derecha).
+     El botón "Editar" de dentro es el que abre el modal genérico para cambiar datos.
+════════════════════════════════════════════════════════════════ -->
+<div id="leadDetailOverlay" onclick="closeLeadDetailOnOverlay(event)"
+  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex justify-end" style="display:none">
+  <div id="leadDetailPanel" class="lead-detail-panel bg-brand-dark border-l border-white/10 h-full flex flex-col">
+    <div class="flex items-start justify-between gap-3 p-6 border-b border-white/5">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <h2 id="leadDetailName" class="font-display font-bold text-xl truncate"></h2>
+          <span id="leadDetailStageBadge" class="lead-stage-badge"></span>
+        </div>
+        <p id="leadDetailCompany" class="text-sm text-gray-500 truncate"></p>
+      </div>
+      <button onclick="closeLeadDetail()" class="text-gray-600 hover:text-white transition-colors p-1 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="leadDetailBody" class="p-6 overflow-y-auto flex-1"></div>
+    <div class="flex items-center justify-between gap-3 p-6 border-t border-white/5">
+      <button id="leadDetailDeleteBtn" class="text-sm text-gray-500 hover:text-red-400 transition-colors">Eliminar lead</button>
+      <button onclick="editCurrentLeadDetail()" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-6 py-3 hover:opacity-90 transition-opacity">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Editar
+      </button>
     </div>
   </div>
 </div>
@@ -2321,7 +2375,7 @@ function renderLeadsBoard() {
   board.innerHTML = items.map(l => {
     const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
     return `
-        <div class="lead-card" style="--stage-color:${meta.color}" onclick="openEntityModal('lead','${l.id}')">
+        <div class="lead-card" style="--stage-color:${meta.color}" onclick="openLeadDetail('${l.id}')">
           <div class="flex items-center justify-between gap-2 mb-1.5">
             <p class="font-medium text-sm truncate">${esc(l.name)}</p>
             ${l.source && l.source.startsWith('n8n') ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-blue/10 text-brand-blue shrink-0" title="Creado automáticamente por n8n (${esc(l.source)})">🤖 n8n</span>` : ''}
@@ -2358,6 +2412,98 @@ async function quickChangeLeadStage(id, stage) {
     if (currentView !== 'home') loadHome();
   } catch {
     showToast('Error al actualizar', 'error');
+  }
+}
+
+// ─── Panel de detalle de lead (solo lectura, animado) ────────────────────────
+// Al hacer click en una tarjeta se abre este panel en vez del modal de edición
+// directamente, para que la información se lea clara antes de tocar nada.
+let currentLeadDetailId = null;
+
+function leadDetailRow(label, valueHtml) {
+  if (!valueHtml) return '';
+  return `<div class="lead-detail-row"><label>${esc(label)}</label><div class="val">${valueHtml}</div></div>`;
+}
+
+function openLeadDetail(id) {
+  const l = leadsData.find(x => x.id === id);
+  if (!l) return;
+  currentLeadDetailId = id;
+  const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
+
+  document.getElementById('leadDetailName').textContent = l.name || '—';
+  document.getElementById('leadDetailCompany').textContent = (l.company && l.company !== l.name) ? l.company : '';
+  const badge = document.getElementById('leadDetailStageBadge');
+  badge.style.setProperty('--badge-bg', meta.color + '26');
+  badge.style.setProperty('--badge-text', meta.color);
+  badge.innerHTML = `<span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}`;
+
+  const waDigits = (l.whatsapp || '').replace(/\D/g, '');
+  const igHandle = (l.instagram || '').replace(/^@/, '').trim();
+
+  const contacto = [
+    leadDetailRow('Email', l.email ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : ''),
+    leadDetailRow('Teléfono', l.phone ? `<a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>` : ''),
+    leadDetailRow('WhatsApp', waDigits ? `<a href="https://wa.me/${waDigits}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : (l.whatsapp ? esc(l.whatsapp) : '')),
+    leadDetailRow('Web', l.website ? `<a href="${esc(l.website)}" target="_blank" rel="noopener">${esc(l.website)}</a>` : ''),
+    leadDetailRow('Instagram', igHandle ? `<a href="https://instagram.com/${esc(igHandle)}" target="_blank" rel="noopener">@${esc(igHandle)}</a>` : ''),
+  ].join('');
+
+  const comerciales = [
+    leadDetailRow('Origen', l.source ? esc(l.source) : ''),
+    leadDetailRow('Ciudad', l.city ? esc(l.city) : ''),
+    leadDetailRow('Sector', l.sector ? esc(l.sector) : ''),
+    leadDetailRow('Valor estimado', l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : ''),
+  ].join('');
+
+  const body = document.getElementById('leadDetailBody');
+  body.innerHTML = `
+    ${contacto ? `<p class="entity-section-title">Contacto</p><div class="mb-2">${contacto}</div>` : ''}
+    ${comerciales ? `<p class="entity-section-title mt-5">Datos comerciales</p><div class="mb-2">${comerciales}</div>` : ''}
+    ${l.notes ? `<p class="entity-section-title mt-5">Notas</p><div class="lead-detail-notes">${esc(l.notes)}</div>` : ''}
+  `;
+  document.getElementById('leadDetailDeleteBtn').onclick = () => askDeleteEntity('lead', l.id, '¿Eliminar este lead?');
+
+  const overlay = document.getElementById('leadDetailOverlay');
+  const panel = document.getElementById('leadDetailPanel');
+  overlay.style.display = 'flex';
+  panel.classList.remove('open');
+  // Doble rAF para que el navegador registre el estado inicial (translateX 100%)
+  // antes de aplicar la transición hacia 'open', y así se vea la animación de entrada.
+  requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('open')));
+}
+
+function closeLeadDetail() {
+  const overlay = document.getElementById('leadDetailOverlay');
+  const panel = document.getElementById('leadDetailPanel');
+  panel.classList.remove('open');
+  setTimeout(() => { overlay.style.display = 'none'; }, 320);
+  currentLeadDetailId = null;
+}
+
+function closeLeadDetailOnOverlay(e) {
+  if (e.target === document.getElementById('leadDetailOverlay')) closeLeadDetail();
+}
+
+function editCurrentLeadDetail() {
+  const id = currentLeadDetailId;
+  closeLeadDetail();
+  if (id) setTimeout(() => openEntityModal('lead', id), 150);
+}
+
+// Botón "Actualizar CRM": fuerza un refetch manual de leads (por si un flujo de n8n
+// acaba de crear/actualizar leads y no se ha refrescado la vista todavía).
+async function refreshLeadsManual() {
+  const btn = document.getElementById('refreshLeadsBtn');
+  const icon = document.getElementById('refreshLeadsIcon');
+  if (btn) btn.disabled = true;
+  if (icon) icon.classList.add('spin');
+  try {
+    await loadLeads();
+    showToast('✓ CRM actualizado');
+  } finally {
+    if (btn) btn.disabled = false;
+    if (icon) icon.classList.remove('spin');
   }
 }
 
