@@ -1979,8 +1979,13 @@ const ENTITY_CONFIG = {
       { key: 'stage', label: 'Fase', type: 'select', default: 'nuevo', options: [
           ['nuevo','Nuevo'], ['contactada','Contactada'], ['propuesta','Propuesta'],
           ['reunion','Reunión'], ['ganado','Ganado'], ['perdido','Perdido'] ] },
-      { key: 'source', label: 'Origen', type: 'text', placeholder: 'web, referido, redes…' },
+      { key: 'source', label: 'Origen', type: 'text', placeholder: 'web, referido, redes, n8n…' },
       { key: 'value_estimate', label: 'Valor estimado (€)', type: 'number' },
+      { key: 'website', label: 'Web', type: 'text', placeholder: 'https://…' },
+      { key: 'city', label: 'Ciudad', type: 'text' },
+      { key: 'sector', label: 'Sector', type: 'text' },
+      { key: 'instagram', label: 'Instagram', type: 'text', placeholder: '@usuario' },
+      { key: 'whatsapp', label: 'WhatsApp', type: 'text' },
       { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
     ],
   },
@@ -2219,7 +2224,10 @@ function renderLeadsBoard() {
     const items = leadsData.filter(l => l.stage === stage);
     const cards = items.map(l => `
         <div class="lead-card" onclick="openEntityModal('lead','${l.id}')">
-          <p class="font-medium text-sm mb-1">${esc(l.name)}</p>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <p class="font-medium text-sm">${esc(l.name)}</p>
+            ${l.source && l.source.startsWith('n8n') ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-blue/10 text-brand-blue shrink-0" title="Creado automáticamente por n8n (${esc(l.source)})">🤖 n8n</span>` : ''}
+          </div>
           ${l.company ? `<p class="text-xs text-gray-500 mb-1">${esc(l.company)}</p>` : ''}
           ${l.value_estimate ? `<p class="text-xs text-brand-blue">${fmtAmt(l.value_estimate)}€</p>` : ''}
           <div class="flex items-center gap-2 mt-2">
