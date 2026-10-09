@@ -276,6 +276,13 @@
         </button>
       </div>
       <div>
+        <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Personal</p>
+        <button type="button" onclick="switchView('jobs')" id="navJobs" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Búsqueda de trabajo
+        </button>
+      </div>
+      <div>
         <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Otros</p>
         <button type="button" onclick="switchView('calendar')" id="navCalendar" class="sidenav-item">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -626,6 +633,31 @@
       <h2 class="font-display font-bold text-lg mb-1">Actividad</h2>
       <p class="text-gray-500 text-sm mt-0.5 mb-6">Historial de todo lo que ocurre en Dazenty OS</p>
       <div id="activityFeed" class="space-y-3"></div>
+    </div>
+
+    <!-- ═══ VISTA: BÚSQUEDA DE TRABAJO (Job Agent · n8n) ═══ -->
+    <div id="jobsView" style="display:none">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
+        <div>
+          <h2 class="font-display font-bold text-lg">Búsqueda de trabajo</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Ofertas que encuentra y prepara el Job Agent de n8n. Tú decides a cuáles aplicar.</p>
+        </div>
+        <button onclick="loadJobSearch()" class="self-start flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Actualizar
+        </button>
+      </div>
+      <div id="jobsProfile" class="mb-5"></div>
+      <div id="jobsKpis" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6"></div>
+      <div class="flex flex-col sm:flex-row gap-3 mb-3">
+        <div class="relative flex-1">
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+          <input type="text" placeholder="Buscar por puesto, empresa, ciudad o portal…" oninput="handleJobSearch(this.value)" class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl">
+        </div>
+        <select id="jobsPortalFilter" onchange="handleJobPortal(this.value)" class="sm:!w-56 text-sm"></select>
+      </div>
+      <p id="jobsCountLabel" class="text-xs text-gray-600 mb-3"></p>
+      <div id="jobsBoard" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
     </div>
 
   </main>
@@ -1198,17 +1230,17 @@ async function doLogin(e) {
 const VIEW_CONTAINER_IDS = {
   home: 'homeView', leads: 'leadsView', opportunities: 'opportunitiesView', clients: 'clientsView',
   projects: 'projectsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
-  expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView',
+  expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView', jobs: 'jobsView',
 };
 const VIEW_NAV_IDS = {
   home: 'navHome', leads: 'navLeads', opportunities: 'navOpportunities', clients: 'tabClients',
   projects: 'navProjects', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
-  expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity',
+  expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity', jobs: 'navJobs',
 };
 const VIEW_TITLES = {
   home: 'Inicio', leads: 'Leads (CRM)', opportunities: 'Oportunidades', clients: 'Clientes',
   projects: 'Proyectos', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
-  expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad',
+  expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad', jobs: 'Búsqueda de trabajo',
 };
 
 function switchView(view) {
@@ -1239,6 +1271,7 @@ function loadViewData(view) {
   else if (view === 'expenses') loadExpensesView();
   else if (view === 'calendar') loadEventsView();
   else if (view === 'activity') loadActivityView();
+  else if (view === 'jobs') loadJobSearch();
 }
 
 function toggleSidebar(open) {
@@ -3258,6 +3291,7 @@ function renderHomeUpcomingEvents(events) {
 }
 </script>
 <!-- Vercel Analytics -->
+<script src="/js/admin-jobs.js?v=20261009"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
