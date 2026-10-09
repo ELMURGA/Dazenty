@@ -138,7 +138,7 @@ export default async function handler(req, res) {
       const limit = Math.min(Number(body.limit) || 20, 100);
       const rows = await sbSelect(
         'leads',
-        `select=id,company,email,email_asunto,email_cuerpo&stage=eq.nuevo&email=not.is.null&email_cuerpo=not.is.null&order=created_at.asc&limit=${limit}`
+        `select=id,company,email,email_asunto,email_cuerpo,notes,city,sector,website&stage=eq.nuevo&email=not.is.null&email_cuerpo=not.is.null&order=created_at.asc&limit=${limit}`
       );
       return res.json({ leads: rows });
     }
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
       const limit = Math.min(Number(body.limit) || 20, 100);
       const rows = await sbSelect(
         'leads',
-        `select=id,company,email,phone,website,whatsapp_msg&whatsapp=is.null&website=not.is.null&whatsapp_contacted_at=is.null&order=created_at.asc&limit=${limit}`
+        `select=id,company,email,phone,website,whatsapp_msg,sector,city,notes&whatsapp=is.null&website=not.is.null&whatsapp_contacted_at=is.null&order=created_at.asc&limit=${limit}`
       );
       return res.json({ leads: rows });
     }
