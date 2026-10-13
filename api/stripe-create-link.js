@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { adminAuthError } from '../lib/db.js';
+import { adminAuthError, sbSelect } from '../lib/db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://dazenty.com');
@@ -56,8 +56,18 @@ export default async function handler(req, res) {
     const price = await stripe.prices.create(priceParams);
 
     // 3. Crear Payment Link
+    // La vuelta al portal necesita el token secreto del cliente (si el cliente ya existe)
+    let portalToken = '';
+    if (slug && /^[a-z0-9-]+$/.test(slug)) {
+      try {
+        const rows = await sbSelect('clients', `select=portal_token&slug=eq.${encodeURIComponent(slug)}&limit=1`);
+        portalToken = rows?.[0]?.portal_token || '';
+      } catch (err) {
+        console.error('[stripe-create-link] portal_token', err);
+      }
+    }
     const portalSuccessUrl = slug
-      ? `https://dazenty.com/portal.html?id=${encodeURIComponent(slug)}&payment_done=1`
+      ? `https://dazenty.com/portal.html?id=${encodeURIComponent(slug)}${portalToken ? `&t=${encodeURIComponent(portalToken)}` : ''}&payment_done=1`
       : 'https://dazenty.com/portal.html?payment_done=1';
 
     const paymentLink = await stripe.paymentLinks.create({
