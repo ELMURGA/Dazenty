@@ -13,7 +13,7 @@ function monthRange(date = new Date()) {
 }
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
 
   try {

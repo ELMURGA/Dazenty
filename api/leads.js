@@ -12,7 +12,7 @@ import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity } from '../l
 const STAGES = ['nuevo', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, stage } = req.query;
 
   try {

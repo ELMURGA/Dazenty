@@ -1,19 +1,28 @@
 // api/invoice-pdfs.js — Archivo de facturas en PDF organizadas por cliente
 // ==========================================================
 // GET    /api/invoice-pdfs                → lista (filtro opcional ?client_id=)
+// GET    /api/invoice-pdfs?id=xxx&sign=1  → { url } firmada y temporal para abrir el PDF
 // POST   /api/invoice-pdfs                 → registra un PDF ya subido a Storage
 //        body: { client_id, file_name, file_url, label?, amount?, issue_date? }
 // DELETE /api/invoice-pdfs?id=xxx          → elimina el registro (no borra el archivo de Storage)
 // Todas requieren x-admin-password.
 // ==========================================================
 
-import { guard, sbSelect, sbInsert, sbDelete, logActivity } from '../lib/db.js';
+import { guard, sbSelect, sbInsert, sbDelete, logActivity, signedDocUrl, docPath } from '../lib/db.js';
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, client_id } = req.query;
 
   try {
+    if (req.method === 'GET' && id && req.query.sign) {
+      const rows = await sbSelect('invoice_pdfs', `select=file_url&id=eq.${encodeURIComponent(id)}&limit=1`);
+      const path = docPath(rows?.[0]?.file_url);
+      const url = path && !path.includes('..') ? await signedDocUrl(path, 300) : null;
+      if (!url) return res.status(404).json({ error: 'Documento no disponible' });
+      return res.json({ url });
+    }
+
     if (req.method === 'GET') {
       let params = 'select=*&order=created_at.desc';
       if (client_id) params += `&client_id=eq.${encodeURIComponent(client_id)}`;
@@ -21,7 +30,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const body = { ...req.body };
+      const { client_id, file_name, file_url, label, amount, issue_date } = req.body ?? {};
+      const body = { client_id, file_name, file_url, label, amount, issue_date };
       if (!body.client_id) return res.status(400).json({ error: 'client_id es obligatorio' });
       if (!body.file_name || !body.file_url) {
         return res.status(400).json({ error: 'file_name y file_url son obligatorios' });

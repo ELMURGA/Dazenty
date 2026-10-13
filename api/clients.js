@@ -1,6 +1,6 @@
 // api/clients.js — CRUD de clientes en Supabase
 // ==========================================================
-// GET  /api/clients?slug=xxx   → cliente por slug (PÚBLICO — portal del cliente)
+// GET  /api/clients?slug=xxx&t=TOKEN → cliente por slug + token secreto (portal del cliente)
 // GET  /api/clients            → todos los clientes (ADMIN)
 // POST /api/clients            → crear cliente (ADMIN)
 // PUT  /api/clients?id=xxx     → actualizar cliente (ADMIN)
@@ -9,14 +9,13 @@
 // Auth admin: header  x-admin-password: <ADMIN_PASSWORD env var>
 // ==========================================================
 
-import { timingSafeEqual } from 'crypto';
+import { adminAuthError, loadPortalClient } from '../lib/db.js';
 
 const SB_URL  = process.env.SUPABASE_URL;
 const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
-const ADMIN_PW = process.env.ADMIN_PASSWORD;
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://dazenty.com',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, x-admin-password',
 };
@@ -27,20 +26,6 @@ const sbHeaders = {
   'Content-Type': 'application/json',
   'Prefer': 'return=representation',
 };
-
-// Constante-time comparison — evita timing attacks
-function isAdmin(req) {
-  const pass     = String(req.headers['x-admin-password'] || '');
-  const expected = String(ADMIN_PW || '');
-  if (!expected) return 'no_env';
-  if (!pass) return false;
-  const maxLen = Math.max(pass.length, expected.length);
-  const a = Buffer.alloc(maxLen);
-  const b = Buffer.alloc(maxLen);
-  a.write(pass);
-  b.write(expected);
-  return timingSafeEqual(a, b) && pass.length === expected.length;
-}
 
 // Convierte "nombre cliente" → "nombre-cliente"
 function toSlug(name) {
@@ -74,7 +59,7 @@ export default async function handler(req, res) {
   Object.entries(CORS).forEach(([k, v]) => res.setHeader(k, v));
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { slug, id } = req.query;
+  const { slug, id, t } = req.query;
 
   // ── GET ?slug=xxx  (público — portal del cliente) ─────────────────────────
   if (req.method === 'GET' && slug) {
@@ -84,23 +69,19 @@ export default async function handler(req, res) {
         'service_name','service_desc','service_tags',
         'amount_monthly','amount_annual','amount_onetime',
         'stripe_monthly_link','stripe_annual_link','stripe_onetime_link',
-        'payment_note','pdf_proposal_url','pdf_invoice_url','status',
+        'payment_note','pdf_proposal_url','pdf_invoice_url',
         'stripe_subscription_id','stripe_subscription_status','stripe_current_period_end',
       ].join(',');
 
-      const r = await fetch(
-        `${SB_URL}/rest/v1/clients?slug=eq.${encodeURIComponent(slug)}&select=${fields}`,
-        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-      );
-      const data = await r.json();
+      const { client, status, error } = await loadPortalClient(slug, t, fields);
+      if (!client) return res.status(status).json({ error });
 
-      if (!Array.isArray(data) || !data.length) {
-        return res.status(404).json({ error: 'Portal no encontrado' });
-      }
-      if (data[0].status !== 'active') {
-        return res.status(403).json({ error: 'Este portal no está disponible en este momento' });
-      }
-      return res.json(data[0]);
+      // El portal solo necesita saber si existen; los identificadores internos no salen
+      const { portal_token, ...portal } = client;
+      portal.pdf_proposal_url = Boolean(client.pdf_proposal_url);
+      portal.pdf_invoice_url = Boolean(client.pdf_invoice_url);
+      portal.stripe_subscription_id = Boolean(client.stripe_subscription_id);
+      return res.json(portal);
     } catch (err) {
       console.error('[clients GET slug]', err);
       return res.status(500).json({ error: 'Error del servidor' });
@@ -108,13 +89,8 @@ export default async function handler(req, res) {
   }
 
   // ── A partir de aquí, se requiere autenticación admin ─────────────────────
-  const adminCheck = isAdmin(req);
-  if (adminCheck === 'no_env') {
-    return res.status(503).json({ error: 'ADMIN_PASSWORD no configurada en Vercel' });
-  }
-  if (!adminCheck) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
+  const authError = await adminAuthError(req);
+  if (authError) return res.status(authError.status).json({ error: authError.error });
 
   // ── GET todos (admin) ──────────────────────────────────────────────────────
   if (req.method === 'GET') {
@@ -128,7 +104,8 @@ export default async function handler(req, res) {
       );
       if (!r.ok) {
         const errBody = await r.text();
-        return res.status(502).json({ error: `Supabase error ${r.status}`, detail: errBody.slice(0, 300) });
+        console.error('[clients GET admin]', r.status, errBody.slice(0, 300));
+        return res.status(502).json({ error: `Supabase error ${r.status}` });
       }
       return res.json(await r.json());
     } catch (err) {
@@ -140,6 +117,7 @@ export default async function handler(req, res) {
   // ── POST crear (admin) ─────────────────────────────────────────────────────
   if (req.method === 'POST') {
     const body = { ...req.body };
+    delete body.portal_token; // lo genera siempre la base de datos
 
     if (!body.client_name) {
       return res.status(400).json({ error: 'El nombre del cliente es obligatorio' });
@@ -170,6 +148,8 @@ export default async function handler(req, res) {
   if (req.method === 'PUT') {
     if (!id) return res.status(400).json({ error: 'Parámetro id requerido' });
     const body = { ...req.body, updated_at: new Date().toISOString() };
+    delete body.portal_token;
+    delete body.id;
     body.service_tags = normalizeTags(body.service_tags);
 
     const r = await fetch(`${SB_URL}/rest/v1/clients?id=eq.${encodeURIComponent(id)}`, {

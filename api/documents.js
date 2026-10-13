@@ -12,7 +12,7 @@ import { guard, sbSelect, sbInsert, sbDelete, logActivity } from '../lib/db.js';
 const DOC_TYPES = ['propuesta', 'factura', 'contrato', 'otro'];
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, client_id, project_id } = req.query;
 
   try {

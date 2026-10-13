@@ -307,7 +307,7 @@ function openJobDetail(id) {
       '<button type="button" data-job-close class="text-gray-500 hover:text-white p-1" aria-label="Cerrar">✕</button></div>' +
     '</div>' +
     '<div class="flex flex-wrap gap-2 mb-6">' +
-      (j.url ? '<a href="' + esc(j.url) + '" target="_blank" rel="noopener" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90">Abrir oferta para aplicar</a>' : '') +
+      (/^https?:\/\//i.test(String(j.url || '')) ? '<a href="' + esc(j.url) + '" target="_blank" rel="noopener noreferrer" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90">Abrir oferta para aplicar</a>' : '') +
       (a.applied_at ? '' : '<button type="button" data-job-sent class="border border-white/10 text-sm rounded-xl px-4 py-2.5 hover:border-white/20 text-gray-300">Ya la he enviado</button>') +
       (a.cover_letter ? '<button type="button" data-job-copy class="border border-white/10 text-sm rounded-xl px-4 py-2.5 hover:border-white/20 text-gray-300">Copiar carta</button>' : '') +
       '<select data-job-status class="!w-auto text-sm">' + statusOptions + '</select>' +

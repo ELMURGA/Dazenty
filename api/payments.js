@@ -27,7 +27,7 @@ async function recalcInvoice(invoiceId) {
 }
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, client_id, invoice_id } = req.query;
 
   try {

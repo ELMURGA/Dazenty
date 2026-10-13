@@ -11,7 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind servido desde el propio dominio (antes CDN de terceros sin integridad) -->
+  <script src="/js/vendor/tailwindcss-play-3.4.17.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -170,6 +171,8 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
     .spin { animation: spin 0.8s linear infinite; }
+      /* Foco visible al navegar con teclado */
+    :focus-visible { outline: 2px solid #d97762; outline-offset: 2px; }
   </style>
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
@@ -1617,7 +1620,7 @@ function renderClients() {
     if (c.amount_annual)  plans.push(`${fmtAmt(c.amount_annual)}€/año`);
     if (c.amount_onetime) plans.push(`${fmtAmt(c.amount_onetime)}€ único`);
     const priceStr = plans.join(' · ') || 'Sin importe';
-    const portalUrl = `https://dazenty.com/portal?id=${c.slug}`;
+    const portalUrl = `https://dazenty.com/portal?id=${encodeURIComponent(c.slug)}&t=${encodeURIComponent(c.portal_token || '')}`;
     const isActive = c.status === 'active';
 
     return `
@@ -2053,7 +2056,13 @@ function parseFloatOrNull(v) {
   return isNaN(n) ? null : n;
 }
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Solo enlaces http(s): evita javascript: y similares en datos que vienen de fuera (leads, n8n)
+function safeUrl(url) {
+  const value = String(url || '').trim();
+  return /^https?:\/\//i.test(value) ? esc(value) : '#';
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2478,7 +2487,7 @@ function openLeadDetail(id) {
     leadDetailRow('Email', l.email ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : ''),
     leadDetailRow('Teléfono', l.phone ? `<a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>` : ''),
     leadDetailRow('WhatsApp', waDigits ? `<a href="https://wa.me/${waDigits}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : (l.whatsapp ? esc(l.whatsapp) : '')),
-    leadDetailRow('Web', l.website ? `<a href="${esc(l.website)}" target="_blank" rel="noopener">${esc(l.website)}</a>` : ''),
+    leadDetailRow('Web', l.website ? `<a href="${safeUrl(l.website)}" target="_blank" rel="noopener noreferrer">${esc(l.website)}</a>` : ''),
     leadDetailRow('Instagram', igHandle ? `<a href="https://instagram.com/${esc(igHandle)}" target="_blank" rel="noopener">@${esc(igHandle)}</a>` : ''),
   ].join('');
 
@@ -2910,7 +2919,7 @@ function renderInvoicePdfArchive() {
           <p class="text-sm truncate">${esc(d.label || d.file_name)}</p>
           <p class="text-xs text-gray-600">${d.issue_date ? esc(d.issue_date) : 'Sin fecha'}${d.amount ? ` · ${fmtAmt(d.amount)}€` : ''}</p>
         </div>
-        <a href="${d.file_url}" target="_blank" rel="noopener" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0">Ver PDF</a>
+        <button type="button" onclick="openInvoicePdf('${esc(d.id)}')" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0">Ver PDF</button>
         <button onclick="deleteInvoicePdf('${d.id}')" class="text-gray-600 hover:text-red-400 transition-colors p-1 shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
         </button>
@@ -2992,6 +3001,20 @@ async function processInvoicePdfFile(file) {
   } catch (err) {
     document.getElementById('invoicePdfLabel').textContent = 'Arrastra el PDF o haz clic';
     showToast(err.message, 'error');
+  }
+}
+
+// Los PDF están en un bucket privado: se abren con una URL firmada y temporal
+async function openInvoicePdf(id) {
+  const win = window.open('', '_blank');
+  try {
+    const res = await fetch(`/api/invoice-pdfs?id=${encodeURIComponent(id)}&sign=1`, { headers: { 'x-admin-password': adminPass } });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || 'No disponible');
+    if (win) { win.opener = null; win.location = data.url; } else { window.location = data.url; }
+  } catch (err) {
+    if (win) win.close();
+    showToast(err.message || 'No se pudo abrir el PDF', 'error');
   }
 }
 

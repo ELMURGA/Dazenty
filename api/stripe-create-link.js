@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { adminAuthError } from '../lib/db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://dazenty.com');
@@ -11,10 +12,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  const adminPass = req.headers['x-admin-password'];
-  if (!adminPass || adminPass !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
+  const authError = await adminAuthError(req);
+  if (authError) return res.status(authError.status).json({ error: authError.error });
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return res.status(500).json({ error: 'STRIPE_SECRET_KEY no configurado en Vercel' });

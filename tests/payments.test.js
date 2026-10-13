@@ -73,6 +73,8 @@ test('API stores manual coverage and still recalculates linked invoice payments'
   const originalFetch = globalThis.fetch;
   const writes = [];
   globalThis.fetch = async (url, options = {}) => {
+    // La autenticación admin consulta el limitador de intentos antes de validar
+    if (new URL(url).pathname.includes('/rpc/')) return Response.json(false);
     const table = new URL(url).pathname.split('/').pop();
     if (options.method === 'POST') {
       const body = JSON.parse(options.body);

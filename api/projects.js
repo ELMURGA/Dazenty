@@ -11,7 +11,7 @@ import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity } from '../l
 const STATUSES = ['planificacion', 'en_progreso', 'en_revision', 'entregado', 'pausado', 'cancelado'];
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, status, client_id } = req.query;
 
   try {

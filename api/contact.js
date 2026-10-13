@@ -1,4 +1,6 @@
 // api/contact.js — Serverless function: Vercel + Resend
+import { withinRateLimit, clientIp } from '../lib/db.js';
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -27,6 +29,16 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Email inválido' });
     }
 
+    if ([name, email, service, message].some((v) => v != null && typeof v !== 'string') ||
+        name.length > 100 || email.length > 254 || (service || '').length > 100 || message.length > 5000) {
+        return res.status(400).json({ error: 'Alguno de los campos no es válido o es demasiado largo' });
+    }
+
+    // Límite contra abuso: 5 mensajes por hora y por IP (el honeypot y `ts` los controla el cliente)
+    if (!(await withinRateLimit(`contact:${clientIp(req)}`, 5, 3600))) {
+        return res.status(429).json({ error: 'Demasiadas solicitudes. Inténtalo más tarde.' });
+    }
+
     // Anti-XSS: escapar valores antes de inyectarlos en el HTML del email
     const esc = (str) =>
         String(str)
@@ -46,7 +58,7 @@ export default async function handler(req, res) {
                 from: 'Dazenty Web <noreply@dazenty.com>',
                 to: ['designerazenty@gmail.com'],
                 reply_to: email,
-                subject: `Nuevo Lead desde Web Dazenty — ${esc(name)}`,
+                subject: `Nuevo Lead desde Web Dazenty — ${name.replace(/[\r\n]+/g, ' ')}`,
                 html: `
                     <h2 style="color:#1a1a1a">Nuevo mensaje de contacto</h2>
                     <p><strong>Nombre:</strong> ${esc(name)}</p>
