@@ -1,12 +1,14 @@
 // api/client-submit.js — El cliente envía su información de contacto
 // ==========================================================
 // POST /api/client-submit
-// Body JSON: { slug, name, company, phone, email, web, notes }
+// Body JSON: { slug, token, name, company, phone, email, web, notes }
 //
 // Acciones:
 //  1. Guarda los datos en el registro de Supabase del cliente
 //  2. Envía email de notificación al admin via Resend
 // ==========================================================
+
+import { loadPortalClient, withinRateLimit, clientIp } from '../lib/db.js';
 
 const SB_URL   = process.env.SUPABASE_URL;
 const SB_KEY   = process.env.SUPABASE_SERVICE_KEY;
@@ -27,13 +29,13 @@ function isValidEmail(email) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://dazenty.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  const { slug, name, company, phone, email, web, notes } = req.body ?? {};
+  const { slug, token, name, company, phone, email, web, notes } = req.body ?? {};
 
   // Validaciones en frontera del sistema
   if (!slug || !name || !email) {
@@ -46,6 +48,15 @@ export default async function handler(req, res) {
   if (!/^[a-z0-9-]+$/.test(slug)) {
     return res.status(400).json({ error: 'Petición inválida' });
   }
+
+  // Límite contra abuso: 5 envíos por hora y por IP
+  if (!(await withinRateLimit(`client-submit:${clientIp(req)}`, 5, 3600))) {
+    return res.status(429).json({ error: 'Demasiadas solicitudes. Inténtalo más tarde.' });
+  }
+
+  // Solo quien tiene el enlace completo del portal (slug + token) puede escribir
+  const portal = await loadPortalClient(slug, token, 'id');
+  if (!portal.client) return res.status(portal.status).json({ error: portal.error });
 
   // 1. Actualizar el registro del cliente en Supabase
   try {

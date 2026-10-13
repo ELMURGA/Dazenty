@@ -12,7 +12,7 @@
 import { guard, sbSelect, sbInsert, sbUpdate, sbDelete } from '../lib/db.js';
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, type, category_id } = req.query;
   const isCategory = type === 'categories';
   const table = isCategory ? 'expense_categories' : 'expenses';

@@ -1,5 +1,7 @@
 // POST /api/stripe-cancel — cancela una suscripción de Stripe al final del período actual
-// Body: { slug: string }
+// Body: { slug: string, token: string }  (token secreto del portal del cliente)
+
+import { loadPortalClient, withinRateLimit, clientIp } from '../lib/db.js';
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const RESEND_KEY        = process.env.RESEND_API_KEY;
@@ -32,21 +34,20 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Configuración incompleta en el servidor' });
   }
 
-  const { slug } = req.body || {};
+  const { slug, token } = req.body || {};
   if (!slug || !SLUG_RE.test(slug)) {
     return res.status(400).json({ error: 'Parámetro slug inválido' });
   }
 
-  // ── 1. Obtener cliente de Supabase ────────────────────────────────────────
-  const sbRes = await fetch(
-    `${SB_URL}/rest/v1/clients?slug=eq.${encodeURIComponent(slug)}&select=*&limit=1`,
-    { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-  );
-  if (!sbRes.ok) return res.status(500).json({ error: 'Error al consultar la base de datos' });
+  // Límite contra abuso: 5 intentos por hora y por IP
+  if (!(await withinRateLimit(`stripe-cancel:${clientIp(req)}`, 5, 3600))) {
+    return res.status(429).json({ error: 'Demasiadas solicitudes. Inténtalo más tarde.' });
+  }
 
-  const clients = await sbRes.json();
-  const client  = clients?.[0];
-  if (!client) return res.status(404).json({ error: 'Cliente no encontrado' });
+  // ── 1. Obtener cliente de Supabase (exige el token secreto del portal) ─────
+  const portal = await loadPortalClient(slug, token);
+  if (!portal.client) return res.status(portal.status).json({ error: portal.error });
+  const client = portal.client;
 
   const subscriptionId = client.stripe_subscription_id;
   if (!subscriptionId) {

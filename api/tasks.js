@@ -12,7 +12,7 @@ const STATUSES = ['pendiente', 'en_progreso', 'completada', 'cancelada'];
 const PRIORITIES = ['baja', 'media', 'alta', 'urgente'];
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id, status, project_id, client_id, due } = req.query;
 
   try {

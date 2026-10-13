@@ -1,0 +1,8 @@
+# Archivos internos que no deben publicarse (las funciones de /api no los necesitan)
+SETUP.txt
+README.md
+OPTIMIZACIONES.txt
+optimize-images.sh
+supabase
+tests
+.vscode

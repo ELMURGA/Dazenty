@@ -8,7 +8,7 @@
 // Devuelve: { publicUrl }
 // ==========================================================
 
-import { timingSafeEqual } from 'crypto';
+import { adminAuthError } from '../lib/db.js';
 
 export const config = {
   api: {
@@ -20,29 +20,17 @@ export const config = {
 
 const SB_URL   = process.env.SUPABASE_URL;
 const SB_KEY   = process.env.SUPABASE_SERVICE_KEY;
-const ADMIN_PW = process.env.ADMIN_PASSWORD;
 const BUCKET   = 'client-docs';
 
-function isAdmin(req) {
-  const pass     = String(req.headers['x-admin-password'] || '');
-  const expected = String(ADMIN_PW || '');
-  if (!pass || !expected) return false;
-  const maxLen = Math.max(pass.length, expected.length);
-  const a = Buffer.alloc(maxLen);
-  const b = Buffer.alloc(maxLen);
-  a.write(pass);
-  b.write(expected);
-  return timingSafeEqual(a, b) && pass.length === expected.length;
-}
-
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://dazenty.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  if (!isAdmin(req)) return res.status(401).json({ error: 'No autorizado' });
+  const authError = await adminAuthError(req);
+  if (authError) return res.status(authError.status).json({ error: authError.error });
 
   const { clientSlug, docType, filename, data } = req.body ?? {};
 
@@ -71,6 +59,10 @@ export default async function handler(req, res) {
   } catch {
     return res.status(400).json({ error: 'Datos base64 inválidos' });
   }
+  // La extensión no basta: comprobar la cabecera real del archivo
+  if (binary.subarray(0, 5).toString('latin1') !== '%PDF-') {
+    return res.status(400).json({ error: 'El archivo no es un PDF válido' });
+  }
 
   // Subir a Supabase Storage
   const r = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${path}`, {
@@ -90,7 +82,8 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Error al subir el archivo a Storage' });
   }
 
-  // Devolver la URL pública completa (bucket público)
+  // Se devuelve la URL canónica del objeto como referencia. El bucket es privado:
+  // los PDF se abren siempre con URL firmada (api/get-doc.js, api/invoice-pdfs.js)
   const publicUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
   return res.json({ publicUrl });
 }

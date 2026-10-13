@@ -11,7 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind servido desde el propio dominio (antes CDN de terceros sin integridad) -->
+  <script src="/js/vendor/tailwindcss-play-3.4.17.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -104,6 +105,8 @@
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+      /* Foco visible al navegar con teclado */
+    :focus-visible { outline: 2px solid #d97762; outline-offset: 2px; }
   </style>
 </head>
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased">
@@ -464,6 +467,22 @@ const WA_NUMBER = '34624903256';
 // ─── Estado ─────────────────────────────────────────────────────────────────
 let clientData = null;
 
+// ─── Token secreto del portal ────────────────────────────────────────────────
+// El enlace del cliente es portal?id=<slug>&t=<token>. El token se recuerda en este
+// navegador para que la vuelta desde Stripe (que solo trae el slug) siga funcionando.
+function portalToken(slug) {
+  const fromUrl = new URLSearchParams(window.location.search).get('t');
+  const key = `dz_portal_t:${slug}`;
+  try {
+    if (fromUrl) { localStorage.setItem(key, fromUrl); return fromUrl; }
+    return localStorage.getItem(key) || '';
+  } catch { return fromUrl || ''; }
+}
+
+function portalQuery(slug) {
+  return `slug=${encodeURIComponent(slug)}&t=${encodeURIComponent(portalToken(slug))}`;
+}
+
 // ─── Inicialización ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
 
@@ -472,7 +491,7 @@ async function init() {
   if (!slug) { showError(); return; }
 
   try {
-    const res = await fetch(`/api/clients?slug=${encodeURIComponent(slug)}`);
+    const res = await fetch(`/api/clients?${portalQuery(slug)}`);
     if (!res.ok) { showError(); return; }
     clientData = await res.json();
     renderPortal(clientData);
@@ -558,8 +577,8 @@ function renderPortal(d) {
   const docsSection = document.getElementById('docsSection');
   const docsLinks   = document.getElementById('docsLinks');
   const docs = [];
-  if (d.pdf_proposal_url) docs.push({ url: `/api/get-doc?slug=${encodeURIComponent(d.slug)}&type=proposal`, label: 'Ver propuesta', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' });
-  if (d.pdf_invoice_url)  docs.push({ url: `/api/get-doc?slug=${encodeURIComponent(d.slug)}&type=invoice`,  label: 'Ver factura',   icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' });
+  if (d.pdf_proposal_url) docs.push({ url: `/api/get-doc?${portalQuery(d.slug)}&type=proposal`, label: 'Ver propuesta', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' });
+  if (d.pdf_invoice_url)  docs.push({ url: `/api/get-doc?${portalQuery(d.slug)}&type=invoice`,  label: 'Ver factura',   icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' });
   if (docs.length > 0) {
     docsSection.style.display = 'block';
     docsLinks.innerHTML = docs.map(doc => `
@@ -677,7 +696,7 @@ function pollForSubscription(slug) {
       return;
     }
     try {
-      const res = await fetch(`/api/clients?slug=${encodeURIComponent(slug)}`);
+      const res = await fetch(`/api/clients?${portalQuery(slug)}`);
       if (!res.ok) return;
       const data = await res.json();
       const isActive = data.stripe_subscription_id &&
@@ -722,7 +741,7 @@ async function confirmCancel() {
     const res  = await fetch('/api/stripe-cancel', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug }),
+      body: JSON.stringify({ slug, token: portalToken(slug) }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Error al cancelar');
@@ -765,7 +784,7 @@ async function submitForm() {
     await fetch('/api/client-submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug, name, company, phone, email }),
+      body: JSON.stringify({ slug, token: portalToken(slug), name, company, phone, email }),
     });
     document.getElementById('clientFormWrapper').style.display = 'none';
     document.getElementById('formSuccess').style.display = 'block';

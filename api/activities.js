@@ -7,7 +7,7 @@
 import { guard, sbSelect } from '../lib/db.js';
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { entity_type, limit } = req.query;
 
   try {

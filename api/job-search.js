@@ -17,7 +17,7 @@ const STATUSES = [
 const EDITABLE = ['status', 'notes', 'cover_letter'];
 
 export default async function handler(req, res) {
-  if (guard(req, res)) return;
+  if (await guard(req, res)) return;
   const { id } = req.query;
 
   try {

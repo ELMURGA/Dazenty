@@ -7,32 +7,17 @@
 // Auth admin: header  x-admin-password: <ADMIN_PASSWORD env var>
 // ==========================================================
 
-import { timingSafeEqual } from 'crypto';
+import { adminAuthError } from '../lib/db.js';
 
 const SB_URL            = process.env.SUPABASE_URL;
 const SB_KEY            = process.env.SUPABASE_SERVICE_KEY;
-const ADMIN_PW          = process.env.ADMIN_PASSWORD;
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://dazenty.com',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, x-admin-password',
 };
-
-// Constante-time comparison — evita timing attacks
-function isAdmin(req) {
-  const pass     = String(req.headers['x-admin-password'] || '');
-  const expected = String(ADMIN_PW || '');
-  if (!expected) return 'no_env';
-  if (!pass) return false;
-  const maxLen = Math.max(pass.length, expected.length);
-  const a = Buffer.alloc(maxLen);
-  const b = Buffer.alloc(maxLen);
-  a.write(pass);
-  b.write(expected);
-  return timingSafeEqual(a, b) && pass.length === expected.length;
-}
 
 async function stripeGet(path) {
   const r = await fetch(`https://api.stripe.com/v1/${path}`, {
@@ -55,9 +40,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
 
-  const adminCheck = isAdmin(req);
-  if (adminCheck === 'no_env') return res.status(503).json({ error: 'ADMIN_PASSWORD no configurada en Vercel' });
-  if (!adminCheck) return res.status(401).json({ error: 'No autorizado' });
+  const authError = await adminAuthError(req);
+  if (authError) return res.status(authError.status).json({ error: authError.error });
 
   if (!SB_URL || !SB_KEY) {
     return res.status(503).json({ error: 'Variables SUPABASE_URL o SUPABASE_SERVICE_KEY no configuradas en Vercel' });
