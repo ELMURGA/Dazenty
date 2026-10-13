@@ -285,22 +285,22 @@ select {
         padding-left: 1rem;
         padding-right: 1rem;
     }
-    
-    h1 {
-        font-size: 2.5rem !important;
+
+    /* clamp: en pantallas de 320px el titular baja de 2.5rem para no partirse */
+    h1,
+    .text-6xl, .text-7xl, .text-8xl {
+        font-size: clamp(2rem, 10.5vw, 2.5rem) !important;
         line-height: 1.1;
     }
-    
-    h2 {
-        font-size: 2rem !important;
+
+    /* Solo los títulos de sección: los h2 de modales y cajones conservan su tamaño */
+    main h2 {
+        font-size: clamp(1.625rem, 8vw, 2rem) !important;
     }
-    
-    .text-6xl, .text-7xl, .text-8xl {
-        font-size: 2.5rem !important;
-    }
-    
-    /* Botones en móvil */
-    .btn-glow, .inline-flex {
+
+    /* Botones CTA a ancho completo en móvil (no los enlaces de texto tipo "Volver") */
+    .btn-glow,
+    .inline-flex.rounded-full.font-bold {
         width: 100%;
         justify-content: center;
     }
@@ -311,7 +311,7 @@ select {
     h1 {
         font-size: 3rem !important;
     }
-    
+
     .text-6xl, .text-7xl, .text-8xl {
         font-size: 3rem !important;
     }
@@ -512,8 +512,13 @@ select {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2rem;
+    padding: 2rem 1.5rem;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom, 2rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     background: rgba(8, 8, 8, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -539,6 +544,15 @@ select {
     background: #d97762;
     padding: 0.75rem 2rem;
     border-radius: 9999px;
+}
+/* Centrado vertical que no recorta el primer enlace cuando el contenido no cabe */
+.mobile-nav > :first-child { margin-top: auto; }
+.mobile-nav > :last-child { margin-bottom: auto; }
+
+/* Móvil en horizontal: menos separación para que quepan los enlaces */
+@media (max-height: 480px) {
+    .mobile-nav { gap: 1.1rem; padding-top: 1.25rem; padding-bottom: 1.25rem; }
+    .mobile-nav a { font-size: 1.2rem; }
 }
 
 @media (min-width: 768px) {
@@ -568,11 +582,21 @@ select {
         text-transform: uppercase;
         font-size: 12.5px;
         letter-spacing: 0.08em;
+        /* Área táctil cómoda en tablet sin cambiar el aspecto */
+        padding: 0.8rem 0.25rem;
+        margin: 0 -0.25rem;
     }
 }
 
 /* Bloquear scroll del body mientras el menú móvil está abierto */
 body.nav-open { overflow: hidden; }
+/* Con el menú abierto, nada flotante debe taparlo */
+body.nav-open .cookie-banner,
+body.nav-open .whatsapp-float {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
 
 /* Avoid repainting fixed backdrop filters while scrolling on mobile Safari. */
 @media (max-width: 768px) {
@@ -733,6 +757,12 @@ input, textarea, select {
     padding: 0;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     min-height: unset;
+    position: relative;
+}
+.review-dot::before {
+    content: '';
+    position: absolute;
+    inset: -18px -4px;
 }
 .review-dot.active {
     width: 24px;
@@ -747,6 +777,20 @@ input, textarea, select {
 .modal-overlay {
     z-index: 10000;
     -webkit-overflow-scrolling: touch;
+}
+
+/* La altura útil en móvil excluye las barras del navegador: usar dvh si existe */
+@supports (height: 100dvh) {
+    .modal-overlay .max-h-\[90vh\] { max-height: 90dvh; }
+}
+/* El título no debe meterse bajo el botón de cerrar */
+.modal-overlay h2 {
+    overflow-wrap: break-word;
+}
+@media (max-width: 575.98px) {
+    .modal-overlay .p-8 { padding: 1.5rem; }
+    /* Palabras largas ("Automatizaciones") deben caber junto al icono en 320px */
+    .modal-overlay h2 { font-size: clamp(1.05rem, 5.6vw, 1.5rem); }
 }
 
 /* Evitar que iOS Safari cambie el tamaño de texto automáticamente */
@@ -767,10 +811,18 @@ html {
 .dz-bento-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 24px;
-    margin-bottom: 96px;
+    gap: 16px;
+    margin-bottom: 48px;
 }
+/* Tablet vertical: 2 columnas (3 quedaban demasiado estrechas) */
 @media (min-width: 768px) {
+    .dz-bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        margin-bottom: 96px;
+    }
+}
+@media (min-width: 1024px) {
     .dz-bento-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -779,7 +831,8 @@ html {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
-    padding: 32px;
+    padding: 24px;
+    min-width: 0;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -792,16 +845,25 @@ html {
     box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
 }
 @media (min-width: 768px) {
+    .dz-bento-card {
+        padding: 32px;
+    }
     .dz-bento-card--span-2 {
         grid-column: span 2;
     }
     .dz-bento-card--span-3 {
-        grid-column: span 3;
+        grid-column: 1 / -1;
     }
 }
 .dz-bento-card--image {
     padding: 0;
-    min-height: 320px;
+    min-height: 260px;
+}
+@media (min-width: 768px) {
+    .dz-bento-card--image {
+        padding: 0;
+        min-height: 320px;
+    }
 }
 .dz-bento-card--image img {
     width: 100%;
@@ -833,7 +895,7 @@ html {
 .dz-bento-features {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
+    gap: 12px 24px;
     margin-top: 32px;
 }
 .dz-bento-feature-item {
@@ -879,7 +941,7 @@ html {
 .dz-values-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 24px;
     margin-top: 32px;
 }
 @media (min-width: 768px) {
@@ -917,15 +979,15 @@ html {
 /* ===== ESTADÍSTICAS PREMIUM ===== */
 .dz-stats-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
     margin-top: 48px;
     padding-top: 48px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 @media (min-width: 640px) {
     .dz-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
     }
 }
 @media (min-width: 1024px) {
@@ -937,7 +999,7 @@ html {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 20px;
-    padding: 32px 24px;
+    padding: clamp(20px, 5vw, 32px) clamp(12px, 4vw, 24px);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -953,7 +1015,7 @@ html {
     box-shadow: 0 10px 30px rgba(217, 119, 98, 0.05);
 }
 .dz-stat-number {
-    font-size: 56px;
+    font-size: clamp(36px, 11vw, 56px);
     font-weight: 800;
     font-family: 'Space Grotesk', sans-serif;
     color: #d97762;
@@ -969,7 +1031,8 @@ html {
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
 }
 .dz-stat-label {
-    font-size: 15px;
+    font-size: clamp(13px, 3.6vw, 15px);
+    line-height: 1.4;
     color: #a3a3a3;
     font-weight: 500;
     letter-spacing: 0.02em;

@@ -35,7 +35,7 @@
 
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=1">
+    <link rel="stylesheet" href="/css/site.min.css?v=2">
 
     <style>
         /* Ocultar barra de scroll para un look más limpio */
@@ -234,7 +234,7 @@
         <div class="max-w-7xl mx-auto px-6">
 
             <!-- Hero Section -->
-            <div class="mb-24 text-center">
+            <div class="mb-12 md:mb-24 text-center">
                 <span class="text-brand-blue font-mono text-sm uppercase tracking-widest mb-4 block">Nuestro
                     Trabajo</span>
                 <h1 class="text-6xl md:text-8xl font-display font-bold mb-6 leading-none">Portfolio</h1>
@@ -261,7 +261,7 @@
             </div>
 
             <!-- Portfolio Grid (Grid compacto con diseño aspect-square, grayscale y hover scale) -->
-            <div class="compact-grid mb-24" id="portfolio-grid">
+            <div class="compact-grid mb-16 md:mb-24" id="portfolio-grid">
                 
                 <!-- Proyecto 1 - JC Autos -->
                 <article class="project-card group cursor-pointer reveal" data-category="web" data-id="jcautos">
@@ -536,7 +536,7 @@
             </div>
 
             <!-- CTA Section (Original) -->
-            <div class="py-24 text-center border-t border-white/10">
+            <div class="py-16 md:py-24 text-center border-t border-white/10">
                 <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">¿Listo para crear algo increíble?</h2>
                 <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">Cuéntanos tu proyecto y hagamos realidad tus
                     ideas digitales.</p>
@@ -556,12 +556,12 @@
     <!-- Footer Section (Original) -->
     <footer class="bg-black py-12 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-2 md:col-span-1">
                     <div class="flex items-center gap-2 mb-4">
                         <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160" class="h-14 w-auto" loading="lazy" decoding="async">
                     </div>
-                    <p class="text-gray-500 text-sm mb-4">Transformando ideas en experiencias digitales excepcionales.
+                    <p class="text-gray-500 text-sm mb-4">Webs, software a medida y automatizaciones con IA.
                     </p>
                     <div class="flex gap-4">
                         <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer"
@@ -646,11 +646,11 @@
                 
                 <div class="grid grid-cols-2 gap-4 border-y border-white/10 py-4 mb-6">
                     <div>
-                        <span class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Cliente</span>
+                        <span class="block text-[11px] uppercase tracking-widest text-gray-500 mb-1">Cliente</span>
                         <span id="drawer-client" class="font-medium text-sm text-white"></span>
                     </div>
                     <div>
-                        <span class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Servicios</span>
+                        <span class="block text-[11px] uppercase tracking-widest text-gray-500 mb-1">Servicios</span>
                         <span id="drawer-services" class="font-medium text-xs leading-relaxed block text-white"></span>
                     </div>
                 </div>
@@ -745,9 +745,9 @@
                     image: '../proyectos/web_hermanoshervas.webp',
                     category: 'Digital Platform',
                     year: '2025',
-                    client: 'Restaurante Hermanos Hervás',
+                    client: 'Proyecto concepto (demo)',
                     services: 'UX/UI Design<br>Web Development<br>Reservations System',
-                    desc: '<p>Web del restaurante Hermanos Hervás, ubicado en Los Palacios, Sevilla. Los clientes pueden consultar la carta completa, ver los menús del día y de temporada, y realizar reservas de mesa online de forma rápida y sencilla, disponible las 24 horas.</p><p>El sistema cuenta con panel de administración de reservas e integración de alertas automáticas por correo electrónico.</p>',
+                    desc: '<p>Proyecto concepto: demo de web de restaurante. Permite consultar la carta completa, ver los menús del día y de temporada, y reservar mesa online a cualquier hora. No es un encargo de cliente.</p><p>El sistema cuenta con panel de administración de reservas e integración de alertas automáticas por correo electrónico.</p>',
                     link: 'https://hermanos-hervas.vercel.app'
                 },
                 'pavistatto': {
@@ -777,7 +777,7 @@
                     year: '2026',
                     client: 'Costa del Sol Foods',
                     services: 'B2B Web Dev<br>SEM Campaign<br>Multilingual SEO',
-                    desc: '<p>Plataforma corporativa internacional para Costa del Sol Foods & Beverages, empresa de comercio mayorista de alimentos y bebidas con sede en Marbella y proyección global.</p><p>Desarrollamos la web B2B y la estrategia completa de marketing digital SEM. La plataforma incluye catálogo multilingüe de productos, sistema de contacto para distribuidores internacionales, módulo de exportación e importación y sala de prensa digital. La estrategia de marketing incrementó las ventas online un 180% en solo 6 meses.</p>',
+                    desc: '<p>Plataforma corporativa internacional para Costa del Sol Foods & Beverages, empresa de comercio mayorista de alimentos y bebidas con sede en Marbella y proyección global.</p><p>Desarrollamos la web B2B y la estrategia completa de marketing digital SEM. La plataforma incluye catálogo multilingüe de productos, sistema de contacto para distribuidores internacionales, módulo de exportación e importación y sala de prensa digital.</p>',
                     link: 'https://costadelsolfoodsandbeveragesint.com/'
                 },
                 'sevillatp': {
@@ -786,8 +786,8 @@
                     category: 'E-Commerce / Marketing',
                     year: '2025',
                     client: 'Sevilla Tarjetas Plásticas',
-                    services: 'E-Commerce B2B<br>LinkedIn Ads<br>Custom Configurator',
-                    desc: '<p>Desarrollo de plataforma e-commerce completa y estrategia de marketing B2B para Sevilla Tarjetas Plásticas, empresa especializada en tarjetas corporativas y material plástico personalizado.</p><p>La tienda online incluye configurador de producto en tiempo real, catálogo segmentado por tipo de tarjeta, sistema de presupuestos y pedidos online, y área privada para clientes corporativos con historial de pedidos. La estrategia B2B con LinkedIn Ads y email marketing automatizado incrementó sustancialmente los leads cualificados mensuales.</p>',
+                    services: 'E-Commerce B2B<br>Custom Configurator',
+                    desc: '<p>Desarrollo de plataforma e-commerce completa y estrategia de marketing B2B para Sevilla Tarjetas Plásticas, empresa especializada en tarjetas corporativas y material plástico personalizado.</p><p>La tienda online incluye configurador de producto en tiempo real, catálogo segmentado por tipo de tarjeta, sistema de presupuestos y pedidos online, y área privada para clientes corporativos con historial de pedidos.</p>',
                     link: 'https://sevillatarjetasplasticas.com'
                 },
                 'matalascanas': {
