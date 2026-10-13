@@ -37,7 +37,8 @@
 //    sugerencias: [...] } con los últimos nombres de empresa conocidos.
 //
 // 5) action: "list_pending_email" → { limit? } → leads con email pero que
-//    todavía no pasaron a "contactada" (reemplaza la lectura completa de
+//    todavía no pasaron a "contactada", es decir, en fase "nuevo" o
+//    "email_no_enviado" (reemplaza la lectura completa de
 //    Sheets del flujo "Reenviar emails pendientes").
 //
 // 6) action: "list_missing_whatsapp" → { limit? } → leads con web conocida
@@ -51,7 +52,7 @@
 
 import { guardWebhook, sbInsert, sbUpdate, sbSelect, logActivity } from '../lib/db.js';
 
-const STAGES = ['nuevo', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
+const STAGES = ['nuevo', 'email_no_enviado', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
 
 const normalizar = (s) =>
   String(s || '')
@@ -138,7 +139,7 @@ export default async function handler(req, res) {
       const limit = Math.min(Number(body.limit) || 20, 100);
       const rows = await sbSelect(
         'leads',
-        `select=id,company,email,email_asunto,email_cuerpo,notes,city,sector,website&stage=eq.nuevo&email=not.is.null&email_cuerpo=not.is.null&order=created_at.asc&limit=${limit}`
+        `select=id,company,email,email_asunto,email_cuerpo,notes,city,sector,website&stage=in.(nuevo,email_no_enviado)&email=not.is.null&email_cuerpo=not.is.null&order=created_at.asc&limit=${limit}`
       );
       return res.json({ leads: rows });
     }
