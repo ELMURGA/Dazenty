@@ -541,6 +541,20 @@
           Nueva tarea
         </button>
       </div>
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-4">
+        <div id="taskPriorityFilter" class="flex flex-wrap gap-2"></div>
+        <label class="flex items-center gap-2 text-xs text-gray-500 shrink-0">
+          Ordenar por
+          <select id="taskSortSelect" onchange="setTaskSort(this.value)" style="width:auto;font-size:12px;padding:6px 10px">
+            <option value="due">Fecha límite</option>
+            <option value="priority_desc">Prioridad (urgente primero)</option>
+            <option value="priority_asc">Prioridad (baja primero)</option>
+            <option value="status">Estado</option>
+            <option value="recent">Más recientes</option>
+          </select>
+        </label>
+      </div>
+      <p id="taskCountLabel" class="text-xs text-gray-600 mb-3"></p>
       <div id="tasksList" class="space-y-2"></div>
     </div>
 
@@ -2706,14 +2720,87 @@ async function loadTasks() {
   }
 }
 
+// ─── Filtro por prioridad + orden (se recuerdan en este navegador) ──────────
+const TASK_PRIORITY_COLORS = { urgente: '#f87171', alta: '#fb923c', media: '#60a5fa', baja: '#9ca3af' };
+const TASK_PRIORITY_RANK = { urgente: 4, alta: 3, media: 2, baja: 1 };
+const TASK_STATUS_RANK = { en_progreso: 1, pendiente: 2, completada: 3, cancelada: 4 };
+
+function readTaskPref(key, fallback) {
+  try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
+}
+function saveTaskPref(key, value) {
+  try { value ? localStorage.setItem(key, value) : localStorage.removeItem(key); } catch { /* noop */ }
+}
+
+let taskPriorityFilter = readTaskPref('dz-task-priority', null); // null = todas
+let taskSort = readTaskPref('dz-task-sort', 'due');
+
+function setTaskPriorityFilter(priority) {
+  taskPriorityFilter = priority;
+  saveTaskPref('dz-task-priority', priority);
+  renderTasksList();
+}
+
+function setTaskSort(value) {
+  taskSort = value;
+  saveTaskPref('dz-task-sort', value);
+  renderTasksList();
+}
+
+function renderTaskPriorityFilter() {
+  const counts = {};
+  for (const t of tasksData) counts[t.priority] = (counts[t.priority] || 0) + 1;
+  const allPill = `
+    <button class="lead-stage-pill ${taskPriorityFilter === null ? 'active' : ''}"
+      style="--pill-bg:rgba(217,119,98,0.15); --pill-border:rgba(217,119,98,0.4); --pill-text:#d97762"
+      onclick="setTaskPriorityFilter(null)">Todas <span class="opacity-60">${tasksData.length}</span></button>`;
+  const pills = ['urgente', 'alta', 'media', 'baja'].map(p => {
+    const color = TASK_PRIORITY_COLORS[p];
+    return `
+    <button class="lead-stage-pill ${taskPriorityFilter === p ? 'active' : ''}"
+      style="--pill-bg:${color}26; --pill-border:${color}66; --pill-text:${color}"
+      onclick="setTaskPriorityFilter('${p}')">
+      <span class="lead-stage-dot" style="--dot-color:${color}"></span>
+      ${TASK_PRIORITY_LABELS[p].label} <span class="opacity-60">${counts[p] || 0}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('taskPriorityFilter').innerHTML = allPill + pills;
+  document.getElementById('taskSortSelect').value = taskSort;
+}
+
+function getVisibleTasks() {
+  const items = taskPriorityFilter ? tasksData.filter(t => t.priority === taskPriorityFilter) : [...tasksData];
+  const byDue = (a, b) => (a.due_date || '9999') < (b.due_date || '9999') ? -1 : (a.due_date || '9999') > (b.due_date || '9999') ? 1 : 0;
+  const byPriority = (a, b) => (TASK_PRIORITY_RANK[b.priority] || 0) - (TASK_PRIORITY_RANK[a.priority] || 0);
+  const sorters = {
+    due: byDue,
+    priority_desc: (a, b) => byPriority(a, b) || byDue(a, b),
+    priority_asc: (a, b) => byPriority(b, a) || byDue(a, b),
+    status: (a, b) => (TASK_STATUS_RANK[a.status] || 9) - (TASK_STATUS_RANK[b.status] || 9) || byDue(a, b),
+    recent: (a, b) => (a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0),
+  };
+  return items.sort(sorters[taskSort] || sorters.due);
+}
+
 function renderTasksList() {
   const list = document.getElementById('tasksList');
+  renderTaskPriorityFilter();
+  const countLabel = document.getElementById('taskCountLabel');
   if (!tasksData.length) {
+    countLabel.textContent = '';
     list.innerHTML = '<p class="text-gray-600 text-sm text-center py-16">Sin tareas todavía.</p>';
     return;
   }
+  const items = getVisibleTasks();
+  countLabel.textContent = taskPriorityFilter
+    ? `Mostrando ${items.length} de ${tasksData.length} tareas`
+    : `${tasksData.length} tareas en total`;
+  if (!items.length) {
+    list.innerHTML = '<p class="text-gray-600 text-sm text-center py-16">No hay tareas con esta prioridad.</p>';
+    return;
+  }
   const today = new Date().toISOString().slice(0, 10);
-  list.innerHTML = tasksData.map(t => {
+  list.innerHTML = items.map(t => {
     const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
     const done = t.status === 'completada';
     const overdue = t.due_date && t.due_date < today && !done;
