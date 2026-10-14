@@ -11,16 +11,19 @@ test('inactive clients only get a reactivation opportunity', () => {
   assert.deepEqual(keys({ ...base, status: 'inactive', stripe_subscription_status: 'past_due', amount_monthly: 50 }), ['reactivate']);
 });
 
-test('subscription state maps to recovery, retention, win-back and annual upgrade', () => {
+test('subscription state maps to recovery, retention and win-back', () => {
   const sub = { ...base, amount_monthly: 50, stripe_subscription_id: 'sub_1' };
   assert.deepEqual(keys({ ...sub, stripe_subscription_status: 'past_due' }), ['recover_payment:sub_1']);
   assert.deepEqual(keys({ ...sub, stripe_subscription_status: 'canceling' }), ['retain:sub_1']);
   assert.deepEqual(keys({ ...sub, stripe_subscription_status: 'canceled' }), ['winback:sub_1']);
-  const [upgrade] = clientOpportunities({ ...sub, stripe_subscription_status: 'active', stripe_current_period_end: unix('2026-11-01') }, {}, TODAY);
-  assert.equal(upgrade.auto_key, 'annual_upgrade');
-  assert.equal(upgrade.value, 600);
-  // Período que acaba dentro de muchos meses = ya está en plan anual
-  assert.deepEqual(keys({ ...sub, stripe_subscription_status: 'active', stripe_current_period_end: unix('2027-06-01') }), []);
+});
+
+test('clients paying on time are not pushed to switch plan', () => {
+  // Mensual en Stripe por elección propia
+  assert.deepEqual(keys({ ...base, amount_monthly: 20, amount_annual: 172, stripe_subscription_id: 'sub_1', stripe_subscription_status: 'active' }), []);
+  // Anual pagado en efectivo con el estado "Activa" puesto a mano
+  const cash = { ...base, amount_monthly: 20, amount_annual: 192, stripe_subscription_status: 'active' };
+  assert.deepEqual(keys(cash, { payments: [{ amount: 192, coverage_end: '2027-10-02' }] }), []);
 });
 
 test('quoted but unpaid clients get a proposal follow-up worth the full first year', () => {
@@ -38,7 +41,9 @@ test('manual coverage triggers a renewal only around its end date', () => {
   assert.deepEqual(keys(client, pay('2026-09-20')), ['renewal:2026-09-20']);
   assert.deepEqual(keys(client, pay('2027-10-01')), []);
   assert.deepEqual(keys(client, pay('2026-01-01')), []);
-  assert.deepEqual(keys({ ...client, stripe_subscription_status: 'active' }, pay('2026-11-10')), []);
+  // Con suscripción de Stripe renueva sola; con el estado puesto a mano hay que avisar
+  assert.deepEqual(keys({ ...client, stripe_subscription_id: 'sub_1', stripe_subscription_status: 'active' }, pay('2026-11-10')), []);
+  assert.deepEqual(keys({ ...client, stripe_subscription_status: 'active' }, pay('2026-11-10')), ['renewal:2026-11-10']);
 });
 
 test('a delivered project with nothing else running suggests a next phase', () => {
