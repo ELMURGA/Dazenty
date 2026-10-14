@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       sbSelect('payments', `payment_date=gte.${start}&payment_date=lt.${end}&select=amount`),
       sbSelect('invoices', `status=in.(pendiente,parcial,vencida)&select=total,paid_amount`),
       sbSelect('projects', `select=id,status`),
-      sbSelect('tasks', `status=neq.completada&select=id,title,due_date,priority&order=due_date.asc.nullslast`),
+      sbSelect('tasks', `status=neq.completada&select=*&order=due_date.asc.nullslast`),
       sbSelect('leads', `select=id,stage,created_at`),
       sbSelect('clients', `select=id,status`),
       sbSelect('expenses', `expense_date=gte.${start}&expense_date=lt.${end}&select=amount`),

@@ -169,6 +169,17 @@
     .lead-detail-row .val a:hover { text-decoration: underline; }
     .lead-detail-notes { white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; color: #d1d5db; }
 
+    /* Tareas: al hacer click el detalle se despliega debajo de la fila (acordeón animado) */
+    .task-expand { display: grid; grid-template-rows: 0fr; opacity: 0;
+      transition: grid-template-rows 0.32s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease; }
+    .task-expand.open { grid-template-rows: 1fr; opacity: 1; }
+    .task-expand > div { overflow: hidden; min-height: 0; }
+    .task-expand-inner { transform: translateY(-6px); transition: transform 0.32s cubic-bezier(0.16,1,0.3,1); }
+    .task-expand.open .task-expand-inner { transform: none; }
+    .task-chevron { transition: transform 0.3s ease; }
+    .task-item.expanded { border-color: rgba(217,119,98,0.3); }
+    .task-item.expanded .task-chevron { transform: rotate(180deg); }
+
     @keyframes spin { to { transform: rotate(360deg); } }
     .spin { animation: spin 0.8s linear infinite; }
       /* Foco visible al navegar con teclado */
@@ -926,35 +937,6 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Editar
       </button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PANEL DE DETALLE DE TAREA (solo lectura, mismo patrón que el de lead).
-════════════════════════════════════════════════════════════════ -->
-<div id="taskDetailOverlay" onclick="closeTaskDetailOnOverlay(event)"
-  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex justify-end" style="display:none">
-  <div id="taskDetailPanel" class="lead-detail-panel bg-brand-dark border-l border-white/10 h-full flex flex-col">
-    <div class="flex items-start justify-between gap-3 p-6 border-b border-white/5">
-      <div class="min-w-0">
-        <h2 id="taskDetailTitle" class="font-display font-bold text-xl break-words mb-2"></h2>
-        <div id="taskDetailBadges" class="flex items-center gap-2 flex-wrap"></div>
-      </div>
-      <button onclick="closeTaskDetail()" class="text-gray-600 hover:text-white transition-colors p-1 shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div id="taskDetailBody" class="p-6 overflow-y-auto flex-1"></div>
-    <div class="flex items-center justify-between gap-3 p-6 border-t border-white/5 flex-wrap">
-      <button id="taskDetailDeleteBtn" class="text-sm text-gray-500 hover:text-red-400 transition-colors">Eliminar tarea</button>
-      <div class="flex items-center gap-3">
-        <button id="taskDetailToggleBtn" class="text-sm font-medium border border-white/10 rounded-xl px-4 py-3 hover:border-white/25 transition-colors"></button>
-        <button onclick="editCurrentTaskDetail()" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-6 py-3 hover:opacity-90 transition-opacity">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-          Editar
-        </button>
-      </div>
     </div>
   </div>
 </div>
@@ -1912,7 +1894,6 @@ async function confirmDelete() {
     await fetch(url, { method: 'DELETE', headers: { 'x-admin-password': adminPass } });
     document.getElementById('delete-overlay').style.display = 'none';
     deleteId = null;
-    if (type === 'task' && currentTaskDetailId === id) closeTaskDetail();
     showToast('✓ Eliminado');
     loadViewData(currentView);
     if (currentView !== 'home') loadHome(); // mantiene KPIs/actividad al día en segundo plano
@@ -2718,6 +2699,7 @@ async function loadTasks() {
   try {
     const res = await fetch('/api/tasks', { headers: { 'x-admin-password': adminPass } });
     tasksData = await res.json().catch(() => []);
+    await ensureProjectsForTasks(tasksData);
     renderTasksList();
   } catch {
     showToast('Error al cargar tareas', 'error');
@@ -2735,18 +2717,23 @@ function renderTasksList() {
     const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
     const done = t.status === 'completada';
     const overdue = t.due_date && t.due_date < today && !done;
+    const open = expandedTaskKey === `list:${t.id}`;
     return `
-    <div class="flex items-center gap-3 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim cursor-pointer hover:border-brand-blue/30 transition-colors" onclick="openTaskDetail('${t.id}')">
-      <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTaskDone('${t.id}', this.checked)"
-        style="width:16px;height:16px;padding:0;border-radius:4px" class="accent-brand-blue shrink-0">
-      <div class="flex-1 min-w-0">
-        <p class="text-sm ${done ? 'line-through text-gray-600' : ''} truncate">${esc(t.title)}</p>
-        <p class="text-xs ${overdue ? 'text-red-400' : 'text-gray-600'}">${t.due_date ? esc(t.due_date) : 'Sin fecha'}</p>
+    <div id="task-item-list-${t.id}" class="task-item bg-brand-gray border border-white/5 rounded-xl card-anim hover:border-brand-blue/30 transition-colors ${open ? 'expanded' : ''}">
+      <div class="flex items-center gap-3 px-4 py-3 cursor-pointer" onclick="toggleTaskExpand('list','${t.id}')">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTaskDone('${t.id}', this.checked)"
+          style="width:16px;height:16px;padding:0;border-radius:4px" class="accent-brand-blue shrink-0">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm ${done ? 'line-through text-gray-600' : ''} truncate">${esc(t.title)}</p>
+          <p class="text-xs ${overdue ? 'text-red-400' : 'text-gray-600'}">${t.due_date ? esc(t.due_date) : 'Sin fecha'}</p>
+        </div>
+        <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
+        <svg class="task-chevron w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <button onclick="event.stopPropagation(); askDeleteEntity('task','${t.id}','¿Eliminar esta tarea?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
       </div>
-      <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
-      <button onclick="event.stopPropagation(); askDeleteEntity('task','${t.id}','¿Eliminar esta tarea?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      </button>
+      ${taskExpandHtml('list', t, open)}
     </div>`;
   }).join('');
 }
@@ -2765,9 +2752,9 @@ async function toggleTaskDone(id, checked) {
   }
 }
 
-// ─── Panel de detalle de tarea (solo lectura, animado) ───────────────────────
-// Igual que en leads: el click en una tarea abre este panel y el modal de edición
-// solo aparece al pulsar "Editar".
+// ─── Detalle de tarea (acordeón bajo la fila) ────────────────────────────────
+// El click en una tarea despliega su contenido debajo con animación; el modal de
+// edición solo aparece al pulsar "Editar". Solo hay una tarea desplegada a la vez.
 const TASK_STATUS_META = {
   pendiente:   { label: 'Pendiente',   color: '#fbbf24' },
   en_progreso: { label: 'En progreso', color: '#38bdf8' },
@@ -2775,7 +2762,7 @@ const TASK_STATUS_META = {
   cancelada:   { label: 'Cancelada',   color: '#6b7280' },
 };
 
-let currentTaskDetailId = null;
+let expandedTaskKey = null;   // 'list:<id>' o 'home:<id>' (la misma tarea puede estar en ambas listas)
 let homeUrgentTasksData = []; // tareas del dashboard de inicio (tasksData puede no estar cargado aún)
 
 function findTask(id) {
@@ -2790,34 +2777,25 @@ function fmtTaskDate(value) {
   return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-async function openTaskDetail(id) {
-  const t = findTask(id);
-  if (!t) return;
-  currentTaskDetailId = id;
-  // Carga perezosa de proyectos para poder mostrar el nombre del proyecto asociado
-  if (t.project_id && !projectsData.length) {
-    try {
-      const r = await fetch('/api/projects', { headers: { 'x-admin-password': adminPass } });
-      projectsData = await r.json().catch(() => []);
-    } catch { /* noop: no se mostrará el proyecto */ }
-    if (currentTaskDetailId !== id) return;
-  }
+// Los nombres de proyecto salen de projectsData: se carga solo si alguna tarea lo necesita
+async function ensureProjectsForTasks(tasks) {
+  if (projectsData.length || !tasks.some(t => t.project_id)) return;
+  try {
+    const r = await fetch('/api/projects', { headers: { 'x-admin-password': adminPass } });
+    projectsData = await r.json().catch(() => []);
+  } catch { /* noop: no se mostrará el proyecto */ }
+}
+
+function taskExpandHtml(scope, t, open) {
   const st = TASK_STATUS_META[t.status] || { label: t.status, color: '#6b7280' };
-  const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
   const done = t.status === 'completada';
   const today = new Date().toISOString().slice(0, 10);
   const overdue = t.due_date && t.due_date < today && !done && t.status !== 'cancelada';
   const client = t.client_id ? clients.find(c => c.id === t.client_id) : null;
   const project = t.project_id ? projectsData.find(p => p.id === t.project_id) : null;
 
-  document.getElementById('taskDetailTitle').textContent = t.title || '—';
-  document.getElementById('taskDetailBadges').innerHTML = `
-    <span class="lead-stage-badge" style="--badge-bg:${st.color}26; --badge-text:${st.color}">
-      <span class="lead-stage-dot" style="--dot-color:${st.color}"></span>${esc(st.label)}
-    </span>
-    <span class="text-xs px-2 py-0.5 rounded-full ${pr.cls}">Prioridad ${pr.label.toLowerCase()}</span>`;
-
-  const detalles = [
+  const fields = [
+    leadDetailRow('Estado', `<span class="lead-stage-badge" style="--badge-bg:${st.color}26; --badge-text:${st.color}"><span class="lead-stage-dot" style="--dot-color:${st.color}"></span>${esc(st.label)}</span>`),
     leadDetailRow('Fecha límite', t.due_date
       ? `<span class="${overdue ? 'text-red-400' : ''}">${fmtTaskDate(t.due_date)}${overdue ? ' · Vencida' : ''}</span>`
       : 'Sin fecha'),
@@ -2827,49 +2805,55 @@ async function openTaskDetail(id) {
     leadDetailRow('Creada el', fmtTaskDate(t.created_at)),
   ].join('');
 
-  document.getElementById('taskDetailBody').innerHTML = `
-    <p class="entity-section-title">Detalles</p><div class="mb-2">${detalles}</div>
-    <p class="entity-section-title mt-5">Descripción</p>
-    ${t.description
-      ? `<div class="lead-detail-notes">${esc(t.description)}</div>`
-      : '<p class="text-sm text-gray-600">Sin descripción.</p>'}
-  `;
-  document.getElementById('taskDetailDeleteBtn').onclick = () => askDeleteEntity('task', t.id, '¿Eliminar esta tarea?');
-  const toggleBtn = document.getElementById('taskDetailToggleBtn');
-  toggleBtn.textContent = done ? 'Reabrir' : 'Marcar completada';
-  toggleBtn.onclick = () => toggleTaskDoneFromDetail(t.id, !done);
-
-  const overlay = document.getElementById('taskDetailOverlay');
-  const panel = document.getElementById('taskDetailPanel');
-  overlay.style.display = 'flex';
-  panel.classList.remove('open');
-  requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('open')));
+  return `
+    <div id="task-exp-${scope}-${t.id}" class="task-expand ${open ? 'open' : ''}">
+      <div><div class="task-expand-inner px-4 pb-4">
+        <div class="border-t border-white/5 pt-3">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6">${fields}</div>
+          <p class="entity-section-title mt-4">Descripción</p>
+          ${t.description
+            ? `<div class="lead-detail-notes">${esc(t.description)}</div>`
+            : '<p class="text-sm text-gray-600">Sin descripción.</p>'}
+          <div class="flex items-center justify-end gap-2 mt-4 flex-wrap">
+            <button onclick="toggleTaskDoneFromDetail('${t.id}', ${!done})" class="text-xs font-medium border border-white/10 rounded-lg px-3.5 py-2 hover:border-white/25 transition-colors">${done ? 'Reabrir' : 'Marcar completada'}</button>
+            <button onclick="editTaskFromDetail('${t.id}')" class="flex items-center gap-1.5 bg-brand-blue text-black font-display font-semibold text-xs rounded-lg px-4 py-2 hover:opacity-90 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Editar
+            </button>
+          </div>
+        </div>
+      </div></div>
+    </div>`;
 }
 
-function closeTaskDetail() {
-  const overlay = document.getElementById('taskDetailOverlay');
-  const panel = document.getElementById('taskDetailPanel');
-  panel.classList.remove('open');
-  setTimeout(() => { if (!currentTaskDetailId) overlay.style.display = 'none'; }, 320);
-  currentTaskDetailId = null;
+// Abre/cierra el detalle tocando solo clases, sin repintar la lista, para que se vea la transición
+function toggleTaskExpand(scope, id) {
+  const key = `${scope}:${id}`;
+  const setOpen = (k, open) => {
+    if (!k) return;
+    const [sc, tid] = k.split(':');
+    document.getElementById(`task-exp-${sc}-${tid}`)?.classList.toggle('open', open);
+    document.getElementById(`task-item-${sc}-${tid}`)?.classList.toggle('expanded', open);
+  };
+  if (expandedTaskKey === key) {
+    setOpen(key, false);
+    expandedTaskKey = null;
+    return;
+  }
+  setOpen(expandedTaskKey, false);
+  setOpen(key, true);
+  expandedTaskKey = key;
 }
 
-function closeTaskDetailOnOverlay(e) {
-  if (e.target === document.getElementById('taskDetailOverlay')) closeTaskDetail();
-}
-
-function editCurrentTaskDetail() {
-  const id = currentTaskDetailId;
-  const t = id ? findTask(id) : null;
-  closeTaskDetail();
+function editTaskFromDetail(id) {
+  const t = findTask(id);
   if (!t) return;
   // El modal genérico busca el registro en tasksData; desde Inicio puede no estar cargado
   if (!tasksData.some(x => x.id === id)) tasksData.push(t);
-  setTimeout(() => openEntityModal('task', id), 150);
+  openEntityModal('task', id);
 }
 
 async function toggleTaskDoneFromDetail(id, checked) {
-  closeTaskDetail();
   await toggleTaskDone(id, checked);
   if (currentView === 'home') loadHome();
 }
@@ -3453,20 +3437,26 @@ function renderHomeKpis(d) {
     </div>`).join('');
 }
 
-function renderHomeUrgentTasks(tasks) {
+async function renderHomeUrgentTasks(tasks) {
   const el = document.getElementById('homeUrgentTasks');
   homeUrgentTasksData = tasks;
   if (!tasks.length) {
     el.innerHTML = '<p class="text-gray-600 text-sm text-center py-6">Nada urgente hoy 🎉</p>';
     return;
   }
+  await ensureProjectsForTasks(tasks);
   el.innerHTML = tasks.map(t => {
     const pr = TASK_PRIORITY_LABELS[t.priority] || TASK_PRIORITY_LABELS.media;
+    const open = expandedTaskKey === `home:${t.id}`;
     return `
-    <div class="flex items-center gap-3 px-1 py-2 border-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 rounded-lg transition-colors" onclick="openTaskDetail('${t.id}')">
-      <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
-      <p class="text-sm flex-1 truncate">${esc(t.title)}</p>
-      <p class="text-xs text-gray-600 shrink-0">${t.due_date || ''}</p>
+    <div id="task-item-home-${t.id}" class="task-item border border-transparent rounded-lg transition-colors ${open ? 'expanded' : ''}">
+      <div class="flex items-center gap-3 px-1 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors" onclick="toggleTaskExpand('home','${t.id}')">
+        <span class="text-xs px-2 py-0.5 rounded-full shrink-0 ${pr.cls}">${pr.label}</span>
+        <p class="text-sm flex-1 truncate">${esc(t.title)}</p>
+        <p class="text-xs text-gray-600 shrink-0">${t.due_date || ''}</p>
+        <svg class="task-chevron w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </div>
+      ${taskExpandHtml('home', t, open)}
     </div>`;
   }).join('');
 }
