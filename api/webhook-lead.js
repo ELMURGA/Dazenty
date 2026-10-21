@@ -59,7 +59,9 @@ const normalizar = (s) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
+    // Se conservan letras de cualquier alfabeto (cir\u00edlico, \u00e1rabe...): si solo
+    // quedaran a-z, esos nombres se volv\u00edan "" y coincid\u00edan con cualquier b\u00fasqueda.
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
     .trim();
 
 async function findExistingLead(body) {
@@ -85,16 +87,26 @@ async function findExistingLead(body) {
 // código de n8n directamente sobre las filas de Sheets.
 async function buscarPorEmpresaDifuso(query) {
   const objetivo = normalizar(query);
-  const candidatos = await sbSelect(
-    'leads',
-    'select=id,company,whatsapp,whatsapp_contacted_at,external_id&company=not.is.null&order=created_at.desc&limit=300'
-  );
-  let match = candidatos.find((f) => normalizar(f.company) === objetivo);
-  if (!match) {
-    match = candidatos.find(
-      (f) => normalizar(f.company).includes(objetivo) || objetivo.includes(normalizar(f.company))
+  // Supabase devuelve como mucho 1000 filas por petición: se leen por tandas
+  // para buscar en todos los leads y no solo en los más recientes.
+  const candidatos = [];
+  for (let offset = 0; offset < 20000; offset += 1000) {
+    const tanda = await sbSelect(
+      'leads',
+      `select=id,company,whatsapp,whatsapp_contacted_at,external_id&company=not.is.null&order=created_at.desc,id.desc&limit=1000&offset=${offset}`
     );
+    candidatos.push(...tanda);
+    if (tanda.length < 1000) break;
   }
+  // Un nombre que se queda vacío al normalizar ("" está contenido en todo) nunca debe coincidir.
+  const conNombre = objetivo
+    ? candidatos.map((f) => ({ f, n: normalizar(f.company) })).filter((c) => c.n)
+    : [];
+  let match =
+    conNombre.find((c) => c.n === objetivo) ||
+    conNombre.find((c) => c.n.includes(objetivo)) ||
+    conNombre.find((c) => c.n.length >= 3 && objetivo.includes(c.n));
+  match = match && match.f;
   if (!match) {
     return {
       encontrado: false,
