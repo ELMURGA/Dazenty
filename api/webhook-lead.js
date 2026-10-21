@@ -105,7 +105,8 @@ async function buscarPorEmpresaDifuso(query) {
   let match =
     conNombre.find((c) => c.n === objetivo) ||
     conNombre.find((c) => c.n.includes(objetivo)) ||
-    conNombre.find((c) => c.n.length >= 3 && objetivo.includes(c.n));
+    // Al revés solo por palabras completas: "inventada" no debe encontrar "Ada".
+    conNombre.find((c) => (' ' + objetivo + ' ').includes(' ' + c.n + ' '));
   match = match && match.f;
   if (!match) {
     return {
