@@ -998,7 +998,7 @@
     <div class="grid sm:grid-cols-2 gap-4 mb-6">
       <div class="entity-field">
         <label>Cliente *</label>
-        <select id="inv-clientId"></select>
+        <select id="inv-clientId" onchange="prefillInvoiceBilling()"></select>
       </div>
       <div class="entity-field">
         <label>Nº factura</label>
@@ -1013,8 +1013,15 @@
         <input type="date" id="inv-dueDate">
       </div>
       <div class="entity-field">
-        <label>IVA (%)</label>
-        <input type="number" id="inv-taxRate" value="21" step="0.01">
+        <label>IVA</label>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 text-gray-300 cursor-pointer shrink-0" style="margin:0;font-size:14px;text-transform:none;letter-spacing:normal;color:#d1d5db">
+            <input type="checkbox" id="inv-addTax" onchange="toggleInvoiceTax()" style="width:16px;height:16px;padding:0;border-radius:4px" class="accent-brand-blue">
+            Añadir IVA
+          </label>
+          <input type="number" id="inv-taxRate" value="21" step="0.01" min="0" oninput="updateInvoiceTotalsPreview()" aria-label="Porcentaje de IVA" class="w-24" disabled>
+          <span class="text-gray-500 text-sm">%</span>
+        </div>
       </div>
       <div class="entity-field">
         <label>Estado</label>
@@ -1036,20 +1043,68 @@
     <div id="invoiceItemsRows" class="space-y-2 mb-4"></div>
     <div class="flex justify-end gap-6 text-sm mb-6">
       <p class="text-gray-500">Subtotal: <span id="inv-subtotalPreview" class="text-white font-medium">0,00€</span></p>
-      <p class="text-gray-500">IVA: <span id="inv-taxPreview" class="text-white font-medium">0,00€</span></p>
+      <p class="text-gray-500" id="inv-taxPreviewWrap">IVA: <span id="inv-taxPreview" class="text-white font-medium">0,00€</span></p>
       <p class="text-gray-500">Total: <span id="inv-totalPreview" class="text-brand-blue font-bold">0,00€</span></p>
+    </div>
+
+    <div class="h-px bg-white/5 mb-6"></div>
+    <p class="text-xs font-semibold text-brand-blue uppercase tracking-widest mb-1">Datos del PDF</p>
+    <p class="text-xs text-gray-600 mb-4">Lo que sale en la factura con el diseño de Canva. Se rellena con lo último que usaste para este cliente.</p>
+    <div class="grid sm:grid-cols-2 gap-4 mb-6">
+      <div class="entity-field">
+        <label>Nombre del cliente</label>
+        <input type="text" id="inv-billName" placeholder="Nombre o empresa">
+      </div>
+      <div class="entity-field">
+        <label>Teléfono del cliente</label>
+        <input type="text" id="inv-billPhone" placeholder="600 000 000">
+      </div>
+      <div class="entity-field sm:col-span-2">
+        <label>Dirección del cliente</label>
+        <input type="text" id="inv-billAddress" placeholder="Calle, nº, localidad">
+      </div>
+      <div class="entity-field">
+        <label>Método de pago</label>
+        <select id="inv-payMethod">
+          <option>Efectivo</option>
+          <option>Transferencia</option>
+          <option>Bizum</option>
+          <option>Tarjeta</option>
+          <option>Stripe</option>
+        </select>
+      </div>
+      <div class="entity-field">
+        <label>Teléfono de contacto (Dazenty)</label>
+        <input type="text" id="inv-contactPhone" list="inv-contactPhones" value="676 448 762">
+        <datalist id="inv-contactPhones">
+          <option value="676 448 762"></option>
+          <option value="624 903 256"></option>
+        </datalist>
+      </div>
+      <div class="entity-field">
+        <label>Fila extra: título</label>
+        <input type="text" id="inv-extraLabel" value="Hosting" placeholder="Hosting">
+      </div>
+      <div class="entity-field">
+        <label>Fila extra: texto</label>
+        <input type="text" id="inv-extraValue" placeholder="Cuota mensual de 20€ (vacío = no sale)">
+      </div>
     </div>
 
     <div class="entity-field mb-6">
       <label>Notas</label>
-      <textarea id="inv-notes" placeholder="Notas internas (opcional)"></textarea>
+      <textarea id="inv-notes" placeholder="Notas internas (opcional, no salen en el PDF)"></textarea>
     </div>
 
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex flex-wrap items-center justify-end gap-3">
       <button onclick="closeInvoiceModal()" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-white transition-colors border border-white/5 rounded-xl">Cancelar</button>
       <button onclick="saveInvoice()" id="invoiceSaveBtn"
-        class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">
+        class="px-6 py-3 text-sm font-medium text-white hover:border-white/30 transition-colors border border-white/10 rounded-xl">
         <span id="invoiceSaveBtnLabel">Crear factura</span>
+      </button>
+      <button onclick="saveInvoice({ pdf: true })" id="invoiceSavePdfBtn"
+        class="flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-bold text-sm rounded-xl px-8 py-3 hover:opacity-90 transition-opacity">
+        <span id="invoiceSavePdfBtnLabel">Crear y generar PDF</span>
       </button>
     </div>
   </div>
@@ -2984,6 +3039,7 @@ function renderInvoicesTable() {
       <td class="px-4 py-3"><span class="text-xs px-2 py-0.5 rounded-full ${st.cls}">${st.label}</span></td>
       <td class="px-4 py-3 text-right whitespace-nowrap">
         ${pending > 0 ? `<button onclick="openPaymentModal('${inv.id}')" class="text-xs text-brand-blue hover:text-white transition-colors mr-3">Registrar pago</button>` : ''}
+        <button onclick="downloadInvoicePdf('${inv.id}')" class="text-xs text-brand-blue hover:text-white transition-colors mr-3" title="Generar el PDF con el diseño de Canva">PDF</button>
         <button onclick="openInvoiceModal('${inv.id}')" class="text-gray-600 hover:text-white transition-colors p-1 inline-flex align-middle mr-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         </button>
@@ -3004,12 +3060,18 @@ async function openInvoiceModal(id = null) {
   document.getElementById('invoiceSaveBtnLabel').textContent = id ? 'Guardar cambios' : 'Crear factura';
   document.getElementById('inv-clientId').innerHTML = clients.map(c =>
     `<option value="${c.id}" ${inv && inv.client_id === c.id ? 'selected' : ''}>${esc(c.client_name)}</option>`).join('');
-  document.getElementById('inv-number').value = inv?.invoice_number || '';
+  document.getElementById('inv-number').value = inv ? (inv.invoice_number || '') : nextInvoiceNumber();
   document.getElementById('inv-issueDate').value = inv?.issue_date || new Date().toISOString().slice(0, 10);
   document.getElementById('inv-dueDate').value = inv?.due_date || '';
-  document.getElementById('inv-taxRate').value = inv?.tax_rate ?? 21;
+  // Ahora se trabaja sin IVA: las facturas nuevas salen sin IVA salvo que se marque la casilla
+  const taxRate = Number(inv?.tax_rate) || 0;
+  document.getElementById('inv-addTax').checked = taxRate > 0;
+  document.getElementById('inv-taxRate').value = taxRate > 0 ? taxRate : 21;
+  document.getElementById('inv-taxRate').disabled = !(taxRate > 0);
   document.getElementById('inv-status').value = inv?.status || 'pendiente';
   document.getElementById('inv-notes').value = inv?.notes || '';
+  if (inv) fillInvoiceBilling(inv.pdf_meta || {}, inv.client_id);
+  else prefillInvoiceBilling();
 
   if (id) {
     await fetchInvoiceItemsAndRender(id);
@@ -3064,8 +3126,63 @@ function updateInvoiceItem(i, key, value) {
   updateInvoiceTotalsPreview();
 }
 
+function invoiceTaxRateInput() {
+  if (!document.getElementById('inv-addTax').checked) return 0;
+  return parseFloat(document.getElementById('inv-taxRate').value) || 0;
+}
+
+function toggleInvoiceTax() {
+  const on = document.getElementById('inv-addTax').checked;
+  const rateInput = document.getElementById('inv-taxRate');
+  rateInput.disabled = !on;
+  if (on && !(parseFloat(rateInput.value) > 0)) rateInput.value = 21;
+  updateInvoiceTotalsPreview();
+}
+
+// Siguiente número correlativo (001, 002...). En Canva ya se emitieron hasta la Nº004.
+function nextInvoiceNumber() {
+  const max = invoicesData.reduce((m, inv) => {
+    const n = parseInt(String(inv.invoice_number || '').replace(/\D/g, ''), 10);
+    return Number.isFinite(n) ? Math.max(m, n) : m;
+  }, 4);
+  return String(max + 1).padStart(3, '0');
+}
+
+function fillInvoiceBilling(meta, clientId) {
+  const client = clients.find(c => c.id === clientId);
+  document.getElementById('inv-billName').value = meta.bill_name || client?.company_name || client?.client_name || '';
+  document.getElementById('inv-billPhone').value = meta.bill_phone || '';
+  document.getElementById('inv-billAddress').value = meta.bill_address || '';
+  document.getElementById('inv-payMethod').value = meta.payment_method || 'Efectivo';
+  document.getElementById('inv-contactPhone').value = meta.contact_phone || '676 448 762';
+  document.getElementById('inv-extraLabel').value = meta.extra_label || 'Hosting';
+  document.getElementById('inv-extraValue').value = meta.extra_value || '';
+}
+
+// Factura nueva: reutiliza los datos de la última factura de ese cliente (los clientes no guardan teléfono ni dirección)
+function prefillInvoiceBilling() {
+  if (editingInvoiceId) return;
+  const clientId = document.getElementById('inv-clientId').value;
+  const last = invoicesData.find(inv => inv.client_id === clientId && inv.pdf_meta && Object.keys(inv.pdf_meta).length);
+  fillInvoiceBilling(last ? { ...last.pdf_meta, extra_value: '' } : {}, clientId);
+}
+
+function invoiceBillingInput() {
+  const v = id => document.getElementById(id).value.trim();
+  return {
+    bill_name: v('inv-billName'),
+    bill_phone: v('inv-billPhone'),
+    bill_address: v('inv-billAddress'),
+    payment_method: v('inv-payMethod'),
+    contact_phone: v('inv-contactPhone'),
+    extra_label: v('inv-extraLabel'),
+    extra_value: v('inv-extraValue'),
+  };
+}
+
 function updateInvoiceTotalsPreview() {
-  const taxRate = parseFloat(document.getElementById('inv-taxRate').value) || 0;
+  const taxRate = invoiceTaxRateInput();
+  document.getElementById('inv-taxPreviewWrap').style.display = taxRate > 0 ? '' : 'none';
   const subtotal = invoiceItemsState.reduce((s, it) => s + (Number(it.quantity) || 0) * (Number(it.unit_price) || 0), 0);
   const tax = subtotal * taxRate / 100;
   document.getElementById('inv-subtotalPreview').textContent = `${fmtAmt(subtotal)}€`;
@@ -3081,23 +3198,27 @@ function closeInvoiceModalOnOverlay(e) {
   if (e.target === document.getElementById('invoice-modal-overlay')) closeInvoiceModal();
 }
 
-async function saveInvoice() {
+async function saveInvoice({ pdf = false } = {}) {
   const clientId = document.getElementById('inv-clientId').value;
   if (!clientId) { showToast('Selecciona un cliente', 'error'); return; }
   const items = invoiceItemsState.filter(it => it.description.trim());
   if (!items.length) { showToast('Añade al menos una línea con descripción', 'error'); return; }
+  if (pdf && items.length > DazentyInvoicePdfMaxItems) {
+    showToast(`El diseño de la factura admite como mucho ${DazentyInvoicePdfMaxItems} líneas`, 'error'); return;
+  }
   const body = {
     client_id: clientId,
     invoice_number: document.getElementById('inv-number').value || null,
     issue_date: document.getElementById('inv-issueDate').value || null,
     due_date: document.getElementById('inv-dueDate').value || null,
-    tax_rate: parseFloat(document.getElementById('inv-taxRate').value) || 0,
+    tax_rate: invoiceTaxRateInput(),
     status: document.getElementById('inv-status').value,
     notes: document.getElementById('inv-notes').value || null,
+    pdf_meta: invoiceBillingInput(),
     items,
   };
-  const btn = document.getElementById('invoiceSaveBtn');
-  btn.disabled = true;
+  const btns = [document.getElementById('invoiceSaveBtn'), document.getElementById('invoiceSavePdfBtn')];
+  btns.forEach(b => { b.disabled = true; });
   try {
     const url = editingInvoiceId ? `/api/invoices?id=${editingInvoiceId}` : '/api/invoices';
     const res = await fetch(url, {
@@ -3109,15 +3230,127 @@ async function saveInvoice() {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Error al guardar la factura');
     }
+    const saved = await res.json();
     closeInvoiceModal();
     showToast(editingInvoiceId ? '✓ Factura actualizada' : '✓ Factura creada');
     await loadInvoices();
     if (currentView === 'home') loadHome();
+    if (pdf) await downloadInvoicePdf(saved.id);
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
-    btn.disabled = false;
+    btns.forEach(b => { b.disabled = false; });
   }
+}
+
+// ─── PDF de factura con el diseño de Canva ("facturas") ────────────────────────
+// Las librerías y la plantilla solo se descargan la primera vez que se genera un PDF.
+const DazentyInvoicePdfMaxItems = 7;
+const INVOICE_PDF_SCRIPTS = [
+  '/js/vendor/pdf-lib-1.17.1.min.js',
+  '/js/vendor/fontkit-1.1.1.umd.min.js',
+  '/js/invoice-pdf.js?v=20261023',
+];
+const INVOICE_PDF_STATUS = {
+  pendiente: 'Pendiente', parcial: 'Pago parcial', pagada: 'Pagado', vencida: 'Vencida', cancelada: 'Cancelada',
+};
+let invoicePdfLibsPromise = null;
+
+function loadInvoicePdfLibs() {
+  if (!invoicePdfLibsPromise) {
+    invoicePdfLibsPromise = INVOICE_PDF_SCRIPTS.reduce((chain, src) => chain.then(() => new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('No se pudo cargar el generador de PDF'));
+      document.head.appendChild(s);
+    })), Promise.resolve()).catch(err => { invoicePdfLibsPromise = null; throw err; });
+  }
+  return invoicePdfLibsPromise;
+}
+
+// Genera el PDF, lo descarga y lo guarda en el "Archivo de facturas en PDF" del cliente
+async function downloadInvoicePdf(id) {
+  showToast('Generando PDF…');
+  try {
+    const [, res] = await Promise.all([
+      loadInvoicePdfLibs(),
+      fetch(`/api/invoices?id=${encodeURIComponent(id)}`, { headers: { 'x-admin-password': adminPass } }),
+    ]);
+    const inv = await res.json();
+    if (!res.ok) throw new Error(inv.error || 'No se pudo leer la factura');
+    const client = clients.find(c => c.id === inv.client_id);
+    const meta = inv.pdf_meta || {};
+    const bytes = await window.DazentyInvoicePdf.generate({
+      number: inv.invoice_number || '',
+      issueDate: inv.issue_date,
+      client: {
+        name: meta.bill_name || client?.company_name || client?.client_name || '',
+        phone: meta.bill_phone || '',
+        address: meta.bill_address || '',
+      },
+      items: inv.items || [],
+      taxRate: Number(inv.tax_rate) || 0,
+      paymentMethod: meta.payment_method || 'Efectivo',
+      statusLabel: INVOICE_PDF_STATUS[inv.status] || inv.status,
+      extraLabel: meta.extra_label,
+      extraValue: meta.extra_value,
+      contactPhone: meta.contact_phone,
+    });
+
+    const slug = client?.slug || toSlug(client?.client_name || 'cliente');
+    const numberPart = String(inv.invoice_number || inv.id.slice(0, 8)).replace(/[^a-zA-Z0-9-]/g, '');
+    const fileName = `factura-${numberPart}-${slug}.pdf`;
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+
+    await archiveInvoicePdf(inv, blob, fileName, slug);
+    showToast('✓ PDF descargado y guardado en el archivo del cliente');
+  } catch (err) {
+    showToast(err.message || 'No se pudo generar el PDF', 'error');
+  }
+}
+
+// Sustituye en el archivo la versión anterior del PDF de esa factura (si la había)
+async function archiveInvoicePdf(inv, blob, fileName, slug) {
+  const headers = { 'Content-Type': 'application/json', 'x-admin-password': adminPass };
+  const data = await fileToBase64(blob);
+  const upRes = await fetch('/api/upload', {
+    method: 'POST', headers,
+    body: JSON.stringify({ clientSlug: slug, docType: 'invoice-archive', filename: fileName, data }),
+  });
+  if (!upRes.ok) throw new Error((await upRes.json().catch(() => ({}))).error || 'PDF descargado, pero no se pudo guardar en el archivo');
+  const { publicUrl } = await upRes.json();
+
+  const regRes = await fetch('/api/invoice-pdfs', {
+    method: 'POST', headers,
+    body: JSON.stringify({
+      client_id: inv.client_id,
+      file_name: fileName,
+      file_url: publicUrl,
+      label: `Factura ${window.DazentyInvoicePdf.invoiceNumberLabel(inv.invoice_number) || ''}`.trim(),
+      amount: Number(inv.total) || null,
+      issue_date: inv.issue_date || null,
+    }),
+  });
+  if (!regRes.ok) throw new Error((await regRes.json().catch(() => ({}))).error || 'PDF descargado, pero no se pudo registrar en el archivo');
+
+  if (inv.pdf_url) {
+    const previous = invoicePdfsData.find(p => p.file_url === inv.pdf_url)
+      || (await fetch(`/api/invoice-pdfs?client_id=${encodeURIComponent(inv.client_id)}`, { headers })
+        .then(r => r.json()).catch(() => [])).find?.(p => p.file_url === inv.pdf_url);
+    if (previous) await fetch(`/api/invoice-pdfs?id=${encodeURIComponent(previous.id)}`, { method: 'DELETE', headers });
+  }
+  await fetch(`/api/invoices?id=${encodeURIComponent(inv.id)}`, {
+    method: 'PUT', headers, body: JSON.stringify({ pdf_url: publicUrl }),
+  });
+  await Promise.all([loadInvoices(), loadInvoicePdfs()]);
 }
 
 // ─── Archivo de facturas en PDF (organizadas por cliente) ──────────────────────
