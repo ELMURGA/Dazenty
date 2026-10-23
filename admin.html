@@ -200,6 +200,8 @@
     .cal-day:hover { background: rgba(255,255,255,0.02); }
     .cal-day.out { opacity: 0.35; }
     .cal-day.today .cal-num { background: #d97762; color: #000; }
+    .cal-day.selected .cal-num { box-shadow: 0 0 0 2px #eaeaea; }
+    .cal-day.selected { background: rgba(255,255,255,0.04); }
     .cal-week .cal-day { min-height: 320px; }
     .cal-num { font-size: 12px; font-weight: 600; width: 24px; height: 24px; border-radius: 999px;
       display: inline-flex; align-items: center; justify-content: center; margin-bottom: 4px; }
@@ -213,7 +215,11 @@
     .cal-item.tk.alta { box-shadow: inset 3px 0 0 #fbbf24; }
     @media (max-width: 640px) {
       .cal-day { min-height: 72px; padding: 3px; }
-      .cal-month .cal-item { font-size: 0; padding: 0; width: 7px; height: 7px; border-radius: 999px; display: inline-block; margin: 0 2px 0 0; }
+      /* Como el Calendario de iPhone: en el mes solo puntos; la lista del día va debajo */
+      .cal-month .cal-item { font-size: 0; padding: 0; width: 7px; height: 7px; border-radius: 999px; display: inline-block; margin: 0 2px 0 0; pointer-events: none; }
+      .cal-month .cal-item.ev { background: #7dd3fc; }
+      .cal-month .cal-item.tk { background: #f0a48f; box-shadow: none; }
+      .cal-month .cal-day { text-align: center; min-height: 54px; }
       .cal-week { grid-template-columns: 1fr; }
       .cal-week .cal-head { display: none; }
       .cal-week .cal-day { min-height: 0; }
@@ -282,12 +288,12 @@
   <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-20 lg:hidden" style="display:none"></div>
 
   <!-- Sidebar -->
-  <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 shrink-0 bg-brand-gray border-r border-white/5 flex flex-col z-30 -translate-x-full lg:translate-x-0 transition-transform duration-200">
+  <aside id="sidebar" class="fixed inset-y-0 left-0 lg:sticky lg:top-0 lg:bottom-auto lg:h-screen w-64 shrink-0 bg-brand-gray border-r border-white/5 flex flex-col z-30 -translate-x-full lg:translate-x-0 transition-transform duration-200">
     <div class="px-5 py-5 flex items-center gap-2.5 border-b border-white/5">
       <img src="/img/logodazenty.webp" alt="Dazenty" width="200" height="200" class="h-9 w-auto">
       <span class="font-display font-semibold text-sm text-white">Dazenty OS</span>
     </div>
-    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+    <nav class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4 px-3 space-y-5">
       <div>
         <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Resumen</p>
         <button type="button" onclick="switchView('home')" id="navHome" class="sidenav-item active">
@@ -701,7 +707,7 @@
       <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Calendario</h2>
-          <p class="text-gray-500 text-sm mt-0.5">Eventos y tareas por fecha. Pulsa un día para crear una tarea en esa fecha.</p>
+          <p class="text-gray-500 text-sm mt-0.5">Eventos y tareas por fecha. Pulsa un día para ver lo que tienes o crear una tarea.</p>
         </div>
         <div class="flex flex-wrap gap-2 self-start">
           <button onclick="openEntityModal('task')" class="flex items-center gap-2 border border-white/10 text-sm font-medium rounded-xl px-4 py-2.5 hover:border-white/20 transition-all text-gray-300">
@@ -738,6 +744,7 @@
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f0a48f"></span>Tareas</span>
       </div>
       <div id="calendarGrid" class="rounded-2xl border border-white/5 overflow-hidden bg-brand-gray"></div>
+      <div id="calendarDayList" class="sm:hidden mt-4"></div>
     </div>
 
     <!-- ═══ VISTA: HISTORIAS (Instagram) ═══ -->
@@ -3958,6 +3965,7 @@ const EVENT_TYPE_LABELS = {
 const CAL_DOW = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 let calendarMode = readTaskPref('dz-cal-mode', 'month');
 let calendarCursor = new Date();
+let calendarSelected = null; // día elegido en el móvil (vista mensual): su lista aparece debajo
 
 function isoDay(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -4003,6 +4011,8 @@ function shiftCalendar(step) {
   if (step === 0) calendarCursor = new Date();
   else if (calendarMode === 'week') calendarCursor.setDate(calendarCursor.getDate() + step * 7);
   else calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + step, 1);
+  // Al cambiar de mes, el día elegido pasa al día 1 (o a hoy con «Hoy»)
+  calendarSelected = step === 0 ? null : isoDay(calendarCursor);
   loadEventsView();
 }
 
@@ -4042,10 +4052,51 @@ function renderCalendar() {
       ? `<span class="cal-num">${d.getDate()}</span><span class="text-xs text-gray-500 sm:hidden ml-1">${CAL_DOW[(d.getDay() + 6) % 7]}</span>`
       : `<span class="cal-num">${d.getDate()}</span>`;
     const out = calendarMode === 'month' && d.getMonth() !== month ? 'out' : '';
-    return `<div class="cal-day ${out} ${key === today ? 'today' : ''}" onclick="openEntityModal('task', null, { due_date: '${key}' })">${dayLabel}<div>${evHtml}${tkHtml}</div></div>`;
+    const selected = key === (calendarSelected || today) ? 'selected' : '';
+    return `<div class="cal-day ${out} ${key === today ? 'today' : ''} ${selected}" onclick="calendarDayClick('${key}')">${dayLabel}<div>${evHtml}${tkHtml}</div></div>`;
   }).join('');
   grid.innerHTML = `<div class="cal-grid ${calendarMode === 'week' ? 'cal-week' : 'cal-month'}">
     ${CAL_DOW.map(d => `<div class="cal-head">${d}</div>`).join('')}${cells}</div>`;
+  renderCalendarDayList(byDay);
+}
+
+// En el móvil, tocar un día lo selecciona y muestra su lista debajo (como el
+// Calendario de iPhone); en el ordenador abre directamente una tarea nueva en ese día.
+function calendarDayClick(key) {
+  if (calendarMode === 'month' && window.matchMedia('(max-width: 640px)').matches) {
+    calendarSelected = key;
+    renderCalendar();
+    return;
+  }
+  openEntityModal('task', null, { due_date: key });
+}
+
+function renderCalendarDayList(byDay) {
+  const box = document.getElementById('calendarDayList');
+  if (!box) return;
+  if (calendarMode !== 'month') { box.innerHTML = ''; return; }
+  const key = calendarSelected || isoDay(new Date());
+  const items = byDay[key] || { ev: [], tk: [] };
+  const [y, m, d] = key.split('-').map(Number);
+  const title = new Date(y, m - 1, d).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  const evRows = items.ev.map(ev => `
+    <button type="button" onclick="openEntityModal('event','${ev.id}')" class="w-full flex items-center gap-3 text-left bg-brand-gray border border-white/5 rounded-xl px-4 py-3">
+      <span class="w-1 self-stretch rounded-full" style="background:#7dd3fc"></span>
+      <span class="min-w-0 flex-1"><span class="block text-sm font-medium">${esc(ev.title)}</span>
+        <span class="block text-xs text-gray-500">${ev.all_day ? 'Todo el día' : new Date(ev.start_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}${ev.location ? ' · ' + esc(ev.location) : ''}</span></span>
+    </button>`).join('');
+  const tkRows = items.tk.map(t => `
+    <button type="button" onclick="openEntityModal('task','${t.id}')" class="w-full flex items-center gap-3 text-left bg-brand-gray border border-white/5 rounded-xl px-4 py-3 ${t.status === 'completada' ? 'opacity-50' : ''}">
+      <span class="w-1 self-stretch rounded-full" style="background:${t.priority === 'urgente' ? '#f87171' : t.priority === 'alta' ? '#fbbf24' : '#f0a48f'}"></span>
+      <span class="min-w-0 flex-1"><span class="block text-sm font-medium ${t.status === 'completada' ? 'line-through' : ''}">${esc(t.title)}</span>
+        <span class="block text-xs text-gray-500">Tarea · prioridad ${esc(t.priority || 'media')}</span></span>
+    </button>`).join('');
+  box.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-display font-semibold text-sm first-letter:uppercase">${esc(title)}</h3>
+      <button type="button" onclick="openEntityModal('task', null, { due_date: '${key}' })" class="text-xs text-brand-blue border border-brand-blue/30 rounded-lg px-3 py-1.5">+ Tarea</button>
+    </div>
+    <div class="space-y-2">${evRows + tkRows || '<p class="text-gray-600 text-sm text-center py-6">Nada este día.</p>'}</div>`;
 }
 
 // ─── Historias: enlaces del calendario, control diario y avisos push ──────────
