@@ -110,3 +110,17 @@ test('API stores manual coverage and still recalculates linked invoice payments'
     globalThis.fetch = originalFetch;
   }
 });
+
+test('web payments: halves without coverage, total required and not below the amount', () => {
+  const web = { client_id: 'client-1', amount: 330, payment_date: '2026-10-23', payment_method: 'bizum',
+    service_concept: 'Diseño web', payment_kind: 'web', web_total: 660, installment: 'primera_mitad' };
+  assert.equal(validatePayment(web), null);
+  assert.equal(validatePayment({ ...web, installment: 'segunda_mitad' }), null);
+  for (const changes of [
+    { web_total: null }, { web_total: 100 }, { web_total: 'x' }, { installment: 'tercera' },
+    { coverage_start: '2026-10-23', coverage_end: '2027-10-22' }, { payment_kind: 'otro' },
+  ]) {
+    assert.ok(validatePayment({ ...web, ...changes }), JSON.stringify(changes));
+  }
+  assert.ok(validatePayment({ ...payment, web_total: 660 }));
+});

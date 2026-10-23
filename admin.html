@@ -6,6 +6,14 @@
   <title>Admin — Dazenty</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/webp" href="/img/favicon.webp">
+  <!-- App en la pantalla de inicio (iPhone/iPad): icono con el logo y avisos push -->
+  <link rel="manifest" href="/manifest-admin.json">
+  <link rel="apple-touch-icon" href="/img/app/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dazenty OS">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#050505">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -180,6 +188,45 @@
     .task-item.expanded { border-color: rgba(217,119,98,0.3); }
     .task-item.expanded .task-chevron { transform: rotate(180deg); }
 
+    /* Con un modal abierto la página de fondo no se desplaza (ver lockScrollWhileModalOpen) */
+    html.modal-open, html.modal-open body { overflow: hidden; }
+    [id$="-overlay"], #leadDetailOverlay { overscroll-behavior: contain; }
+
+    /* Calendario mensual/semanal con eventos y tareas */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .cal-head { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; padding: 8px 6px; }
+    .cal-day { min-height: 112px; border-top: 1px solid rgba(255,255,255,0.05); border-left: 1px solid rgba(255,255,255,0.05);
+      padding: 6px; cursor: pointer; transition: background 0.15s; min-width: 0; }
+    .cal-day:hover { background: rgba(255,255,255,0.02); }
+    .cal-day.out { opacity: 0.35; }
+    .cal-day.today .cal-num { background: #d97762; color: #000; }
+    .cal-week .cal-day { min-height: 320px; }
+    .cal-num { font-size: 12px; font-weight: 600; width: 24px; height: 24px; border-radius: 999px;
+      display: inline-flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .cal-item { display: block; width: 100%; text-align: left; font-size: 11px; line-height: 1.3; padding: 3px 6px; border-radius: 6px;
+      margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-week .cal-item { white-space: normal; }
+    .cal-item.ev { background: rgba(56,189,248,0.12); color: #7dd3fc; }
+    .cal-item.tk { background: rgba(217,119,98,0.14); color: #f0a48f; }
+    .cal-item.tk.done { opacity: 0.5; text-decoration: line-through; }
+    .cal-item.tk.urgente { box-shadow: inset 3px 0 0 #f87171; }
+    .cal-item.tk.alta { box-shadow: inset 3px 0 0 #fbbf24; }
+    @media (max-width: 640px) {
+      .cal-day { min-height: 72px; padding: 3px; }
+      .cal-month .cal-item { font-size: 0; padding: 0; width: 7px; height: 7px; border-radius: 999px; display: inline-block; margin: 0 2px 0 0; }
+      .cal-week { grid-template-columns: 1fr; }
+      .cal-week .cal-head { display: none; }
+      .cal-week .cal-day { min-height: 0; }
+    }
+
+    /* Historias: tira de días de la semana */
+    .story-day { border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 6px; text-align: center; cursor: pointer;
+      transition: all 0.15s; background: #0e0e0e; }
+    .story-day:hover { border-color: rgba(217,119,98,0.4); }
+    .story-day.done { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.35); }
+    .story-day.today { outline: 1px solid #d97762; }
+    .story-day.off { opacity: 0.45; }
+
     @keyframes spin { to { transform: rotate(360deg); } }
     .spin { animation: spin 0.8s linear infinite; }
       /* Foco visible al navegar con teclado */
@@ -302,6 +349,10 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           Calendario
         </button>
+        <button type="button" onclick="switchView('stories')" id="navStories" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4a8 8 0 108 8M12 4a8 8 0 018 8M12 4V2m8 10h2M9 12l2 2 4-4"/></svg>
+          Historias
+        </button>
         <button type="button" onclick="switchView('activity')" id="navActivity" class="sidenav-item">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           Actividad
@@ -403,6 +454,10 @@
         </div>
       </div>
 
+      <div id="webPaymentsWrap" class="mb-8" style="display:none">
+        <h3 class="font-display font-semibold text-sm mb-3">Webs: cobro por partes</h3>
+        <div id="webPaymentsSummary" class="grid md:grid-cols-2 gap-4"></div>
+      </div>
       <h3 class="font-display font-semibold text-sm mb-3">Cobros registrados en Dazenty OS</h3>
       <p class="text-gray-500 text-xs mb-4">Estos cobros cuentan como ingresos en Inicio. El período indica los días cubiertos, incluidos ambos extremos; no modifica ni cancela suscripciones de Stripe.</p>
       <div class="overflow-x-auto rounded-2xl border border-white/5 mb-8">
@@ -646,14 +701,103 @@
       <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
         <div>
           <h2 class="font-display font-bold text-lg">Calendario</h2>
-          <p class="text-gray-500 text-sm mt-0.5">Próximos eventos y reuniones</p>
+          <p class="text-gray-500 text-sm mt-0.5">Eventos y tareas por fecha. Pulsa un día para crear una tarea en esa fecha.</p>
         </div>
-        <button onclick="openEntityModal('event')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          Nuevo evento
-        </button>
+        <div class="flex flex-wrap gap-2 self-start">
+          <button onclick="openEntityModal('task')" class="flex items-center gap-2 border border-white/10 text-sm font-medium rounded-xl px-4 py-2.5 hover:border-white/20 transition-all text-gray-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Nueva tarea
+          </button>
+          <button onclick="openEntityModal('event')" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Nuevo evento
+          </button>
+        </div>
       </div>
-      <div id="eventsList" class="space-y-2"></div>
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="shiftCalendar(-1)" class="border border-white/10 rounded-lg p-2 text-gray-400 hover:text-white hover:border-white/20" aria-label="Anterior">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <button type="button" onclick="shiftCalendar(0)" class="border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 hover:text-white hover:border-white/20">Hoy</button>
+          <button type="button" onclick="shiftCalendar(1)" class="border border-white/10 rounded-lg p-2 text-gray-400 hover:text-white hover:border-white/20" aria-label="Siguiente">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <h3 id="calendarTitle" class="font-display font-semibold text-base ml-2"></h3>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1.5 text-xs text-gray-500"><input type="checkbox" id="calShowDone" onchange="renderCalendar()" style="width:auto;padding:0"> Completadas</label>
+          <div class="flex bg-white/5 rounded-xl p-1">
+            <button type="button" id="calModeMonth" onclick="setCalendarMode('month')" class="view-tab text-xs font-medium rounded-lg px-3 py-1.5">Mes</button>
+            <button type="button" id="calModeWeek" onclick="setCalendarMode('week')" class="view-tab text-xs font-medium rounded-lg px-3 py-1.5">Semana</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-4 text-xs text-gray-500 mb-3">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#7dd3fc"></span>Eventos</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f0a48f"></span>Tareas</span>
+      </div>
+      <div id="calendarGrid" class="rounded-2xl border border-white/5 overflow-hidden bg-brand-gray"></div>
+    </div>
+
+    <!-- ═══ VISTA: HISTORIAS (Instagram) ═══ -->
+    <div id="storiesView" style="display:none">
+      <div class="mb-6">
+        <h2 class="font-display font-bold text-lg">Historias</h2>
+        <p class="text-gray-500 text-sm mt-0.5">Tu calendario de contenido, el control de las historias subidas y los avisos al móvil.</p>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-semibold text-sm">Esta semana</h3>
+            <span id="storyWeekCount" class="text-xs text-gray-500"></span>
+          </div>
+          <div id="storyWeek" class="grid grid-cols-7 gap-2 mb-3"></div>
+          <p class="text-xs text-gray-600">Pulsa un día para marcar la historia como subida. Si la de hoy ya está marcada, no te llega el aviso.</p>
+        </div>
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+          <h3 class="font-display font-semibold text-sm mb-4">Calendario de historias</h3>
+          <div id="storyLinks" class="space-y-2 mb-4"></div>
+          <div class="grid sm:grid-cols-[1fr_1.4fr_auto] gap-2">
+            <input type="text" id="storyLinkTitle" placeholder="Nombre (p. ej. Semana 9)" maxlength="80">
+            <input type="url" id="storyLinkUrl" placeholder="https://claude.ai/artifact/…">
+            <button type="button" onclick="addStoryLink()" class="border border-white/10 rounded-xl px-4 py-2 text-sm text-gray-300 hover:text-white hover:border-white/20">Añadir</button>
+          </div>
+        </div>
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 lg:col-span-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+            <div>
+              <h3 class="font-display font-semibold text-sm">Notificaciones</h3>
+              <p id="pushStatus" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="pushToggleBtn" onclick="togglePushSubscription()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90">Activar en este dispositivo</button>
+              <button type="button" onclick="sendTestPush()" class="border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:border-white/20">Enviar prueba</button>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-tasks_enabled" style="width:auto;padding:0"> Tareas del día</label>
+              <input type="time" id="ns-tasks_time">
+              <p class="text-xs text-gray-600 mt-1.5">Lista de las tareas que vencen hoy.</p>
+            </div>
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-story_enabled" style="width:auto;padding:0"> Subir la historia</label>
+              <input type="time" id="ns-story_time">
+              <div id="ns-story_days" class="flex flex-wrap gap-1.5 mt-2"></div>
+              <p class="text-xs text-gray-600 mt-1.5">«¡Es hora de subir la historia!!!!»</p>
+            </div>
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-weekly_enabled" style="width:auto;padding:0"> Domingo: crear las de la semana</label>
+              <input type="time" id="ns-weekly_time">
+              <p class="text-xs text-gray-600 mt-1.5">«¡Hay que crear las historias de la semana!!!»</p>
+            </div>
+          </div>
+          <div class="flex justify-end mt-5">
+            <button type="button" id="notifSaveBtn" onclick="saveNotificationSettings()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-2.5 hover:opacity-90">Guardar horarios</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ═══ VISTA: ACTIVIDAD ═══ -->
@@ -1179,13 +1323,37 @@
         <label for="pay-client">Cliente *</label>
         <select id="pay-client" onchange="updatePaymentClient()"></select>
       </div>
+      <div id="pay-kindField" class="entity-field">
+        <label>Tipo de cobro</label>
+        <div class="flex bg-white/5 rounded-xl p-1">
+          <button type="button" id="pay-kind-servicio" onclick="setPaymentKind('servicio')" class="view-tab flex-1 text-xs font-medium rounded-lg px-3 py-2">Servicio (mantenimiento, hosting…)</button>
+          <button type="button" id="pay-kind-web" onclick="setPaymentKind('web')" class="view-tab flex-1 text-xs font-medium rounded-lg px-3 py-2">Importe de la web</button>
+        </div>
+      </div>
+      <div id="pay-webFields" class="space-y-4" style="display:none">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="entity-field">
+            <label for="pay-webTotal">Precio total de la web (€) *</label>
+            <input type="number" id="pay-webTotal" step="0.01" min="0.01" oninput="updatePaymentInstallment()">
+          </div>
+          <div class="entity-field">
+            <label for="pay-installment">Parte que cobras ahora *</label>
+            <select id="pay-installment" onchange="updatePaymentInstallment()">
+              <option value="primera_mitad">1ª mitad (50 %) · al empezar</option>
+              <option value="segunda_mitad">2ª mitad (50 %) · al terminar</option>
+              <option value="otro">Otro importe</option>
+            </select>
+          </div>
+        </div>
+        <p id="pay-webSummary" class="text-xs text-gray-500"></p>
+      </div>
       <div class="entity-field">
         <label for="pay-concept">Concepto</label>
         <input id="pay-concept" type="text" maxlength="200" placeholder="Mantenimiento y hosting">
       </div>
       <div class="entity-field">
         <label>Importe (€) *</label>
-        <input type="number" id="pay-amount" step="0.01" min="0.01">
+        <input type="number" id="pay-amount" step="0.01" min="0.01" oninput="updateWebPaymentSummary()">
       </div>
       <div class="entity-field">
         <label>Fecha</label>
@@ -1201,7 +1369,7 @@
           <option value="otro">Otro</option>
         </select>
       </div>
-      <div class="entity-field">
+      <div id="pay-periodField" class="entity-field">
         <label for="pay-period">Período cubierto</label>
         <select id="pay-period" onchange="if (['month','year'].includes(this.value)) updatePaymentClient(); updatePaymentCoverage()">
           <option value="none">Sin período</option>
@@ -1294,7 +1462,9 @@ async function doLogin(e) {
       clients = Array.isArray(data) ? data : [];
       renderClients();
       renderSummary();
-      switchView('home');
+      // Las notificaciones abren /admin#historias o /admin#tasks: entramos directamente ahí
+      const hash = location.hash.slice(1);
+      switchView(hash === 'historias' ? 'stories' : hash);
     } else {
       err.style.display = 'block';
       document.getElementById('loginInput').value = '';
@@ -1314,16 +1484,19 @@ const VIEW_CONTAINER_IDS = {
   home: 'homeView', leads: 'leadsView', opportunities: 'opportunitiesView', clients: 'clientsView',
   projects: 'projectsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
   expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView', jobs: 'jobsView',
+  stories: 'storiesView',
 };
 const VIEW_NAV_IDS = {
   home: 'navHome', leads: 'navLeads', opportunities: 'navOpportunities', clients: 'tabClients',
   projects: 'navProjects', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
   expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity', jobs: 'navJobs',
+  stories: 'navStories',
 };
 const VIEW_TITLES = {
   home: 'Inicio', leads: 'Leads (CRM)', opportunities: 'Oportunidades', clients: 'Clientes',
   projects: 'Proyectos', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
   expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad', jobs: 'Búsqueda de trabajo',
+  stories: 'Historias',
 };
 
 function switchView(view) {
@@ -1355,6 +1528,7 @@ function loadViewData(view) {
   else if (view === 'calendar') loadEventsView();
   else if (view === 'activity') loadActivityView();
   else if (view === 'jobs') loadJobSearch();
+  else if (view === 'stories') loadStoriesView();
 }
 
 function toggleSidebar(open) {
@@ -1413,6 +1587,53 @@ async function refreshAllPayments() {
   await Promise.all([loadPayments(), loadRegisteredPayments()]);
 }
 
+const PAYMENT_METHOD_LABELS = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
+const INSTALLMENT_LABELS = { primera_mitad: '1ª mitad', segunda_mitad: '2ª mitad', otro: 'Pago parcial' };
+
+// Una tarjeta por web (cliente + precio total) con lo cobrado, cuándo y cómo, y lo que falta
+function renderWebPaymentsSummary() {
+  const groups = new Map();
+  registeredPaymentsData.filter(p => p.payment_kind === 'web').forEach(p => {
+    const key = `${p.client_id}|${Number(p.web_total)}`;
+    if (!groups.has(key)) groups.set(key, { client_id: p.client_id, total: Number(p.web_total), concept: p.service_concept, payments: [] });
+    groups.get(key).payments.push(p);
+  });
+  document.getElementById('webPaymentsWrap').style.display = groups.size ? 'block' : 'none';
+  document.getElementById('webPaymentsSummary').innerHTML = [...groups.values()].map(g => {
+    const client = clients.find(c => c.id === g.client_id);
+    const paid = g.payments.reduce((sum, p) => sum + Number(p.amount), 0);
+    const pending = Math.max(0, Math.round((g.total - paid) * 100) / 100);
+    const pct = Math.min(100, Math.round(paid / g.total * 100));
+    const rows = [...g.payments].sort((a, b) => a.payment_date.localeCompare(b.payment_date)).map(p => `
+      <div class="flex items-center justify-between gap-3 text-xs py-1.5 border-b border-white/5 last:border-0">
+        <span class="text-gray-300">${esc(INSTALLMENT_LABELS[p.installment] || 'Pago')} · ${esc(new Date(p.payment_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }))} · ${esc(PAYMENT_METHOD_LABELS[p.payment_method] || p.payment_method || '—')}</span>
+        <span class="font-medium whitespace-nowrap">${fmtAmt(p.amount)}€</span>
+      </div>`).join('');
+    return `<div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <div class="flex items-start justify-between gap-3 mb-3">
+        <div class="min-w-0">
+          <p class="font-medium truncate">${esc(client?.client_name || 'Cliente')}</p>
+          <p class="text-xs text-gray-500 truncate">${esc(g.concept || 'Diseño web')} · ${fmtAmt(g.total)}€</p>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${pending ? 'bg-yellow-500/10 text-yellow-400' : 'bg-green-500/10 text-green-400'}">
+          ${pending ? `Pendiente ${fmtAmt(pending)}€` : 'Cobrada entera'}</span>
+      </div>
+      <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-3"><div class="h-full bg-brand-blue rounded-full" style="width:${pct}%"></div></div>
+      <p class="text-xs text-gray-500 mb-2">Cobrado ${fmtAmt(paid)}€ de ${fmtAmt(g.total)}€</p>
+      ${rows}
+      ${pending ? `<button type="button" onclick="openWebPaymentModal('${esc(g.client_id)}', ${g.total})"
+        class="mt-3 text-xs text-brand-blue border border-brand-blue/30 hover:border-brand-blue/60 rounded-lg px-3 py-1.5">Registrar el resto</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openWebPaymentModal(clientId, total) {
+  openPaymentModal(null, clientId);
+  setPaymentKind('web');
+  document.getElementById('pay-webTotal').value = total;
+  suggestWebPayment();
+}
+
 async function loadRegisteredPayments() {
   const tbody = document.getElementById('registeredPaymentsBody');
   tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Cargando cobros…</td></tr>';
@@ -1431,7 +1652,9 @@ async function loadRegisteredPayments() {
         <td class="px-4 py-3 whitespace-nowrap text-brand-blue">${fmtAmt(p.amount)}€</td>
         <td class="px-4 py-3 whitespace-nowrap">${esc(p.payment_date)}</td>
         <td class="px-4 py-3">${esc(methods[p.payment_method] || p.payment_method || '—')}</td>
-        <td class="px-4 py-3 whitespace-nowrap">${p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
+        <td class="px-4 py-3 whitespace-nowrap">${p.payment_kind === 'web'
+          ? `<span class="text-brand-blue">${esc(INSTALLMENT_LABELS[p.installment] || 'Web')}</span> <span class="text-gray-500">de ${fmtAmt(p.web_total)}€</span>`
+          : p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
         <td class="px-4 py-3 text-right whitespace-nowrap">
           <button type="button" onclick="askDeleteEntity('payment','${p.id}','¿Eliminar este cobro?')"
             class="text-gray-600 hover:text-red-400 transition-colors p-1" title="Eliminar cobro">
@@ -1440,6 +1663,7 @@ async function loadRegisteredPayments() {
         </td>
       </tr>`;
     }).join('') : '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Sin cobros registrados. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
+    renderWebPaymentsSummary();
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
   }
@@ -2290,9 +2514,9 @@ function toDatetimeLocal(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-function renderEntityField(f, item) {
+function renderEntityField(f, item, prefill = null) {
   const dflt = typeof f.default === 'function' ? f.default() : f.default;
-  const value = item ? (item[f.key] ?? '') : (dflt ?? '');
+  const value = item ? (item[f.key] ?? '') : (prefill?.[f.key] ?? dflt ?? '');
   const spanClass = f.span === 2 ? 'sm:col-span-2' : '';
   const id = `ef-${f.key}`;
   let control;
@@ -2317,7 +2541,8 @@ function renderEntityField(f, item) {
 }
 
 // Abre el modal genérico. `id` nulo = crear; con id busca el registro ya cargado en memoria.
-async function openEntityModal(type, id = null) {
+// `prefill` rellena campos al crear (p. ej. la fecha del día pulsado en el calendario).
+async function openEntityModal(type, id = null, prefill = null) {
   const cfg = ENTITY_CONFIG[type];
   if (!cfg || !cfg.fields) return;
   // Carga perezosa de datos relacionados que el formulario pueda necesitar
@@ -2347,12 +2572,12 @@ async function openEntityModal(type, id = null) {
       const fields = sec.keys.map(k => cfg.fields.find(f => f.key === k)).filter(Boolean);
       return `<div>
         <p class="entity-section-title">${esc(sec.title)}</p>
-        <div class="grid sm:grid-cols-2 gap-4">${fields.map(f => renderEntityField(f, item)).join('')}</div>
+        <div class="grid sm:grid-cols-2 gap-4">${fields.map(f => renderEntityField(f, item, prefill)).join('')}</div>
       </div>`;
     }).join('');
   } else {
     fieldsBox.className = 'grid sm:grid-cols-2 gap-4 mb-6';
-    fieldsBox.innerHTML = cfg.fields.map(f => renderEntityField(f, item)).join('');
+    fieldsBox.innerHTML = cfg.fields.map(f => renderEntityField(f, item, prefill)).join('');
   }
   document.getElementById('entity-modal-overlay').style.display = 'flex';
 }
@@ -3530,13 +3755,78 @@ function openPaymentModal(invoiceId = null, clientId = '') {
   document.getElementById('pay-period').value = inv ? 'none' : 'year';
   document.getElementById('pay-coverageStart').value = paymentToday();
   document.getElementById('pay-coverageEnd').value = '';
+  document.getElementById('pay-kindField').style.display = inv ? 'none' : 'block';
+  document.getElementById('pay-webTotal').value = '';
+  setPaymentKind('servicio');
   if (!inv) updatePaymentClient();
   updatePaymentCoverage();
   document.getElementById('payment-modal-overlay').style.display = 'flex';
 }
 
+// ─── Cobro de la web por partes (50 % al empezar y 50 % al terminar) ──────────
+let paymentKind = 'servicio';
+
+function setPaymentKind(kind) {
+  paymentKind = kind;
+  const isWeb = kind === 'web';
+  document.getElementById('pay-kind-servicio').classList.toggle('active', !isWeb);
+  document.getElementById('pay-kind-web').classList.toggle('active', isWeb);
+  document.getElementById('pay-webFields').style.display = isWeb ? 'block' : 'none';
+  document.getElementById('pay-periodField').style.display = isWeb ? 'none' : 'block';
+  const concept = document.getElementById('pay-concept');
+  if (isWeb) {
+    document.getElementById('pay-coverageFields').style.display = 'none';
+    if (!concept.value.trim() || concept.value === 'Mantenimiento y hosting') concept.value = 'Diseño web';
+    updatePaymentClient();
+  } else {
+    if (concept.value === 'Diseño web') concept.value = 'Mantenimiento y hosting';
+    updatePaymentCoverage();
+    if (!payingInvoiceId) updatePaymentClient();
+  }
+}
+
+// Cobros de web ya registrados de un cliente (todos los conceptos de web juntos)
+function webPaymentsOf(clientId) {
+  return registeredPaymentsData.filter(p => p.client_id === clientId && p.payment_kind === 'web');
+}
+
+// Propone el total de la web (el del último cobro de web o el «Pago único» del
+// cliente) y qué mitad toca: si ya cobró la primera, la segunda.
+function suggestWebPayment() {
+  const clientId = document.getElementById('pay-client').value;
+  const client = clients.find(c => c.id === clientId);
+  const previous = webPaymentsOf(clientId);
+  const totalInput = document.getElementById('pay-webTotal');
+  if (!totalInput.value) totalInput.value = previous[0]?.web_total || client?.amount_onetime || '';
+  const total = Number(totalInput.value);
+  const paid = previous.filter(p => Number(p.web_total) === total).reduce((sum, p) => sum + Number(p.amount), 0);
+  document.getElementById('pay-installment').value = paid <= 0 ? 'primera_mitad' : paid < total ? 'segunda_mitad' : 'otro';
+  updatePaymentInstallment();
+}
+
+function updatePaymentInstallment() {
+  const total = Number(document.getElementById('pay-webTotal').value);
+  const installment = document.getElementById('pay-installment').value;
+  const half = Math.round(total * 50) / 100;
+  if (total > 0 && installment === 'primera_mitad') document.getElementById('pay-amount').value = half;
+  if (total > 0 && installment === 'segunda_mitad') document.getElementById('pay-amount').value = Math.round((total - half) * 100) / 100;
+  updateWebPaymentSummary();
+}
+
+function updateWebPaymentSummary() {
+  if (paymentKind !== 'web') return;
+  const total = Number(document.getElementById('pay-webTotal').value);
+  const clientId = document.getElementById('pay-client').value;
+  const paid = webPaymentsOf(clientId).filter(p => Number(p.web_total) === total).reduce((sum, p) => sum + Number(p.amount), 0);
+  const now = Number(document.getElementById('pay-amount').value) || 0;
+  document.getElementById('pay-webSummary').textContent = total > 0
+    ? `Ya cobrado de esta web: ${fmtAmt(paid)}€ · tras este cobro quedarán ${fmtAmt(Math.max(0, total - paid - now))}€ pendientes.`
+    : '';
+}
+
 function updatePaymentClient() {
   if (payingInvoiceId) return;
+  if (paymentKind === 'web') { document.getElementById('pay-webTotal').value = ''; suggestWebPayment(); return; }
   const client = clients.find(c => c.id === document.getElementById('pay-client').value);
   const period = document.getElementById('pay-period').value;
   document.getElementById('pay-amount').value = client
@@ -3582,7 +3872,13 @@ async function savePayment() {
   };
   if (!body.payment_date) { showToast('Indica la fecha de cobro', 'error'); return; }
   if (payingInvoiceId) body.invoice_id = payingInvoiceId;
-  if (document.getElementById('pay-period').value !== 'none') {
+  if (!payingInvoiceId && paymentKind === 'web') {
+    body.payment_kind = 'web';
+    body.web_total = Number(document.getElementById('pay-webTotal').value);
+    body.installment = document.getElementById('pay-installment').value;
+    if (!(body.web_total > 0)) { showToast('Indica el precio total de la web', 'error'); return; }
+    if (amount > body.web_total) { showToast('El cobro no puede superar el precio de la web', 'error'); return; }
+  } else if (document.getElementById('pay-period').value !== 'none') {
     body.coverage_start = document.getElementById('pay-coverageStart').value;
     body.coverage_end = document.getElementById('pay-coverageEnd').value;
     if (!body.service_concept || !body.coverage_start || !body.coverage_end || body.coverage_end < body.coverage_start) {
@@ -3655,52 +3951,390 @@ function renderExpensesTable() {
   }).join('');
 }
 
-// ─── Calendario (agenda de próximos eventos) ───────────────────────────────────
+// ─── Calendario (vista mensual / semanal con eventos y tareas) ─────────────────
 const EVENT_TYPE_LABELS = {
   reunion: '🗓️ Reunión', entrega: '📦 Entrega', pago: '💶 Pago', recordatorio: '🔔 Recordatorio', otro: '•',
 };
+const CAL_DOW = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+let calendarMode = readTaskPref('dz-cal-mode', 'month');
+let calendarCursor = new Date();
+
+function isoDay(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function startOfWeek(d) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+// Días visibles: 6 semanas completas en vista mensual, 7 días en la semanal
+function calendarDays() {
+  const first = calendarMode === 'week'
+    ? startOfWeek(calendarCursor)
+    : startOfWeek(new Date(calendarCursor.getFullYear(), calendarCursor.getMonth(), 1));
+  const count = calendarMode === 'week' ? 7 : 42;
+  return Array.from({ length: count }, (_, i) => new Date(first.getFullYear(), first.getMonth(), first.getDate() + i));
+}
 
 async function loadEventsView() {
   try {
-    const now = new Date().toISOString();
-    const res = await fetch(`/api/events?from=${encodeURIComponent(now)}`, { headers: { 'x-admin-password': adminPass } });
-    eventsData = await res.json().catch(() => []);
-    renderEventsList();
+    const days = calendarDays();
+    const from = days[0].toISOString();
+    const to = new Date(days[days.length - 1].getTime() + 86400000).toISOString();
+    const [evRes, taskRes] = await Promise.all([
+      fetch(`/api/events?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { headers: { 'x-admin-password': adminPass } }),
+      fetch('/api/tasks', { headers: { 'x-admin-password': adminPass } }),
+    ]);
+    eventsData = await evRes.json().catch(() => []);
+    tasksData = await taskRes.json().catch(() => []);
+    renderCalendar();
   } catch {
-    showToast('Error al cargar eventos', 'error');
+    showToast('Error al cargar el calendario', 'error');
   }
 }
 
-function renderEventsList() {
-  const list = document.getElementById('eventsList');
-  if (!eventsData.length) {
-    list.innerHTML = '<p class="text-gray-600 text-sm text-center py-16">Sin eventos próximos.</p>';
+function setCalendarMode(mode) {
+  calendarMode = mode;
+  saveTaskPref('dz-cal-mode', mode);
+  loadEventsView();
+}
+
+function shiftCalendar(step) {
+  if (step === 0) calendarCursor = new Date();
+  else if (calendarMode === 'week') calendarCursor.setDate(calendarCursor.getDate() + step * 7);
+  else calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + step, 1);
+  loadEventsView();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  if (!grid) return;
+  const days = calendarDays();
+  const today = isoDay(new Date());
+  const showDone = document.getElementById('calShowDone')?.checked;
+  document.getElementById('calModeMonth').classList.toggle('active', calendarMode === 'month');
+  document.getElementById('calModeWeek').classList.toggle('active', calendarMode === 'week');
+  const fmt = (d, opts) => d.toLocaleDateString('es-ES', opts);
+  const monthTitle = fmt(calendarCursor, { month: 'long', year: 'numeric' });
+  document.getElementById('calendarTitle').textContent = calendarMode === 'month'
+    ? monthTitle.charAt(0).toUpperCase() + monthTitle.slice(1)
+    : `${fmt(days[0], { day: 'numeric', month: 'short' })} – ${fmt(days[6], { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
+  const byDay = {};
+  eventsData.forEach(ev => { (byDay[isoDay(new Date(ev.start_at))] ||= { ev: [], tk: [] }).ev.push(ev); });
+  tasksData
+    .filter(t => t.due_date && t.status !== 'cancelada' && (showDone || t.status !== 'completada'))
+    .forEach(t => { (byDay[t.due_date] ||= { ev: [], tk: [] }).tk.push(t); });
+
+  const month = calendarCursor.getMonth();
+  const cells = days.map(d => {
+    const key = isoDay(d);
+    const items = byDay[key] || { ev: [], tk: [] };
+    const evHtml = items.ev.map(ev => {
+      const time = ev.all_day ? '' : new Date(ev.start_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + ' ';
+      return `<button type="button" class="cal-item ev" title="${esc(ev.title)}" onclick="event.stopPropagation();openEntityModal('event','${ev.id}')">${esc(time)}${esc(ev.title)}</button>`;
+    }).join('');
+    const tkHtml = items.tk.map(t => {
+      const cls = `cal-item tk ${t.status === 'completada' ? 'done' : ''} ${['urgente', 'alta'].includes(t.priority) ? t.priority : ''}`;
+      return `<button type="button" class="${cls}" title="${esc(t.title)}" onclick="event.stopPropagation();openEntityModal('task','${t.id}')">✓ ${esc(t.title)}</button>`;
+    }).join('');
+    const dayLabel = calendarMode === 'week'
+      ? `<span class="cal-num">${d.getDate()}</span><span class="text-xs text-gray-500 sm:hidden ml-1">${CAL_DOW[(d.getDay() + 6) % 7]}</span>`
+      : `<span class="cal-num">${d.getDate()}</span>`;
+    const out = calendarMode === 'month' && d.getMonth() !== month ? 'out' : '';
+    return `<div class="cal-day ${out} ${key === today ? 'today' : ''}" onclick="openEntityModal('task', null, { due_date: '${key}' })">${dayLabel}<div>${evHtml}${tkHtml}</div></div>`;
+  }).join('');
+  grid.innerHTML = `<div class="cal-grid ${calendarMode === 'week' ? 'cal-week' : 'cal-month'}">
+    ${CAL_DOW.map(d => `<div class="cal-head">${d}</div>`).join('')}${cells}</div>`;
+}
+
+// ─── Historias: enlaces del calendario, control diario y avisos push ──────────
+const STORY_DOW = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+let storiesState = { settings: {}, links: [], storyDays: [], endpoints: [], publicKey: null };
+
+async function loadStoriesView() {
+  try {
+    const res = await fetch('/api/push', { headers: { 'x-admin-password': adminPass } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'No se pudo cargar Historias');
+    storiesState = data;
+    renderStoryWeek();
+    renderStoryLinks();
+    renderNotificationSettings();
+    await renderPushStatus();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function renderStoryWeek() {
+  const monday = startOfWeek(new Date());
+  const today = isoDay(new Date());
+  const storyDays = storiesState.settings.story_days || [];
+  const days = Array.from({ length: 7 }, (_, i) => new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i));
+  let done = 0, planned = 0;
+  document.getElementById('storyWeek').innerHTML = days.map((d, i) => {
+    const key = isoDay(d);
+    const isDone = storiesState.storyDays.includes(key);
+    const isPlanned = storyDays.includes(d.getDay());
+    if (isPlanned) planned++;
+    if (isDone) done++;
+    return `<button type="button" onclick="toggleStoryDay('${key}')" class="story-day ${isDone ? 'done' : ''} ${key === today ? 'today' : ''} ${isPlanned ? '' : 'off'}">
+      <p class="text-[11px] text-gray-500">${STORY_DOW[i]}</p>
+      <p class="font-display font-semibold">${d.getDate()}</p>
+      <p class="text-sm mt-1">${isDone ? '✅' : '·'}</p>
+    </button>`;
+  }).join('');
+  document.getElementById('storyWeekCount').textContent = `${done}/${planned} subidas`;
+}
+
+async function toggleStoryDay(date) {
+  const done = !storiesState.storyDays.includes(date);
+  try {
+    const res = await fetch('/api/push?action=story', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ date, done }),
+    });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'No se pudo guardar');
+    storiesState.storyDays = done
+      ? [...storiesState.storyDays, date]
+      : storiesState.storyDays.filter(d => d !== date);
+    renderStoryWeek();
+    if (done && date === isoDay(new Date())) showToast('✓ Historia de hoy subida');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function renderStoryLinks() {
+  const box = document.getElementById('storyLinks');
+  box.innerHTML = storiesState.links.length ? storiesState.links.map((l, i) => `
+    <div class="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-medium truncate">${esc(l.title)}</p>
+        <p class="text-xs text-gray-600 truncate">${esc(l.url)}</p>
+      </div>
+      <a href="${safeUrl(l.url)}" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-brand-blue text-black font-display font-semibold text-xs rounded-lg px-3 py-2 hover:opacity-90">Abrir</a>
+      <button type="button" onclick="removeStoryLink(${i})" class="shrink-0 text-gray-600 hover:text-red-400 p-1" title="Quitar enlace">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>`).join('')
+    : '<p class="text-gray-600 text-sm">Sin enlaces. Pega abajo el enlace del calendario de historias.</p>';
+}
+
+async function saveStoryLinks(links) {
+  const res = await fetch('/api/push?action=links', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+    body: JSON.stringify({ links }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'No se pudieron guardar los enlaces');
+  storiesState.links = data;
+  renderStoryLinks();
+}
+
+async function addStoryLink() {
+  const title = document.getElementById('storyLinkTitle').value.trim();
+  const url = document.getElementById('storyLinkUrl').value.trim();
+  if (!/^https:\/\//.test(url)) { showToast('Pega un enlace que empiece por https://', 'error'); return; }
+  try {
+    await saveStoryLinks([...storiesState.links, { title, url }]);
+    document.getElementById('storyLinkTitle').value = '';
+    document.getElementById('storyLinkUrl').value = '';
+    showToast('✓ Enlace añadido');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function removeStoryLink(index) {
+  try {
+    await saveStoryLinks(storiesState.links.filter((_, i) => i !== index));
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function renderNotificationSettings() {
+  const s = storiesState.settings;
+  ['tasks', 'story', 'weekly'].forEach(k => {
+    document.getElementById(`ns-${k}_enabled`).checked = s[`${k}_enabled`] !== false;
+    document.getElementById(`ns-${k}_time`).value = s[`${k}_time`] || '';
+  });
+  // Botones L–D (getDay(): 1 = lunes … 0 = domingo)
+  document.getElementById('ns-story_days').innerHTML = [1, 2, 3, 4, 5, 6, 0].map((dow, i) => `
+    <button type="button" data-dow="${dow}" aria-pressed="${(s.story_days || []).includes(dow)}"
+      onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')"
+      class="w-8 h-8 rounded-lg text-xs font-semibold border border-white/10 text-gray-500 aria-pressed:bg-brand-blue aria-pressed:text-black aria-pressed:border-brand-blue">${STORY_DOW[i]}</button>`).join('');
+}
+
+async function saveNotificationSettings() {
+  const body = {
+    story_days: [...document.querySelectorAll('#ns-story_days [aria-pressed="true"]')].map(b => Number(b.dataset.dow)),
+  };
+  ['tasks', 'story', 'weekly'].forEach(k => {
+    body[`${k}_enabled`] = document.getElementById(`ns-${k}_enabled`).checked;
+    body[`${k}_time`] = document.getElementById(`ns-${k}_time`).value;
+  });
+  const btn = document.getElementById('notifSaveBtn');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/push?action=settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'No se pudieron guardar los horarios');
+    storiesState.settings = data;
+    renderStoryWeek();
+    showToast('✓ Horarios guardados');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ─── Notificaciones push (Web Push) ───────────────────────────────────────────
+// En iPhone solo funcionan con el panel añadido a la pantalla de inicio (iOS 16.4+).
+function isStandaloneApp() {
+  return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+}
+function isIos() {
+  return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function pushSupported() {
+  return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+function urlBase64ToUint8Array(base64) {
+  const padded = (base64 + '='.repeat((4 - base64.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+  return Uint8Array.from(atob(padded), c => c.charCodeAt(0));
+}
+async function currentPushSubscription() {
+  if (!pushSupported()) return null;
+  const reg = await navigator.serviceWorker.getRegistration('/admin');
+  return reg ? reg.pushManager.getSubscription() : null;
+}
+
+async function renderPushStatus() {
+  const status = document.getElementById('pushStatus');
+  const btn = document.getElementById('pushToggleBtn');
+  const devices = storiesState.endpoints.length;
+  const devicesTxt = `${devices} dispositivo${devices === 1 ? '' : 's'} recibiendo avisos.`;
+  if (!storiesState.publicKey) {
+    status.textContent = 'Faltan las claves VAPID en Vercel: las notificaciones aún no se pueden activar.';
+    btn.style.display = 'none';
     return;
   }
-  list.innerHTML = eventsData.map(ev => {
-    const client = clients.find(c => c.id === ev.client_id);
-    const d = new Date(ev.start_at);
-    const dateLabel = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-    const timeLabel = ev.all_day ? 'Todo el día' : d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    return `
-    <div class="flex items-center gap-4 bg-brand-gray border border-white/5 rounded-xl px-4 py-3 card-anim">
-      <div class="text-center shrink-0 w-14">
-        <p class="text-xs text-gray-500 uppercase">${dateLabel}</p>
-        <p class="text-xs text-brand-blue">${timeLabel}</p>
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium truncate">${EVENT_TYPE_LABELS[ev.event_type] || ''} ${esc(ev.title)}</p>
-        <p class="text-xs text-gray-600 truncate">${client ? esc(client.client_name) : ''}${ev.location ? (client ? ' · ' : '') + esc(ev.location) : ''}</p>
-      </div>
-      <button onclick="openEntityModal('event','${ev.id}')" class="text-gray-600 hover:text-white transition-colors p-1.5 shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-      </button>
-      <button onclick="askDeleteEntity('event','${ev.id}','¿Eliminar este evento?')" class="text-gray-600 hover:text-red-400 transition-colors p-1.5 shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      </button>
-    </div>`;
-  }).join('');
+  if (!pushSupported()) {
+    status.textContent = isIos() && !isStandaloneApp()
+      ? 'En iPhone: pulsa Compartir → «Añadir a pantalla de inicio», abre Dazenty OS desde el icono y actívalas ahí. ' + devicesTxt
+      : 'Este navegador no admite notificaciones push. ' + devicesTxt;
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  const sub = await currentPushSubscription().catch(() => null);
+  const active = sub && storiesState.endpoints.includes(sub.endpoint);
+  btn.textContent = active ? 'Desactivar en este dispositivo' : 'Activar en este dispositivo';
+  status.textContent = (active ? 'Activadas en este dispositivo. ' : Notification.permission === 'denied'
+    ? 'Bloqueadas en este dispositivo: permítelas en los ajustes del navegador. ' : 'No activadas en este dispositivo. ') + devicesTxt;
 }
+
+async function togglePushSubscription() {
+  const btn = document.getElementById('pushToggleBtn');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const existing = await currentPushSubscription();
+    if (existing && storiesState.endpoints.includes(existing.endpoint)) {
+      await fetch('/api/push?action=unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+        body: JSON.stringify({ endpoint: existing.endpoint }),
+      });
+      await existing.unsubscribe();
+      storiesState.endpoints = storiesState.endpoints.filter(e => e !== existing.endpoint);
+      showToast('Notificaciones desactivadas');
+    } else {
+      if (await Notification.requestPermission() !== 'granted') throw new Error('No has dado permiso para las notificaciones');
+      const reg = await navigator.serviceWorker.register('/sw-admin.js', { scope: '/admin' });
+      await navigator.serviceWorker.ready;
+      const sub = existing || await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(storiesState.publicKey),
+      });
+      const res = await fetch('/api/push?action=subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+        body: JSON.stringify({ subscription: sub.toJSON() }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'No se pudo guardar la suscripción');
+      storiesState.endpoints = [...storiesState.endpoints, sub.endpoint];
+      showToast('✓ Notificaciones activadas');
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    renderPushStatus();
+  }
+}
+
+async function sendTestPush() {
+  try {
+    const res = await fetch('/api/push?action=test', { method: 'POST', headers: { 'x-admin-password': adminPass } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'No se pudo enviar la prueba');
+    showToast(data.devices ? `✓ Prueba enviada a ${data.sent} de ${data.devices} dispositivos` : 'No hay dispositivos activados todavía', data.devices ? 'success' : 'error');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─── Modales: sin scroll de fondo y guardado con ⌘ + Enter ────────────────────
+// Con cualquier modal abierto se bloquea el scroll de la página, y la rueda del
+// ratón sobre el fondo oscuro (fuera del modal) no mueve nada.
+function lockScrollWhileModalOpen() {
+  const overlays = [...document.querySelectorAll('[id$="-overlay"], #leadDetailOverlay')];
+  const update = () => document.documentElement.classList.toggle('modal-open',
+    overlays.some(el => getComputedStyle(el).display !== 'none'));
+  const observer = new MutationObserver(update);
+  overlays.forEach(el => {
+    observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+    el.addEventListener('wheel', e => { if (e.target === el) e.preventDefault(); }, { passive: false });
+  });
+  update();
+}
+lockScrollWhileModalOpen();
+
+// ⌘ + Enter guarda el formulario abierto (el de más arriba si hay varios)
+const SAVE_SHORTCUTS = [
+  ['payment-modal-overlay', 'paymentSaveBtn'],
+  ['invoice-modal-overlay', 'invoiceSaveBtn'],
+  ['entity-modal-overlay', 'entitySaveBtn'],
+  ['modal-overlay', 'saveBtn'],
+];
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || !(e.metaKey || e.ctrlKey) || e.isComposing) return;
+  const open = SAVE_SHORTCUTS.find(([overlay]) => {
+    const el = document.getElementById(overlay);
+    return el && getComputedStyle(el).display !== 'none';
+  });
+  let target = open && document.getElementById(open[1]);
+  if (!target && currentView === 'stories') {
+    const active = document.activeElement;
+    if (active?.id === 'storyLinkUrl' || active?.id === 'storyLinkTitle') { e.preventDefault(); addStoryLink(); return; }
+    if (active?.closest('#storiesView')) target = document.getElementById('notifSaveBtn');
+  }
+  if (!target) return;
+  e.preventDefault();
+  target.click();
+});
 
 // ─── Actividad (feed) ───────────────────────────────────────────────────────────
 async function loadActivityView() {

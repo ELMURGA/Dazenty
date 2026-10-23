@@ -52,6 +52,7 @@ export default async function handler(req, res) {
         }
       }
       body.amount = Number(body.amount);
+      if (body.payment_kind === 'web') body.web_total = Number(body.web_total);
       if (body.service_concept) body.service_concept = body.service_concept.trim();
       const created = await sbInsert('payments', body);
       if (created.invoice_id) await recalcInvoice(created.invoice_id);
