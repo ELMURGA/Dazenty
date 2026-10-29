@@ -2293,6 +2293,19 @@ function fileToBase64(file) {
   });
 }
 
+// ─── Copiar texto seleccionado como texto plano ───────────────────────────────
+// Sin esto, el navegador copia también el HTML con los estilos oscuros del CRM
+// y al pegar en Gmail/Docs aparece con fondo negro.
+document.addEventListener('copy', e => {
+  const sel = window.getSelection();
+  const text = sel ? sel.toString() : '';
+  if (!text) return;
+  const active = document.activeElement;
+  if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) return;
+  e.clipboardData.setData('text/plain', text);
+  e.preventDefault();
+});
+
 // ─── Copiar URL ───────────────────────────────────────────────────────────────
 async function copyUrl(url) {
   try {
