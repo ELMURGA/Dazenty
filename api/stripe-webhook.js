@@ -9,6 +9,7 @@
 // ==========================================================
 
 import { createHmac, timingSafeEqual } from 'crypto';
+import { recordInvoiceForSubscription } from '../lib/stripe-sync.js';
 
 export const config = {
   api: {
@@ -148,6 +149,13 @@ export default async function handler(req, res) {
       await updateClientPeriodEnd(invoice.subscription, periodEnd);
       nextBillingDate = new Date(periodEnd * 1000)
         .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    // Guardar el cobro en "Pagos" para que cuente en el panel (facturado del mes)
+    try {
+      await recordInvoiceForSubscription(invoice);
+    } catch (err) {
+      console.error('[stripe-webhook] Error registrando el cobro en payments:', err);
     }
 
     const isFirstPayment = invoice.billing_reason === 'subscription_create';

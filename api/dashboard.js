@@ -5,6 +5,7 @@
 // ==========================================================
 
 import { guard, sbSelect } from '../lib/db.js';
+import { syncStripeSubscriptionPayments } from '../lib/stripe-sync.js';
 
 function monthRange(date = new Date()) {
   const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
@@ -20,6 +21,14 @@ export default async function handler(req, res) {
     const { start, end } = monthRange();
     const today = new Date().toISOString().slice(0, 10);
     const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+
+    // Añade a "Pagos" los cobros de suscripciones de Stripe que aún no estén
+    // (por si el webhook falló o llegó antes de guardar la suscripción)
+    try {
+      await syncStripeSubscriptionPayments();
+    } catch (err) {
+      console.error('[api/dashboard] Sincronización con Stripe:', err);
+    }
 
     const [
       paymentsMonth,

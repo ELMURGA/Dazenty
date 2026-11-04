@@ -124,3 +124,23 @@ test('web payments: halves without coverage, total required and not below the am
   }
   assert.ok(validatePayment({ ...payment, web_total: 660 }));
 });
+
+test('Stripe subscription invoices become valid payments dated and covered in Madrid time', async () => {
+  const { stripeInvoiceToPayment } = await import('../lib/stripe-sync.js');
+  const client = { id: 'client-1', service_name: 'Hosting + Mantenimiento Web' };
+  const invoice = {
+    id: 'in_123', status: 'paid', amount_paid: 2000, billing_reason: 'subscription_cycle',
+    created: Date.UTC(2026, 10, 3, 22, 30) / 1000,
+    status_transitions: { paid_at: Date.UTC(2026, 10, 3, 23, 30) / 1000 }, // 00:30 del 4 en Madrid
+    lines: { data: [{ period: { start: Date.UTC(2026, 10, 3, 23, 30) / 1000, end: Date.UTC(2026, 11, 3, 23, 30) / 1000 } }] },
+  };
+  const row = stripeInvoiceToPayment(invoice, client);
+  assert.deepEqual(
+    { amount: row.amount, payment_date: row.payment_date, coverage_start: row.coverage_start,
+      coverage_end: row.coverage_end, stripe_payment_id: row.stripe_payment_id, payment_method: row.payment_method },
+    { amount: 20, payment_date: '2026-11-04', coverage_start: '2026-11-04',
+      coverage_end: '2026-12-03', stripe_payment_id: 'in_123', payment_method: 'stripe' });
+  assert.equal(validatePayment(row), null);
+  assert.equal(stripeInvoiceToPayment({ ...invoice, amount_paid: 0 }, client), null);
+  assert.equal(stripeInvoiceToPayment({ ...invoice, status: 'open' }, client), null);
+});
