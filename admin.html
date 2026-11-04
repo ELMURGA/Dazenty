@@ -1646,9 +1646,11 @@ async function loadRegisteredPayments() {
   tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Cargando cobros…</td></tr>';
   try {
     const res = await fetch('/api/payments', { headers: { 'x-admin-password': adminPass } });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'No se pudieron cargar los cobros');
-    registeredPaymentsData = Array.isArray(data) ? data : [];
+    const all = await res.json();
+    if (!res.ok) throw new Error(all.error || 'No se pudieron cargar los cobros');
+    // Los cobros de suscripciones de Stripe solo cuentan para Inicio: ya se listan en «Suscripciones y pagos de Stripe»
+    const data = (Array.isArray(all) ? all : []).filter(p => !p.stripe_payment_id);
+    registeredPaymentsData = data;
     tbody.innerHTML = data.length ? data.map(p => {
       const client = clients.find(c => c.id === p.client_id);
       const methods = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };

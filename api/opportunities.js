@@ -18,7 +18,7 @@ async function syncAutoOpportunities() {
   const [clients, projects, payments, existing] = await Promise.all([
     sbSelect('clients', 'select=id,client_name,service_name,status,amount_monthly,amount_annual,amount_onetime,stripe_subscription_id,stripe_subscription_status,stripe_current_period_end'),
     sbSelect('projects', 'select=id,client_id,name,status,delivered_at,updated_at'),
-    sbSelect('payments', 'select=client_id,amount,coverage_end,service_concept'),
+    sbSelect('payments', 'stripe_payment_id=is.null&select=client_id,amount,coverage_end,service_concept'),
     sbSelect('opportunities', 'auto_key=not.is.null&select=id,client_id,auto_key,status,dismissed_at,created_at,updated_at'),
   ]);
 
