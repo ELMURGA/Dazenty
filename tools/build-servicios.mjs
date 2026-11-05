@@ -50,22 +50,21 @@ ${SERVICES.map((s) => `                            <a href="/servicios/${s.slug}
     </header>
 
     <div class="mobile-nav" id="mobile-nav">
-        <a href="/#inicio">Inicio</a>
-        <div class="mnav-group">
-            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
-            <div class="mnav-sub" id="mnav-sub">
-                <div>
+        <nav class="mnav-main" aria-label="Menú móvil">
+            <a href="/#inicio" class="mnav-link">Inicio</a>
+            <div class="mnav-group">
+                <a href="/servicios" class="mnav-link">Servicios</a>
+                <div class="mnav-sub" id="mnav-sub">
 ${SERVICES.map((s) => `                    <a href="/servicios/${s.slug}">${esc(s.name)}</a>`).join('\n')}
-                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
                 </div>
             </div>
-        </div>
-        <a href="/html/portfolio">Portfolio</a>
+            <a href="/html/portfolio" class="mnav-link">Portfolio</a>
+        </nav>
         <div class="mnav-foot">
             <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
             <div class="mnav-contact">
-                <a href="mailto:designerazenty@gmail.com">designerazenty@gmail.com</a>
-                <a href="tel:624903256">624 90 32 56</a>
+                <a href="mailto:designerazenty@gmail.com">Email</a>
+                <a href="tel:624903256">Llamar</a>
                 <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer">Instagram</a>
             </div>
         </div>
