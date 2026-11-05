@@ -40,7 +40,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=7">
+    <link rel="stylesheet" href="/css/site.min.css?v=10">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
 
@@ -156,6 +156,7 @@
 
         <!-- HERO SECTION -->
         <section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-28 pb-16 md:pt-32" id="inicio">
+            <canvas id="hero3d" class="hero3d" aria-hidden="true"></canvas>
             <!-- Background Gradients -->
             <div
                 class="hero-orb absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-blue/20 rounded-full blur-[120px] animate-pulse-slow">
@@ -950,6 +951,7 @@
     <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
     <script src="/js/main.js?v=10" defer></script>
     <script src="/js/servicios.js?v=1" defer></script>
+    <script src="/js/hero3d.js?v=2" defer></script>
     <!-- Slider de reseñas con transición suave -->
     <script>
         (function() {
