@@ -29,10 +29,10 @@ export const SERVICES = [
   {
     slug: 'diseno-web',
     work: [
-      { img: '/proyectos/web_hermanoshervas.webp', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
-      { img: '/proyectos/web_jandula.webp', name: 'Jándula', kind: 'Web de moda' },
-      { img: '/proyectos/web_sevillatp.webp', name: 'Sevilla TP', kind: 'Web corporativa' },
-      { img: '/proyectos/web_jcautos.webp', name: 'JC Autos', kind: 'Web para automoción' },
+      { img: '/proyectos/web_hermanoshervas.webp?v=2', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
+      { img: '/proyectos/web_jandula.webp?v=2', name: 'Jándula', kind: 'Web de moda' },
+      { img: '/proyectos/web_sevillatp.webp?v=2', name: 'Sevilla TP', kind: 'Web corporativa' },
+      { img: '/proyectos/web_jcautos.webp?v=2', name: 'JC Autos', kind: 'Web para automoción' },
     ],
     name: 'Diseño web',
     icon: I.web,
@@ -324,9 +324,9 @@ export const SERVICES = [
   {
     slug: 'seo-local',
     work: [
-      { img: '/proyectos/web_jcautos.webp', name: 'JC Autos', kind: 'Web para automoción' },
-      { img: '/proyectos/web_davidvillalba.webp', name: 'David Villalba', kind: 'Web profesional' },
-      { img: '/proyectos/web_hermanoshervas.webp', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
+      { img: '/proyectos/web_jcautos.webp?v=2', name: 'JC Autos', kind: 'Web para automoción' },
+      { img: '/proyectos/web_davidvillalba.webp?v=2', name: 'David Villalba', kind: 'Web profesional' },
+      { img: '/proyectos/web_hermanoshervas.webp?v=2', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
     ],
     name: 'SEO y Google Business',
     icon: I.seo,
@@ -380,8 +380,8 @@ export const SERVICES = [
 ];
 
 export const SHOWCASE = [
-  { img: '/proyectos/web_hermanoshervas.webp', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
-  { img: '/proyectos/web_costadelsol.webp', name: 'Costa del Sol', kind: 'Web corporativa' },
-  { img: '/proyectos/web_jcautos-720.webp', name: 'JC Autos', kind: 'Web para automoción' },
-  { img: '/proyectos/web_davidvillalba-720.webp', name: 'David Villalba', kind: 'Web de interiorismo' },
+  { img: '/proyectos/web_hermanoshervas.webp?v=2', name: 'Hermanos Hervás', kind: 'Web para restaurante' },
+  { img: '/proyectos/web_costadelsol.webp?v=2', name: 'Costa del Sol', kind: 'Web corporativa' },
+  { img: '/proyectos/web_jcautos-720.webp?v=2', name: 'JC Autos', kind: 'Web para automoción' },
+  { img: '/proyectos/web_davidvillalba-720.webp?v=2', name: 'David Villalba', kind: 'Web de interiorismo' },
 ];
