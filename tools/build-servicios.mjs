@@ -9,7 +9,7 @@ import { ART } from './servicios-art.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://dazenty.com';
 const WA = 'https://wa.me/34624903256';
-const CSS_V = '6';
+const CSS_V = '7';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const pad = (n) => String(n).padStart(2, '0');
@@ -61,7 +61,14 @@ ${SERVICES.map((s) => `                    <a href="/servicios/${s.slug}">${esc(
             </div>
         </div>
         <a href="/html/portfolio">Portfolio</a>
-        <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+        <div class="mnav-foot">
+            <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+            <div class="mnav-contact">
+                <a href="mailto:designerazenty@gmail.com">designerazenty@gmail.com</a>
+                <a href="tel:624903256">624 90 32 56</a>
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
     </div>`;
 
 const ARROW_S = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>';

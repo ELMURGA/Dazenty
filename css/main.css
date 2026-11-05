@@ -445,7 +445,7 @@ select {
     flex-shrink: 0;
     text-decoration: none;
 }
-.site-header__logo img { height: 46px; width: auto; display: block; }
+.site-header__logo img { height: 60px; width: auto; display: block; }
 
 /* Links — visibles en escritorio, ocultos en móvil */
 .site-header__nav {
@@ -577,7 +577,7 @@ select {
     .site-header__inner {
         padding: 0 2rem;
     }
-    .site-header__logo img { height: 58px; }
+    .site-header__logo img { height: 66px; }
     .site-header__nav a:not(.site-header__cta) {
         text-transform: uppercase;
         font-size: 12.5px;
