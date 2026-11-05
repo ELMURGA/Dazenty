@@ -158,7 +158,7 @@ html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { ov
 .sv-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; color: #d4d4d4; font-size: 1.02rem; }
 .sv-points li { display: flex; gap: 0.8rem; align-items: baseline; }
 .sv-points li::before { content: ''; flex: none; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--sv-accent); transform: translateY(-0.05rem); }
-.sv-art { aspect-ratio: 4 / 3; border-radius: 1.5rem; overflow: hidden; background: var(--sv-field); }
+.sv-art { align-self: center; aspect-ratio: 4 / 3; border-radius: 1.5rem; overflow: hidden; background: var(--sv-field); }
 
 .sv-section { padding: clamp(4.5rem, 9vw, 8.5rem) 0; }
 .sv-split { display: grid; gap: var(--sv-gap); grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; }
@@ -266,3 +266,22 @@ html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { ov
 .sv-sub__text { display: grid; gap: 1.5rem; align-content: center; }
 .sv-sub__text .sv-copy { max-width: 32rem; }
 @media (max-width: 900px) { .sv-sub { grid-template-columns: 1fr; } .sv-sub--flip .sv-art { order: 0; } }
+
+/* ---------- Comparador ---------- */
+.sv-compare { --pos: 50%; position: relative; aspect-ratio: 16 / 10; border-radius: 1.5rem; overflow: hidden; background: #111; margin-top: 2rem; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.sv-compare img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sv-compare__img { position: absolute; inset: 0; }
+.sv-compare__over { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.sv-compare__over img { position: absolute; inset: 0; }
+.sv-compare__bar { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; pointer-events: none; }
+.sv-compare__bar i { position: absolute; top: 50%; left: 50%; width: 3.25rem; height: 3.25rem; margin: -1.625rem 0 0 -1.625rem; border-radius: 9999px; background: var(--sv-accent); }
+.sv-compare__bar i::before, .sv-compare__bar i::after { content: ''; position: absolute; top: 50%; width: 0.55rem; height: 0.55rem; margin-top: -0.275rem; border: solid #000; border-width: 0 0 3px 3px; }
+.sv-compare__bar i::before { left: 0.85rem; transform: rotate(45deg); }
+.sv-compare__bar i::after { right: 0.85rem; transform: rotate(-135deg); }
+.sv-compare__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
+.sv-compare__range:focus-visible ~ .sv-compare__bar i { outline: 3px solid #fff; outline-offset: 3px; }
+.sv-compare__tag { position: absolute; top: 1rem; padding: 0.45rem 0.9rem; border-radius: 9999px; background: #000; color: #fff; font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+.sv-compare__tag--l { left: 1rem; }
+.sv-compare__tag--r { right: 1rem; background: var(--sv-accent); color: #000; }
+.sv-compare__note { margin-top: 1rem; font-size: 0.9rem; color: #a3a3a3; }
+@media (max-width: 640px) { .sv-compare { aspect-ratio: 4 / 5; border-radius: 1.1rem; } .sv-compare img { object-position: 60% 50%; } }

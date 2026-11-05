@@ -59,3 +59,13 @@
         });
     });
 })();
+
+
+// Comparador antes / después
+document.querySelectorAll('[data-compare]').forEach((box) => {
+    const range = box.querySelector('.sv-compare__range');
+    if (!range) return;
+    const set = () => box.style.setProperty('--pos', range.value + '%');
+    range.addEventListener('input', set);
+    set();
+});

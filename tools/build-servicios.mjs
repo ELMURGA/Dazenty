@@ -71,6 +71,7 @@ ${SERVICES.map((s) => `                    <a href="/servicios/${s.slug}">${esc(
     </div>`;
 
 const ARROW_S = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>';
+const artFit = (slug) => ART[slug].replace('<svg ', '<svg preserveAspectRatio="xMidYMid meet" ');
 const artOf = (slug) => ART[slug].replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
 
 const rowHtml = (s, i) => `<li data-goals="${s.goals.join(' ')}" data-slug="${s.slug}">
@@ -213,7 +214,7 @@ const servicePage = (s) => {
                         </div>
                         <ul class="sv-points">${s.heroPoints.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>
                     </div>
-                    <div class="sv-art" role="presentation">${artOf(s.slug)}</div>
+                    <div class="sv-art" role="presentation">${artFit(s.slug)}</div>
                 </div>
             </div>
         </section>
@@ -240,7 +241,7 @@ const servicePage = (s) => {
 ${(s.subs || []).map((x, i) => `
         <section class="sv-section" style="background:var(--sv-field)">
             <div class="sv-wrap sv-sub${i % 2 ? ' sv-sub--flip' : ''}">
-                <div class="sv-art sv-reveal" role="presentation">${artOf(x.art)}</div>
+                <div class="sv-art sv-reveal" role="presentation">${artFit(x.art)}</div>
                 <div class="sv-sub__text">
                     <h2 class="sv-h2">${esc(x.title)}</h2>
                     <p class="sv-copy">${esc(x.text)}</p>
@@ -255,6 +256,25 @@ ${(s.subs || []).map((x, i) => `
                 <ul class="sv-fit">${s.forWhom.map((x) => `<li class="sv-reveal"><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p></li>`).join('')}</ul>
             </div>
         </section>
+${s.slug === 'diseno-web' ? `
+        <section class="sv-section">
+            <div class="sv-wrap">
+                <h2 class="sv-h2">La diferencia se ve.</h2>
+                <p class="sv-lead" style="max-width:38rem;margin-top:1rem">Arrastra para comparar una plantilla genérica con una web hecha a medida por Dazenty.</p>
+            </div>
+            <div class="sv-wrap">
+                <div class="sv-compare" data-compare>
+                    <img class="sv-compare__img" src="/proyectos/web_jandula.webp" alt="Web a medida de Jándula, hecha por Dazenty" width="1200" height="750" loading="lazy" decoding="async">
+                    <div class="sv-compare__over" aria-hidden="true"><img src="/proyectos/comparador-plantilla.svg" alt="" width="1200" height="750" loading="lazy" decoding="async"></div>
+                    <span class="sv-compare__tag sv-compare__tag--l">Plantilla genérica</span>
+                    <span class="sv-compare__tag sv-compare__tag--r">A medida · Jándula</span>
+                    <span class="sv-compare__bar" aria-hidden="true"><i></i></span>
+                    <input class="sv-compare__range" type="range" min="0" max="100" value="50" aria-label="Comparar plantilla genérica y web a medida">
+                </div>
+                <p class="sv-compare__note">Comparación ilustrativa: la plantilla de la izquierda es un ejemplo genérico, no un trabajo de un cliente.</p>
+            </div>
+        </section>
+` : ''}
 ${s.work ? `
         <section class="sv-section">
             <div class="sv-wrap">
@@ -294,7 +314,7 @@ ${s.work ? `
                         <a class="sv-btn sv-btn--quiet" href="${wa}" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
                     </div>
                 </div>
-                <div class="sv-art" role="presentation">${artOf(s.slug)}</div>
+                <div class="sv-art" role="presentation">${artFit(s.slug)}</div>
             </div>
         </section>
 
@@ -359,7 +379,7 @@ const hubPage = () => {
                         <a class="sv-btn sv-btn--quiet" href="${waLink('Hola, no sé qué servicio necesito. ¿Me orientáis?')}" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
                     </div>
                 </div>
-                <div class="sv-art" role="presentation">${artOf('diseno-web')}</div>
+                <div class="sv-art" role="presentation">${artFit('diseno-web')}</div>
             </div>
         </section>
     </main>
