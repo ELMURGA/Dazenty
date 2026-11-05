@@ -32,7 +32,9 @@ function initLenis() {
 
 // Cargar Lenis solo en desktop/no-táctil (ahorra una petición CDN en móvil
 // y evita el scroll trabado que provoca en dispositivos táctiles)
-if (!isTouchDevice && !reducedMotion.matches) {
+// ?plain desactiva el scroll suave (útil para capturas y pruebas automáticas)
+const plainScroll = new URLSearchParams(window.location.search).has('plain');
+if (!isTouchDevice && !reducedMotion.matches && !plainScroll) {
     const lenisScript = document.createElement('script');
     lenisScript.src = 'https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js';
     lenisScript.onload = initLenis;

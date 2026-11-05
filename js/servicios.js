@@ -1,137 +1,61 @@
-// Servicios: tarjetas giratorias, buscador con filtros y aparición progresiva.
+// Servicios: la imagen de la derecha sigue a la fila señalada, filtro por objetivo y aparición progresiva.
 (function () {
     'use strict';
 
-    var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var index = document.querySelector('[data-sv-index]');
+    if (index) {
+        var rows = Array.prototype.slice.call(index.querySelectorAll('.sv-list li'));
+        var figs = Array.prototype.slice.call(index.querySelectorAll('.sv-stage figure'));
 
-    // ---------- Tarjetas giratorias ----------
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.sv-card'));
-
-    function setFlip(card, on) {
-        card.classList.toggle('is-flipped', on);
-        var front = card.querySelector('.sv-front');
-        if (front) front.setAttribute('aria-expanded', on ? 'true' : 'false');
-    }
-
-    cards.forEach(function (card) {
-        var front = card.querySelector('.sv-front');
-        if (!front) return;
-
-        if (canHover) {
-            card.addEventListener('mouseenter', function () { setFlip(card, true); });
-            card.addEventListener('mouseleave', function () {
-                if (!card.contains(document.activeElement)) setFlip(card, false);
-            });
-        } else {
-            front.addEventListener('click', function () { setFlip(card, true); });
-            // Volver a la cara frontal pulsando en la parte trasera (fuera del enlace)
-            card.querySelector('.sv-back').addEventListener('click', function (e) {
-                if (!e.target.closest('a')) setFlip(card, false);
-            });
-        }
-
-        // Teclado: al enfocar la tarjeta se muestra la parte trasera con su enlace
-        card.addEventListener('focusin', function () { setFlip(card, true); });
-        card.addEventListener('focusout', function (e) {
-            if (!card.contains(e.relatedTarget)) setFlip(card, false);
-        });
-
-        // Foco de luz que sigue al cursor
-        card.addEventListener('pointermove', function (e) {
-            var r = card.getBoundingClientRect();
-            card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-            card.style.setProperty('--my', (e.clientY - r.top) + 'px');
-        });
-    });
-
-    // En táctil, tocar fuera cierra las tarjetas abiertas
-    if (!canHover) {
-        document.addEventListener('click', function (e) {
-            cards.forEach(function (card) {
-                if (!card.contains(e.target)) setFlip(card, false);
-            });
-        });
-    }
-
-    // ---------- Buscador / filtros ----------
-    var finder = document.querySelector('[data-sv-finder]');
-    if (finder) {
-        var grid = document.querySelector('.sv-grid');
-        var items = Array.prototype.slice.call(grid.querySelectorAll('.sv-item'));
-        var input = finder.querySelector('#sv-q');
-        var chips = Array.prototype.slice.call(finder.querySelectorAll('.sv-chip'));
-        var count = finder.querySelector('.sv-count');
-        var empty = document.querySelector('.sv-empty');
-        var viewBtns = Array.prototype.slice.call(finder.querySelectorAll('.sv-view button'));
-        var goal = 'todos';
-
-        var norm = function (s) {
-            return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+        var show = function (slug) {
+            figs.forEach(function (f) { f.classList.toggle('is-active', f.getAttribute('data-slug') === slug); });
         };
-
-        var apply = function () {
-            var q = norm(input.value).trim();
-            var shown = 0;
-            items.forEach(function (it) {
-                var goals = (it.getAttribute('data-goals') || '').split(' ');
-                var okGoal = goal === 'todos' || goals.indexOf(goal) !== -1;
-                var okText = !q || norm(it.getAttribute('data-search')).indexOf(q) !== -1;
-                var ok = okGoal && okText;
-                it.hidden = !ok;
-                if (ok) shown++;
-            });
-            count.textContent = shown === items.length
-                ? 'Mostrando los ' + shown + ' servicios'
-                : (shown === 1 ? '1 servicio encaja' : shown + ' servicios encajan');
-            if (empty) empty.classList.toggle('is-visible', shown === 0);
-        };
-
-        chips.forEach(function (chip) {
-            chip.addEventListener('click', function () {
-                goal = chip.getAttribute('data-goal');
-                chips.forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
-                apply();
-            });
-        });
-        input.addEventListener('input', apply);
-
-        viewBtns.forEach(function (b) {
-            b.addEventListener('click', function () {
-                var list = b.getAttribute('data-view') === 'list';
-                grid.classList.toggle('is-list', list);
-                viewBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-                cards.forEach(function (c) { setFlip(c, false); });
-            });
+        rows.forEach(function (li) {
+            var slug = li.getAttribute('data-slug');
+            var a = li.querySelector('a');
+            a.addEventListener('mouseenter', function () { show(slug); });
+            a.addEventListener('focus', function () { show(slug); });
         });
 
-        // Permite enlazar un objetivo: /servicios?objetivo=tiempo
-        var pre = new URLSearchParams(window.location.search).get('objetivo');
-        if (pre) {
-            var target = chips.filter(function (c) { return c.getAttribute('data-goal') === pre; })[0];
-            if (target) target.click();
+        // Filtro por objetivo (solo en /servicios)
+        var filters = document.querySelector('[data-sv-filters]');
+        if (filters) {
+            var btns = Array.prototype.slice.call(filters.querySelectorAll('.sv-filter'));
+            var apply = function (goal) {
+                btns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-goal') === goal ? 'true' : 'false'); });
+                var first = null;
+                rows.forEach(function (li) {
+                    var ok = goal === 'todos' || (li.getAttribute('data-goals') || '').split(' ').indexOf(goal) !== -1;
+                    li.hidden = !ok;
+                    if (ok && !first) first = li.getAttribute('data-slug');
+                });
+                if (first) show(first);
+            };
+            btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.getAttribute('data-goal')); }); });
+            var pre = new URLSearchParams(window.location.search).get('objetivo');
+            if (pre && btns.some(function (b) { return b.getAttribute('data-goal') === pre; })) apply(pre);
         }
-        apply();
     }
 
-    // ---------- Aparición progresiva ----------
-    var reveals = document.querySelectorAll('.sv-reveal');
-    if ('IntersectionObserver' in window) {
+    // Aparición progresiva: el estado oculto lo pone el script, así sin JS todo se ve
+    var reveals = Array.prototype.slice.call(document.querySelectorAll('.sv-reveal'));
+    var canAnimate = 'IntersectionObserver' in window && window.matchMedia('(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches;
+    if (canAnimate) {
         var io = new IntersectionObserver(function (entries) {
             entries.forEach(function (en) {
-                if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+                if (en.isIntersecting) { en.target.classList.remove('sv-hide'); io.unobserve(en.target); }
             });
-        }, { threshold: 0.12 });
-        reveals.forEach(function (el) { io.observe(el); });
-    } else {
-        reveals.forEach(function (el) { el.classList.add('is-in'); });
+        }, { threshold: 0.05, rootMargin: '0px 0px -6% 0px' });
+        reveals.forEach(function (el) {
+            if (el.getBoundingClientRect().top > window.innerHeight) { el.classList.add('sv-hide'); }
+            io.observe(el);
+        });
     }
 
-    // ---------- Analítica ----------
+    // Analítica
     document.querySelectorAll('a[data-svc]').forEach(function (a) {
         a.addEventListener('click', function () {
-            if (typeof window.va === 'function') {
-                window.va('event', { name: 'Service Click', data: { service: a.getAttribute('data-svc') } });
-            }
+            if (typeof window.va === 'function') window.va('event', { name: 'Service Click', data: { service: a.getAttribute('data-svc') } });
         });
     });
 })();

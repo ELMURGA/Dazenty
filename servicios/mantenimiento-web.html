@@ -28,7 +28,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=3">
+    <link rel="stylesheet" href="/css/site.min.css?v=4">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
     <script type="application/ld+json">
@@ -123,6 +123,7 @@
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black sv-page">
 
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
@@ -135,15 +136,15 @@
                     <a href="/servicios" aria-haspopup="true">Servicios</a>
                     <div class="nav-drop__panel">
                         <div class="nav-drop__box">
-                            <a href="/servicios/diseno-web">Diseño web<small>Webs a medida que se ven bien en el móvil y llevan al cliente …</small></a>
-                            <a href="/servicios/software-a-medida">Software a medida<small>Aplicaciones, paneles y herramientas hechas para tu negocio, p…</small></a>
-                            <a href="/servicios/agentes-ia">Agentes IA y chatbots<small>Asistentes con inteligencia artificial que atienden a tus clie…</small></a>
-                            <a href="/servicios/automatizaciones">Automatizaciones<small>Conectamos tus aplicaciones para que las tareas repetitivas se…</small></a>
-                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico<small>Identidades visuales memorables y material gráfico que comunic…</small></a>
-                            <a href="/servicios/redes-sociales">Redes sociales<small>Contenido y publicidad en redes para que más gente te conozca,…</small></a>
-                            <a href="/servicios/seo-local">SEO y Google Business<small>Que te encuentren en Google y en Maps cuando tu cliente busca …</small></a>
-                            <a href="/servicios/mantenimiento-web">Mantenimiento web<small>Nos ocupamos de que tu web esté siempre al día, segura, rápida…</small></a>
-                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes<small>Carta digital con QR que actualizas en un minuto, y soluciones…</small></a>
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/agentes-ia">Agentes IA y chatbots</a>
+                            <a href="/servicios/automatizaciones">Automatizaciones</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
+                            <a href="/servicios/mantenimiento-web">Mantenimiento web</a>
+                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes</a>
                             <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
                         </div>
                     </div>
@@ -175,70 +176,68 @@
         <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
     </div>
+    <!--/SVC:HEADER-->
 
     <main>
         <section class="sv-hero">
-            <div class="sv-hero__orb" aria-hidden="true"></div>
-            <div class="sv-wrap" style="position:relative">
+            <div class="sv-wrap">
                 <nav class="sv-crumbs" aria-label="Ruta"><a href="/">Inicio</a><span aria-hidden="true">/</span><a href="/servicios">Servicios</a><span aria-hidden="true">/</span><span aria-current="page">Mantenimiento web</span></nav>
-                <span class="sv-eyebrow">Mantenimiento web</span>
-                <h1>Tu web lanzada, y alguien pendiente de ella.</h1>
-                <p class="sv-hero__lead">Una web no se acaba el día que se publica. Nos encargamos de que siga segura, rápida y actualizada, y de los cambios que vayan surgiendo.</p>
-                <div class="sv-hero__cta">
-                    <a class="sv-btn sv-btn--primary" href="/?servicio=Mantenimiento%20web#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
-                    <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Mantenimiento%20web.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                <h1 class="sv-h1">Tu web, siempre cuidada.</h1>
+                <div class="sv-hero__body">
+                    <div class="sv-hero__side">
+                        <p class="sv-lead">Una web no se acaba el día que se publica. Nos encargamos de que siga segura, rápida y actualizada, y de los cambios que vayan surgiendo.</p>
+                        <div class="sv-actions">
+                            <a class="sv-btn sv-btn--primary" href="/?servicio=Mantenimiento%20web#contacto" data-svc="Mantenimiento web">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                            <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Mantenimiento%20web.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                        </div>
+                        <ul class="sv-points"><li>Hosting y dominio bien gestionados</li><li>Seguridad y copias de respaldo</li><li>Cambios y dudas resueltos por la misma persona</li></ul>
+                    </div>
+                    <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Panel de estado y mantenimiento de una web" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="110" y="70" width="580" height="460" rx="16" fill="#222222"/><text x="150" y="130" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Estado de tu web</text><rect x="540" y="100" width="120" height="40" rx="20" fill="#d97762"/><text x="600" y="126" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#111" text-anchor="middle">En línea</text><rect x="150" y="170" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="205" r="14" fill="#d97762"/><path d="M177 205 L182 211 L192 199" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="200" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Certificado de seguridad</text><text x="214" y="224" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Válido y renovado</text><rect x="150" y="256" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="291" r="14" fill="#d97762"/><path d="M177 291 L182 297 L192 285" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="286" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Copia de seguridad</text><text x="214" y="310" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Hecha hoy a las 03:00</text><rect x="150" y="342" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="377" r="14" fill="#d97762"/><path d="M177 377 L182 383 L192 371" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="372" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Actualizaciones</text><text x="214" y="396" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Todo al día</text><rect x="150" y="428" width="500" height="70" rx="12" fill="#8f4a3b"/><text x="176" y="460" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Último cambio: horario de verano actualizado</text><text x="176" y="484" font-family="Inter, sans-serif" font-size="14" font-weight="400" fill="#f4f4f4" text-anchor="start">Solicitado por WhatsApp · Resuelto el mismo día</text></svg></div>
                 </div>
-                <ul class="sv-points"><li>Hosting y dominio bien gestionados</li><li>Seguridad y copias de respaldo</li><li>Cambios y dudas resueltos por la misma persona</li></ul>
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">01 · El problema</span>
-                <h2 class="sv-h2">Una web olvidada acaba dando problemas.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Se cae y no te enteras</h3><p>Cuando lo descubres, ya has perdido visitas y contactos.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Contenido desfasado</h3><p>Horarios, precios o servicios que ya no son verdad.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Riesgos de seguridad</h3><p>Las webs sin actualizar son las primeras en recibir ataques.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Nadie responde cuando hay un problema</h3><p>Quien la hizo ya no está o tarda semanas.</p></div>
+        <section class="sv-section" style="background:var(--sv-field)">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Una web olvidada acaba fallando.</h2>
                 </div>
+                <ul class="sv-items sv-items--problem"><li class="sv-reveal"><h3>Se cae y no te enteras</h3><p>Cuando lo descubres, ya has perdido visitas y contactos.</p></li><li class="sv-reveal"><h3>Contenido desfasado</h3><p>Horarios, precios o servicios que ya no son verdad.</p></li><li class="sv-reveal"><h3>Riesgos de seguridad</h3><p>Las webs sin actualizar son las primeras en recibir ataques.</p></li><li class="sv-reveal"><h3>Nadie responde cuando hay un problema</h3><p>Quien la hizo ya no está o tarda semanas.</p></li></ul>
+            </div>
+        </section>
+
+        <section class="sv-section">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Qué cubre el mantenimiento.</h2>
+                    <p class="sv-copy">Lo necesario para que no tengas que pensar en ello.</p>
+                </div>
+                <ul class="sv-items "><li class="sv-reveal"><h3>Hosting y dominio</h3><p>Servidores fiables, renovaciones controladas y todo a tu nombre.</p></li><li class="sv-reveal"><h3>Seguridad y copias</h3><p>Revisiones, parches y copias de respaldo para poder recuperar la web.</p></li><li class="sv-reveal"><h3>Cambios sencillos</h3><p>Textos, fotos, horarios y pequeñas mejoras sin proyecto aparte.</p></li><li class="sv-reveal"><h3>Revisión del rendimiento</h3><p>Vigilamos velocidad y funcionamiento del formulario y contacto.</p></li></ul>
+            </div>
+        </section>
+
+        <section class="sv-section sv-section--light">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Quién nos contrata.</h2></div>
+                <ul class="sv-fit"><li class="sv-reveal"><h3>Webs que hemos hecho nosotros</h3><p>Continuidad con quien la conoce.</p></li><li class="sv-reveal"><h3>Webs de otros</h3><p>La revisamos y nos hacemos cargo.</p></li><li class="sv-reveal"><h3>Tiendas online</h3><p>Donde una caída son ventas perdidas.</p></li><li class="sv-reveal"><h3>Negocios con cambios frecuentes</h3><p>Cartas, ofertas y novedades.</p></li><li class="sv-reveal"><h3>Quien no quiere complicaciones</h3><p>Una persona a quien escribir.</p></li><li class="sv-reveal"><h3>Empresas con web crítica</h3><p>Que no pueden permitirse fallos.</p></li></ul>
             </div>
         </section>
 
         <section class="sv-section">
             <div class="sv-wrap">
-                <span class="sv-eyebrow">02 · Lo que incluye</span>
-                <h2 class="sv-h2">Qué cubre el mantenimiento.</h2>
-                <p class="sv-lead">Lo necesario para que no tengas que pensar en ello.</p>
-                <div class="sv-cols">
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Hosting y dominio</h3><p>Servidores fiables, renovaciones controladas y todo a tu nombre.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Seguridad y copias</h3><p>Revisiones, parches y copias de respaldo para poder recuperar la web.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Cambios sencillos</h3><p>Textos, fotos, horarios y pequeñas mejoras sin proyecto aparte.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Revisión del rendimiento</h3><p>Vigilamos velocidad y funcionamiento del formulario y contacto.</p></div>
-                </div>
+                <h2 class="sv-h2">Trabajos nuestros.</h2>
             </div>
+            <div class="sv-work" style="--n:3">
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/web_jandula.webp" alt="Jándula: Web de moda" loading="lazy" decoding="async"><b>Jándula</b><span>Web de moda</span></a>
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/web_sevillatp.webp" alt="Sevilla TP: Web corporativa" loading="lazy" decoding="async"><b>Sevilla TP</b><span>Web corporativa</span></a>
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/web_davidvillalba.webp" alt="David Villalba: Web profesional" loading="lazy" decoding="async"><b>David Villalba</b><span>Web profesional</span></a>
+            </div>
+            <div class="sv-wrap" style="margin-top:2.5rem"><a class="sv-btn sv-btn--quiet" href="/html/portfolio">Ver todo el portfolio <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
         </section>
 
-        <section class="sv-section sv-section--alt">
+        <section class="sv-section" style="background:var(--sv-field)">
             <div class="sv-wrap">
-                <span class="sv-eyebrow">03 · Para quién</span>
-                <h2 class="sv-h2">Para negocios como el tuyo.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-reveal"><h3>Webs que hemos hecho nosotros</h3><p>Continuidad con quien la conoce.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Webs de otros</h3><p>La revisamos y nos hacemos cargo.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Tiendas online</h3><p>Donde una caída son ventas perdidas.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Negocios con cambios frecuentes</h3><p>Cartas, ofertas y novedades.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Quien no quiere complicaciones</h3><p>Una persona a quien escribir.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Empresas con web crítica</h3><p>Que no pueden permitirse fallos.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="sv-section">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">04 · Cómo avanzamos</span>
-                <h2 class="sv-h2">Así trabajamos.</h2>
-                <p class="sv-lead">Compartimos referencias, alcance y prioridades antes de producir. Sin sorpresas a mitad de camino.</p>
+                <h2 class="sv-h2">Cómo lo hacemos.</h2>
                 <ol class="sv-steps">
                     <li class="sv-reveal"><h3>Revisión inicial</h3><p>Comprobamos el estado de la web y qué hay que arreglar.</p></li>
                     <li class="sv-reveal"><h3>Puesta a punto</h3><p>Dejamos hosting, copias y seguridad configurados.</p></li>
@@ -248,10 +247,9 @@
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">Preguntas frecuentes</span>
-                <h2 class="sv-h2">Antes de empezar.</h2>
+        <section class="sv-section">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Dudas habituales.</h2></div>
                 <div class="sv-faq">
                     <details><summary>¿Qué pasa si mi web ya la hizo otra persona?</summary><p>La revisamos primero. Si es viable, nos hacemos cargo del mantenimiento sin necesidad de rehacerla.</p></details>
                     <details><summary>¿Cuántos cambios están incluidos?</summary><p>Los pequeños ajustes de contenido entran dentro del mantenimiento. Los cambios grandes se presupuestan aparte.</p></details>
@@ -262,31 +260,34 @@
             </div>
         </section>
 
+        <section class="sv-close">
+            <div class="sv-wrap sv-close__grid">
+                <div>
+                    <h2 class="sv-h2">Hablemos de tu proyecto.</h2>
+                    <p>Cuéntanos qué necesitas y te respondemos con una propuesta clara, sin compromiso.</p>
+                    <div class="sv-actions">
+                        <a class="sv-btn sv-btn--primary" href="/?servicio=Mantenimiento%20web#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                        <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Mantenimiento%20web.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+                    </div>
+                </div>
+                <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Panel de estado y mantenimiento de una web" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="110" y="70" width="580" height="460" rx="16" fill="#222222"/><text x="150" y="130" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Estado de tu web</text><rect x="540" y="100" width="120" height="40" rx="20" fill="#d97762"/><text x="600" y="126" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#111" text-anchor="middle">En línea</text><rect x="150" y="170" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="205" r="14" fill="#d97762"/><path d="M177 205 L182 211 L192 199" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="200" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Certificado de seguridad</text><text x="214" y="224" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Válido y renovado</text><rect x="150" y="256" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="291" r="14" fill="#d97762"/><path d="M177 291 L182 297 L192 285" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="286" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Copia de seguridad</text><text x="214" y="310" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Hecha hoy a las 03:00</text><rect x="150" y="342" width="500" height="70" rx="12" fill="#2d2d2d"/><circle cx="184" cy="377" r="14" fill="#d97762"/><path d="M177 377 L182 383 L192 371" stroke="#111" stroke-width="3" fill="none"/><text x="214" y="372" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Actualizaciones</text><text x="214" y="396" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Todo al día</text><rect x="150" y="428" width="500" height="70" rx="12" fill="#8f4a3b"/><text x="176" y="460" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Último cambio: horario de verano actualizado</text><text x="176" y="484" font-family="Inter, sans-serif" font-size="14" font-weight="400" fill="#f4f4f4" text-anchor="start">Solicitado por WhatsApp · Resuelto el mismo día</text></svg></div>
+            </div>
+        </section>
+
         <section class="sv-section">
             <div class="sv-wrap">
-                <div class="sv-cta">
-                    <span class="sv-eyebrow">Hablemos</span>
-                    <h2 class="sv-h2">¿Te cuento cómo lo haríamos en tu caso?</h2>
-                    <p class="sv-lead">Cuéntanos qué necesitas. Te respondemos con una propuesta clara y sin compromiso.</p>
-                    <div class="sv-hero__cta">
-                        <a class="sv-btn sv-btn--primary" href="/?servicio=Mantenimiento%20web#contacto">Pedir presupuesto</a>
-                        <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Mantenimiento%20web.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
-                    </div>
-                </div>
-
-                <div style="margin-top:4rem">
-                    <span class="sv-eyebrow">Te puede interesar</span>
-                    <div class="sv-related">
-                        <a class="sv-rel" href="/servicios/diseno-web" data-svc="Diseño web"><b>Diseño web</b><span>Webs a medida que se ven bien en el móvil y llevan al cliente a escribirte, llamarte o comprar.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/seo-local" data-svc="SEO y Google Business"><b>SEO y Google Business</b><span>Que te encuentren en Google y en Maps cuando tu cliente busca lo que tú ofreces, en tu zona.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/software-a-medida" data-svc="Software a medida"><b>Software a medida</b><span>Aplicaciones, paneles y herramientas hechas para tu negocio, para digitalizar procesos y convertir ideas en producto.</span><em>Ver servicio →</em></a>
-                    </div>
-                    <div class="sv-more"><a href="/servicios">Ver todos los servicios <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
-                </div>
+                <h2 class="sv-h2">Seguir viendo.</h2>
+                <nav class="sv-next" aria-label="Otros servicios">
+                    <a href="/servicios/diseno-web" data-svc="Diseño web"><span>Diseño web</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/seo-local" data-svc="SEO y Google Business"><span>SEO y Google Business</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/software-a-medida" data-svc="Software a medida"><span>Software a medida</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios"><span>Todos los servicios</span><i aria-hidden="true">→</i></a>
+                </nav>
             </div>
         </section>
     </main>
 
+    <!--SVC:FOOTERBLOCK-->
     <footer class="bg-black py-12 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -336,6 +337,7 @@
     <a href="https://wa.me/34624903256" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Contactar por WhatsApp">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
+    <!--/SVC:FOOTERBLOCK-->
 
     <script src="/js/main.js"></script>
     <script src="/js/servicios.js?v=1"></script>

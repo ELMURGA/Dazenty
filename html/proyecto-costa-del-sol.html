@@ -31,7 +31,7 @@
     <meta name="twitter:site" content="@DAzenty">
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=2">
+    <link rel="stylesheet" href="/css/site.min.css?v=4">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
 </head>
@@ -40,16 +40,33 @@
 
 
     <!-- Header -->
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
+                <img src="/img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
                 <a href="/#inicio">Inicio</a>
-                <a href="/#servicios">Servicios</a>
-                <a href="/html/portfolio" class="is-active">Portfolio</a>
+                <div class="nav-drop">
+                    <a href="/servicios" aria-haspopup="true">Servicios</a>
+                    <div class="nav-drop__panel">
+                        <div class="nav-drop__box">
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/agentes-ia">Agentes IA y chatbots</a>
+                            <a href="/servicios/automatizaciones">Automatizaciones</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
+                            <a href="/servicios/mantenimiento-web">Mantenimiento web</a>
+                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes</a>
+                            <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/html/portfolio">Portfolio</a>
                 <a href="/#contacto" class="site-header__cta">Hablemos</a>
             </nav>
 
@@ -61,10 +78,22 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/#servicios">Servicios</a>
-        <a href="/html/portfolio" class="is-active">Portfolio</a>
+        <a href="/servicios">Servicios</a>
+        <div class="mobile-nav__sub">
+            <a href="/servicios/diseno-web" class="mobile-nav__small">Diseño web</a>
+            <a href="/servicios/software-a-medida" class="mobile-nav__small">Software a medida</a>
+            <a href="/servicios/agentes-ia" class="mobile-nav__small">Agentes IA y chatbots</a>
+            <a href="/servicios/automatizaciones" class="mobile-nav__small">Automatizaciones</a>
+            <a href="/servicios/diseno-grafico" class="mobile-nav__small">Branding y diseño gráfico</a>
+            <a href="/servicios/redes-sociales" class="mobile-nav__small">Redes sociales</a>
+            <a href="/servicios/seo-local" class="mobile-nav__small">SEO y Google Business</a>
+            <a href="/servicios/mantenimiento-web" class="mobile-nav__small">Mantenimiento web</a>
+            <a href="/servicios/carta-qr-restaurantes" class="mobile-nav__small">Carta QR y restaurantes</a>
+        </div>
+        <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
     </div>
+    <!--/SVC:HEADER-->
 
     <main class="pt-32 pb-24 min-h-screen">
         <div class="max-w-5xl mx-auto px-6">
@@ -212,10 +241,15 @@
                 <div>
                     <h4 class="font-bold mb-4">Servicios</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a>
-                        </li>
+                        <li><a href="/servicios/diseno-web" class="hover:text-brand-blue transition-colors">Diseño web</a></li>
+                        <li><a href="/servicios/software-a-medida" class="hover:text-brand-blue transition-colors">Software a medida</a></li>
+                        <li><a href="/servicios/agentes-ia" class="hover:text-brand-blue transition-colors">Agentes IA y chatbots</a></li>
+                        <li><a href="/servicios/automatizaciones" class="hover:text-brand-blue transition-colors">Automatizaciones</a></li>
+                        <li><a href="/servicios/diseno-grafico" class="hover:text-brand-blue transition-colors">Branding y diseño gráfico</a></li>
+                        <li><a href="/servicios/redes-sociales" class="hover:text-brand-blue transition-colors">Redes sociales</a></li>
+                        <li><a href="/servicios/seo-local" class="hover:text-brand-blue transition-colors">SEO y Google Business</a></li>
+                        <li><a href="/servicios/mantenimiento-web" class="hover:text-brand-blue transition-colors">Mantenimiento web</a></li>
+                        <li><a href="/servicios/carta-qr-restaurantes" class="hover:text-brand-blue transition-colors">Carta QR y restaurantes</a></li>
                     </ul>
                 </div>
                 <div>

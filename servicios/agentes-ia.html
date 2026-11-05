@@ -28,7 +28,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=3">
+    <link rel="stylesheet" href="/css/site.min.css?v=4">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
     <script type="application/ld+json">
@@ -123,6 +123,7 @@
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black sv-page">
 
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
@@ -135,15 +136,15 @@
                     <a href="/servicios" aria-haspopup="true">Servicios</a>
                     <div class="nav-drop__panel">
                         <div class="nav-drop__box">
-                            <a href="/servicios/diseno-web">Diseño web<small>Webs a medida que se ven bien en el móvil y llevan al cliente …</small></a>
-                            <a href="/servicios/software-a-medida">Software a medida<small>Aplicaciones, paneles y herramientas hechas para tu negocio, p…</small></a>
-                            <a href="/servicios/agentes-ia">Agentes IA y chatbots<small>Asistentes con inteligencia artificial que atienden a tus clie…</small></a>
-                            <a href="/servicios/automatizaciones">Automatizaciones<small>Conectamos tus aplicaciones para que las tareas repetitivas se…</small></a>
-                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico<small>Identidades visuales memorables y material gráfico que comunic…</small></a>
-                            <a href="/servicios/redes-sociales">Redes sociales<small>Contenido y publicidad en redes para que más gente te conozca,…</small></a>
-                            <a href="/servicios/seo-local">SEO y Google Business<small>Que te encuentren en Google y en Maps cuando tu cliente busca …</small></a>
-                            <a href="/servicios/mantenimiento-web">Mantenimiento web<small>Nos ocupamos de que tu web esté siempre al día, segura, rápida…</small></a>
-                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes<small>Carta digital con QR que actualizas en un minuto, y soluciones…</small></a>
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/agentes-ia">Agentes IA y chatbots</a>
+                            <a href="/servicios/automatizaciones">Automatizaciones</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
+                            <a href="/servicios/mantenimiento-web">Mantenimiento web</a>
+                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes</a>
                             <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
                         </div>
                     </div>
@@ -175,70 +176,56 @@
         <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
     </div>
+    <!--/SVC:HEADER-->
 
     <main>
         <section class="sv-hero">
-            <div class="sv-hero__orb" aria-hidden="true"></div>
-            <div class="sv-wrap" style="position:relative">
+            <div class="sv-wrap">
                 <nav class="sv-crumbs" aria-label="Ruta"><a href="/">Inicio</a><span aria-hidden="true">/</span><a href="/servicios">Servicios</a><span aria-hidden="true">/</span><span aria-current="page">Agentes IA y chatbots</span></nav>
-                <span class="sv-eyebrow">Agentes IA y chatbots</span>
-                <h1>Un asistente que atiende a tus clientes mientras tú trabajas.</h1>
-                <p class="sv-hero__lead">Agentes de IA entrenados con la información de tu negocio, que responden con criterio, recogen datos y te pasan el relevo cuando hace falta.</p>
-                <div class="sv-hero__cta">
-                    <a class="sv-btn sv-btn--primary" href="/?servicio=Agentes%20IA%20y%20chatbots#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
-                    <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Agentes%20IA%20y%20chatbots.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                <h1 class="sv-h1">Un asistente que atiende por ti.</h1>
+                <div class="sv-hero__body">
+                    <div class="sv-hero__side">
+                        <p class="sv-lead">Agentes de IA entrenados con la información de tu negocio, que responden con criterio, recogen datos y te pasan el relevo cuando hace falta.</p>
+                        <div class="sv-actions">
+                            <a class="sv-btn sv-btn--primary" href="/?servicio=Agentes%20IA%20y%20chatbots#contacto" data-svc="Agentes IA y chatbots">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                            <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Agentes%20IA%20y%20chatbots.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                        </div>
+                        <ul class="sv-points"><li>Disponible a cualquier hora</li><li>Responde con tu información, no con inventos</li><li>Te avisa cuando debe intervenir una persona</li></ul>
+                    </div>
+                    <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Conversación de un asistente de IA reservando una mesa" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="150" y="50" width="500" height="500" rx="18" fill="#222222"/><rect x="150" y="50" width="500" height="74" rx="18" fill="#2d2d2d"/><rect x="150" y="100" width="500" height="24" rx="0" fill="#2d2d2d"/><circle cx="190" cy="87" r="20" fill="#d97762"/><text x="222" y="82" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Asistente de Casa Lola</text><text x="222" y="104" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Responde ahora</text><rect x="180" y="150" width="290" height="52" rx="22" fill="#2d2d2d"/><text x="200" y="182" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">¿Tenéis hueco el sábado?</text><rect x="300" y="222" width="320" height="92" rx="22" fill="#d97762"/><text x="320" y="254" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Sí. A las 13:30 o a las 21:00.</text><text x="320" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">¿Para cuántas personas?</text><rect x="540" y="334" width="80" height="48" rx="22" fill="#2d2d2d"/><text x="580" y="366" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="middle">Cuatro</text><rect x="180" y="402" width="340" height="92" rx="22" fill="#d97762"/><text x="200" y="434" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Reservado para el sábado a las 21:00.</text><text x="200" y="462" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Te llega la confirmación al móvil.</text><rect x="180" y="508" width="380" height="28" rx="14" fill="#2d2d2d"/><text x="196" y="528" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Escribe tu mensaje…</text></svg></div>
                 </div>
-                <ul class="sv-points"><li>Disponible a cualquier hora</li><li>Responde con tu información, no con inventos</li><li>Te avisa cuando debe intervenir una persona</li></ul>
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">01 · El problema</span>
-                <h2 class="sv-h2">Cada pregunta repetida es tiempo que no dedicas a lo importante.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Mensajes sin contestar</h3><p>Un cliente que escribe fuera de horario y no recibe respuesta suele irse a otro sitio.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Siempre las mismas dudas</h3><p>Horarios, precios, ubicación, disponibilidad: respondes lo mismo veinte veces al día.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Contactos que se pierden</h3><p>Conversaciones sueltas que nadie apunta ni sigue.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Atención desigual</h3><p>Según quién conteste y el día que tenga, la respuesta cambia.</p></div>
+        <section class="sv-section" style="background:var(--sv-field)">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Cada pregunta repetida te quita tiempo.</h2>
                 </div>
+                <ul class="sv-items sv-items--problem"><li class="sv-reveal"><h3>Mensajes sin contestar</h3><p>Un cliente que escribe fuera de horario y no recibe respuesta suele irse a otro sitio.</p></li><li class="sv-reveal"><h3>Siempre las mismas dudas</h3><p>Horarios, precios, ubicación, disponibilidad: respondes lo mismo veinte veces al día.</p></li><li class="sv-reveal"><h3>Contactos que se pierden</h3><p>Conversaciones sueltas que nadie apunta ni sigue.</p></li><li class="sv-reveal"><h3>Atención desigual</h3><p>Según quién conteste y el día que tenga, la respuesta cambia.</p></li></ul>
+            </div>
+        </section>
+
+        <section class="sv-section">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Cómo lo hacemos.</h2>
+                    <p class="sv-copy">Un asistente útil, controlado y con límites claros.</p>
+                </div>
+                <ul class="sv-items "><li class="sv-reveal"><h3>Entrenado con tu negocio</h3><p>Servicios, preguntas frecuentes y tono de voz. Responde dentro de lo que sabe.</p></li><li class="sv-reveal"><h3>Web, WhatsApp y más</h3><p>Lo ponemos donde te escriben tus clientes.</p></li><li class="sv-reveal"><h3>Recogida de datos</h3><p>Nombre, necesidad y contacto, enviados a tu CRM, correo u hoja de cálculo.</p></li><li class="sv-reveal"><h3>Relevo a una persona</h3><p>Si la consulta es delicada o no la sabe, te avisa y pasa la conversación.</p></li></ul>
+            </div>
+        </section>
+
+        <section class="sv-section sv-section--light">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Quién nos contrata.</h2></div>
+                <ul class="sv-fit"><li class="sv-reveal"><h3>Negocios con muchas consultas</h3><p>Menos mensajes repetidos.</p></li><li class="sv-reveal"><h3>Clínicas y centros</h3><p>Citas y dudas previas resueltas.</p></li><li class="sv-reveal"><h3>Hostelería</h3><p>Reservas, carta y horarios.</p></li><li class="sv-reveal"><h3>Tiendas online</h3><p>Ayuda a elegir producto y seguimiento de pedidos.</p></li><li class="sv-reveal"><h3>Inmobiliarias y servicios</h3><p>Primer filtro de contactos interesados.</p></li><li class="sv-reveal"><h3>Equipos pequeños</h3><p>Atender más sin contratar a nadie.</p></li></ul>
             </div>
         </section>
 
         <section class="sv-section">
             <div class="sv-wrap">
-                <span class="sv-eyebrow">02 · Lo que incluye</span>
                 <h2 class="sv-h2">Cómo lo hacemos.</h2>
-                <p class="sv-lead">Un asistente útil, controlado y con límites claros.</p>
-                <div class="sv-cols">
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Entrenado con tu negocio</h3><p>Servicios, preguntas frecuentes y tono de voz. Responde dentro de lo que sabe.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Web, WhatsApp y más</h3><p>Lo ponemos donde te escriben tus clientes.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Recogida de datos</h3><p>Nombre, necesidad y contacto, enviados a tu CRM, correo u hoja de cálculo.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Relevo a una persona</h3><p>Si la consulta es delicada o no la sabe, te avisa y pasa la conversación.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">03 · Para quién</span>
-                <h2 class="sv-h2">Para negocios como el tuyo.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-reveal"><h3>Negocios con muchas consultas</h3><p>Menos mensajes repetidos.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Clínicas y centros</h3><p>Citas y dudas previas resueltas.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Hostelería</h3><p>Reservas, carta y horarios.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Tiendas online</h3><p>Ayuda a elegir producto y seguimiento de pedidos.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Inmobiliarias y servicios</h3><p>Primer filtro de contactos interesados.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Equipos pequeños</h3><p>Atender más sin contratar a nadie.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="sv-section">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">04 · Cómo avanzamos</span>
-                <h2 class="sv-h2">Así trabajamos.</h2>
-                <p class="sv-lead">Compartimos referencias, alcance y prioridades antes de producir. Sin sorpresas a mitad de camino.</p>
                 <ol class="sv-steps">
                     <li class="sv-reveal"><h3>Qué debe saber</h3><p>Recopilamos tus servicios, preguntas habituales y límites.</p></li>
                     <li class="sv-reveal"><h3>Diseño de la conversación</h3><p>Tono, respuestas y cuándo pasa la conversación a una persona.</p></li>
@@ -248,10 +235,9 @@
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">Preguntas frecuentes</span>
-                <h2 class="sv-h2">Antes de empezar.</h2>
+        <section class="sv-section" style="background:var(--sv-field)">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Dudas habituales.</h2></div>
                 <div class="sv-faq">
                     <details><summary>¿Puede equivocarse el asistente?</summary><p>Lo limitamos para que responda solo con la información que le damos, y lo configuramos para derivarte lo que no sepa. Además revisamos las conversaciones para mejorarlo.</p></details>
                     <details><summary>¿Funciona en WhatsApp?</summary><p>Sí, además de en la web. Se puede conectar a los canales que ya usas con tus clientes.</p></details>
@@ -262,31 +248,34 @@
             </div>
         </section>
 
+        <section class="sv-close">
+            <div class="sv-wrap sv-close__grid">
+                <div>
+                    <h2 class="sv-h2">Hablemos de tu proyecto.</h2>
+                    <p>Cuéntanos qué necesitas y te respondemos con una propuesta clara, sin compromiso.</p>
+                    <div class="sv-actions">
+                        <a class="sv-btn sv-btn--primary" href="/?servicio=Agentes%20IA%20y%20chatbots#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                        <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Agentes%20IA%20y%20chatbots.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+                    </div>
+                </div>
+                <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Conversación de un asistente de IA reservando una mesa" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="150" y="50" width="500" height="500" rx="18" fill="#222222"/><rect x="150" y="50" width="500" height="74" rx="18" fill="#2d2d2d"/><rect x="150" y="100" width="500" height="24" rx="0" fill="#2d2d2d"/><circle cx="190" cy="87" r="20" fill="#d97762"/><text x="222" y="82" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">Asistente de Casa Lola</text><text x="222" y="104" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Responde ahora</text><rect x="180" y="150" width="290" height="52" rx="22" fill="#2d2d2d"/><text x="200" y="182" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">¿Tenéis hueco el sábado?</text><rect x="300" y="222" width="320" height="92" rx="22" fill="#d97762"/><text x="320" y="254" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Sí. A las 13:30 o a las 21:00.</text><text x="320" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">¿Para cuántas personas?</text><rect x="540" y="334" width="80" height="48" rx="22" fill="#2d2d2d"/><text x="580" y="366" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="middle">Cuatro</text><rect x="180" y="402" width="340" height="92" rx="22" fill="#d97762"/><text x="200" y="434" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Reservado para el sábado a las 21:00.</text><text x="200" y="462" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#111" text-anchor="start">Te llega la confirmación al móvil.</text><rect x="180" y="508" width="380" height="28" rx="14" fill="#2d2d2d"/><text x="196" y="528" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Escribe tu mensaje…</text></svg></div>
+            </div>
+        </section>
+
         <section class="sv-section">
             <div class="sv-wrap">
-                <div class="sv-cta">
-                    <span class="sv-eyebrow">Hablemos</span>
-                    <h2 class="sv-h2">¿Te cuento cómo lo haríamos en tu caso?</h2>
-                    <p class="sv-lead">Cuéntanos qué necesitas. Te respondemos con una propuesta clara y sin compromiso.</p>
-                    <div class="sv-hero__cta">
-                        <a class="sv-btn sv-btn--primary" href="/?servicio=Agentes%20IA%20y%20chatbots#contacto">Pedir presupuesto</a>
-                        <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Agentes%20IA%20y%20chatbots.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
-                    </div>
-                </div>
-
-                <div style="margin-top:4rem">
-                    <span class="sv-eyebrow">Te puede interesar</span>
-                    <div class="sv-related">
-                        <a class="sv-rel" href="/servicios/automatizaciones" data-svc="Automatizaciones"><b>Automatizaciones</b><span>Conectamos tus aplicaciones para que las tareas repetitivas se hagan solas: leads, avisos, facturas, informes.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/diseno-web" data-svc="Diseño web"><b>Diseño web</b><span>Webs a medida que se ven bien en el móvil y llevan al cliente a escribirte, llamarte o comprar.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/software-a-medida" data-svc="Software a medida"><b>Software a medida</b><span>Aplicaciones, paneles y herramientas hechas para tu negocio, para digitalizar procesos y convertir ideas en producto.</span><em>Ver servicio →</em></a>
-                    </div>
-                    <div class="sv-more"><a href="/servicios">Ver todos los servicios <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
-                </div>
+                <h2 class="sv-h2">Seguir viendo.</h2>
+                <nav class="sv-next" aria-label="Otros servicios">
+                    <a href="/servicios/automatizaciones" data-svc="Automatizaciones"><span>Automatizaciones</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/diseno-web" data-svc="Diseño web"><span>Diseño web</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/software-a-medida" data-svc="Software a medida"><span>Software a medida</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios"><span>Todos los servicios</span><i aria-hidden="true">→</i></a>
+                </nav>
             </div>
         </section>
     </main>
 
+    <!--SVC:FOOTERBLOCK-->
     <footer class="bg-black py-12 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -336,6 +325,7 @@
     <a href="https://wa.me/34624903256" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Contactar por WhatsApp">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
+    <!--/SVC:FOOTERBLOCK-->
 
     <script src="/js/main.js"></script>
     <script src="/js/servicios.js?v=1"></script>
