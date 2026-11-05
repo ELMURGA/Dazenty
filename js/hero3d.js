@@ -1,5 +1,5 @@
-// Hero 3D: una nube de partículas que se transforma de esfera a cubo y a toroide
-// ("ideas que transforman realidades") y reacciona al cursor.
+// Hero 3D: una nube de partículas que empieza como esfera y se transforma en el logo de Dazenty
+// ("ideas que transforman realidades"). Reacciona al cursor.
 // Se carga tras pintar la página; si no hay WebGL o el equipo va justo, la web sigue igual.
 (function () {
     'use strict';
@@ -15,13 +15,38 @@
     var COUNT = isTouch || lowPower ? 5000 : 14000;
 
     function start() {
-        import('/js/vendor/three.module.min.js').then(function (THREE) { init(THREE); }).catch(function () { /* sin 3D */ });
+        Promise.all([import('/js/vendor/three.module.min.js'), logoPoints()]).then(function (r) { init(r[0], r[1]); }).catch(function () { /* sin 3D */ });
     }
     // Esperar a que el navegador esté libre: no compite con el primer pintado
     if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 2500 });
     else setTimeout(start, 1200);
 
-    function init(THREE) {
+    // Puntos que forman el logo: se muestrea la silueta (canal alfa) de la imagen
+    function logoPoints() {
+        return new Promise(function (resolve) {
+            var img = new Image();
+            img.onload = function () {
+                var N = 400, c = document.createElement('canvas'); c.width = c.height = N;
+                var ctx = c.getContext('2d', { willReadFrequently: true });
+                ctx.drawImage(img, 0, 0, N, N);
+                var d = ctx.getImageData(0, 0, N, N).data, pts = [];
+                for (var y = 0; y < N; y += 1) for (var x = 0; x < N; x += 1) if (d[(y * N + x) * 4 + 3] > 128) pts.push(x, y);
+                if (pts.length < 200) { resolve(null); return; }
+                var out = new Float32Array(COUNT * 3), k = 0, sc = 4.6 / 295;
+                for (var i = 0; i < COUNT; i++) {
+                    var j = Math.floor(Math.random() * (pts.length / 2)) * 2;
+                    out[k++] = (pts[j] + Math.random() - 193) * sc;
+                    out[k++] = -(pts[j + 1] + Math.random() - 204) * sc;
+                    out[k++] = (Math.random() - 0.5) * 0.28;
+                }
+                resolve(out);
+            };
+            img.onerror = function () { resolve(null); };
+            img.src = '/img/logoheader.webp';
+        });
+    }
+
+    function init(THREE, logo) {
         var renderer;
         try {
             renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
@@ -33,8 +58,6 @@
 
         // --- Tres formas para las mismas partículas ---
         var sphere = new Float32Array(COUNT * 3);
-        var cube = new Float32Array(COUNT * 3);
-        var torus = new Float32Array(COUNT * 3);
         var seed = new Float32Array(COUNT);
         var golden = Math.PI * (3 - Math.sqrt(5));
         for (var i = 0; i < COUNT; i++) {
@@ -46,25 +69,12 @@
             sphere[k] = Math.cos(th) * rad * 2.1;
             sphere[k + 1] = y * 2.1;
             sphere[k + 2] = Math.sin(th) * rad * 2.1;
-            // cubo (puntos sobre las caras)
-            var face = Math.floor(Math.random() * 6);
-            var a = (Math.random() * 2 - 1) * 1.7, b = (Math.random() * 2 - 1) * 1.7, s = face % 2 ? 1.7 : -1.7;
-            if (face < 2) { cube[k] = s; cube[k + 1] = a; cube[k + 2] = b; }
-            else if (face < 4) { cube[k] = a; cube[k + 1] = s; cube[k + 2] = b; }
-            else { cube[k] = a; cube[k + 1] = b; cube[k + 2] = s; }
-            // toroide
-            var u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2;
-            var R = 1.9, r = 0.7;
-            torus[k] = (R + r * Math.cos(v)) * Math.cos(u);
-            torus[k + 1] = r * Math.sin(v) * 1.2;
-            torus[k + 2] = (R + r * Math.cos(v)) * Math.sin(u);
             seed[i] = Math.random();
         }
 
         var geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(sphere, 3));
-        geo.setAttribute('aCube', new THREE.BufferAttribute(cube, 3));
-        geo.setAttribute('aTorus', new THREE.BufferAttribute(torus, 3));
+        geo.setAttribute('aLogo', new THREE.BufferAttribute(logo || sphere, 3));
         geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
 
         var mat = new THREE.ShaderMaterial({
@@ -79,13 +89,14 @@
                 uAlpha: { value: 0 },
             },
             vertexShader: [
-                'attribute vec3 aCube; attribute vec3 aTorus; attribute float aSeed;',
+                'attribute vec3 aLogo; attribute float aSeed;',
                 'uniform float uMorph, uTime, uSize; uniform vec3 uMouse;',
                 'varying float vDepth; varying float vSeed;',
                 'void main() {',
-                '  float m = clamp(uMorph, 0.0, 2.0);',
-                '  vec3 p = m < 1.0 ? mix(position, aCube, smoothstep(0.0, 1.0, m)) : mix(aCube, aTorus, smoothstep(0.0, 1.0, m - 1.0));',
-                '  p += normalize(p + 0.001) * sin(uTime * 0.9 + aSeed * 40.0) * 0.045;',
+                '  float m = smoothstep(0.0, 1.0, clamp(uMorph, 0.0, 1.0));',
+                '  float k = clamp(m * 1.25 - aSeed * 0.25, 0.0, 1.0);',
+                '  vec3 p = mix(position, aLogo, k);',
+                '  p += normalize(p + 0.001) * sin(uTime * 0.9 + aSeed * 40.0) * mix(0.045, 0.012, k);',
                 '  vec4 world = modelMatrix * vec4(p, 1.0);',
                 '  vec3 d = world.xyz - uMouse; float dist = length(d.xy);',
                 '  world.xyz += normalize(vec3(d.xy, 0.4)) * smoothstep(1.6, 0.0, dist) * 0.55;',
@@ -138,7 +149,7 @@
         }, { passive: true });
 
         // --- Bucle (solo corre mientras el hero se ve) ---
-        var visible = true, raf = 0, last = performance.now(), fade = 0;
+        var visible = true, raf = 0, last = performance.now(), fade = 0, clock = 0, spin = 0;
         new IntersectionObserver(function (en) {
             visible = en[0].isIntersecting;
             if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
@@ -153,20 +164,25 @@
             var dt = Math.min((now - last) / 1000, 0.05); last = now;
             mat.uniforms.uTime.value += dt;
 
-            // Progreso de scroll dentro del hero: 0 = esfera, 1 = cubo, 2 = toroide
+            // Línea de tiempo: esfera al cargar y, tras un momento, se convierte en el logo
             var rect = hero.getBoundingClientRect();
             var p = Math.min(Math.max(-rect.top / (rect.height * 0.9), 0), 1);
-            var targetMorph = p * 2;
-            mat.uniforms.uMorph.value += (targetMorph - mat.uniforms.uMorph.value) * Math.min(dt * 4, 1);
+            clock += dt;
+            var targetMorph = logo && clock > 1.6 ? 1 : 0;
+            mat.uniforms.uMorph.value += (targetMorph - mat.uniforms.uMorph.value) * Math.min(dt * 1.1, 1);
+            var m = mat.uniforms.uMorph.value;
 
             cur.x += (target.x - cur.x) * Math.min(dt * 3, 1);
             cur.y += (target.y - cur.y) * Math.min(dt * 3, 1);
-            points.rotation.y += dt * 0.12;
-            points.rotation.x += ((-cur.y * 0.45) - points.rotation.x) * Math.min(dt * 2.5, 1);
-            points.rotation.z = cur.x * 0.15;
+            // Gira como esfera; al formarse el logo se queda de frente (con una ligera inclinación al cursor)
+            spin += dt * 0.12;
+            var wrapped = ((spin + Math.PI) % (Math.PI * 2)) - Math.PI;
+            points.rotation.y = wrapped * (1 - m) + cur.x * 0.3 * m;
+            points.rotation.x += ((-cur.y * 0.35 * m) - points.rotation.x) * Math.min(dt * 2.5, 1);
+            points.rotation.z = 0;
 
             fade = Math.min(fade + dt * 0.8, 1);
-            mat.uniforms.uAlpha.value = fade * 0.5 * (1 - p * 0.5);
+            mat.uniforms.uAlpha.value = fade * (0.5 + 0.12 * m) * (1 - p * 0.6);
 
             renderer.render(scene, camera);
             raf = requestAnimationFrame(frame);
