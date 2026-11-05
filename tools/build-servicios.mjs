@@ -9,7 +9,7 @@ import { ART } from './servicios-art.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://dazenty.com';
 const WA = 'https://wa.me/34624903256';
-const CSS_V = '7';
+const CSS_V = '10';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const pad = (n) => String(n).padStart(2, '0');

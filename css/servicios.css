@@ -267,6 +267,13 @@ html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { ov
 .sv-sub__text .sv-copy { max-width: 32rem; }
 @media (max-width: 900px) { .sv-sub { grid-template-columns: 1fr; } .sv-sub--flip .sv-art { order: 0; } }
 
+/* ---------- Hero 3D (partículas) ---------- */
+.hero3d { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+#inicio.has-3d .hero3d { opacity: 1; }
+#inicio.has-3d .hero-orb { opacity: 0.35; }
+#inicio.has-3d h1 { filter: drop-shadow(0 2px 16px rgba(5, 5, 5, 0.95)); }
+#inicio.has-3d p, #inicio.has-3d .inline-block > span { text-shadow: 0 2px 22px rgba(5, 5, 5, 0.95), 0 0 6px rgba(5, 5, 5, 0.8); }
+
 /* ---------- Comparador ---------- */
 .sv-compare { --pos: 50%; position: relative; aspect-ratio: 16 / 10; border-radius: 1.5rem; overflow: hidden; background: #111; margin-top: 2rem; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .sv-compare img { display: block; width: 100%; height: 100%; object-fit: cover; }
