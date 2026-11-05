@@ -230,41 +230,6 @@ if (contactForm) {
     });
 }
 
-// Service Modals — scroll solo en el modal, body bloqueado (iOS-safe)
-let _svcScrollY = 0;
-
-function openServiceModal(id) {
-    const modal = document.getElementById('modal-' + id);
-    if (!modal) return;
-    _svcScrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + _svcScrollY + 'px';
-    document.body.style.width = '100%';
-    modal.classList.remove('hidden');
-    if (lenis) lenis.stop();
-}
-
-function closeServiceModal(id) {
-    const modal = document.getElementById('modal-' + id);
-    if (!modal) return;
-    modal.classList.add('hidden');
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, _svcScrollY);
-    if (lenis) lenis.start();
-}
-
-// Cerrar modal con Escape
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        ['web', 'grafico', 'marketing', 'n8n'].forEach(id => {
-            const m = document.getElementById('modal-' + id);
-            if (m && !m.classList.contains('hidden')) closeServiceModal(id);
-        });
-    }
-});
-
 // Vercel Analytics — Custom Events
 function _va(name, data) {
     if (typeof window.va === 'function') window.va('event', Object.assign({ name }, data || {}));
@@ -280,12 +245,12 @@ document.querySelectorAll('a[href^="tel:"]').forEach(el => {
     el.addEventListener('click', () => _va('Phone Click'));
 });
 
-// "Solicitar presupuesto" desde modales de servicio
-const serviceLabels = { web: 'Diseño Web', grafico: 'Diseño Gráfico', marketing: 'Marketing Digital', n8n: 'Automatización n8n' };
-['web', 'grafico', 'marketing', 'n8n'].forEach(id => {
-    const modal = document.getElementById('modal-' + id);
-    if (!modal) return;
-    modal.querySelector('a[href="#contacto"]')?.addEventListener('click', () => {
-        _va('Request Budget', { service: serviceLabels[id] });
-    });
-});
+// Preseleccionar el servicio en el formulario cuando se llega desde una página de servicio (/?servicio=...)
+(function () {
+    const select = document.getElementById('contact-service');
+    if (!select) return;
+    const wanted = new URLSearchParams(window.location.search).get('servicio');
+    if (!wanted) return;
+    const option = Array.from(select.options).find(o => o.value === wanted);
+    if (option) select.value = option.value;
+})();

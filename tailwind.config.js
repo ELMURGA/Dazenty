@@ -4,6 +4,8 @@ module.exports = {
         './index.html',
         './404.html',
         './html/*.html',
+        './servicios/*.html',
+        './tools/build-servicios.mjs',
         './js/main.js',
     ],
     theme: {
