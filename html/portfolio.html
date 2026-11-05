@@ -35,7 +35,7 @@
 
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=2">
+    <link rel="stylesheet" href="/css/site.min.css?v=7">
 
     <style>
         /* Ocultar barra de scroll para un look más limpio */
@@ -73,49 +73,102 @@
             transform: scale(1.03);
         }
 
-        /* Lógica del Drawer Modal (Estética Oscura de Dazenty) */
-        .drawer-overlay {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            position: fixed;
-            inset: 0;
-            z-index: 100000 !important; /* Higher than floating nav (99999) */
+        /* ===== Ficha de proyecto a pantalla completa (estilo galería) ===== */
+        .cs { position: fixed; inset: 0; z-index: 100010; display: flex; flex-direction: column; background: #0b0b0c; color: #fff; --accent: #d97762;
+            opacity: 0; visibility: hidden; transform: scale(.985); transition: opacity .35s ease, transform .5s cubic-bezier(.16,1,.3,1), visibility 0s linear .5s; }
+        .cs:focus { outline: none; }
+        .cs.active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+        .cs::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 55% at 38% 42%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%); transition: background .6s; }
+        .cs-top { position: relative; z-index: 3; display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 20px; flex: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+        .cs-count { font-size: 11px; letter-spacing: .16em; color: #7c7c80; font-variant-numeric: tabular-nums; min-width: 52px; }
+        .cs-name { flex: 1; min-width: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cs-btn { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.08); color: #fff; transition: background .2s, transform .2s; flex: none; }
+        .cs-btn:hover { background: rgba(255,255,255,.18); }
+        .cs-btn:active { transform: scale(.94); }
+        .cs-btn:focus-visible, .cs-pill:focus-visible, .cs-cta:focus-visible, .cs-next:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .cs-btn svg { width: 18px; height: 18px; }
+        .cs-main { position: relative; z-index: 2; flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) 400px; }
+        .cs-stage { display: flex; flex-direction: column; min-height: 0; padding: 20px 28px 28px; gap: 16px; }
+        .cs-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; }
+        .cs-pills { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.07); }
+        .cs-pill { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 9px 18px; border-radius: 999px; color: #a1a1a6; transition: background .25s, color .25s; min-height: 36px; }
+        .cs-pill[aria-selected="true"] { background: var(--accent); color: #000; }
+        .cs-play { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #fff; border: 1px solid rgba(255,255,255,.25); padding: 9px 18px; border-radius: 999px; min-height: 36px; transition: background .25s, border-color .25s; }
+        .cs-play:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.5); }
+        .cs-view { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+        .cs-view[hidden] { display: none; }
+        .sc-browser { width: 100%; max-width: 1240px; height: 100%; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; background: #0b0b0b; box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.09); }
+        .sc-bar { position: relative; display: flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; flex: none; background: #1b1b1d; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .sc-dot { width: 10px; height: 10px; border-radius: 50%; background: #3b3b3e; }
+        .sc-url { flex: 1; margin: 0 40px 0 10px; height: 22px; line-height: 22px; border-radius: 7px; background: #0e0e0f; color: #8b8b90; font-size: 11px; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 10px; }
+        .sc-progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+        .sc-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; background: #fff; scrollbar-width: thin; scrollbar-color: #666 transparent; -webkit-overflow-scrolling: touch; }
+        .sc-scroll img { display: block; width: 100%; height: auto; }
+        .sc-phone { height: 100%; max-height: 860px; aspect-ratio: 390 / 800; padding: 10px; border-radius: 44px; background: #17171a; box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.13), inset 0 0 0 2px #2b2b2f; position: relative; display: flex; }
+        .sc-phone::before { content: ''; position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 26%; height: 20px; border-radius: 12px; background: #000; z-index: 2; }
+        .sc-phone .sc-scroll { border-radius: 34px; scrollbar-width: none; }
+        .sc-phone .sc-scroll::-webkit-scrollbar { display: none; }
+        .cs-poster { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+        .cs-info { overflow-y: auto; padding: 28px 32px 32px; border-left: 1px solid rgba(255,255,255,.07); background: rgba(10,10,11,.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display: flex; flex-direction: column; }
+        .cs-meta { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--accent); margin-bottom: 14px; }
+        .cs-meta i { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,.25); }
+        .cs-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: 1; font-size: clamp(30px, 3.2vw, 44px); margin-bottom: 24px; }
+        .cs-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 0; margin-bottom: 22px; border-block: 1px solid rgba(255,255,255,.09); }
+        .cs-facts dt { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #77777c; margin-bottom: 6px; }
+        .cs-facts dd { font-size: 13px; line-height: 1.55; font-weight: 500; margin: 0; }
+        #drawer-desc p { margin-bottom: 1rem; font-size: .9rem; line-height: 1.7; color: #c9c9ce; }
+        #drawer-desc p:last-child { margin-bottom: 0; }
+        .cs-cta { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; margin-top: 26px; padding: 0 22px; border-radius: 999px; background: var(--accent); color: #000; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: filter .2s, transform .2s; }
+        .cs-cta:hover { filter: brightness(1.1); }
+        .cs-cta:active { transform: scale(.98); }
+        .cs-cta svg { width: 16px; height: 16px; }
+        .cs-next { margin-top: auto; padding-top: 28px; }
+        .cs-next button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,.1); transition: background .2s, border-color .2s; }
+        .cs-next button:hover { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.22); }
+        .cs-next small { display: block; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #77777c; margin-bottom: 4px; }
+        .cs-next b { font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 15px; }
+        .cs-swap { animation: cs-swap .45s cubic-bezier(.16,1,.3,1); }
+        @keyframes cs-swap { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        .cs[hidden] { display: none; }
+
+
+        /* Móvil/tablet táctil: la web dentro del marco no atrapa el scroll hasta que se toca "explorar" */
+        .cs-tap, .cs-exit { display: none; }
+        .sc-browser, .sc-phone { position: relative; }
+        @media (max-width: 1023px) and (pointer: coarse) {
+            .sc-scroll { overflow-y: hidden; }
+            .cs.explore .sc-scroll { overflow-y: auto; touch-action: pan-y; }
+            .cs-tap { display: flex; position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; top: 38px; align-items: flex-end; justify-content: center; padding: 0 0 14px; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+            .sc-phone .cs-tap { inset: 10px; border-radius: 34px; }
+            .cs-tap span, .cs-exit { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 9px 16px; border-radius: 999px; background: rgba(11,11,12,.82); color: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+            .cs.explore .cs-tap { display: none; }
+            .cs.explore .cs-exit { display: block; position: absolute; z-index: 4; top: 48px; right: 12px; border: 0; }
+            .sc-phone .cs-exit { top: 26px; right: 22px; }
         }
-        .drawer-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
+
+        /* Tablet y móvil: una columna, la ficha entera hace scroll */
+        @media (max-width: 1023px) {
+            .cs-main { display: block; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+            .cs-stage { padding: 14px 16px 8px; }
+            .cs-view { height: 68dvh; min-height: 420px; flex: none; }
+            .cs-stage { min-height: auto; }
+            .cs-info { overflow: visible; border-left: 0; border-top: 1px solid rgba(255,255,255,.07); padding: 24px 20px calc(110px + env(safe-area-inset-bottom)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+            .cs-next { margin-top: 0; }
+            .cs-cta-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(to top, #0b0b0c 70%, transparent); }
+            .cs-cta-bar .cs-cta { margin-top: 0; }
+            .cs-info .cs-cta--inline { display: none; }
         }
-        
-        .drawer-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 100% !important;
-            z-index: 100010 !important; /* Higher than overlay (100000) */
-            transform: translateX(100%);
-            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            background-color: #121212 !important; /* bg-brand-gray */
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
+        @media (min-width: 1024px) { .cs-cta-bar { display: none; } }
+        @media (max-width: 560px) {
+            .cs-top { padding: 0 14px; gap: 8px; height: 60px; }
+            .cs-count { display: none; }
+            .cs-pill { padding: 8px 14px; font-size: 10px; }
+            .cs-play { padding: 8px 14px; font-size: 10px; }
+            .cs-view { height: 64dvh; }
+            .sc-browser { border-radius: 10px; }
         }
-        @media (min-width: 768px) {
-            .drawer-panel {
-                width: 450px !important;
-            }
-        }
-        @media (min-width: 1024px) {
-            .drawer-panel {
-                width: 500px !important;
-            }
-        }
-        .drawer-panel.active {
-            transform: translateX(0);
-        }
+        @media (min-width: 1024px) and (max-width: 1279px) { .cs-main { grid-template-columns: minmax(0,1fr) 340px; } .cs-info { padding: 24px; } }
+        @media (prefers-reduced-motion: reduce) { .cs, .cs-swap { transition: none; animation: none; } }
 
         /* Utility classes explicitly defined to bypass tailwind compilation issues */
         .pointer-events-none {
@@ -164,13 +217,22 @@
         /* Grid Compacto */
         .compact-grid {
             display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.75rem 0.875rem;
+        }
+        /* Móvil: tarjetas compactas en dos columnas, como una cuadrícula de productos */
+        @media (max-width: 639px) {
+            .compact-grid .project-card .aspect-square { aspect-ratio: 4 / 5; margin-bottom: .75rem; }
+            .compact-grid .project-card > div:last-child > div { font-size: 9px; letter-spacing: .12em; flex-wrap: wrap; row-gap: 2px; }
+            .compact-grid .project-card h3 { font-size: 13px; line-height: 1.25; }
+            .project-hover-badge { display: none !important; }
+        }
+        /* En pantallas táctiles no hay hover: las miniaturas se ven siempre a color */
+        @media (hover: none) {
+            .project-img { filter: none; }
         }
         @media (min-width: 640px) {
-            .compact-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .compact-grid { gap: 2rem 1.5rem; }
         }
         @media (min-width: 1024px) {
             .compact-grid {
@@ -184,6 +246,7 @@
                 gap: 3rem;
             }
         }
+
 
         /* Estilos de párrafos dentro de la descripción del Drawer */
         #drawer-desc p {
@@ -204,16 +267,30 @@
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
 
     <!-- Header -->
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="../img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
+                <img src="/img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
                 <a href="/#inicio">Inicio</a>
-                <a href="/#servicios">Servicios</a>
-                <a href="/html/portfolio" class="is-active">Portfolio</a>
+                <div class="nav-drop">
+                    <a href="/servicios" aria-haspopup="true">Servicios</a>
+                    <div class="nav-drop__panel">
+                        <div class="nav-drop__box">
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
+                            <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/html/portfolio">Portfolio</a>
                 <a href="/#contacto" class="site-header__cta">Hablemos</a>
             </nav>
 
@@ -225,10 +302,31 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/#servicios">Servicios</a>
-        <a href="/html/portfolio" class="is-active">Portfolio</a>
-        <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+        <div class="mnav-group">
+            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
+            <div class="mnav-sub" id="mnav-sub">
+                <div>
+                    <a href="/servicios/diseno-web">Diseño web</a>
+                    <a href="/servicios/software-a-medida">Software a medida</a>
+                    <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                    <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                    <a href="/servicios/redes-sociales">Redes sociales</a>
+                    <a href="/servicios/seo-local">SEO y Google Business</a>
+                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
+                </div>
+            </div>
+        </div>
+        <a href="/html/portfolio">Portfolio</a>
+        <div class="mnav-foot">
+            <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+            <div class="mnav-contact">
+                <a href="mailto:designerazenty@gmail.com">designerazenty@gmail.com</a>
+                <a href="tel:624903256">624 90 32 56</a>
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
     </div>
+    <!--/SVC:HEADER-->
 
     <main class="pt-32 pb-24 min-h-screen">
         <div class="max-w-7xl mx-auto px-6">
@@ -332,42 +430,6 @@
                             <span>2025</span>
                         </div>
                         <h3 class="font-display text-lg font-bold uppercase tracking-tight text-white group-hover:text-brand-blue transition-colors">Hermanos Hervás</h3>
-                    </div>
-                </article>
-
-                <!-- Proyecto 5 - Pavis Tatto -->
-                <article class="project-card group cursor-pointer reveal" data-category="web" data-id="pavistatto">
-                    <div class="relative overflow-hidden aspect-square bg-neutral-900 mb-4 rounded-lg">
-                        <img src="../proyectos/web_pavistatto.webp" alt="Pavis Tatto" width="1200" height="750" class="project-img w-full h-full object-cover" loading="lazy">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/20 backdrop-blur-[1px]">
-                            <span class="project-hover-badge transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">Ver Detalles</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-1">
-                            <span>Digital Platform</span>
-                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-                            <span>2025</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold uppercase tracking-tight text-white group-hover:text-brand-blue transition-colors">Pavis Tatto</h3>
-                    </div>
-                </article>
-
-                <!-- Proyecto 6 - Pinturas Merpa -->
-                <article class="project-card group cursor-pointer reveal" data-category="web marketing" data-id="pinturasmerpa">
-                    <div class="relative overflow-hidden aspect-square bg-neutral-900 mb-4 rounded-lg">
-                        <img src="../proyectos/web_pinturasmerpa.webp" alt="Pinturas Merpa" width="1200" height="750" class="project-img w-full h-full object-cover" loading="lazy">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/20 backdrop-blur-[1px]">
-                            <span class="project-hover-badge transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">Ver Detalles</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-1">
-                            <span>E-Commerce / Ads</span>
-                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-                            <span>2025</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold uppercase tracking-tight text-white group-hover:text-brand-blue transition-colors">Pinturas Merpa</h3>
                     </div>
                 </article>
 
@@ -583,10 +645,12 @@
                 <div>
                     <h4 class="font-bold mb-4">Servicios</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
-                        <li><a href="/#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a>
-                        </li>
+                        <li><a href="/servicios/diseno-web" class="hover:text-brand-blue transition-colors">Diseño web</a></li>
+                        <li><a href="/servicios/software-a-medida" class="hover:text-brand-blue transition-colors">Software a medida</a></li>
+                        <li><a href="/servicios/automatizaciones-ia" class="hover:text-brand-blue transition-colors">Automatizaciones e IA</a></li>
+                        <li><a href="/servicios/diseno-grafico" class="hover:text-brand-blue transition-colors">Branding y diseño gráfico</a></li>
+                        <li><a href="/servicios/redes-sociales" class="hover:text-brand-blue transition-colors">Redes sociales</a></li>
+                        <li><a href="/servicios/seo-local" class="hover:text-brand-blue transition-colors">SEO y Google Business</a></li>
                     </ul>
                 </div>
                 <div>
@@ -615,58 +679,60 @@
         </div>
     </footer>
 
-    <!-- Drawer Modal (Cajón Lateral - Estética Oscura Dazenty) -->
-    <div id="drawer-overlay" class="drawer-overlay"></div>
-    
-    <aside id="drawer" class="drawer-panel border-l border-white/10 overflow-y-auto">
-        
-        <!-- Drawer Header (Botón cerrar) -->
-        <div class="drawer-header-sticky mix-blend-difference text-white pointer-events-none">
-            <button id="close-drawer" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors pointer-events-auto">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+    <!-- Ficha de proyecto a pantalla completa -->
+    <div id="drawer-overlay" class="drawer-overlay" hidden></div>
+    <div id="drawer" class="cs" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+        <div class="cs-top">
+            <span class="cs-count" id="cs-count" aria-hidden="true"></span>
+            <span class="cs-name" id="cs-name"></span>
+            <button type="button" class="cs-btn" id="cs-prev" aria-label="Proyecto anterior"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg></button>
+            <button type="button" class="cs-btn" id="cs-nextbtn" aria-label="Proyecto siguiente"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+            <button type="button" class="cs-btn" id="close-drawer" aria-label="Cerrar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
         </div>
 
-        <!-- Drawer Content -->
-        <div class="flex-grow flex flex-col">
-            <!-- Imagen Hero del Proyecto -->
-            <div class="w-full h-[30vh] md:h-[35vh] relative bg-neutral-900" style="margin-top: -72px;">
-                <img id="drawer-image" src="" alt="Project cover" class="w-full h-full object-cover">
-            </div>
-
-            <!-- Información del proyecto -->
-            <div class="p-6 md:p-8" style="background-color: #121212;">
-                <div class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-brand-blue mb-4">
-                    <span id="drawer-category"></span>
-                    <span class="w-1 h-1 bg-white/20 rounded-full"></span>
-                    <span id="drawer-year"></span>
-                </div>
-                
-                <h2 id="drawer-title" class="font-display text-3xl font-bold uppercase tracking-tight mb-6 text-white"></h2>
-                
-                <div class="grid grid-cols-2 gap-4 border-y border-white/10 py-4 mb-6">
-                    <div>
-                        <span class="block text-[11px] uppercase tracking-widest text-gray-500 mb-1">Cliente</span>
-                        <span id="drawer-client" class="font-medium text-sm text-white"></span>
+        <div class="cs-main" id="cs-main">
+            <section class="cs-stage" aria-label="Vista del proyecto">
+                <div class="cs-tools" id="cs-tools">
+                    <div class="cs-pills" role="tablist" aria-label="Vista de la web">
+                        <button type="button" class="cs-pill" role="tab" data-view="d" aria-selected="true">Escritorio</button>
+                        <button type="button" class="cs-pill" role="tab" data-view="m" aria-selected="false">Móvil</button>
                     </div>
-                    <div>
-                        <span class="block text-[11px] uppercase tracking-widest text-gray-500 mb-1">Servicios</span>
-                        <span id="drawer-services" class="font-medium text-xs leading-relaxed block text-white"></span>
+                    <button type="button" class="cs-play" id="sc-play">▶ Recorrer</button>
+                </div>
+                <div class="cs-view" id="sc-desktop">
+                    <div class="sc-browser">
+                        <div class="sc-bar"><span class="sc-dot"></span><span class="sc-dot"></span><span class="sc-dot"></span><span class="sc-url" id="sc-url"></span><span class="sc-progress" id="sc-progress"></span></div>
+                        <div class="sc-scroll" id="sc-scroll-d" tabindex="0"><img id="sc-img-d" src="" alt=""></div>
+                        <button type="button" class="cs-tap" aria-label="Explorar la web"><span>Toca para explorar</span></button>
+                        <button type="button" class="cs-exit">Listo</button>
                     </div>
                 </div>
-
-                <div id="drawer-desc" class="text-gray-300 font-light leading-relaxed mb-8">
-                    <!-- Contenido inyectado -->
+                <div class="cs-view" id="sc-mobile" hidden>
+                    <div class="sc-phone"><div class="sc-scroll" id="sc-scroll-m" tabindex="0"><img id="sc-img-m" src="" alt=""></div>
+                        <button type="button" class="cs-tap" aria-label="Explorar la web"><span>Toca para explorar</span></button>
+                        <button type="button" class="cs-exit">Listo</button></div>
                 </div>
+                <div class="cs-view" id="cs-poster" hidden>
+                    <img id="drawer-image" class="cs-poster" src="" alt="">
+                </div>
+            </section>
 
-                <a id="drawer-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full px-6 py-3 bg-brand-blue text-black text-xs font-semibold tracking-widest uppercase hover:bg-white transition-colors rounded-sm">
-                    Ver Proyecto
-                </a>
-            </div>
+            <aside class="cs-info" id="cs-info">
+                <div class="cs-meta"><span id="drawer-category"></span><i></i><span id="drawer-year"></span></div>
+                <h2 id="drawer-title" class="cs-title"></h2>
+                <dl class="cs-facts">
+                    <div><dt>Cliente</dt><dd id="drawer-client"></dd></div>
+                    <div><dt>Servicios</dt><dd id="drawer-services"></dd></div>
+                </dl>
+                <div id="drawer-desc"></div>
+                <a id="drawer-link" class="cs-cta cs-cta--inline" href="#" target="_blank" rel="noopener noreferrer">Visitar la web <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></a>
+                <div class="cs-next"><button type="button" id="cs-next"><span><small>Siguiente proyecto</small><b id="cs-next-name"></b></span><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg></button></div>
+            </aside>
         </div>
-    </aside>
+        <div class="cs-cta-bar" id="cs-cta-bar"><a id="drawer-link-bar" class="cs-cta" href="#" target="_blank" rel="noopener noreferrer">Visitar la web <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+    </div>
 
-    <script src="../js/main.js?v=8" defer></script>
+    <script src="../js/main.js?v=10" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
@@ -711,6 +777,7 @@
             // --- 3. Lógica del Drawer Modal (Cajón) con 15 proyectos de Dazenty ---
             const projectData = {
                 'jcautos': {
+                    shots: { d: '../proyectos/fichas/jcautos-d.webp', m: '../proyectos/fichas/jcautos-m.webp' },
                     title: 'JOCARS AUTOMOVILES',
                     image: '../proyectos/web_jcautos.webp',
                     category: 'Digital Platform',
@@ -721,6 +788,7 @@
                     link: 'https://jocarautomoviles.com/'
                 },
                 'davidvillalba': {
+                    shots: { d: '../proyectos/fichas/davidvillalba-d.webp', m: '../proyectos/fichas/davidvillalba-m.webp' },
                     title: 'David Villalba',
                     image: '../proyectos/web_davidvillalba.webp',
                     category: 'Digital Platform / UX',
@@ -731,6 +799,7 @@
                     link: 'https://david-villalba.com/'
                 },
                 'jandula': {
+                    shots: { d: '../proyectos/fichas/jandula-d.webp', m: '../proyectos/fichas/jandula-m.webp' },
                     title: 'Jándula',
                     image: '../proyectos/newweb-jandula.webp',
                     category: 'E-Commerce Store',
@@ -738,9 +807,10 @@
                     client: 'Jándula Moda',
                     services: 'UX/UI Design<br>E-Commerce Dev<br>Stripe Integration',
                     desc: '<p>E-commerce de moda femenina para Jándula. La tienda online incluye catálogo con filtros por talla, color y categoría, carrito de compra, pasarela de pago segura, gestión de pedidos y panel de cliente privado.</p><p>El diseño cálido y elegante está pensado para convertir visitas en compras de forma fluida.</p>',
-                    link: 'https://jandulamodautrera.es'
+                    link: 'https://jandulamodautrera.com'
                 },
                 'hermanos': {
+                    shots: { d: '../proyectos/fichas/hermanos-d.webp', m: '../proyectos/fichas/hermanos-m.webp' },
                     title: 'Hermanos Hervás',
                     image: '../proyectos/web_hermanoshervas.webp',
                     category: 'Digital Platform',
@@ -750,27 +820,8 @@
                     desc: '<p>Proyecto concepto: demo de web de restaurante. Permite consultar la carta completa, ver los menús del día y de temporada, y reservar mesa online a cualquier hora. No es un encargo de cliente.</p><p>El sistema cuenta con panel de administración de reservas e integración de alertas automáticas por correo electrónico.</p>',
                     link: 'https://hermanos-hervas.vercel.app'
                 },
-                'pavistatto': {
-                    title: 'Pavis Tatto',
-                    image: '../proyectos/web_pavistatto.webp',
-                    category: 'Digital Platform',
-                    year: '2025',
-                    client: 'Pavis Tatto Studio',
-                    services: 'UX/UI Design<br>Web Development<br>Mentoring Portal',
-                    desc: '<p>Web de presentación del diseñador y artista Pavis Tatto. Muestra su portfolio artístico, los servicios de tatuaje y diseño que ofrece, y su programa de mentoría para artistas que quieren desarrollar su estilo propio y profesionalizar su actividad como tatuadores.</p>',
-                    link: 'https://pavistatto.vercel.app'
-                },
-                'pinturasmerpa': {
-                    title: 'Pinturas Merpa',
-                    image: '../proyectos/web_pinturasmerpa.webp',
-                    category: 'E-Commerce / Marketing',
-                    year: '2025',
-                    client: 'Pinturas Merpa Utrera',
-                    services: 'UX/UI Design<br>E-Commerce Dev<br>Social Campaigns',
-                    desc: '<p>Tienda online y web de empresa para Pinturas Merpa, especialistas en pinturas y materiales de pintura profesional.</p><p>Catálogo por línea y uso (interior, exterior, industrial), fichas técnicas descargables, calculadora de rendimiento por m² y sistema de pedidos y consulta online. Estrategia de Facebook Ads con +250% en reconocimiento de marca en 4 meses.</p>',
-                    link: 'https://pinturasmerpa.vercel.app'
-                },
                 'costadelsol': {
+                    shots: { d: '../proyectos/fichas/costadelsol-d.webp', m: '../proyectos/fichas/costadelsol-m.webp' },
                     title: 'Costa del Sol Foods',
                     image: '../proyectos/web_costadelsol.webp',
                     category: 'B2B Platform / Marketing',
@@ -781,6 +832,7 @@
                     link: 'https://costadelsolfoodsandbeveragesint.com/'
                 },
                 'sevillatp': {
+                    shots: { d: '../proyectos/fichas/sevillatp-d.webp', m: '../proyectos/fichas/sevillatp-m.webp' },
                     title: 'Sevilla Tarjetas Plásticas',
                     image: '../proyectos/web_sevillatp.webp',
                     category: 'E-Commerce / Marketing',
@@ -862,81 +914,163 @@
                 }
             };
 
-            const overlay = document.getElementById('drawer-overlay');
-            const drawer = document.getElementById('drawer');
+            // --- Ficha de proyecto a pantalla completa ---
+            const cs = document.getElementById('drawer');
             const closeBtn = document.getElementById('close-drawer');
             const drawerLink = document.getElementById('drawer-link');
+            const drawerLinkBar = document.getElementById('drawer-link-bar');
+            const ctaBar = document.getElementById('cs-cta-bar');
+            const $ = id => document.getElementById(id);
+            const scD = $('sc-desktop'), scM = $('sc-mobile'), scP = $('cs-poster');
+            const scScrollD = $('sc-scroll-d'), scScrollM = $('sc-scroll-m');
+            const scPlay = $('sc-play'), scTools = $('cs-tools'), scProgress = $('sc-progress');
+            const accents = { jcautos: '#d4a73a', davidvillalba: '#c2a275', jandula: '#e58aa6', hermanos: '#e8801a', costadelsol: '#cfa84b', sevillatp: '#e3b92c' };
+            let current = null, scRaf = 0, lastFocus = null, _drawerScrollY = 0;
 
-            let _drawerScrollY = 0;
+            const order = () => [...document.querySelectorAll('.project-card')].filter(c => c.style.display !== 'none').map(c => c.getAttribute('data-id')).filter(id => projectData[id]);
+
+            function scStop() {
+                cancelAnimationFrame(scRaf); scRaf = 0;
+                scPlay.textContent = '▶ Recorrer';
+            }
+            function scView(v) {
+                scStop(); cs.classList.remove('explore');
+                scD.hidden = v !== 'd'; scM.hidden = v !== 'm';
+                cs.querySelectorAll('.cs-pill').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+            }
+            function updateProgress() {
+                const el = scD.hidden ? scScrollM : scScrollD;
+                const max = el.scrollHeight - el.clientHeight;
+                scProgress.style.transform = 'scaleX(' + (max > 0 && !scD.hidden ? el.scrollTop / max : 0) + ')';
+            }
+            scScrollD.addEventListener('scroll', updateProgress, { passive: true });
+
+            function render(id, animate) {
+                const data = projectData[id];
+                if (!data) return false;
+                current = id;
+                scStop(); cs.classList.remove('explore');
+                cs.style.setProperty('--accent', accents[id] || '#d97762');
+                $('drawer-category').textContent = data.category;
+                $('drawer-year').textContent = data.year;
+                $('drawer-title').textContent = data.title;
+                $('cs-name').textContent = data.title;
+                $('drawer-client').textContent = data.client;
+                $('drawer-services').innerHTML = data.services;
+                $('drawer-desc').innerHTML = data.desc;
+                const list = order(), i = list.indexOf(id);
+                $('cs-count').textContent = (i + 1 < 10 ? '0' : '') + (i + 1) + ' / ' + (list.length < 10 ? '0' : '') + list.length;
+                const nextId = list[(i + 1) % list.length];
+                $('cs-next-name').textContent = projectData[nextId].title;
+                const hasLink = !!(data.link && data.link.length);
+                [drawerLink, drawerLinkBar].forEach(a => { a.href = hasLink ? data.link : '#'; a.style.display = hasLink ? '' : 'none'; });
+                ctaBar.style.display = hasLink ? '' : 'none';
+                scD.hidden = scM.hidden = scP.hidden = true;
+                if (data.shots) {
+                    scTools.style.display = '';
+                    const dI = $('sc-img-d'), mI = $('sc-img-m');
+                    dI.src = data.shots.d; dI.alt = 'Web de ' + data.title + ' en escritorio';
+                    mI.src = data.shots.m; mI.alt = 'Web de ' + data.title + ' en móvil';
+                    $('sc-url').textContent = (data.link || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+                    scScrollD.scrollTop = 0; scScrollM.scrollTop = 0;
+                    scView('d');
+                } else {
+                    scTools.style.display = 'none';
+                    const p = $('drawer-image'); p.src = data.image; p.alt = data.title;
+                    scP.hidden = false;
+                }
+                updateProgress();
+                $('cs-main').scrollTop = 0; $('cs-info').scrollTop = 0;
+                if (animate) {
+                    [cs.querySelector('.cs-stage'), $('cs-info')].forEach(el => { el.classList.remove('cs-swap'); void el.offsetWidth; el.classList.add('cs-swap'); });
+                }
+                return true;
+            }
 
             function openDrawer(id) {
-                const data = projectData[id];
-                if(!data) return;
-
-                // Inyectar datos
-                document.getElementById('drawer-image').src = data.image;
-                document.getElementById('drawer-category').textContent = data.category;
-                document.getElementById('drawer-year').textContent = data.year;
-                document.getElementById('drawer-title').textContent = data.title;
-                document.getElementById('drawer-client').textContent = data.client;
-                document.getElementById('drawer-services').innerHTML = data.services;
-                document.getElementById('drawer-desc').innerHTML = data.desc;
-
-                // Configurar enlace de proyecto
-                if (data.link && data.link.length > 0) {
-                    drawerLink.href = data.link;
-                    drawerLink.style.display = 'inline-flex';
-                } else {
-                    drawerLink.href = '#';
-                    drawerLink.style.display = 'none';
-                }
-
-                // Guardar posición de scroll y bloquear scroll del body (iOS-safe + Lenis-safe)
+                if (!render(id, false)) return;
+                lastFocus = document.activeElement;
                 _drawerScrollY = window.scrollY;
                 document.body.style.position = 'fixed';
                 document.body.style.top = '-' + _drawerScrollY + 'px';
                 document.body.style.width = '100%';
-                if (window.lenis) {
-                    window.lenis.stop();
-                } else if (typeof lenis !== 'undefined' && lenis) {
-                    lenis.stop();
-                }
-
-                // Abrir animaciones
-                overlay.classList.add('active');
-                drawer.classList.add('active');
+                if (window.lenis) { window.lenis.stop(); } else if (typeof lenis !== 'undefined' && lenis) { lenis.stop(); }
+                cs.setAttribute('aria-hidden', 'false');
+                cs.classList.add('active');
                 document.body.classList.add('drawer-open');
+                try { history.replaceState(null, '', '#' + id); } catch (e) {}
+                setTimeout(() => cs.focus({ preventScroll: true }), 50);
             }
 
             function closeDrawer() {
-                overlay.classList.remove('active');
-                drawer.classList.remove('active');
-
-                // Restaurar scroll del body (iOS-safe + Lenis-safe)
+                if (!cs.classList.contains('active')) return;
+                scStop(); cs.classList.remove('explore');
+                cs.classList.remove('active');
+                cs.setAttribute('aria-hidden', 'true');
                 document.body.style.position = '';
                 document.body.style.top = '';
                 document.body.style.width = '';
                 window.scrollTo(0, _drawerScrollY);
-                if (window.lenis) {
-                    window.lenis.start();
-                } else if (typeof lenis !== 'undefined' && lenis) {
-                    lenis.start();
-                }
-
-                setTimeout(() => {
-                    document.body.classList.remove('drawer-open');
-                }, 500); // Esperar a que acabe la transición css
+                if (window.lenis) { window.lenis.start(); } else if (typeof lenis !== 'undefined' && lenis) { lenis.start(); }
+                document.body.classList.remove('drawer-open');
+                try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+                if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+                current = null;
             }
 
-            // Vincular eventos a las tarjetas de proyectos
-            document.querySelectorAll('.project-card').forEach(card => {
-                card.addEventListener('click', () => openDrawer(card.getAttribute('data-id')));
-            });
+            function go(step) {
+                const list = order(); if (!list.length || !current) return;
+                const i = list.indexOf(current);
+                const id = list[(i + step + list.length) % list.length];
+                render(id, true);
+                try { history.replaceState(null, '', '#' + id); } catch (e) {}
+            }
 
+            cs.querySelectorAll('.cs-pill').forEach(t => t.addEventListener('click', () => scView(t.dataset.view)));
+            scPlay.addEventListener('click', () => {
+                if (scRaf) { scStop(); return; }
+                const el = scD.hidden ? scScrollM : scScrollD;
+                const max = el.scrollHeight - el.clientHeight;
+                if (max <= 0) return;
+                if (el.scrollTop >= max - 2) el.scrollTop = 0;
+                scPlay.textContent = '❚❚ Parar';
+                let y = el.scrollTop, last = performance.now();
+                const speed = Math.max(160, max / 24);
+                const step = now => {
+                    y += (now - last) / 1000 * speed; last = now;
+                    el.scrollTop = y;
+                    if (y >= max) { scStop(); return; }
+                    scRaf = requestAnimationFrame(step);
+                };
+                scRaf = requestAnimationFrame(step);
+            });
+            [scScrollD, scScrollM].forEach(el => ['wheel', 'touchstart', 'mousedown'].forEach(ev => el.addEventListener(ev, scStop, { passive: true })));
+
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                card.addEventListener('click', () => openDrawer(card.getAttribute('data-id')));
+                card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(card.getAttribute('data-id')); } });
+            });
+            cs.querySelectorAll('.cs-tap').forEach(b => b.addEventListener('click', () => cs.classList.add('explore')));
+            cs.querySelectorAll('.cs-exit').forEach(b => b.addEventListener('click', () => cs.classList.remove('explore')));
             closeBtn.addEventListener('click', closeDrawer);
-            overlay.addEventListener('click', closeDrawer);
+            $('cs-prev').addEventListener('click', () => go(-1));
+            $('cs-nextbtn').addEventListener('click', () => go(1));
+            $('cs-next').addEventListener('click', () => go(1));
             document.addEventListener('keydown', e => {
-                if(e.key === 'Escape') closeDrawer();
+                if (!cs.classList.contains('active')) return;
+                if (e.key === 'Escape') closeDrawer();
+                else if (e.key === 'ArrowRight' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) go(1);
+                else if (e.key === 'ArrowLeft' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) go(-1);
+            });
+            // enlace directo: portfolio#jcautos
+            const hashId = decodeURIComponent(location.hash.slice(1));
+            if (hashId && projectData[hashId]) setTimeout(() => openDrawer(hashId), 300);
+            window.addEventListener('hashchange', () => {
+                const h = decodeURIComponent(location.hash.slice(1));
+                if (h && projectData[h] && h !== current) { cs.classList.contains('active') ? render(h, true) : openDrawer(h); }
+                else if (!h) closeDrawer();
             });
         });
     </script>

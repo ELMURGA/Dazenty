@@ -28,7 +28,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=3">
+    <link rel="stylesheet" href="/css/site.min.css?v=7">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
     <script type="application/ld+json">
@@ -123,6 +123,7 @@
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black sv-page">
 
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
@@ -135,15 +136,12 @@
                     <a href="/servicios" aria-haspopup="true">Servicios</a>
                     <div class="nav-drop__panel">
                         <div class="nav-drop__box">
-                            <a href="/servicios/diseno-web">Diseño web<small>Webs a medida que se ven bien en el móvil y llevan al cliente …</small></a>
-                            <a href="/servicios/software-a-medida">Software a medida<small>Aplicaciones, paneles y herramientas hechas para tu negocio, p…</small></a>
-                            <a href="/servicios/agentes-ia">Agentes IA y chatbots<small>Asistentes con inteligencia artificial que atienden a tus clie…</small></a>
-                            <a href="/servicios/automatizaciones">Automatizaciones<small>Conectamos tus aplicaciones para que las tareas repetitivas se…</small></a>
-                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico<small>Identidades visuales memorables y material gráfico que comunic…</small></a>
-                            <a href="/servicios/redes-sociales">Redes sociales<small>Contenido y publicidad en redes para que más gente te conozca,…</small></a>
-                            <a href="/servicios/seo-local">SEO y Google Business<small>Que te encuentren en Google y en Maps cuando tu cliente busca …</small></a>
-                            <a href="/servicios/mantenimiento-web">Mantenimiento web<small>Nos ocupamos de que tu web esté siempre al día, segura, rápida…</small></a>
-                            <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes<small>Carta digital con QR que actualizas en un minuto, y soluciones…</small></a>
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
                             <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
                         </div>
                     </div>
@@ -160,85 +158,95 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/servicios">Servicios</a>
-        <div class="mobile-nav__sub">
-            <a href="/servicios/diseno-web" class="mobile-nav__small">Diseño web</a>
-            <a href="/servicios/software-a-medida" class="mobile-nav__small">Software a medida</a>
-            <a href="/servicios/agentes-ia" class="mobile-nav__small">Agentes IA y chatbots</a>
-            <a href="/servicios/automatizaciones" class="mobile-nav__small">Automatizaciones</a>
-            <a href="/servicios/diseno-grafico" class="mobile-nav__small">Branding y diseño gráfico</a>
-            <a href="/servicios/redes-sociales" class="mobile-nav__small">Redes sociales</a>
-            <a href="/servicios/seo-local" class="mobile-nav__small">SEO y Google Business</a>
-            <a href="/servicios/mantenimiento-web" class="mobile-nav__small">Mantenimiento web</a>
-            <a href="/servicios/carta-qr-restaurantes" class="mobile-nav__small">Carta QR y restaurantes</a>
+        <div class="mnav-group">
+            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
+            <div class="mnav-sub" id="mnav-sub">
+                <div>
+                    <a href="/servicios/diseno-web">Diseño web</a>
+                    <a href="/servicios/software-a-medida">Software a medida</a>
+                    <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                    <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                    <a href="/servicios/redes-sociales">Redes sociales</a>
+                    <a href="/servicios/seo-local">SEO y Google Business</a>
+                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
+                </div>
+            </div>
         </div>
         <a href="/html/portfolio">Portfolio</a>
-        <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+        <div class="mnav-foot">
+            <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+            <div class="mnav-contact">
+                <a href="mailto:designerazenty@gmail.com">designerazenty@gmail.com</a>
+                <a href="tel:624903256">624 90 32 56</a>
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
     </div>
+    <!--/SVC:HEADER-->
 
     <main>
         <section class="sv-hero">
-            <div class="sv-hero__orb" aria-hidden="true"></div>
-            <div class="sv-wrap" style="position:relative">
+            <div class="sv-wrap">
                 <nav class="sv-crumbs" aria-label="Ruta"><a href="/">Inicio</a><span aria-hidden="true">/</span><a href="/servicios">Servicios</a><span aria-hidden="true">/</span><span aria-current="page">Redes sociales</span></nav>
-                <span class="sv-eyebrow">Redes sociales</span>
-                <h1>Redes sociales que se notan en tu agenda, no solo en los likes.</h1>
-                <p class="sv-hero__lead">Planificamos, diseñamos y publicamos contenido con una línea visual propia, y lo apoyamos con publicidad cuando tiene sentido.</p>
-                <div class="sv-hero__cta">
-                    <a class="sv-btn sv-btn--primary" href="/?servicio=Redes%20sociales#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
-                    <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Redes%20sociales.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                <h1 class="sv-h1">Redes que llenan la agenda.</h1>
+                <div class="sv-hero__body">
+                    <div class="sv-hero__side">
+                        <p class="sv-lead">Planificamos, diseñamos y publicamos contenido con una línea visual propia, y lo apoyamos con publicidad cuando tiene sentido.</p>
+                        <div class="sv-actions">
+                            <a class="sv-btn sv-btn--primary" href="/?servicio=Redes%20sociales#contacto" data-svc="Redes sociales">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                            <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Redes%20sociales.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+                        </div>
+                        <ul class="sv-points"><li>Línea visual propia y coherente</li><li>Contenido pensado para tu cliente real</li><li>Publicidad medida, no a ciegas</li></ul>
+                    </div>
+                    <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Perfil de redes sociales con resultados de campaña" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="240" y="30" width="320" height="540" rx="34" fill="#0b0b0b"/><rect x="248" y="38" width="304" height="524" rx="28" fill="#222222"/><circle cx="290" cy="104" r="22" fill="#d97762"/><text x="324" y="100" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">tunegocio</text><text x="324" y="120" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Sevilla</text><rect x="266" y="150" width="268" height="268" rx="6" fill="#d97762"/><text x="300" y="250" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">Menú de</text><text x="300" y="290" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">temporada</text><rect x="300" y="330" width="120" height="40" rx="20" fill="#111"/><text x="360" y="356" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#f4f4f4" text-anchor="middle">Reservar</text><circle cx="282" cy="450" r="11" fill="#d97762"/><circle cx="322" cy="450" r="11" fill="#2d2d2d"/><circle cx="362" cy="450" r="11" fill="#2d2d2d"/><rect x="266" y="480" width="150" height="12" rx="6" fill="#2d2d2d"/><rect x="266" y="504" width="220" height="12" rx="6" fill="#2d2d2d"/><rect x="600" y="120" width="150" height="70" rx="12" fill="#d97762"/><text x="675" y="150" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#111" text-anchor="middle">Alcance</text><text x="675" y="178" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">+38 %</text><rect x="60" y="380" width="160" height="70" rx="12" fill="#222222"/><text x="140" y="410" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Mensajes</text><text x="140" y="438" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">27</text><rect x="600" y="340" width="150" height="70" rx="12" fill="#222222"/><text x="675" y="370" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Reservas</text><text x="675" y="398" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">12</text><rect x="60" y="160" width="140" height="90" rx="12" fill="#222222"/><text x="130" y="196" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#f4f4f4" text-anchor="middle">Lun · Reel</text><text x="130" y="222" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Jue · Carrusel</text></svg></div>
                 </div>
-                <ul class="sv-points"><li>Línea visual propia y coherente</li><li>Contenido pensado para tu cliente real</li><li>Publicidad medida, no a ciegas</li></ul>
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">01 · El problema</span>
-                <h2 class="sv-h2">Publicar sin estrategia cansa y no da resultados.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Sin tiempo ni constancia</h3><p>Publicas cuando puedes y el perfil se queda parado semanas.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Contenido sin dirección</h3><p>Se sube lo que se ocurre sin saber qué busca cada publicación.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Seguidores que no compran</h3><p>Likes sí, mensajes y reservas no.</p></div>
-                    <div class="sv-tile sv-tile--problem sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span><h3>Publicidad que se quema</h3><p>Se invierte sin segmentar ni medir y el dinero se va.</p></div>
+        <section class="sv-section" style="background:var(--sv-field)">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Publicar sin plan cansa y no vende.</h2>
                 </div>
+                <ul class="sv-items sv-items--problem"><li class="sv-reveal"><h3>Sin tiempo ni constancia</h3><p>Publicas cuando puedes y el perfil se queda parado semanas.</p></li><li class="sv-reveal"><h3>Contenido sin dirección</h3><p>Se sube lo que se ocurre sin saber qué busca cada publicación.</p></li><li class="sv-reveal"><h3>Seguidores que no compran</h3><p>Likes sí, mensajes y reservas no.</p></li><li class="sv-reveal"><h3>Publicidad que se quema</h3><p>Se invierte sin segmentar ni medir y el dinero se va.</p></li></ul>
+            </div>
+        </section>
+
+        <section class="sv-section">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head">
+                    <h2 class="sv-h2">Cómo trabajamos tus redes.</h2>
+                    <p class="sv-copy">Un plan sencillo que se mantiene en el tiempo.</p>
+                </div>
+                <ul class="sv-items "><li class="sv-reveal"><h3>Plan de contenido</h3><p>Qué publicar, cuándo y con qué objetivo, adaptado a tu negocio.</p></li><li class="sv-reveal"><h3>Diseño de piezas</h3><p>Publicaciones, carruseles e historias con tu identidad visual.</p></li><li class="sv-reveal"><h3>Publicidad segmentada</h3><p>Campañas en Instagram y Facebook hacia el público que te interesa.</p></li><li class="sv-reveal"><h3>Revisión de resultados</h3><p>Miramos qué funciona y ajustamos el siguiente periodo.</p></li></ul>
+            </div>
+        </section>
+
+
+
+        <section class="sv-section sv-section--light">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Quién nos contrata.</h2></div>
+                <ul class="sv-fit"><li class="sv-reveal"><h3>Negocios locales</h3><p>Que tu zona te conozca.</p></li><li class="sv-reveal"><h3>Hostelería</h3><p>Platos, ambiente y eventos que llenan mesas.</p></li><li class="sv-reveal"><h3>Tiendas y boutiques</h3><p>Producto y colecciones que entran por los ojos.</p></li><li class="sv-reveal"><h3>Marcas personales</h3><p>Construir autoridad y cercanía.</p></li><li class="sv-reveal"><h3>Clínicas y estética</h3><p>Confianza y resultados visibles.</p></li><li class="sv-reveal"><h3>Lanzamientos y ofertas</h3><p>Campañas con fecha y objetivo.</p></li></ul>
             </div>
         </section>
 
         <section class="sv-section">
             <div class="sv-wrap">
-                <span class="sv-eyebrow">02 · Lo que incluye</span>
-                <h2 class="sv-h2">Cómo trabajamos tus redes.</h2>
-                <p class="sv-lead">Un plan sencillo que se mantiene en el tiempo.</p>
-                <div class="sv-cols">
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Plan de contenido</h3><p>Qué publicar, cuándo y con qué objetivo, adaptado a tu negocio.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Diseño de piezas</h3><p>Publicaciones, carruseles e historias con tu identidad visual.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Publicidad segmentada</h3><p>Campañas en Instagram y Facebook hacia el público que te interesa.</p></div>
-                    <div class="sv-tile  sv-reveal"><span class="sv-tile__mark"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><h3>Revisión de resultados</h3><p>Miramos qué funciona y ajustamos el siguiente periodo.</p></div>
-                </div>
+                <h2 class="sv-h2">Trabajos nuestros.</h2>
             </div>
+            <div class="sv-work" style="--n:4">
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/cartel.webp" alt="Summer Festival: Publicación de evento" loading="lazy" decoding="async"><b>Summer Festival</b><span>Publicación de evento</span></a>
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/nextday.webp" alt="Next Dates: Calendario de fechas" loading="lazy" decoding="async"><b>Next Dates</b><span>Calendario de fechas</span></a>
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/gyot.webp" alt="Chapuzas a domicilio: Anuncio" loading="lazy" decoding="async"><b>Chapuzas a domicilio</b><span>Anuncio</span></a>
+                <a class="sv-work__item sv-reveal" href="/html/portfolio"><img src="/proyectos/matalascanas.webp" alt="CD Atlético Matalascañas: Carné de socio" loading="lazy" decoding="async"><b>CD Atlético Matalascañas</b><span>Carné de socio</span></a>
+            </div>
+            <div class="sv-wrap" style="margin-top:2.5rem"><a class="sv-btn sv-btn--quiet" href="/html/portfolio">Ver todo el portfolio <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
         </section>
 
-        <section class="sv-section sv-section--alt">
+        <section class="sv-section" style="background:var(--sv-field)">
             <div class="sv-wrap">
-                <span class="sv-eyebrow">03 · Para quién</span>
-                <h2 class="sv-h2">Para negocios como el tuyo.</h2>
-                <div class="sv-cols">
-                    <div class="sv-tile sv-reveal"><h3>Negocios locales</h3><p>Que tu zona te conozca.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Hostelería</h3><p>Platos, ambiente y eventos que llenan mesas.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Tiendas y boutiques</h3><p>Producto y colecciones que entran por los ojos.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Marcas personales</h3><p>Construir autoridad y cercanía.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Clínicas y estética</h3><p>Confianza y resultados visibles.</p></div>
-                    <div class="sv-tile sv-reveal"><h3>Lanzamientos y ofertas</h3><p>Campañas con fecha y objetivo.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="sv-section">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">04 · Cómo avanzamos</span>
-                <h2 class="sv-h2">Así trabajamos.</h2>
-                <p class="sv-lead">Compartimos referencias, alcance y prioridades antes de producir. Sin sorpresas a mitad de camino.</p>
+                <h2 class="sv-h2">Cómo lo hacemos.</h2>
                 <ol class="sv-steps">
                     <li class="sv-reveal"><h3>Análisis</h3><p>Revisamos tus perfiles, tu público y tu competencia.</p></li>
                     <li class="sv-reveal"><h3>Estrategia</h3><p>Objetivos, líneas de contenido y calendario.</p></li>
@@ -248,10 +256,9 @@
             </div>
         </section>
 
-        <section class="sv-section sv-section--alt">
-            <div class="sv-wrap">
-                <span class="sv-eyebrow">Preguntas frecuentes</span>
-                <h2 class="sv-h2">Antes de empezar.</h2>
+        <section class="sv-section">
+            <div class="sv-wrap sv-split">
+                <div class="sv-split__head"><h2 class="sv-h2">Dudas habituales.</h2></div>
                 <div class="sv-faq">
                     <details><summary>¿Qué redes gestionáis?</summary><p>Principalmente Instagram y Facebook, que es donde mejor funciona para negocios locales. Valoramos otras según tu público.</p></details>
                     <details><summary>¿Tengo que dar yo el contenido?</summary><p>Nos ayuda tener fotos y vídeos reales de tu negocio, pero te orientamos sobre qué grabar y cómo.</p></details>
@@ -262,31 +269,34 @@
             </div>
         </section>
 
+        <section class="sv-close">
+            <div class="sv-wrap sv-close__grid">
+                <div>
+                    <h2 class="sv-h2">Hablemos de tu proyecto.</h2>
+                    <p>Cuéntanos qué necesitas y te respondemos con una propuesta clara, sin compromiso.</p>
+                    <div class="sv-actions">
+                        <a class="sv-btn sv-btn--primary" href="/?servicio=Redes%20sociales#contacto">Pedir presupuesto <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+                        <a class="sv-btn sv-btn--quiet" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Redes%20sociales.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+                    </div>
+                </div>
+                <div class="sv-art" role="presentation"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Perfil de redes sociales con resultados de campaña" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="240" y="30" width="320" height="540" rx="34" fill="#0b0b0b"/><rect x="248" y="38" width="304" height="524" rx="28" fill="#222222"/><circle cx="290" cy="104" r="22" fill="#d97762"/><text x="324" y="100" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">tunegocio</text><text x="324" y="120" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Sevilla</text><rect x="266" y="150" width="268" height="268" rx="6" fill="#d97762"/><text x="300" y="250" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">Menú de</text><text x="300" y="290" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">temporada</text><rect x="300" y="330" width="120" height="40" rx="20" fill="#111"/><text x="360" y="356" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#f4f4f4" text-anchor="middle">Reservar</text><circle cx="282" cy="450" r="11" fill="#d97762"/><circle cx="322" cy="450" r="11" fill="#2d2d2d"/><circle cx="362" cy="450" r="11" fill="#2d2d2d"/><rect x="266" y="480" width="150" height="12" rx="6" fill="#2d2d2d"/><rect x="266" y="504" width="220" height="12" rx="6" fill="#2d2d2d"/><rect x="600" y="120" width="150" height="70" rx="12" fill="#d97762"/><text x="675" y="150" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#111" text-anchor="middle">Alcance</text><text x="675" y="178" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">+38 %</text><rect x="60" y="380" width="160" height="70" rx="12" fill="#222222"/><text x="140" y="410" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Mensajes</text><text x="140" y="438" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">27</text><rect x="600" y="340" width="150" height="70" rx="12" fill="#222222"/><text x="675" y="370" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Reservas</text><text x="675" y="398" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">12</text><rect x="60" y="160" width="140" height="90" rx="12" fill="#222222"/><text x="130" y="196" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#f4f4f4" text-anchor="middle">Lun · Reel</text><text x="130" y="222" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Jue · Carrusel</text></svg></div>
+            </div>
+        </section>
+
         <section class="sv-section">
             <div class="sv-wrap">
-                <div class="sv-cta">
-                    <span class="sv-eyebrow">Hablemos</span>
-                    <h2 class="sv-h2">¿Te cuento cómo lo haríamos en tu caso?</h2>
-                    <p class="sv-lead">Cuéntanos qué necesitas. Te respondemos con una propuesta clara y sin compromiso.</p>
-                    <div class="sv-hero__cta">
-                        <a class="sv-btn sv-btn--primary" href="/?servicio=Redes%20sociales#contacto">Pedir presupuesto</a>
-                        <a class="sv-btn sv-btn--ghost" href="https://wa.me/34624903256?text=Hola%2C%20me%20interesa%20el%20servicio%20de%20Redes%20sociales.%20%C2%BFPodemos%20hablar%3F" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
-                    </div>
-                </div>
-
-                <div style="margin-top:4rem">
-                    <span class="sv-eyebrow">Te puede interesar</span>
-                    <div class="sv-related">
-                        <a class="sv-rel" href="/servicios/diseno-grafico" data-svc="Branding y diseño gráfico"><b>Branding y diseño gráfico</b><span>Identidades visuales memorables y material gráfico que comunican lo que eres y te distinguen de la competencia.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/seo-local" data-svc="SEO y Google Business"><b>SEO y Google Business</b><span>Que te encuentren en Google y en Maps cuando tu cliente busca lo que tú ofreces, en tu zona.</span><em>Ver servicio →</em></a>
-                        <a class="sv-rel" href="/servicios/diseno-web" data-svc="Diseño web"><b>Diseño web</b><span>Webs a medida que se ven bien en el móvil y llevan al cliente a escribirte, llamarte o comprar.</span><em>Ver servicio →</em></a>
-                    </div>
-                    <div class="sv-more"><a href="/servicios">Ver todos los servicios <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
-                </div>
+                <h2 class="sv-h2">Seguir viendo.</h2>
+                <nav class="sv-next" aria-label="Otros servicios">
+                    <a href="/servicios/diseno-grafico" data-svc="Branding y diseño gráfico"><span>Branding y diseño gráfico</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/seo-local" data-svc="SEO y Google Business"><span>SEO y Google Business</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios/diseno-web" data-svc="Diseño web"><span>Diseño web</span><i aria-hidden="true">→</i></a>
+                    <a href="/servicios"><span>Todos los servicios</span><i aria-hidden="true">→</i></a>
+                </nav>
             </div>
         </section>
     </main>
 
+    <!--SVC:FOOTERBLOCK-->
     <footer class="bg-black py-12 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -301,13 +311,10 @@
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li><a href="/servicios/diseno-web" class="hover:text-brand-blue transition-colors">Diseño web</a></li>
                         <li><a href="/servicios/software-a-medida" class="hover:text-brand-blue transition-colors">Software a medida</a></li>
-                        <li><a href="/servicios/agentes-ia" class="hover:text-brand-blue transition-colors">Agentes IA y chatbots</a></li>
-                        <li><a href="/servicios/automatizaciones" class="hover:text-brand-blue transition-colors">Automatizaciones</a></li>
+                        <li><a href="/servicios/automatizaciones-ia" class="hover:text-brand-blue transition-colors">Automatizaciones e IA</a></li>
                         <li><a href="/servicios/diseno-grafico" class="hover:text-brand-blue transition-colors">Branding y diseño gráfico</a></li>
                         <li><a href="/servicios/redes-sociales" class="hover:text-brand-blue transition-colors">Redes sociales</a></li>
                         <li><a href="/servicios/seo-local" class="hover:text-brand-blue transition-colors">SEO y Google Business</a></li>
-                        <li><a href="/servicios/mantenimiento-web" class="hover:text-brand-blue transition-colors">Mantenimiento web</a></li>
-                        <li><a href="/servicios/carta-qr-restaurantes" class="hover:text-brand-blue transition-colors">Carta QR y restaurantes</a></li>
                     </ul>
                 </div>
                 <div>
@@ -336,8 +343,9 @@
     <a href="https://wa.me/34624903256" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Contactar por WhatsApp">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
+    <!--/SVC:FOOTERBLOCK-->
 
-    <script src="/js/main.js"></script>
+    <script src="/js/main.js?v=10"></script>
     <script src="/js/servicios.js?v=1"></script>
 </body>
 </html>
