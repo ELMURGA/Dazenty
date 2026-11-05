@@ -264,3 +264,10 @@ html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { ov
 .sv-work__item span { color: var(--sv-muted); font-size: 0.95rem; }
 @media (max-width: 900px) { .sv-work { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .sv-work { grid-template-columns: 1fr; } }
+
+/* Subservicio dentro de una página de servicio */
+.sv-sub { display: grid; gap: var(--sv-gap); grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; }
+.sv-sub--flip .sv-art { order: 2; }
+.sv-sub__text { display: grid; gap: 1.5rem; align-content: center; }
+.sv-sub__text .sv-copy { max-width: 32rem; }
+@media (max-width: 900px) { .sv-sub { grid-template-columns: 1fr; } .sv-sub--flip .sv-art { order: 0; } }

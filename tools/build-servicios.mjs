@@ -238,6 +238,18 @@ const servicePage = (s) => {
             </div>
         </section>
 
+${(s.subs || []).map((x, i) => `
+        <section class="sv-section" style="background:var(--sv-field)">
+            <div class="sv-wrap sv-sub${i % 2 ? ' sv-sub--flip' : ''}">
+                <div class="sv-art sv-reveal" role="presentation">${artOf(x.art)}</div>
+                <div class="sv-sub__text">
+                    <h2 class="sv-h2">${esc(x.title)}</h2>
+                    <p class="sv-copy">${esc(x.text)}</p>
+                    <ul class="sv-points">${x.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
+                </div>
+            </div>
+        </section>`).join('')}
+
         <section class="sv-section sv-section--light">
             <div class="sv-wrap sv-split">
                 <div class="sv-split__head"><h2 class="sv-h2">Quién nos contrata.</h2></div>
@@ -367,6 +379,9 @@ ${scripts}
 mkdirSync(join(ROOT, 'servicios'), { recursive: true });
 writeFileSync(join(ROOT, 'servicios', 'index.html'), hubPage());
 SERVICES.forEach((s) => writeFileSync(join(ROOT, 'servicios', `${s.slug}.html`), servicePage(s)));
+import { readdirSync as _ls, unlinkSync as _rm } from 'node:fs';
+const valid = new Set(['index.html', ...SERVICES.map((s) => `${s.slug}.html`)]);
+_ls(join(ROOT, 'servicios')).filter((f) => f.endsWith('.html') && !valid.has(f)).forEach((f) => _rm(join(ROOT, 'servicios', f)));
 
 // ---------- index.html: bloques marcados ----------
 const replaceBlock = (html, name, content) => {
@@ -400,14 +415,29 @@ for (const rel of publicPages) {
 let notFound = readFileSync(join(ROOT, '404.html'), 'utf8').replace(/\/css\/site\.min\.css\?v=\d+/, `/css/site.min.css?v=${CSS_V}`);
 writeFileSync(join(ROOT, '404.html'), notFound);
 
-// ---------- sitemap ----------
-let sm = readFileSync(join(ROOT, 'sitemap.xml'), 'utf8');
-sm = sm.replace(/\s*<!-- Servicios -->[\s\S]*?<!-- \/Servicios -->/, '');
+// ---------- sitemap (se regenera entero) ----------
 const today = new Date().toISOString().slice(0, 10);
-const urls = [{ p: '/servicios', pr: '0.9' }, ...SERVICES.map((s) => ({ p: `/servicios/${s.slug}`, pr: '0.8' }))]
-  .map((u) => `  <url>\n    <loc>${SITE}${u.p}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${u.pr}</priority>\n  </url>`)
-  .join('\n\n');
-sm = sm.replace('</urlset>', `\n  <!-- Servicios -->\n${urls}\n  <!-- /Servicios -->\n</urlset>`);
-writeFileSync(join(ROOT, 'sitemap.xml'), sm);
+const PAGES = [
+  { p: '/', pr: '1.0', cf: 'weekly' },
+  { p: '/servicios', pr: '0.9', cf: 'monthly' },
+  ...SERVICES.map((s) => ({ p: `/servicios/${s.slug}`, pr: '0.8', cf: 'monthly' })),
+  { p: '/html/portfolio', pr: '0.8', cf: 'weekly' },
+  { p: '/html/proyecto-hermanos-hervas', pr: '0.6', cf: 'monthly' },
+  { p: '/html/proyecto-sevilla-tp', pr: '0.6', cf: 'monthly' },
+  { p: '/html/proyecto-costa-del-sol', pr: '0.6', cf: 'monthly' },
+  { p: '/html/privacidad', pr: '0.3', cf: 'yearly' },
+  { p: '/html/terminos', pr: '0.3', cf: 'yearly' },
+  { p: '/html/avisos-legales', pr: '0.3', cf: 'yearly' },
+];
+writeFileSync(join(ROOT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${PAGES.map((u) => `  <url>
+    <loc>${SITE}${u.p === '/' ? '/' : u.p}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${u.cf}</changefreq>
+    <priority>${u.pr}</priority>
+  </url>`).join('\n')}
+</urlset>
+`);
 
 console.log(`OK: ${SERVICES.length} servicios + índice generados.`);

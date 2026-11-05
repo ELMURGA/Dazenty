@@ -123,9 +123,11 @@ export const ART = {
       td(106, 118, 'Casa Lola', 30) + t(106, 144, 'Carta · Cocina andaluza', 14, MUTE) +
       t(106, 196, 'Arroz del día', 18, INK, 700) + t(334, 196, '14,50', 18, C, 700, 'end') + t(106, 218, 'Con marisco de la lonja', 13, MUTE) +
       t(106, 262, 'Presa ibérica', 18, INK, 700) + t(334, 262, '16,00', 18, C, 700, 'end') + t(106, 284, 'Patatas y pimientos', 13, MUTE) +
-      t(106, 328, 'Tortillita de camarones', 18, INK, 700) + t(334, 328, '9,00', 18, C, 700, 'end') + t(106, 350, 'Ración para compartir', 13, MUTE) +
+      t(106, 328, 'Tortillitas', 18, INK, 700) + t(334, 328, '9,00', 18, C, 700, 'end') + t(106, 350, 'Ración para compartir', 13, MUTE) +
       t(106, 394, 'Tarta de queso', 18, INK, 700) + t(334, 394, '6,50', 18, C, 700, 'end') + t(106, 416, 'Hecha en casa', 13, MUTE) +
       r(106, 456, 228, 52, C, 26) + t(220, 488, 'Reservar mesa', 17, '#111', 700, 'middle')) +
     r(440, 120, 290, 360, C, 12) + r(470, 150, 230, 230, LIGHT, 8) + qr(485, 165, 200) + td(585, 430, 'Escanea la carta', 26, '#111', 'middle') + t(585, 458, 'Sin descargar nada', 15, '#111', 500, 'middle'),
     'Carta digital en el móvil y código QR para la mesa'),
 };
+
+ART['automatizaciones-ia'] = ART.automatizaciones;
