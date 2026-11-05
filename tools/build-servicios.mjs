@@ -355,16 +355,12 @@ const hubPage = () => {
             <div class="sv-wrap">
                 <nav class="sv-crumbs" aria-label="Ruta"><a href="/">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Servicios</span></nav>
                 <h1 class="sv-h1" style="max-width:14ch">Todo lo que tu negocio necesita.</h1>
-                <p class="sv-lead" style="margin-top:2rem">Cada servicio funciona por sí solo. Juntos forman un sistema que capta, atiende y crece contigo. Elige por lo que quieres conseguir.</p>
+                <p class="sv-lead" style="margin-top:2rem">Cada servicio funciona por sí solo. Juntos forman un sistema que capta, atiende y crece contigo.</p>
             </div>
         </section>
 
         <section class="sv-section" style="padding-top:0">
             <div class="sv-wrap">
-                <div class="sv-filters" data-sv-filters role="group" aria-label="Filtrar servicios por objetivo">
-                    <button type="button" class="sv-filter" data-goal="todos" aria-pressed="true">Todos</button>
-                    ${GOALS.map((g) => `<button type="button" class="sv-filter" data-goal="${g.id}" aria-pressed="false">${esc(g.label)}</button>`).join('\n                    ')}
-                </div>
                 ${gridHtml()}
             </div>
         </section>
