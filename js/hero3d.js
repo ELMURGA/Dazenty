@@ -161,15 +161,15 @@
         function frame(now) {
             raf = 0;
             if (!visible || document.hidden) return;
-            var dt = Math.min((now - last) / 1000, 0.05); last = now;
+            var real = Math.min((now - last) / 1000, 0.5), dt = Math.min(real, 0.05); last = now;
             mat.uniforms.uTime.value += dt;
 
             // Línea de tiempo: esfera al cargar y, tras un momento, se convierte en el logo
             var rect = hero.getBoundingClientRect();
             var p = Math.min(Math.max(-rect.top / (rect.height * 0.9), 0), 1);
-            clock += dt;
+            clock += real;
             var targetMorph = logo && clock > 1.6 ? 1 : 0;
-            mat.uniforms.uMorph.value += (targetMorph - mat.uniforms.uMorph.value) * Math.min(dt * 1.1, 1);
+            mat.uniforms.uMorph.value += (targetMorph - mat.uniforms.uMorph.value) * Math.min(real * 1.1, 1);
             var m = mat.uniforms.uMorph.value;
 
             cur.x += (target.x - cur.x) * Math.min(dt * 3, 1);
