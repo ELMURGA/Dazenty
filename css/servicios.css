@@ -44,9 +44,28 @@
 .site-header__nav .nav-drop__box a:hover, .site-header__nav .nav-drop__box a:focus-visible { background: var(--sv-field-2); color: var(--sv-accent); }
 .site-header__nav .nav-drop__box a.nav-drop__all { color: var(--sv-accent); margin-top: 0.3rem; background: var(--sv-field); }
 
-/* Submenú en el menú móvil */
-.mobile-nav__sub { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; }
-.mobile-nav a.mobile-nav__small { font-size: 0.95rem; color: var(--sv-muted); }
+/* ---------- Menú móvil ---------- */
+.mobile-nav { align-items: stretch; justify-content: flex-start; gap: 0; padding: 0.75rem 1.5rem max(1.5rem, env(safe-area-inset-bottom, 1.5rem)); background: #050505; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.mobile-nav > :first-child, .mobile-nav > :last-child { margin: 0; }
+.mobile-nav a, .mnav-toggle {
+    display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 60px; padding: 0.8rem 0;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(1.9rem, 8.4vw, 2.5rem); letter-spacing: -0.035em; line-height: 1.05;
+    color: #fff; text-decoration: none; background: none; border: 0; text-align: left; cursor: pointer;
+}
+.mnav-toggle:focus-visible, .mobile-nav a:focus-visible { outline: 2px solid var(--sv-accent); outline-offset: 2px; border-radius: 0.4rem; }
+.mnav-ico { position: relative; width: 1.1rem; height: 1.1rem; flex: none; color: var(--sv-accent); }
+.mnav-ico::before, .mnav-ico::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: currentColor; transition: transform 0.35s var(--sv-ease); }
+.mnav-ico::after { transform: rotate(90deg); }
+.mnav-toggle[aria-expanded='true'] .mnav-ico::after { transform: rotate(0); }
+.mnav-toggle[aria-expanded='true'] { color: var(--sv-accent); }
+.mnav-sub { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s var(--sv-ease); }
+.mnav-sub > div { overflow: hidden; display: grid; padding-left: 0.1rem; }
+.mnav-sub.is-open { grid-template-rows: 1fr; }
+.mobile-nav .mnav-sub a { min-height: 48px; padding: 0.55rem 0; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.01em; color: #d4d4d4; }
+.mobile-nav .mnav-sub a.mnav-all { color: var(--sv-accent); font-weight: 600; }
+.mobile-nav .mnav-sub > div > :last-child { margin-bottom: 0.6rem; }
+.mobile-nav a.mobile-nav__cta { margin-top: 1.5rem; justify-content: center; min-height: 58px; padding: 0.9rem 2rem; border-radius: 9999px; background: var(--sv-accent); color: #000; font-size: 1.2rem; letter-spacing: 0; }
+@media (max-height: 560px) { .mobile-nav a, .mnav-toggle { min-height: 48px; font-size: 1.5rem; } }
 
 /* position:sticky no funciona si html/body hacen scroll con overflow-x:hidden; con clip no crean contenedor de scroll */
 html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { overflow-x: clip !important; overflow-y: visible; }

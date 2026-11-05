@@ -28,7 +28,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=5">
+    <link rel="stylesheet" href="/css/site.min.css?v=6">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
     <script type="application/ld+json">
@@ -161,17 +161,22 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/servicios">Servicios</a>
-        <div class="mobile-nav__sub">
-            <a href="/servicios/diseno-web" class="mobile-nav__small">Diseño web</a>
-            <a href="/servicios/software-a-medida" class="mobile-nav__small">Software a medida</a>
-            <a href="/servicios/agentes-ia" class="mobile-nav__small">Agentes IA y chatbots</a>
-            <a href="/servicios/automatizaciones" class="mobile-nav__small">Automatizaciones</a>
-            <a href="/servicios/diseno-grafico" class="mobile-nav__small">Branding y diseño gráfico</a>
-            <a href="/servicios/redes-sociales" class="mobile-nav__small">Redes sociales</a>
-            <a href="/servicios/seo-local" class="mobile-nav__small">SEO y Google Business</a>
-            <a href="/servicios/mantenimiento-web" class="mobile-nav__small">Mantenimiento web</a>
-            <a href="/servicios/carta-qr-restaurantes" class="mobile-nav__small">Carta QR y restaurantes</a>
+        <div class="mnav-group">
+            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
+            <div class="mnav-sub" id="mnav-sub">
+                <div>
+                    <a href="/servicios/diseno-web">Diseño web</a>
+                    <a href="/servicios/software-a-medida">Software a medida</a>
+                    <a href="/servicios/agentes-ia">Agentes IA y chatbots</a>
+                    <a href="/servicios/automatizaciones">Automatizaciones</a>
+                    <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                    <a href="/servicios/redes-sociales">Redes sociales</a>
+                    <a href="/servicios/seo-local">SEO y Google Business</a>
+                    <a href="/servicios/mantenimiento-web">Mantenimiento web</a>
+                    <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes</a>
+                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
+                </div>
+            </div>
         </div>
         <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
@@ -338,7 +343,7 @@
     </a>
     <!--/SVC:FOOTERBLOCK-->
 
-    <script src="/js/main.js"></script>
+    <script src="/js/main.js?v=10"></script>
     <script src="/js/servicios.js?v=1"></script>
 </body>
 </html>

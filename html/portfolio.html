@@ -35,7 +35,7 @@
 
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=5">
+    <link rel="stylesheet" href="/css/site.min.css?v=6">
 
     <style>
         /* Ocultar barra de scroll para un look más limpio */
@@ -131,6 +131,21 @@
         @keyframes cs-swap { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
         .cs[hidden] { display: none; }
 
+
+        /* Móvil/tablet táctil: la web dentro del marco no atrapa el scroll hasta que se toca "explorar" */
+        .cs-tap, .cs-exit { display: none; }
+        .sc-browser, .sc-phone { position: relative; }
+        @media (max-width: 1023px) and (pointer: coarse) {
+            .sc-scroll { overflow-y: hidden; }
+            .cs.explore .sc-scroll { overflow-y: auto; touch-action: pan-y; }
+            .cs-tap { display: flex; position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; top: 38px; align-items: flex-end; justify-content: center; padding: 0 0 14px; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+            .sc-phone .cs-tap { inset: 10px; border-radius: 34px; }
+            .cs-tap span, .cs-exit { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 9px 16px; border-radius: 999px; background: rgba(11,11,12,.82); color: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+            .cs.explore .cs-tap { display: none; }
+            .cs.explore .cs-exit { display: block; position: absolute; z-index: 4; top: 48px; right: 12px; border: 0; }
+            .sc-phone .cs-exit { top: 26px; right: 22px; }
+        }
+
         /* Tablet y móvil: una columna, la ficha entera hace scroll */
         @media (max-width: 1023px) {
             .cs-main { display: block; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
@@ -202,13 +217,22 @@
         /* Grid Compacto */
         .compact-grid {
             display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.75rem 0.875rem;
+        }
+        /* Móvil: tarjetas compactas en dos columnas, como una cuadrícula de productos */
+        @media (max-width: 639px) {
+            .compact-grid .project-card .aspect-square { aspect-ratio: 4 / 5; margin-bottom: .75rem; }
+            .compact-grid .project-card > div:last-child > div { font-size: 9px; letter-spacing: .12em; flex-wrap: wrap; row-gap: 2px; }
+            .compact-grid .project-card h3 { font-size: 13px; line-height: 1.25; }
+            .project-hover-badge { display: none !important; }
+        }
+        /* En pantallas táctiles no hay hover: las miniaturas se ven siempre a color */
+        @media (hover: none) {
+            .project-img { filter: none; }
         }
         @media (min-width: 640px) {
-            .compact-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .compact-grid { gap: 2rem 1.5rem; }
         }
         @media (min-width: 1024px) {
             .compact-grid {
@@ -281,17 +305,22 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/servicios">Servicios</a>
-        <div class="mobile-nav__sub">
-            <a href="/servicios/diseno-web" class="mobile-nav__small">Diseño web</a>
-            <a href="/servicios/software-a-medida" class="mobile-nav__small">Software a medida</a>
-            <a href="/servicios/agentes-ia" class="mobile-nav__small">Agentes IA y chatbots</a>
-            <a href="/servicios/automatizaciones" class="mobile-nav__small">Automatizaciones</a>
-            <a href="/servicios/diseno-grafico" class="mobile-nav__small">Branding y diseño gráfico</a>
-            <a href="/servicios/redes-sociales" class="mobile-nav__small">Redes sociales</a>
-            <a href="/servicios/seo-local" class="mobile-nav__small">SEO y Google Business</a>
-            <a href="/servicios/mantenimiento-web" class="mobile-nav__small">Mantenimiento web</a>
-            <a href="/servicios/carta-qr-restaurantes" class="mobile-nav__small">Carta QR y restaurantes</a>
+        <div class="mnav-group">
+            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
+            <div class="mnav-sub" id="mnav-sub">
+                <div>
+                    <a href="/servicios/diseno-web">Diseño web</a>
+                    <a href="/servicios/software-a-medida">Software a medida</a>
+                    <a href="/servicios/agentes-ia">Agentes IA y chatbots</a>
+                    <a href="/servicios/automatizaciones">Automatizaciones</a>
+                    <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                    <a href="/servicios/redes-sociales">Redes sociales</a>
+                    <a href="/servicios/seo-local">SEO y Google Business</a>
+                    <a href="/servicios/mantenimiento-web">Mantenimiento web</a>
+                    <a href="/servicios/carta-qr-restaurantes">Carta QR y restaurantes</a>
+                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
+                </div>
+            </div>
         </div>
         <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
@@ -676,10 +705,14 @@
                     <div class="sc-browser">
                         <div class="sc-bar"><span class="sc-dot"></span><span class="sc-dot"></span><span class="sc-dot"></span><span class="sc-url" id="sc-url"></span><span class="sc-progress" id="sc-progress"></span></div>
                         <div class="sc-scroll" id="sc-scroll-d" tabindex="0"><img id="sc-img-d" src="" alt=""></div>
+                        <button type="button" class="cs-tap" aria-label="Explorar la web"><span>Toca para explorar</span></button>
+                        <button type="button" class="cs-exit">Listo</button>
                     </div>
                 </div>
                 <div class="cs-view" id="sc-mobile" hidden>
-                    <div class="sc-phone"><div class="sc-scroll" id="sc-scroll-m" tabindex="0"><img id="sc-img-m" src="" alt=""></div></div>
+                    <div class="sc-phone"><div class="sc-scroll" id="sc-scroll-m" tabindex="0"><img id="sc-img-m" src="" alt=""></div>
+                        <button type="button" class="cs-tap" aria-label="Explorar la web"><span>Toca para explorar</span></button>
+                        <button type="button" class="cs-exit">Listo</button></div>
                 </div>
                 <div class="cs-view" id="cs-poster" hidden>
                     <img id="drawer-image" class="cs-poster" src="" alt="">
@@ -701,7 +734,7 @@
         <div class="cs-cta-bar" id="cs-cta-bar"><a id="drawer-link-bar" class="cs-cta" href="#" target="_blank" rel="noopener noreferrer">Visitar la web <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></a></div>
     </div>
 
-    <script src="../js/main.js?v=8" defer></script>
+    <script src="../js/main.js?v=10" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
@@ -903,7 +936,7 @@
                 scPlay.textContent = '▶ Recorrer';
             }
             function scView(v) {
-                scStop();
+                scStop(); cs.classList.remove('explore');
                 scD.hidden = v !== 'd'; scM.hidden = v !== 'm';
                 cs.querySelectorAll('.cs-pill').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
             }
@@ -918,7 +951,7 @@
                 const data = projectData[id];
                 if (!data) return false;
                 current = id;
-                scStop();
+                scStop(); cs.classList.remove('explore');
                 cs.style.setProperty('--accent', accents[id] || '#d97762');
                 $('drawer-category').textContent = data.category;
                 $('drawer-year').textContent = data.year;
@@ -973,7 +1006,7 @@
 
             function closeDrawer() {
                 if (!cs.classList.contains('active')) return;
-                scStop();
+                scStop(); cs.classList.remove('explore');
                 cs.classList.remove('active');
                 cs.setAttribute('aria-hidden', 'true');
                 document.body.style.position = '';
@@ -1021,6 +1054,8 @@
                 card.addEventListener('click', () => openDrawer(card.getAttribute('data-id')));
                 card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(card.getAttribute('data-id')); } });
             });
+            cs.querySelectorAll('.cs-tap').forEach(b => b.addEventListener('click', () => cs.classList.add('explore')));
+            cs.querySelectorAll('.cs-exit').forEach(b => b.addEventListener('click', () => cs.classList.remove('explore')));
             closeBtn.addEventListener('click', closeDrawer);
             $('cs-prev').addEventListener('click', () => go(-1));
             $('cs-nextbtn').addEventListener('click', () => go(1));

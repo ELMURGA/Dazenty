@@ -61,7 +61,18 @@ const navToggle = document.getElementById('nav-toggle');
 const mobileNav  = document.getElementById('mobile-nav');
 if (navToggle && mobileNav) {
 
+    // Submenú de servicios (acordeón)
+    const mnavToggle = mobileNav.querySelector('.mnav-toggle');
+    const mnavSub = mobileNav.querySelector('.mnav-sub');
+    function setMnav(open) {
+        if (!mnavToggle || !mnavSub) return;
+        mnavToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        mnavSub.classList.toggle('is-open', open);
+    }
+    if (mnavToggle) mnavToggle.addEventListener('click', () => setMnav(mnavToggle.getAttribute('aria-expanded') !== 'true'));
+
     function closeMobileNav() {
+        setMnav(false);
         navToggle.classList.remove('is-active');
         navToggle.setAttribute('aria-expanded', 'false');
         mobileNav.classList.remove('is-open');

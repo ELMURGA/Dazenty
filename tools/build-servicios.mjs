@@ -9,7 +9,7 @@ import { ART } from './servicios-art.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://dazenty.com';
 const WA = 'https://wa.me/34624903256';
-const CSS_V = '5';
+const CSS_V = '6';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const pad = (n) => String(n).padStart(2, '0');
@@ -51,9 +51,14 @@ ${SERVICES.map((s) => `                            <a href="/servicios/${s.slug}
 
     <div class="mobile-nav" id="mobile-nav">
         <a href="/#inicio">Inicio</a>
-        <a href="/servicios">Servicios</a>
-        <div class="mobile-nav__sub">
-${SERVICES.map((s) => `            <a href="/servicios/${s.slug}" class="mobile-nav__small">${esc(s.name)}</a>`).join('\n')}
+        <div class="mnav-group">
+            <button type="button" class="mnav-toggle" aria-expanded="false" aria-controls="mnav-sub">Servicios<span class="mnav-ico" aria-hidden="true"></span></button>
+            <div class="mnav-sub" id="mnav-sub">
+                <div>
+${SERVICES.map((s) => `                    <a href="/servicios/${s.slug}">${esc(s.name)}</a>`).join('\n')}
+                    <a href="/servicios" class="mnav-all">Ver todos los servicios</a>
+                </div>
+            </div>
         </div>
         <a href="/html/portfolio">Portfolio</a>
         <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
@@ -160,7 +165,7 @@ ${JSON.stringify(ld, null, 2)}
     </script>
 </head>`;
 
-const scripts = `    <script src="/js/main.js"></script>
+const scripts = `    <script src="/js/main.js?v=10"></script>
     <script src="/js/servicios.js?v=1"></script>`;
 
 // ---------- Página de servicio ----------
