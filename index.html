@@ -40,7 +40,7 @@
 
     <link rel="preload" href="/fonts/space-grotesk-latin-v22.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-latin-v20.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/site.min.css?v=2">
+    <link rel="stylesheet" href="/css/site.min.css?v=7">
     <script defer src="/js/cookies.js?v=1"></script>
     <script defer src="/js/analytics.js?v=2"></script>
 
@@ -91,18 +91,31 @@
 
 <body class="bg-brand-dark text-white overflow-x-hidden antialiased selection:bg-brand-blue selection:text-black">
 
-    <!-- Header -->
+    <!--SVC:HEADER-->
     <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__logo" aria-label="Dazenty — volver al inicio">
-                <img src="img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
+                <img src="/img/logoheader-160.webp" alt="Dazenty" width="160" height="160">
             </a>
 
             <nav class="site-header__nav" aria-label="Navegación principal">
-                <a href="#inicio">Inicio</a>
-                <a href="#servicios">Servicios</a>
+                <a href="/#inicio">Inicio</a>
+                <div class="nav-drop">
+                    <a href="/servicios" aria-haspopup="true">Servicios</a>
+                    <div class="nav-drop__panel">
+                        <div class="nav-drop__box">
+                            <a href="/servicios/diseno-web">Diseño web</a>
+                            <a href="/servicios/software-a-medida">Software a medida</a>
+                            <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                            <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                            <a href="/servicios/redes-sociales">Redes sociales</a>
+                            <a href="/servicios/seo-local">SEO y Google Business</a>
+                            <a href="/servicios" class="nav-drop__all"><span>Ver todos los servicios</span><span aria-hidden="true">→</span></a>
+                        </div>
+                    </div>
+                </div>
                 <a href="/html/portfolio">Portfolio</a>
-                <a href="#contacto" class="site-header__cta">Hablemos</a>
+                <a href="/#contacto" class="site-header__cta">Hablemos</a>
             </nav>
 
             <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-nav">
@@ -112,11 +125,31 @@
     </header>
 
     <div class="mobile-nav" id="mobile-nav">
-        <a href="#inicio">Inicio</a>
-        <a href="#servicios">Servicios</a>
-        <a href="/html/portfolio">Portfolio</a>
-        <a href="#contacto" class="mobile-nav__cta">Hablemos</a>
+        <nav class="mnav-main" aria-label="Menú móvil">
+            <a href="/#inicio" class="mnav-link">Inicio</a>
+            <div class="mnav-group">
+                <a href="/servicios" class="mnav-link">Servicios</a>
+                <div class="mnav-sub" id="mnav-sub">
+                    <a href="/servicios/diseno-web">Diseño web</a>
+                    <a href="/servicios/software-a-medida">Software a medida</a>
+                    <a href="/servicios/automatizaciones-ia">Automatizaciones e IA</a>
+                    <a href="/servicios/diseno-grafico">Branding y diseño gráfico</a>
+                    <a href="/servicios/redes-sociales">Redes sociales</a>
+                    <a href="/servicios/seo-local">SEO y Google Business</a>
+                </div>
+            </div>
+            <a href="/html/portfolio" class="mnav-link">Portfolio</a>
+        </nav>
+        <div class="mnav-foot">
+            <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
+            <div class="mnav-contact">
+                <a href="mailto:designerazenty@gmail.com">Email</a>
+                <a href="tel:624903256">Llamar</a>
+                <a href="https://www.instagram.com/dazen.ty" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
     </div>
+                    <!--/SVC:HEADER-->
 
     <main class="relative z-10">
 
@@ -179,137 +212,78 @@
         <!-- SERVICES SECTION -->
         <section class="py-20 md:py-32 relative bg-brand-gray" id="servicios">
             <div class="max-w-7xl mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 gap-6 md:gap-8">
-                    <div class="max-w-xl">
-                        <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Nuestras Especialidades</h2>
-                        <div class="h-1 w-20 bg-brand-blue rounded-full"></div>
-                    </div>
-                    <p class="text-gray-400 max-w-md text-lg">
-                        Soluciones integrales diseñadas para escalar tu negocio en el entorno digital actual.
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-6 md:gap-8">
+                    <h2 class="font-display text-3xl md:text-5xl font-bold tracking-tight max-w-2xl">Las piezas que hacen crecer tu negocio.</h2>
+                    <p class="text-gray-300 max-w-md text-lg">
+                        Cada servicio funciona por sí solo. Juntos forman un sistema que capta, atiende y crece contigo.
                     </p>
                 </div>
 
-                <div class="hidden md:block w-full h-[1px] bg-white/10 mb-12"></div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                    <!-- Servicio 1 -->
-                    <button onclick="openServiceModal('web')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
-                        <div
-                            class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-display font-bold mb-4 group-hover:text-brand-blue transition-colors">
-                            Diseño Web & UI/UX</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            Convertimos visitantes en clientes con diseños intuitivos, veloces y optimizados para todos
-                            los dispositivos.
-                        </p>
-                        <ul class="text-sm text-gray-500 space-y-2">
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Sitios Corporativos
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Landing Pages
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>E-commerce
-                            </li>
-                        </ul>
-                    </button>
-
-                    <!-- Servicio 2 -->
-                    <button onclick="openServiceModal('grafico')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
-                        <div
-                            class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-display font-bold mb-4 group-hover:text-brand-blue transition-colors">
-                            Diseño Gráfico</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            Construimos identidades visuales memorables que comunican la esencia y valores de tu marca.
-                        </p>
-                        <ul class="text-sm text-gray-500 space-y-2">
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Branding e Identidad
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Redes Sociales
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Material Publicitario
-                            </li>
-                        </ul>
-                    </button>
-
-                    <!-- Servicio 3 -->
-                    <button onclick="openServiceModal('marketing')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
-                        <div
-                            class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-display font-bold mb-4 group-hover:text-brand-blue transition-colors">
-                            Marketing Digital</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            Estrategias basadas en datos para aumentar tu visibilidad, tráfico y conversiones online.
-                        </p>
-                        <ul class="text-sm text-gray-500 space-y-2">
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>SEO / SEM
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Gestión de Redes
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Instagram Ads
-                            </li>
-                        </ul>
-                    </button>
-
-                    <!-- Servicio 4 -->
-                    <button onclick="openServiceModal('n8n')"
-                        class="service-card group p-8 hover:bg-white/5 transition-colors duration-500 cursor-pointer border border-white/10 rounded-2xl hover:border-brand-blue block text-left w-full">
-                        <div
-                            class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-display font-bold mb-4 group-hover:text-brand-blue transition-colors">
-                            Automatizaciones n8n</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            Conectamos tus aplicaciones y automatizamos tareas repetitivas para que tu negocio funcione solo.
-                        </p>
-                        <ul class="text-sm text-gray-500 space-y-2">
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Automatización de Procesos
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Integraciones (CRM, Email...)
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>Agentes con IA
-                            </li>
-                        </ul>
-                    </button>
+                <!--SVC:GRID-->
+                    <div class="sv-index" data-sv-index>
+                    <ul class="sv-list" aria-label="Servicios de Dazenty">
+                        <li data-goals="vender visible tranquilo" data-slug="diseno-web">
+                            <a class="sv-row" href="/servicios/diseno-web" data-svc="Diseño web">
+                                <span class="sv-row__name">Diseño web</span>
+                                <p class="sv-row__desc">Webs a medida que se ven bien en el móvil, llevan al cliente a escribirte o comprar y se mantienen siempre al día.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Web de una clínica vista en ordenador y en móvil" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="70" y="80" width="560" height="380" rx="14" fill="#222222"/><rect x="70" y="80" width="560" height="44" rx="14" fill="#2d2d2d"/><rect x="70" y="110" width="560" height="14" rx="0" fill="#2d2d2d"/><circle cx="96" cy="102" r="6" fill="#d97762"/><circle cx="116" cy="102" r="6" fill="#8d8d8d"/><circle cx="136" cy="102" r="6" fill="#8d8d8d"/><text x="110" y="210" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Tu clínica,</text><text x="110" y="262" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#d97762" letter-spacing="-1" text-anchor="start">sin esperas.</text><text x="110" y="300" font-family="Inter, sans-serif" font-size="18" font-weight="500" fill="#8d8d8d" text-anchor="start">Reserva tu cita en un minuto.</text><rect x="110" y="326" width="168" height="48" rx="24" fill="#d97762"/><text x="194" y="357" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#111" text-anchor="middle">Pedir cita</text><rect x="400" y="160" width="200" height="260" rx="12" fill="#8f4a3b"/><rect x="420" y="180" width="160" height="100" rx="8" fill="#d97762"/><rect x="420" y="296" width="120" height="12" rx="6" fill="#222222"/><rect x="420" y="320" width="160" height="12" rx="6" fill="#222222"/><rect x="420" y="344" width="90" height="12" rx="6" fill="#222222"/><rect x="540" y="200" width="200" height="370" rx="34" fill="#0b0b0b"/><rect x="548" y="208" width="184" height="354" rx="28" fill="#222222"/><rect x="560" y="236" width="160" height="22" rx="6" fill="#2d2d2d"/><text x="560" y="306" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Tu clínica,</text><text x="560" y="336" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700" fill="#d97762" letter-spacing="-1" text-anchor="start">sin esperas.</text><rect x="560" y="362" width="112" height="34" rx="17" fill="#d97762"/><text x="616" y="385" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">Pedir cita</text><rect x="560" y="420" width="160" height="90" rx="8" fill="#8f4a3b"/></svg></span>
+                            </a>
+                        </li>
+                        <li data-goals="tiempo vender tranquilo" data-slug="software-a-medida">
+                            <a class="sv-row" href="/servicios/software-a-medida" data-svc="Software a medida">
+                                <span class="sv-row__name">Software a medida</span>
+                                <p class="sv-row__desc">Aplicaciones, paneles y herramientas hechas para tu negocio, para digitalizar procesos y convertir ideas en producto.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Panel de gestión de clientes y proyectos" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="60" y="70" width="680" height="460" rx="14" fill="#222222"/><rect x="60" y="70" width="150" height="460" rx="14" fill="#1b1b1b"/><rect x="180" y="70" width="30" height="460" rx="0" fill="#1b1b1b"/><text x="84" y="112" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Gestión</text><text x="84" y="160" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#f4f4f4" text-anchor="start">Clientes</text><rect x="74" y="144" width="4" height="24" rx="0" fill="#d97762"/><text x="84" y="196" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Proyectos</text><text x="84" y="232" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Facturas</text><text x="84" y="268" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Tareas</text><text x="240" y="118" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Clientes activos</text><rect x="560" y="92" width="150" height="40" rx="20" fill="#d97762"/><text x="635" y="118" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#111" text-anchor="middle">+ Nuevo cliente</text><rect x="240" y="160" width="470" height="44" rx="8" fill="#2d2d2d"/><text x="258" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Cliente</text><text x="430" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Proyecto</text><text x="560" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Estado</text><text x="258" y="238" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Bodegas Acosta</text><text x="430" y="238" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Web + tienda</text><rect x="560" y="220" width="96" height="28" rx="14" fill="#d97762"/><text x="608" y="240" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">En curso</text><text x="258" y="292" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Clínica Marín</text><text x="430" y="292" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Automatización</text><rect x="560" y="274" width="96" height="28" rx="14" fill="#2d2d2d"/><text x="608" y="294" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f4f4f4" text-anchor="middle">Revisión</text><text x="258" y="346" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Taller JC</text><text x="430" y="346" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Web corporativa</text><rect x="560" y="328" width="96" height="28" rx="14" fill="#2d2d2d"/><text x="608" y="348" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f4f4f4" text-anchor="middle">Entregado</text><text x="258" y="400" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Pinturas Merpa</text><text x="430" y="400" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">SEO local</text><rect x="560" y="382" width="96" height="28" rx="14" fill="#d97762"/><text x="608" y="402" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">En curso</text><rect x="240" y="440" width="470" height="62" rx="10" fill="#8f4a3b"/><text x="262" y="477" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#f4f4f4" text-anchor="start">Próxima factura: viernes · Aviso automático al cliente</text></svg></span>
+                            </a>
+                        </li>
+                        <li data-goals="tiempo tranquilo vender" data-slug="automatizaciones-ia">
+                            <a class="sv-row" href="/servicios/automatizaciones-ia" data-svc="Automatizaciones e IA">
+                                <span class="sv-row__name">Automatizaciones e IA</span>
+                                <p class="sv-row__desc">Conectamos tus herramientas y ponemos asistentes de IA a trabajar para que la atención y las tareas repetitivas se hagan solas.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Flujo automático: formulario, hoja de datos, aviso y CRM" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><path d="M250 300 C 330 300, 330 180, 410 180" stroke="#d97762" stroke-width="4" fill="none"/><path d="M250 300 C 330 300, 330 420, 410 420" stroke="#d97762" stroke-width="4" fill="none"/><path d="M570 180 L 640 180" stroke="#d97762" stroke-width="4" fill="none"/><path d="M570 420 L 640 420" stroke="#d97762" stroke-width="4" fill="none"/><rect x="70" y="260" width="180" height="80" rx="14" fill="#222222"/><text x="160" y="296" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Formulario</text><text x="160" y="322" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">llega un contacto</text><rect x="410" y="140" width="160" height="80" rx="14" fill="#222222"/><text x="490" y="176" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Hoja de datos</text><text x="490" y="202" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">se registra solo</text><rect x="410" y="380" width="160" height="80" rx="14" fill="#222222"/><text x="490" y="416" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Respuesta IA</text><text x="490" y="442" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">borrador al cliente</text><rect x="640" y="140" width="110" height="80" rx="14" fill="#d97762"/><text x="695" y="176" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#111" text-anchor="middle">Aviso</text><text x="695" y="202" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#111" text-anchor="middle">al móvil</text><rect x="640" y="380" width="110" height="80" rx="14" fill="#d97762"/><text x="695" y="416" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#111" text-anchor="middle">CRM</text><text x="695" y="442" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#111" text-anchor="middle">actualizado</text><circle cx="250" cy="300" r="8" fill="#d97762"/><circle cx="410" cy="180" r="8" fill="#d97762"/><circle cx="410" cy="420" r="8" fill="#d97762"/><circle cx="570" cy="180" r="8" fill="#d97762"/><circle cx="570" cy="420" r="8" fill="#d97762"/></svg></span>
+                            </a>
+                        </li>
+                        <li data-goals="marca vender" data-slug="diseno-grafico">
+                            <a class="sv-row" href="/servicios/diseno-grafico" data-svc="Branding y diseño gráfico">
+                                <span class="sv-row__name">Branding y diseño gráfico</span>
+                                <p class="sv-row__desc">Identidades visuales memorables y material gráfico que comunican lo que eres y te distinguen de la competencia.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Identidad visual: logotipo, variantes, colores y tipografía" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="60" y="60" width="400" height="480" rx="10" fill="#d97762"/><circle cx="260" cy="260" r="120" fill="#111"/><circle cx="260" cy="260" r="120" fill="#111"/><path d="M260 140 A120 120 0 0 1 380 260 L260 260 Z" fill="#eaeaea"/><rect x="140" y="420" width="240" height="14" rx="7" fill="#111"/><text x="260" y="480" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="60" width="260" height="150" rx="10" fill="#eaeaea"/><circle cx="540" cy="135" r="34" fill="#111"/><path d="M540 101 A34 34 0 0 1 574 135 L540 135 Z" fill="#d97762"/><text x="668" y="148" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="230" width="260" height="150" rx="10" fill="#0a0a0a"/><circle cx="540" cy="305" r="34" fill="#f4f4f4"/><path d="M540 271 A34 34 0 0 1 574 305 L540 305 Z" fill="#d97762"/><text x="668" y="318" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="400" width="80" height="140" rx="10" fill="#d97762"/><rect x="570" y="400" width="80" height="140" rx="10" fill="#eaeaea"/><rect x="660" y="400" width="80" height="140" rx="10" fill="#0a0a0a"/><text x="520" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Aa</text><text x="610" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Aa</text><text x="700" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">Aa</text></svg></span>
+                            </a>
+                        </li>
+                        <li data-goals="vender visible marca" data-slug="redes-sociales">
+                            <a class="sv-row" href="/servicios/redes-sociales" data-svc="Redes sociales">
+                                <span class="sv-row__name">Redes sociales</span>
+                                <p class="sv-row__desc">Contenido y publicidad en redes para que más gente te conozca, te siga y acabe escribiéndote.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Perfil de redes sociales con resultados de campaña" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="240" y="30" width="320" height="540" rx="34" fill="#0b0b0b"/><rect x="248" y="38" width="304" height="524" rx="28" fill="#222222"/><circle cx="290" cy="104" r="22" fill="#d97762"/><text x="324" y="100" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">tunegocio</text><text x="324" y="120" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Sevilla</text><rect x="266" y="150" width="268" height="268" rx="6" fill="#d97762"/><text x="300" y="250" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">Menú de</text><text x="300" y="290" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">temporada</text><rect x="300" y="330" width="120" height="40" rx="20" fill="#111"/><text x="360" y="356" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#f4f4f4" text-anchor="middle">Reservar</text><circle cx="282" cy="450" r="11" fill="#d97762"/><circle cx="322" cy="450" r="11" fill="#2d2d2d"/><circle cx="362" cy="450" r="11" fill="#2d2d2d"/><rect x="266" y="480" width="150" height="12" rx="6" fill="#2d2d2d"/><rect x="266" y="504" width="220" height="12" rx="6" fill="#2d2d2d"/><rect x="600" y="120" width="150" height="70" rx="12" fill="#d97762"/><text x="675" y="150" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#111" text-anchor="middle">Alcance</text><text x="675" y="178" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">+38 %</text><rect x="60" y="380" width="160" height="70" rx="12" fill="#222222"/><text x="140" y="410" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Mensajes</text><text x="140" y="438" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">27</text><rect x="600" y="340" width="150" height="70" rx="12" fill="#222222"/><text x="675" y="370" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Reservas</text><text x="675" y="398" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">12</text><rect x="60" y="160" width="140" height="90" rx="12" fill="#222222"/><text x="130" y="196" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#f4f4f4" text-anchor="middle">Lun · Reel</text><text x="130" y="222" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Jue · Carrusel</text></svg></span>
+                            </a>
+                        </li>
+                        <li data-goals="visible vender" data-slug="seo-local">
+                            <a class="sv-row" href="/servicios/seo-local" data-svc="SEO y Google Business">
+                                <span class="sv-row__name">SEO y Google Business</span>
+                                <p class="sv-row__desc">Que te encuentren en Google y en Maps cuando tu cliente busca lo que tú ofreces, en tu zona.</p>
+                                <span class="sv-row__go"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg></span>
+                                <span class="sv-row__art" aria-hidden="true"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Resultados de Google y Maps con un negocio en primera posición" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="70" y="60" width="660" height="56" rx="28" fill="#222222"/><circle cx="108" cy="88" r="9" fill="none" stroke="#8d8d8d" stroke-width="3"/><path d="M115 95 L123 103" stroke="#8d8d8d" stroke-width="3"/><text x="140" y="94" font-family="Inter, sans-serif" font-size="18" font-weight="500" fill="#f4f4f4" text-anchor="start">clínica dental tomares</text><rect x="70" y="140" width="330" height="390" rx="14" fill="#8f4a3b"/><rect x="70" y="140" width="330" height="390" rx="14" fill="#8f4a3b"/><path d="M70 300 L400 250 M180 140 L230 530 M70 430 L400 380 M300 140 L280 530" stroke="#d97762" stroke-width="10" opacity="1" fill="none"/><circle cx="200" cy="330" r="20" fill="#f4f4f4"/><circle cx="200" cy="330" r="8" fill="#d97762"/><circle cx="320" cy="220" r="14" fill="#d97762"/><circle cx="130" cy="440" r="14" fill="#d97762"/><rect x="430" y="140" width="300" height="120" rx="12" fill="#222222"/><text x="452" y="178" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Clínica Dental Sol</text><text x="452" y="206" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,9 · Dentista · Tomares</text><text x="452" y="234" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#d97762" text-anchor="start">Abierto hasta las 20:00</text><rect x="430" y="276" width="300" height="120" rx="12" fill="#222222"/><text x="452" y="314" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Dental Aljarafe</text><text x="452" y="342" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,6 · Dentista · Camas</text><text x="452" y="370" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Cierra a las 19:00</text><rect x="430" y="412" width="300" height="118" rx="12" fill="#222222"/><text x="452" y="450" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Clínica Norte</text><text x="452" y="478" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,4 · Dentista · Sevilla</text></svg></span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="sv-stage" aria-hidden="true">
+                        <figure data-slug="diseno-web" class="is-active"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Web de una clínica vista en ordenador y en móvil" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="70" y="80" width="560" height="380" rx="14" fill="#222222"/><rect x="70" y="80" width="560" height="44" rx="14" fill="#2d2d2d"/><rect x="70" y="110" width="560" height="14" rx="0" fill="#2d2d2d"/><circle cx="96" cy="102" r="6" fill="#d97762"/><circle cx="116" cy="102" r="6" fill="#8d8d8d"/><circle cx="136" cy="102" r="6" fill="#8d8d8d"/><text x="110" y="210" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Tu clínica,</text><text x="110" y="262" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#d97762" letter-spacing="-1" text-anchor="start">sin esperas.</text><text x="110" y="300" font-family="Inter, sans-serif" font-size="18" font-weight="500" fill="#8d8d8d" text-anchor="start">Reserva tu cita en un minuto.</text><rect x="110" y="326" width="168" height="48" rx="24" fill="#d97762"/><text x="194" y="357" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#111" text-anchor="middle">Pedir cita</text><rect x="400" y="160" width="200" height="260" rx="12" fill="#8f4a3b"/><rect x="420" y="180" width="160" height="100" rx="8" fill="#d97762"/><rect x="420" y="296" width="120" height="12" rx="6" fill="#222222"/><rect x="420" y="320" width="160" height="12" rx="6" fill="#222222"/><rect x="420" y="344" width="90" height="12" rx="6" fill="#222222"/><rect x="540" y="200" width="200" height="370" rx="34" fill="#0b0b0b"/><rect x="548" y="208" width="184" height="354" rx="28" fill="#222222"/><rect x="560" y="236" width="160" height="22" rx="6" fill="#2d2d2d"/><text x="560" y="306" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Tu clínica,</text><text x="560" y="336" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700" fill="#d97762" letter-spacing="-1" text-anchor="start">sin esperas.</text><rect x="560" y="362" width="112" height="34" rx="17" fill="#d97762"/><text x="616" y="385" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">Pedir cita</text><rect x="560" y="420" width="160" height="90" rx="8" fill="#8f4a3b"/></svg></div><figcaption><b>Diseño web</b>Webs a medida que se ven bien en el móvil, llevan al cliente a escribirte o comprar y se mantienen siempre al día.</figcaption></figure>
+                        <figure data-slug="software-a-medida"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Panel de gestión de clientes y proyectos" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="60" y="70" width="680" height="460" rx="14" fill="#222222"/><rect x="60" y="70" width="150" height="460" rx="14" fill="#1b1b1b"/><rect x="180" y="70" width="30" height="460" rx="0" fill="#1b1b1b"/><text x="84" y="112" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Gestión</text><text x="84" y="160" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#f4f4f4" text-anchor="start">Clientes</text><rect x="74" y="144" width="4" height="24" rx="0" fill="#d97762"/><text x="84" y="196" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Proyectos</text><text x="84" y="232" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Facturas</text><text x="84" y="268" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Tareas</text><text x="240" y="118" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="start">Clientes activos</text><rect x="560" y="92" width="150" height="40" rx="20" fill="#d97762"/><text x="635" y="118" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#111" text-anchor="middle">+ Nuevo cliente</text><rect x="240" y="160" width="470" height="44" rx="8" fill="#2d2d2d"/><text x="258" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Cliente</text><text x="430" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Proyecto</text><text x="560" y="188" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="start">Estado</text><text x="258" y="238" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Bodegas Acosta</text><text x="430" y="238" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Web + tienda</text><rect x="560" y="220" width="96" height="28" rx="14" fill="#d97762"/><text x="608" y="240" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">En curso</text><text x="258" y="292" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Clínica Marín</text><text x="430" y="292" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Automatización</text><rect x="560" y="274" width="96" height="28" rx="14" fill="#2d2d2d"/><text x="608" y="294" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f4f4f4" text-anchor="middle">Revisión</text><text x="258" y="346" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Taller JC</text><text x="430" y="346" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">Web corporativa</text><rect x="560" y="328" width="96" height="28" rx="14" fill="#2d2d2d"/><text x="608" y="348" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f4f4f4" text-anchor="middle">Entregado</text><text x="258" y="400" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#f4f4f4" text-anchor="start">Pinturas Merpa</text><text x="430" y="400" font-family="Inter, sans-serif" font-size="16" font-weight="500" fill="#f4f4f4" text-anchor="start">SEO local</text><rect x="560" y="382" width="96" height="28" rx="14" fill="#d97762"/><text x="608" y="402" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="middle">En curso</text><rect x="240" y="440" width="470" height="62" rx="10" fill="#8f4a3b"/><text x="262" y="477" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#f4f4f4" text-anchor="start">Próxima factura: viernes · Aviso automático al cliente</text></svg></div><figcaption><b>Software a medida</b>Aplicaciones, paneles y herramientas hechas para tu negocio, para digitalizar procesos y convertir ideas en producto.</figcaption></figure>
+                        <figure data-slug="automatizaciones-ia"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Flujo automático: formulario, hoja de datos, aviso y CRM" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><path d="M250 300 C 330 300, 330 180, 410 180" stroke="#d97762" stroke-width="4" fill="none"/><path d="M250 300 C 330 300, 330 420, 410 420" stroke="#d97762" stroke-width="4" fill="none"/><path d="M570 180 L 640 180" stroke="#d97762" stroke-width="4" fill="none"/><path d="M570 420 L 640 420" stroke="#d97762" stroke-width="4" fill="none"/><rect x="70" y="260" width="180" height="80" rx="14" fill="#222222"/><text x="160" y="296" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Formulario</text><text x="160" y="322" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">llega un contacto</text><rect x="410" y="140" width="160" height="80" rx="14" fill="#222222"/><text x="490" y="176" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Hoja de datos</text><text x="490" y="202" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">se registra solo</text><rect x="410" y="380" width="160" height="80" rx="14" fill="#222222"/><text x="490" y="416" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f4f4f4" text-anchor="middle">Respuesta IA</text><text x="490" y="442" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="middle">borrador al cliente</text><rect x="640" y="140" width="110" height="80" rx="14" fill="#d97762"/><text x="695" y="176" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#111" text-anchor="middle">Aviso</text><text x="695" y="202" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#111" text-anchor="middle">al móvil</text><rect x="640" y="380" width="110" height="80" rx="14" fill="#d97762"/><text x="695" y="416" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#111" text-anchor="middle">CRM</text><text x="695" y="442" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#111" text-anchor="middle">actualizado</text><circle cx="250" cy="300" r="8" fill="#d97762"/><circle cx="410" cy="180" r="8" fill="#d97762"/><circle cx="410" cy="420" r="8" fill="#d97762"/><circle cx="570" cy="180" r="8" fill="#d97762"/><circle cx="570" cy="420" r="8" fill="#d97762"/></svg></div><figcaption><b>Automatizaciones e IA</b>Conectamos tus herramientas y ponemos asistentes de IA a trabajar para que la atención y las tareas repetitivas se hagan solas.</figcaption></figure>
+                        <figure data-slug="diseno-grafico"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Identidad visual: logotipo, variantes, colores y tipografía" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="60" y="60" width="400" height="480" rx="10" fill="#d97762"/><circle cx="260" cy="260" r="120" fill="#111"/><circle cx="260" cy="260" r="120" fill="#111"/><path d="M260 140 A120 120 0 0 1 380 260 L260 260 Z" fill="#eaeaea"/><rect x="140" y="420" width="240" height="14" rx="7" fill="#111"/><text x="260" y="480" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="60" width="260" height="150" rx="10" fill="#eaeaea"/><circle cx="540" cy="135" r="34" fill="#111"/><path d="M540 101 A34 34 0 0 1 574 135 L540 135 Z" fill="#d97762"/><text x="668" y="148" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="230" width="260" height="150" rx="10" fill="#0a0a0a"/><circle cx="540" cy="305" r="34" fill="#f4f4f4"/><path d="M540 271 A34 34 0 0 1 574 305 L540 305 Z" fill="#d97762"/><text x="668" y="318" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">Marca</text><rect x="480" y="400" width="80" height="140" rx="10" fill="#d97762"/><rect x="570" y="400" width="80" height="140" rx="10" fill="#eaeaea"/><rect x="660" y="400" width="80" height="140" rx="10" fill="#0a0a0a"/><text x="520" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Aa</text><text x="610" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">Aa</text><text x="700" y="520" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">Aa</text></svg></div><figcaption><b>Branding y diseño gráfico</b>Identidades visuales memorables y material gráfico que comunican lo que eres y te distinguen de la competencia.</figcaption></figure>
+                        <figure data-slug="redes-sociales"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Perfil de redes sociales con resultados de campaña" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="240" y="30" width="320" height="540" rx="34" fill="#0b0b0b"/><rect x="248" y="38" width="304" height="524" rx="28" fill="#222222"/><circle cx="290" cy="104" r="22" fill="#d97762"/><text x="324" y="100" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#f4f4f4" text-anchor="start">tunegocio</text><text x="324" y="120" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#8d8d8d" text-anchor="start">Sevilla</text><rect x="266" y="150" width="268" height="268" rx="6" fill="#d97762"/><text x="300" y="250" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">Menú de</text><text x="300" y="290" font-family="Space Grotesk, sans-serif" font-size="34" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="start">temporada</text><rect x="300" y="330" width="120" height="40" rx="20" fill="#111"/><text x="360" y="356" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#f4f4f4" text-anchor="middle">Reservar</text><circle cx="282" cy="450" r="11" fill="#d97762"/><circle cx="322" cy="450" r="11" fill="#2d2d2d"/><circle cx="362" cy="450" r="11" fill="#2d2d2d"/><rect x="266" y="480" width="150" height="12" rx="6" fill="#2d2d2d"/><rect x="266" y="504" width="220" height="12" rx="6" fill="#2d2d2d"/><rect x="600" y="120" width="150" height="70" rx="12" fill="#d97762"/><text x="675" y="150" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#111" text-anchor="middle">Alcance</text><text x="675" y="178" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#111" letter-spacing="-1" text-anchor="middle">+38 %</text><rect x="60" y="380" width="160" height="70" rx="12" fill="#222222"/><text x="140" y="410" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Mensajes</text><text x="140" y="438" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">27</text><rect x="600" y="340" width="150" height="70" rx="12" fill="#222222"/><text x="675" y="370" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Reservas</text><text x="675" y="398" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" fill="#f4f4f4" letter-spacing="-1" text-anchor="middle">12</text><rect x="60" y="160" width="140" height="90" rx="12" fill="#222222"/><text x="130" y="196" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#f4f4f4" text-anchor="middle">Lun · Reel</text><text x="130" y="222" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#8d8d8d" text-anchor="middle">Jue · Carrusel</text></svg></div><figcaption><b>Redes sociales</b>Contenido y publicidad en redes para que más gente te conozca, te siga y acabe escribiéndote.</figcaption></figure>
+                        <figure data-slug="seo-local"><div class="sv-stage__art"><svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 600" role="img" aria-label="Resultados de Google y Maps con un negocio en primera posición" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="800" height="600" rx="0" fill="#171717"/><rect x="70" y="60" width="660" height="56" rx="28" fill="#222222"/><circle cx="108" cy="88" r="9" fill="none" stroke="#8d8d8d" stroke-width="3"/><path d="M115 95 L123 103" stroke="#8d8d8d" stroke-width="3"/><text x="140" y="94" font-family="Inter, sans-serif" font-size="18" font-weight="500" fill="#f4f4f4" text-anchor="start">clínica dental tomares</text><rect x="70" y="140" width="330" height="390" rx="14" fill="#8f4a3b"/><rect x="70" y="140" width="330" height="390" rx="14" fill="#8f4a3b"/><path d="M70 300 L400 250 M180 140 L230 530 M70 430 L400 380 M300 140 L280 530" stroke="#d97762" stroke-width="10" opacity="1" fill="none"/><circle cx="200" cy="330" r="20" fill="#f4f4f4"/><circle cx="200" cy="330" r="8" fill="#d97762"/><circle cx="320" cy="220" r="14" fill="#d97762"/><circle cx="130" cy="440" r="14" fill="#d97762"/><rect x="430" y="140" width="300" height="120" rx="12" fill="#222222"/><text x="452" y="178" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Clínica Dental Sol</text><text x="452" y="206" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,9 · Dentista · Tomares</text><text x="452" y="234" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#d97762" text-anchor="start">Abierto hasta las 20:00</text><rect x="430" y="276" width="300" height="120" rx="12" fill="#222222"/><text x="452" y="314" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Dental Aljarafe</text><text x="452" y="342" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,6 · Dentista · Camas</text><text x="452" y="370" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">Cierra a las 19:00</text><rect x="430" y="412" width="300" height="118" rx="12" fill="#222222"/><text x="452" y="450" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#f4f4f4" text-anchor="start">Clínica Norte</text><text x="452" y="478" font-family="Inter, sans-serif" font-size="15" font-weight="500" fill="#8d8d8d" text-anchor="start">4,4 · Dentista · Sevilla</text></svg></div><figcaption><b>SEO y Google Business</b>Que te encuentren en Google y en Maps cuando tu cliente busca lo que tú ofreces, en tu zona.</figcaption></figure>
+                    </div>
                 </div>
+                    <!--/SVC:GRID-->
+
+                <div style="margin-top:2.5rem"><a class="sv-btn sv-btn--primary" href="/servicios">Ver todos los servicios
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div>
             </div>
         </section>
 
@@ -335,8 +309,8 @@
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="proyectos/web_davidvillalba.webp" alt="David Villalba"
-                                srcset="proyectos/web_davidvillalba-720.webp 720w, proyectos/web_davidvillalba.webp 1200w"
+                            <img src="proyectos/web_davidvillalba.webp?v=2" alt="David Villalba"
+                                srcset="proyectos/web_davidvillalba-720.webp?v=2 720w, proyectos/web_davidvillalba.webp?v=2 1200w"
                                 sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                                 width="1200" height="750" loading="lazy" decoding="async">
@@ -362,8 +336,8 @@
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="proyectos/newweb-jandula.webp" alt="Jándula Moda"
-                                srcset="proyectos/newweb-jandula-720.webp 720w, proyectos/newweb-jandula.webp 1200w"
+                            <img src="proyectos/newweb-jandula.webp?v=2" alt="Jándula Moda"
+                                srcset="proyectos/newweb-jandula-720.webp?v=2 720w, proyectos/newweb-jandula.webp?v=2 1200w"
                                 sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                                 width="1200" height="682" loading="lazy" decoding="async">
@@ -389,8 +363,8 @@
                             <div
                                 class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-500">
                             </div>
-                            <img src="proyectos/web_jcautos.webp" alt="Jocars Automóviles"
-                                srcset="proyectos/web_jcautos-720.webp 720w, proyectos/web_jcautos.webp 1200w"
+                            <img src="proyectos/web_jcautos.webp?v=2" alt="Jocars Automóviles"
+                                srcset="proyectos/web_jcautos-720.webp?v=2 720w, proyectos/web_jcautos.webp?v=2 1200w"
                                 sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                                 width="1200" height="750" loading="lazy" decoding="async">
@@ -862,10 +836,15 @@
                                 <label for="contact-service" class="text-sm font-medium text-gray-400">Servicio de interés</label>
                                 <select id="contact-service" name="service"
                                     class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-blue transition-colors appearance-none">
-                                    <option value="Desarrollo Web">Desarrollo Web</option>
-                                    <option value="Automatización n8n">Automatización n8n</option>
-                                    <option value="Diseño Gráfico">Diseño Gráfico</option>
-                                    <option value="Marketing Digital">Marketing Digital</option>
+<!--SVC:OPTIONS-->
+                                    <option value="Diseño web">Diseño web</option>
+                                    <option value="Software a medida">Software a medida</option>
+                                    <option value="Automatizaciones e IA">Automatizaciones e IA</option>
+                                    <option value="Branding y diseño gráfico">Branding y diseño gráfico</option>
+                                    <option value="Redes sociales">Redes sociales</option>
+                                    <option value="SEO y Google Business">SEO y Google Business</option>
+                                    <option value="Otro / No lo tengo claro">Otro / No lo tengo claro</option>
+                    <!--/SVC:OPTIONS-->
                                 </select>
                             </div>
 
@@ -923,10 +902,14 @@
                 <div>
                     <h4 class="font-bold mb-4">Servicios</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Desarrollo Web</a></li>
-                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Automatización n8n</a></li>
-                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Diseño Gráfico</a></li>
-                        <li><a href="#servicios" class="hover:text-brand-blue transition-colors">Marketing Digital</a></li>
+<!--SVC:FOOTER-->
+                        <li><a href="/servicios/diseno-web" class="hover:text-brand-blue transition-colors">Diseño web</a></li>
+                        <li><a href="/servicios/software-a-medida" class="hover:text-brand-blue transition-colors">Software a medida</a></li>
+                        <li><a href="/servicios/automatizaciones-ia" class="hover:text-brand-blue transition-colors">Automatizaciones e IA</a></li>
+                        <li><a href="/servicios/diseno-grafico" class="hover:text-brand-blue transition-colors">Branding y diseño gráfico</a></li>
+                        <li><a href="/servicios/redes-sociales" class="hover:text-brand-blue transition-colors">Redes sociales</a></li>
+                        <li><a href="/servicios/seo-local" class="hover:text-brand-blue transition-colors">SEO y Google Business</a></li>
+                    <!--/SVC:FOOTER-->
                     </ul>
                 </div>
                 <div>
@@ -963,149 +946,9 @@
         </svg>
     </a>
 
-    <!-- ===== MODALES DE SERVICIOS ===== -->
-
-    <!-- Modal: Diseño Web & UI/UX -->
-    <div id="modal-web" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('web')">
-        <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('web')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
-                        <h2 class="text-2xl md:text-3xl font-display font-bold">Diseño Web & UI/UX</h2>
-                    </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-8">Creamos experiencias digitales que convierten visitantes en clientes. Cada proyecto se diseña desde cero con foco en velocidad, usabilidad y conversión, completamente optimizado para todos los dispositivos.</p>
-                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
-                <ul class="space-y-4 mb-10">
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Sitios Corporativos</strong> — Webs profesionales que reflejan la identidad de tu empresa y generan confianza desde el primer clic.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Landing Pages</strong> — Páginas de aterrizaje optimizadas para maximizar conversiones en campañas publicitarias.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">E-commerce</strong> — Tiendas online completas con catálogo, pasarela de pago y gestión de pedidos.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">UI/UX Design</strong> — Interfaces intuitivas diseñadas para ofrecer la mejor experiencia de usuario posible.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">SEO Técnico</strong> — Código limpio, Core Web Vitals y velocidad de carga para posicionarte mejor en Google.</span></li>
-                </ul>
-                <a href="#contacto" onclick="closeServiceModal('web')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
-                    Solicitar presupuesto
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Diseño Gráfico -->
-    <div id="modal-grafico" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('grafico')">
-        <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('grafico')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
-                        <h2 class="text-2xl md:text-3xl font-display font-bold">Diseño Gráfico</h2>
-                    </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-8">Construimos identidades visuales memorables que comunican la esencia y los valores de tu marca. Desde el logotipo hasta el manual de identidad completo, cuidamos cada detalle visual para que tu marca transmita profesionalidad y diferenciación.</p>
-                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
-                <ul class="space-y-4 mb-10">
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Branding e Identidad</strong> — Logotipo, paleta de colores, tipografía y manual de marca completo.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Diseño para Redes Sociales</strong> — Plantillas y contenido visual adaptado a cada plataforma para mantener coherencia de marca.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Material Publicitario</strong> — Carteles, flyers, banners digitales y cualquier pieza gráfica que necesite tu campaña.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Packaging y Papelería</strong> — Diseño de embalajes, tarjetas de visita, letterheads y material corporativo.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Ilustración Personalizada</strong> — Ilustraciones originales adaptadas al tono y la estética de tu proyecto.</span></li>
-                </ul>
-                <a href="#contacto" onclick="closeServiceModal('grafico')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
-                    Solicitar presupuesto
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Marketing & Ads -->
-    <div id="modal-marketing" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('marketing')">
-        <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('marketing')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                    </div>
-                    <div>
-                         <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Servicio</p>
-                        <h2 class="text-2xl md:text-3xl font-display font-bold">Marketing & Ads</h2>
-                    </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-8">Diseñamos y ejecutamos estrategias de marketing digital 360º enfocadas en generar conversiones y aumentar tus ventas. Combinamos publicidad de alta rentabilidad (Meta, Google, TikTok Ads) con embudos de venta y optimización de conversión.</p>
-                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
-                <ul class="space-y-4 mb-10">
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Publicidad de Pago (Google & Meta Ads)</strong> — Campañas optimizadas en Google Search, Facebook, Instagram y TikTok para atraer leads cualificados al menor coste.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Embudos de Venta (Funnels)</strong> — Diseño y desarrollo de la estructura de páginas y automatizaciones necesarias para convertir visitas en clientes de forma automática.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Email Marketing Automático</strong> — Secuencias de correos para recuperar carritos abandonados, educar a clientes potenciales y automatizar tus ventas recurrentes.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Analítica & CRO</strong> — Monitorización diaria del tráfico para detectar oportunidades de mejora en tu web y exprimir el retorno de tu inversión (ROI).</span></li>
-                </ul>
-                <a href="#contacto" onclick="closeServiceModal('marketing')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
-                    Solicitar presupuesto
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Automatizaciones n8n -->
-    <div id="modal-n8n" class="modal-overlay fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm" onclick="closeServiceModal('n8n')">
-        <div class="flex min-h-full items-center justify-center p-4 py-10">
-            <div class="relative bg-[#121212] border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
-                <button onclick="closeServiceModal('n8n')" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white" aria-label="Cerrar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-                <div class="flex-1 min-h-0 overflow-y-auto p-8 md:p-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="h-14 w-14 bg-blue-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-7 h-7 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-brand-blue font-medium uppercase tracking-widest mb-1">Nuevo Servicio</p>
-                        <h2 class="text-2xl md:text-3xl font-display font-bold">Automatizaciones n8n</h2>
-                    </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-6">Diseñamos flujos de automatización con n8n para eliminar tareas repetitivas de tu negocio: conectamos tus herramientas, sincronizamos datos y hacemos que la información fluya sola entre tus sistemas, sin necesidad de que nadie lo haga a mano.</p>
-                <h3 class="font-display font-bold text-lg mb-4">Qué incluye</h3>
-                <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-8">
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Conexión entre tus apps</strong> — Integramos cientos de herramientas (CRM, email, hojas de cálculo, WhatsApp, redes sociales, ERPs...) para que trabajen juntas automáticamente.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Automatización de procesos</strong> — Gestión de leads, envío de emails y notificaciones, generación de facturas, sincronización de pedidos y mucho más, sin tocar una sola fila manualmente.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Agentes con IA</strong> — Chatbots y asistentes que responden consultas, analizan documentos o clasifican información conectados directamente a tus datos.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Disparadores inteligentes</strong> — Flujos que se activan por horario, por un webhook, por un formulario enviado o por cualquier evento de tus clientes en tiempo real.</span></li>
-                    <li class="flex items-start gap-3 text-gray-400"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 flex-shrink-0"></div><span><strong class="text-white">Monitorización y alertas</strong> — Supervisamos cada automatización con notificaciones de error para que todo siga funcionando sin sorpresas.</span></li>
-                </ul>
-                <a href="#contacto" onclick="closeServiceModal('n8n')" class="inline-flex items-center gap-2 bg-brand-blue text-black font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
-                    Solicitar presupuesto
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts (GSAP + Lenis + Main) con defer para no bloquear renderizado -->
-    <script src="js/main.js?v=8" defer></script>
+    <script src="/js/main.js?v=10" defer></script>
+    <script src="/js/servicios.js?v=1" defer></script>
     <!-- Slider de reseñas con transición suave -->
     <script>
         (function() {
