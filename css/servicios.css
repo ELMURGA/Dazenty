@@ -48,6 +48,9 @@
 .mobile-nav__sub { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; }
 .mobile-nav a.mobile-nav__small { font-size: 0.95rem; color: var(--sv-muted); }
 
+/* position:sticky no funciona si html/body hacen scroll con overflow-x:hidden; con clip no crean contenedor de scroll */
+html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { overflow-x: clip !important; overflow-y: visible; }
+
 /* ---------- Base de las páginas de servicios ---------- */
 .sv-page main { position: relative; z-index: 1; }
 .sv-wrap { max-width: 84rem; margin: 0 auto; padding: 0 var(--sv-gap); }
@@ -78,12 +81,12 @@
 .sv-list li[hidden] { display: none; }
 .sv-row {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem 1.5rem; align-items: center;
-    padding: clamp(0.9rem, 1.8vw, 1.4rem) 0; text-decoration: none; color: #fff;
+    padding: clamp(0.55rem, 1.1vw, 0.85rem) 0; text-decoration: none; color: #fff;
     transition: color 0.3s ease, padding-left 0.4s var(--sv-ease);
 }
-.sv-row__name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.035em; line-height: 1; font-size: clamp(1.9rem, 4.3vw, 3.7rem); }
+.sv-row__name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.035em; line-height: 1; font-size: clamp(1.7rem, 3.5vw, 3.1rem); }
 .sv-row__desc { grid-column: 1; color: var(--sv-muted); font-size: 1rem; line-height: 1.5; max-width: 34rem; margin: 0; transition: color 0.3s; }
-.sv-row__go { grid-column: 2; grid-row: 1 / span 2; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--sv-field-2); color: #fff; display: grid; place-items: center; transition: background 0.3s, color 0.3s, transform 0.4s var(--sv-ease); }
+.sv-row__go { grid-column: 2; grid-row: 1 / span 2; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--sv-field-2); color: #fff; display: grid; place-items: center; transition: background 0.3s, color 0.3s, transform 0.4s var(--sv-ease); }
 .sv-row__go svg { width: 1.1rem; height: 1.1rem; }
 .sv-row__art { display: none; }
 @media (hover: hover) and (pointer: fine) {
@@ -95,9 +98,13 @@
 }
 .sv-row:focus-visible { outline: 2px solid var(--sv-accent); outline-offset: 4px; border-radius: 0.5rem; }
 
-.sv-stage { position: sticky; top: 7.5rem; aspect-ratio: 4 / 3; border-radius: 1.5rem; overflow: hidden; background: var(--sv-field); }
-.sv-stage > figure { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 0.45s ease; }
+.sv-stage { position: sticky; top: 7rem; display: grid; }
+.sv-stage > figure { grid-area: 1 / 1; margin: 0; opacity: 0; transition: opacity 0.45s ease; }
 .sv-stage > figure.is-active { opacity: 1; }
+.sv-stage__art { aspect-ratio: 4 / 3; border-radius: 1.5rem; overflow: hidden; background: var(--sv-field); }
+.sv-stage figcaption { margin-top: 1.1rem; color: var(--sv-muted); line-height: 1.55; font-size: 1.02rem; max-width: 34rem; }
+.sv-stage figcaption b { display: block; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+@media (min-width: 961px) { .sv-row__desc { display: none; } }
 .sv-stage svg, .sv-row__art svg, .sv-art svg { display: block; width: 100%; height: 100%; }
 
 .sv-filters { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; margin: 0 0 clamp(1.5rem, 3vw, 2.5rem); }
@@ -108,9 +115,16 @@
 @media (max-width: 960px) {
     .sv-index { grid-template-columns: 1fr; }
     .sv-stage { display: none; }
-    .sv-row { padding: 1.4rem 0 1.6rem; grid-template-columns: 1fr; }
+    .sv-row { padding: 1rem 0; grid-template-columns: minmax(0, 1fr) 11rem; gap: 0.3rem 1.25rem; align-items: center; }
     .sv-row__go { display: none; }
-    .sv-row__art { display: block; grid-column: 1; margin-top: 0.9rem; aspect-ratio: 4 / 3; border-radius: 1.1rem; overflow: hidden; background: var(--sv-field); }
+    .sv-row__name { font-size: clamp(1.6rem, 4.6vw, 2.3rem); }
+    .sv-row__desc { display: block; font-size: 0.95rem; }
+    .sv-row__art { display: block; grid-column: 2; grid-row: 1 / span 2; aspect-ratio: 4 / 3; border-radius: 0.9rem; overflow: hidden; background: var(--sv-field); }
+}
+@media (max-width: 520px) {
+    .sv-row { grid-template-columns: minmax(0, 1fr) 6.5rem; gap: 0.25rem 1rem; }
+    .sv-row__name { font-size: 1.5rem; }
+    .sv-row__desc { font-size: 0.88rem; }
 }
 
 /* ---------- Página de servicio ---------- */

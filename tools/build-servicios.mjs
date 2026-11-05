@@ -9,7 +9,7 @@ import { ART } from './servicios-art.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://dazenty.com';
 const WA = 'https://wa.me/34624903256';
-const CSS_V = '4';
+const CSS_V = '5';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const pad = (n) => String(n).padStart(2, '0');
@@ -76,7 +76,7 @@ const gridHtml = () => `<div class="sv-index" data-sv-index>
                         ${SERVICES.map(rowHtml).join('\n                        ')}
                     </ul>
                     <div class="sv-stage" aria-hidden="true">
-                        ${SERVICES.map((s, i) => `<figure data-slug="${s.slug}"${i === 0 ? ' class="is-active"' : ''}>${artOf(s.slug)}</figure>`).join('\n                        ')}
+                        ${SERVICES.map((s, i) => `<figure data-slug="${s.slug}"${i === 0 ? ' class="is-active"' : ''}><div class="sv-stage__art">${artOf(s.slug)}</div><figcaption><b>${esc(s.name)}</b>${esc(s.short)}</figcaption></figure>`).join('\n                        ')}
                     </div>
                 </div>`;
 
