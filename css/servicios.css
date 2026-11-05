@@ -285,3 +285,26 @@ html:has(.sv-index), html:has(.sv-split), body.sv-page, body:has(.sv-index) { ov
 .sv-compare__tag--r { right: 1rem; background: var(--sv-accent); color: #000; }
 .sv-compare__note { margin-top: 1rem; font-size: 0.9rem; color: #a3a3a3; }
 @media (max-width: 640px) { .sv-compare { aspect-ratio: 4 / 5; border-radius: 1.1rem; } .sv-compare img { object-position: 60% 50%; } }
+
+/* ---------- Menú móvil: cortina de color que baja ---------- */
+.mobile-nav { background: var(--sv-accent); background-color: var(--sv-accent); opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 0.6s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s linear 0.6s; }
+.mobile-nav.is-open { clip-path: inset(0 0 0 0); transition: clip-path 0.6s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s; }
+.mobile-nav .mnav-link, .mobile-nav .mnav-sub a { color: #000; }
+.mobile-nav .mnav-link:active, .mobile-nav .mnav-sub a:active { color: #fff; }
+.mobile-nav .mnav-sub a::after { color: #000; }
+.mobile-nav > .mnav-foot { background: var(--sv-accent); }
+.mobile-nav a.mobile-nav__cta { background: #000; color: var(--sv-accent); }
+.mobile-nav .mnav-contact a { background: rgba(0, 0, 0, 0.12); color: #000; }
+.mobile-nav .mnav-contact a:active { background: rgba(0, 0, 0, 0.22); color: #000; }
+.mobile-nav a:focus-visible { outline-color: #000; }
+/* Los enlaces suben y aparecen uno tras otro cuando la cortina ya ha caído */
+.mobile-nav .mnav-link, .mobile-nav .mnav-sub a, .mobile-nav .mnav-foot > * { opacity: 0; transform: translateY(22px); transition: opacity 0.25s ease, transform 0.25s ease; }
+.mobile-nav.is-open .mnav-link, .mobile-nav.is-open .mnav-sub a, .mobile-nav.is-open .mnav-foot > * { opacity: 1; transform: none; transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.mobile-nav.is-open .mnav-main > .mnav-link:nth-child(1) { transition-delay: 0.25s; }
+.mobile-nav.is-open .mnav-group > .mnav-link { transition-delay: 0.32s; }
+.mobile-nav.is-open .mnav-sub a:nth-child(1) { transition-delay: 0.38s; } .mobile-nav.is-open .mnav-sub a:nth-child(2) { transition-delay: 0.42s; }
+.mobile-nav.is-open .mnav-sub a:nth-child(3) { transition-delay: 0.46s; } .mobile-nav.is-open .mnav-sub a:nth-child(4) { transition-delay: 0.5s; }
+.mobile-nav.is-open .mnav-sub a:nth-child(5) { transition-delay: 0.54s; } .mobile-nav.is-open .mnav-sub a:nth-child(6) { transition-delay: 0.58s; }
+.mobile-nav.is-open .mnav-main > .mnav-link:nth-child(3) { transition-delay: 0.62s; }
+.mobile-nav.is-open .mnav-foot > :nth-child(1) { transition-delay: 0.66s; } .mobile-nav.is-open .mnav-foot > :nth-child(2) { transition-delay: 0.72s; }
+@media (prefers-reduced-motion: reduce) { .mobile-nav, .mobile-nav.is-open { transition: none; } .mobile-nav .mnav-link, .mobile-nav .mnav-sub a, .mobile-nav .mnav-foot > * { transition: none !important; transform: none; } }
