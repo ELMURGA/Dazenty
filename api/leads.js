@@ -17,9 +17,17 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      let params = 'select=*&order=created_at.desc';
+      let params = 'select=*&order=created_at.desc,id.desc';
       if (stage) params += `&stage=eq.${encodeURIComponent(stage)}`;
-      return res.json(await sbSelect('leads', params));
+      // Supabase devuelve como máximo 1000 filas por petición: se pagina hasta traerlas todas
+      const PAGE = 1000;
+      const all = [];
+      for (let offset = 0; offset < 100000; offset += PAGE) {
+        const rows = await sbSelect('leads', `${params}&limit=${PAGE}&offset=${offset}`);
+        all.push(...rows);
+        if (rows.length < PAGE) break;
+      }
+      return res.json(all);
     }
 
     if (req.method === 'POST') {
