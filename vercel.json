@@ -5,6 +5,14 @@
     {
       "source": "/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/auditor",
+      "destination": "https://auditor-web-gratis.vercel.app/auditor"
+    },
+    {
+      "source": "/auditor/:path*",
+      "destination": "https://auditor-web-gratis.vercel.app/auditor/:path*"
     }
   ],
   "headers": [

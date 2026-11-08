@@ -40,6 +40,7 @@ ${SERVICES.map((s) => `                            <a href="/servicios/${s.slug}
                     </div>
                 </div>
                 <a href="/html/portfolio">Portfolio</a>
+                <a href="/auditor">Auditor web</a>
                 <a href="/#contacto" class="site-header__cta">Hablemos</a>
             </nav>
 
@@ -59,6 +60,7 @@ ${SERVICES.map((s) => `                    <a href="/servicios/${s.slug}">${esc(
                 </div>
             </div>
             <a href="/html/portfolio" class="mnav-link">Portfolio</a>
+            <a href="/auditor" class="mnav-link">Auditor web</a>
         </nav>
         <div class="mnav-foot">
             <a href="/#contacto" class="mobile-nav__cta">Hablemos</a>
@@ -112,6 +114,7 @@ ${SERVICES.map((s) => `                        <li><a href="/servicios/${s.slug}
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li><a href="/#nosotros" class="hover:text-brand-blue transition-colors">Nosotros</a></li>
                         <li><a href="/html/portfolio" class="hover:text-brand-blue transition-colors">Portfolio</a></li>
+                        <li><a href="/auditor" class="hover:text-brand-blue transition-colors">Auditor web gratis</a></li>
                         <li><a href="/#contacto" class="hover:text-brand-blue transition-colors">Contacto</a></li>
                     </ul>
                 </div>
@@ -437,6 +440,7 @@ const PAGES = [
   { p: '/servicios', pr: '0.9', cf: 'monthly' },
   ...SERVICES.map((s) => ({ p: `/servicios/${s.slug}`, pr: '0.8', cf: 'monthly' })),
   { p: '/html/portfolio', pr: '0.8', cf: 'weekly' },
+  { p: '/auditor', pr: '0.8', cf: 'monthly' },
   { p: '/html/proyecto-hermanos-hervas', pr: '0.6', cf: 'monthly' },
   { p: '/html/proyecto-sevilla-tp', pr: '0.6', cf: 'monthly' },
   { p: '/html/proyecto-costa-del-sol', pr: '0.6', cf: 'monthly' },
