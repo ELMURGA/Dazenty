@@ -85,6 +85,12 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://dazenty.com/html/cookies</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://dazenty.com/html/terminos</loc>
     <lastmod>2026-11-08</lastmod>
     <changefreq>yearly</changefreq>

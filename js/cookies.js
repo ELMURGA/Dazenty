@@ -65,7 +65,7 @@
                     </svg>
                     <p>
                         Usamos cookies para mejorar tu experiencia y analizar el tráfico.
-                        <a href="/html/privacidad" class="cookie-banner__link">Más información</a>
+                        <a href="/html/cookies" class="cookie-banner__link">Más información</a>
                     </p>
                 </div>
                 <div class="cookie-banner__actions">
