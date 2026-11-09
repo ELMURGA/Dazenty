@@ -11,3 +11,4 @@ Disallow: /.git/
 Disallow: /.DS_Store
 Disallow: /.vscode/
 Disallow: /api/
+Disallow: /auditor/api/
