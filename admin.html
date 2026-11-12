@@ -233,6 +233,168 @@
     .story-day.today { outline: 1px solid #d97762; }
     .story-day.off { opacity: 0.45; }
 
+    /* Rejillas: un contenido largo (URLs, inputs de hora o fecha) no debe ensanchar la columna
+       y sacar la tarjeta de la pantalla en el móvil */
+    main .grid > * { min-width: 0; }
+    input[type="time"], input[type="date"] {
+      min-width: 0; max-width: 100%; min-height: 42px; text-align: left;
+      -webkit-appearance: none; appearance: none;
+    }
+
+    /* Inicio */
+    .home-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; margin-bottom: 10px; }
+    .home-kpi { display: block; width: 100%; min-width: 0; background: #121212; border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 14px 16px; transition: border-color 0.15s; }
+    button.home-kpi:hover { border-color: rgba(217,119,98,0.4); }
+    @media (min-width: 640px) { .home-kpi { padding: 20px; } }
+    .home-due-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+    .home-due-row:first-child { border-top: 0; }
+    .funnel-row { display: grid; grid-template-columns: 104px minmax(0,1fr) 44px; align-items: center; gap: 10px;
+      width: 100%; min-height: 36px; padding: 2px 6px; border-radius: 8px; text-align: left; }
+    @media (min-width: 640px) { .funnel-row { grid-template-columns: 136px minmax(0,1fr) 48px; } }
+    .funnel-row:hover { background: rgba(255,255,255,0.03); }
+    .funnel-label { font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .funnel-track { display: block; height: 10px; border-radius: 99px; background: rgba(255,255,255,0.04); overflow: hidden; }
+    .funnel-bar { display: block; height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .funnel-count { font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; color: #e5e7eb; }
+    .source-row { display: grid; grid-template-columns: minmax(0,1fr) 44px 60px 60px; gap: 8px; padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+    .source-row > span:first-child { text-align: left; }
+    .source-head { border-top: 0; padding-top: 0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; }
+
+    /* Leads: barra de filtros */
+    .lead-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .lead-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 14px;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 13px; color: #9ca3af; transition: all 0.15s; }
+    .lead-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+    .lead-toggle[aria-pressed="true"] { background: rgba(217,119,98,0.15); border-color: rgba(217,119,98,0.5); color: #d97762; }
+    .lead-toggle-count { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 99px; background: rgba(255,255,255,0.08); }
+    .lead-seg { display: inline-flex; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
+    .lead-seg button { min-height: 38px; padding: 0 14px; font-size: 13px; color: #9ca3af; }
+    .lead-seg button[aria-pressed="true"] { background: rgba(217,119,98,0.15); color: #d97762; }
+    .lead-sort { width: auto; min-height: 38px; padding: 0 12px; font-size: 13px; border-radius: 12px; }
+    @media (max-width: 639px) {
+      .lead-toggle-due { flex-basis: 100%; }
+      .lead-sort { flex: 1 1 70px; min-width: 0; }
+    }
+    .lead-stage-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;
+      margin-inline: -16px; padding-inline: 16px; }
+    .lead-stage-scroll::-webkit-scrollbar { display: none; }
+    @media (min-width: 640px) { .lead-stage-scroll { flex-wrap: wrap; overflow: visible; margin-inline: 0; padding-inline: 0; } }
+
+    /* Leads: lista (tabla en escritorio, tarjetas en móvil) */
+    .leads-list { background: #121212; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; }
+    .leads-list.select-mode { margin-bottom: 96px; }
+    .lead-row, .lead-row-head { display: grid; align-items: center; gap: 8px 12px; padding: 10px 14px; }
+    .lead-row { border-bottom: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--stage-color, #6b7280);
+      cursor: pointer; transition: background 0.12s; }
+    .lead-row:last-child { border-bottom: 0; }
+    .lead-row:hover { background: rgba(255,255,255,0.03); }
+    .lead-row.selected { background: rgba(217,119,98,0.08); }
+    .lead-row-head { padding-left: 17px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280;
+      border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .lc-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .lc-contact { min-width: 0; }
+    .lc-actions { display: flex; gap: 6px; justify-content: flex-end; }
+    .lead-check { width: 20px; height: 20px; padding: 0; flex-shrink: 0; accent-color: #d97762; }
+    .lead-act { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #9ca3af; transition: all 0.15s; }
+    .lead-act:hover { color: #fff; border-color: rgba(217,119,98,0.5); background: rgba(217,119,98,0.1); }
+    .lead-stage-select { width: 100%; min-height: 36px; padding: 6px 8px; font-size: 12px; background: #0e0e0e;
+      color: var(--c); border-color: color-mix(in srgb, var(--c) 35%, transparent); }
+    .lead-group-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 8px; background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05); }
+    @media (min-width: 768px) {
+      .lead-row, .lead-row-head { grid-template-columns: minmax(0,1fr) 140px 136px 64px 122px; }
+      .lc-value { text-align: right; font-size: 13px; color: #d97762; }
+      .lc-value-m { display: none; }
+      .lead-row-head span:nth-child(4) { text-align: right; }
+    }
+    @media (max-width: 767px) {
+      .lead-row-head { display: none; }
+      .lead-row { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "main actions" "stage contact"; padding: 12px 12px 12px 11px; }
+      .lc-main { grid-area: main; }
+      .lc-actions { grid-area: actions; }
+      .lc-stage { grid-area: stage; max-width: 172px; }
+      .lc-contact { grid-area: contact; text-align: right; }
+      .lc-value { display: none; }
+    }
+    .lead-bulk { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 30;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 14px; background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .lead-bulk select { width: auto; flex: 1 1 140px; min-height: 38px; padding: 0 12px; font-size: 13px; }
+    @media (min-width: 1024px) { .lead-bulk { left: calc(256px + 32px); right: 32px; } }
+
+    /* Leads: panel de detalle */
+    .lead-detail-panel { height: 100%; max-height: 100dvh; }
+    .lead-quick-link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; font-size: 13px; color: #d1d5db; transition: all 0.15s; }
+    .lead-quick-link:hover { border-color: rgba(217,119,98,0.5); color: #fff; }
+    .ld-follow { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; }
+    .temp-seg { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+    .temp-seg button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; font-size: 12px; color: #9ca3af; transition: all 0.15s; }
+    .temp-seg button[aria-pressed="true"] { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+    .date-chip { min-height: 32px; padding: 0 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 99px; font-size: 12px; color: #9ca3af; }
+    .date-chip:hover { color: #fff; border-color: rgba(217,119,98,0.5); }
+    .lead-timeline { display: flex; flex-direction: column; gap: 14px; }
+    .timeline-dot { width: 22px; height: 22px; border-radius: 99px; display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+
+
+    /* ── Buscador global ── */
+    .gsearch-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 42px; min-width: 42px; padding: 0 12px;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #9ca3af; font-size: 13px; transition: all 0.15s; }
+    .gsearch-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+    .gsearch-label, .gsearch-kbd { display: none; }
+    .gsearch-kbd { font-size: 11px; line-height: 1.4; padding: 0 7px; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; color: #6b7280; font-family: inherit; }
+    @media (min-width: 640px) {
+      .gsearch-btn { width: 230px; justify-content: flex-start; }
+      .gsearch-label { display: inline; flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .gsearch-kbd { display: inline-block; }
+    }
+    @media (min-width: 1024px) { .gsearch-btn { width: 300px; } }
+    .gsearch-box { width: 100%; max-width: 640px; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column; max-height: calc(100dvh - 24px); animation: modalIn 0.2s cubic-bezier(0.16,1,0.3,1); }
+    .gsearch-input-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 0 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .gsearch-input-row input { border: 0; background: transparent; padding: 0; min-height: 56px; font-size: 16px; border-radius: 0; }
+    .gsearch-input-row input:focus-visible { outline: none; }
+    .gsearch-input-row:focus-within { box-shadow: inset 0 -2px 0 #d97762; }
+    #gsearch-overlay { padding: 12px; }
+    @media (min-width: 640px) { #gsearch-overlay { padding-top: 12vh; } }
+    .gsearch-results { overflow-y: auto; overscroll-behavior: contain; padding: 6px; }
+    .gsearch-group { padding: 12px 10px 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; }
+    .gsearch-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 10px; border-radius: 10px; text-align: left; }
+    .gsearch-item:hover, .gsearch-item[aria-selected="true"] { background: rgba(217,119,98,0.12); }
+    .gsearch-empty { padding: 28px 16px; text-align: center; font-size: 14px; color: #6b7280; }
+
+    /* ── Listas genéricas (cobros, propuestas, plantillas, renovaciones) ── */
+    .item-list { background: #121212; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; }
+    .item-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px 16px; align-items: center; padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .item-row:last-child { border-bottom: 0; }
+    .item-main { min-width: 0; }
+    .item-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center; }
+    @media (max-width: 639px) { .item-row { grid-template-columns: minmax(0,1fr); } .item-actions { justify-content: flex-start; } }
+    .btn-chip { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 12px;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; font-size: 12px; color: #d1d5db; white-space: nowrap; transition: all 0.15s; }
+    .btn-chip:hover { border-color: rgba(217,119,98,0.5); color: #fff; }
+    .btn-chip.primary { background: #d97762; border-color: #d97762; color: #000; font-weight: 600; }
+    .btn-chip.primary:hover { opacity: 0.9; color: #000; }
+    .btn-chip:disabled { opacity: 0.5; cursor: default; }
+    .state-pill { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+    select.row-select { width: auto; min-height: 36px; padding: 4px 8px; font-size: 12px; border-radius: 10px; }
+    .tpl-card { background: #121212; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 16px; min-width: 0; }
+    .tpl-card.inactive { opacity: 0.55; }
+    .tpl-preview { font-size: 13px; color: #9ca3af; white-space: pre-wrap; word-break: break-word; max-height: 7.5em; overflow: hidden; }
+
+    /* ── "Ha respondido, falta contestar" ── */
+    .reply-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+      background: #f87171; color: #1c0606; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+    .lead-row.awaiting { background: rgba(248,113,113,0.07); box-shadow: inset 0 0 0 1px rgba(248,113,113,0.3); }
+    .lead-act.on { color: #f87171; border-color: rgba(248,113,113,0.6); background: rgba(248,113,113,0.12); }
+    .reply-banner { border: 1px solid rgba(248,113,113,0.45); background: rgba(248,113,113,0.09); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+
     @keyframes spin { to { transform: rotate(360deg); } }
     .spin { animation: spin 0.8s linear infinite; }
       /* Foco visible al navegar con teclado */
@@ -305,11 +467,22 @@
         <p class="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-widest mb-1.5">Ventas</p>
         <button type="button" onclick="switchView('leads')" id="navLeads" class="sidenav-item">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-1a4 4 0 00-3-3.87M9 20H4v-1a4 4 0 013-3.87m6-5.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
-          Leads (CRM)
+          <span class="flex-1">Leads (CRM)</span>
+          <span id="navLeadsBadge" class="min-w-[20px] h-5 px-1.5 rounded-full bg-brand-blue text-black text-[11px] font-bold items-center justify-center" style="display:none" aria-label="Seguimientos pendientes"></span>
         </button>
-        <button type="button" onclick="switchView('opportunities')" id="navOpportunities" class="sidenav-item">
+        <!-- Oportunidades oculto (12-11-2026): solo se generan desde clientes y no hay ninguno. La vista y la API siguen ahí por si vuelve a hacer falta. -->
+        <button type="button" onclick="switchView('opportunities')" id="navOpportunities" class="sidenav-item" hidden style="display:none">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
           Oportunidades
+        </button>
+        <button type="button" onclick="switchView('proposals')" id="navProposals" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="flex-1">Propuestas</span>
+          <span id="navProposalsBadge" class="min-w-[20px] h-5 px-1.5 rounded-full bg-brand-blue text-black text-[11px] font-bold items-center justify-center" style="display:none" aria-label="Propuestas con seguimiento pendiente"></span>
+        </button>
+        <button type="button" onclick="switchView('templates')" id="navTemplates" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg>
+          Plantillas
         </button>
       </div>
       <div>
@@ -363,6 +536,10 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           Actividad
         </button>
+        <button type="button" onclick="switchView('settings')" id="navSettings" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Ajustes
+        </button>
       </div>
     </nav>
     <div class="px-3 py-4 border-t border-white/5">
@@ -385,6 +562,11 @@
         <h1 id="viewTitle" class="font-display font-bold text-lg truncate">Inicio</h1>
       </div>
       <div class="flex items-center gap-3 shrink-0">
+        <button type="button" id="globalSearchBtn" onclick="openGlobalSearch()" class="gsearch-btn" aria-label="Buscar en el panel" aria-keyshortcuts="/ Control+K Meta+K">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+          <span class="gsearch-label">Buscar leads, clientes, tareas…</span>
+          <kbd class="gsearch-kbd" aria-hidden="true">/</kbd>
+        </button>
         <button onclick="openModal(null)" id="newClientBtn"
           class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -460,6 +642,24 @@
         </div>
       </div>
 
+      <!-- Cobros pendientes: lo que un cliente debe y aún no ha pagado -->
+      <section class="mb-10" aria-labelledby="recTitle">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          <div class="min-w-0">
+            <h3 id="recTitle" class="font-display font-semibold text-sm">Cobros pendientes</h3>
+            <p id="recSummary" class="text-xs text-gray-500 mt-0.5"></p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <label class="sr-only" for="recFilter">Mostrar</label>
+            <select id="recFilter" class="row-select" onchange="setReceivableFilter(this.value)">
+              <option value="pendiente">Pendientes</option><option value="cobrado">Cobrados</option><option value="cancelado">Cancelados</option><option value="all">Todos</option>
+            </select>
+            <button type="button" onclick="openEntityModal('receivable')" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2 min-h-[38px] hover:opacity-90">Nuevo cobro pendiente</button>
+          </div>
+        </div>
+        <div id="receivablesList" class="item-list"></div>
+      </section>
+
       <div id="webPaymentsWrap" class="mb-8" style="display:none">
         <h3 class="font-display font-semibold text-sm mb-3">Webs: cobro por partes</h3>
         <div id="webPaymentsSummary" class="grid md:grid-cols-2 gap-4"></div>
@@ -506,16 +706,86 @@
 
     <!-- ═══ VISTA: INICIO (DASHBOARD REAL) ═══ -->
     <div id="homeView" style="display:none">
-      <div id="homeKpis" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"></div>
-      <div class="grid lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-5">
+
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div class="min-w-0">
+          <h2 id="homeGreeting" class="font-display font-bold text-xl sm:text-2xl truncate"></h2>
+          <p id="homeDate" class="text-sm text-gray-500 mt-0.5"></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="openEntityModal('lead')" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Nuevo lead
+          </button>
+          <button type="button" onclick="openEntityModal('task')" class="flex-1 sm:flex-none border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:border-white/20">Nueva tarea</button>
+        </div>
+      </div>
+
+      <!-- Lo primero: a quién hay que escribir hoy -->
+      <section class="bg-brand-gray border border-brand-blue/25 rounded-2xl p-4 sm:p-5 mb-6" aria-labelledby="homeDueTitle">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div class="min-w-0">
+            <h2 id="homeDueTitle" class="font-display font-semibold">Hoy toca contactar</h2>
+            <p id="homeDueSub" class="text-xs text-gray-500 mt-0.5"></p>
+          </div>
+          <button type="button" id="homeDueAll" onclick="openLeadsDue()" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0 items-center min-h-[36px]" style="display:none">Ver todos →</button>
+        </div>
+        <div id="homeDueList"></div>
+      </section>
+
+      <div id="homeMailAlert" class="mb-6 items-center justify-between gap-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3" style="display:none">
+        <p class="text-sm text-yellow-200 min-w-0"><span id="homeMailAlertText"></span>. Revisa por qué no salen.</p>
+        <button type="button" onclick="openLeadsStage('email_no_enviado')" class="text-xs font-semibold text-yellow-300 hover:text-white shrink-0 min-h-[36px]">Ver →</button>
+      </div>
+
+      <p class="home-label">Comercial</p>
+      <div id="homeKpisSales" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mb-6">
+        <section class="lg:col-span-3 bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
+          <h2 class="font-display font-semibold text-sm">Embudo de leads</h2>
+          <p id="homeFunnelSub" class="text-xs text-gray-500 mt-1 mb-4"></p>
+          <div id="homeFunnel" class="space-y-1"></div>
+        </section>
+        <section class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
+          <h2 class="font-display font-semibold text-sm mb-4">Qué canal funciona</h2>
+          <div id="homeSources"></div>
+        </section>
+      </div>
+
+      <p class="home-label">Dinero del mes</p>
+      <div id="homeKpis" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+        <section class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5" aria-labelledby="homeRecTitle">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="min-w-0">
+              <h2 id="homeRecTitle" class="font-display font-semibold text-sm">Cobros pendientes</h2>
+              <p id="homeRecSub" class="text-xs text-gray-500 mt-0.5"></p>
+            </div>
+            <button type="button" onclick="switchView('payments')" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0 min-h-[36px]">Ver todos →</button>
+          </div>
+          <div id="homeReceivables"></div>
+        </section>
+        <section class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5" aria-labelledby="homeRenTitle">
+          <div class="mb-3">
+            <h2 id="homeRenTitle" class="font-display font-semibold text-sm">Renovaciones de mantenimiento</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Servicios cuya cobertura vence en los próximos 60 días</p>
+          </div>
+          <div id="homeRenewals"></div>
+        </section>
+      </div>
+
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-display font-semibold text-sm">Urgente hoy</h2>
             <button onclick="switchView('tasks')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver tareas →</button>
           </div>
           <div id="homeUrgentTasks" class="space-y-2"></div>
         </div>
-        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-display font-semibold text-sm">Próximos eventos</h2>
             <button onclick="switchView('calendar')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver todo →</button>
@@ -523,7 +793,7 @@
           <div id="homeUpcomingEvents" class="space-y-2"></div>
         </div>
       </div>
-      <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 mt-6">
+      <div class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5 mt-4 sm:mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-display font-semibold text-sm">Actividad reciente</h2>
           <button onclick="switchView('activity')" class="text-xs text-brand-blue hover:text-white transition-colors">Ver todo →</button>
@@ -534,30 +804,114 @@
 
     <!-- ═══ VISTA: LEADS (CRM) ═══ -->
     <div id="leadsView" style="display:none">
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
-        <div>
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-5">
+        <div class="min-w-0">
           <h2 class="font-display font-bold text-lg">Leads</h2>
           <p class="text-gray-500 text-sm mt-0.5">Pipeline de entrada: nuevo → email no enviado / contactada → propuesta → reunión → ganado/perdido</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button id="refreshLeadsBtn" onclick="refreshLeadsManual()" class="self-start flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
+        <div class="flex items-center gap-2 sm:shrink-0">
+          <button id="refreshLeadsBtn" onclick="refreshLeadsManual()" class="flex-1 sm:flex-none justify-center flex items-center gap-2 border border-white/10 text-xs font-medium rounded-xl px-3.5 py-2.5 hover:border-white/20 transition-all text-gray-300">
             <svg id="refreshLeadsIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             Actualizar CRM
           </button>
-          <button onclick="openEntityModal('lead')" class="self-start flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <button onclick="openEntityModal('lead')" class="flex-1 sm:flex-none justify-center flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             Nuevo lead
           </button>
         </div>
       </div>
-      <div class="relative mb-4">
+      <div class="relative mb-3">
         <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
-        <input id="leadSearchInput" type="text" placeholder="Buscar lead por nombre, empresa, email, teléfono, ciudad…"
+        <input id="leadSearchInput" type="search" placeholder="Buscar por nombre, empresa, email, teléfono, ciudad…"
           oninput="handleLeadSearch(this.value)" class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl">
       </div>
-      <div id="leadStageLegend" class="flex flex-wrap gap-2 mb-5"></div>
+
+      <!-- Vista, orden y selección -->
+      <div class="lead-toolbar mb-3">
+        <button type="button" id="leadDueBtn" class="lead-toggle lead-toggle-due" aria-pressed="false" onclick="toggleLeadDue()">
+          Hoy toca contactar <span id="leadDueCount" class="lead-toggle-count">0</span>
+        </button>
+        <div class="lead-seg" role="group" aria-label="Vista">
+          <button type="button" data-lead-mode="list" aria-pressed="true" onclick="setLeadViewMode('list')">Lista</button>
+          <button type="button" data-lead-mode="hot" aria-pressed="false" onclick="setLeadViewMode('hot')">Calientes</button>
+        </div>
+        <label class="sr-only" for="leadSortSelect">Ordenar por</label>
+        <select id="leadSortSelect" class="lead-sort" onchange="setLeadSort(this.value)">
+          <option value="priority">Prioridad</option>
+          <option value="stale">Más tiempo sin contacto</option>
+          <option value="recent">Más recientes</option>
+          <option value="value">Mayor valor</option>
+          <option value="name">Nombre (A–Z)</option>
+        </select>
+        <button type="button" id="leadSelectBtn" class="lead-toggle" aria-pressed="false" onclick="toggleLeadSelectMode()">Seleccionar</button>
+      </div>
+
+      <div id="leadStageLegend" class="lead-stage-scroll mb-4"></div>
       <p id="leadCountLabel" class="text-xs text-gray-600 mb-3"></p>
-      <div id="leadsBoard" class="leads-board grid gap-3"></div>
+      <div id="leadsBoard" class="leads-list"></div>
+
+      <!-- Barra de acciones en bloque (solo en modo selección) -->
+      <div id="leadBulkBar" class="lead-bulk" style="display:none" role="region" aria-label="Acciones en bloque">
+        <span id="leadBulkCount" class="text-sm font-medium"></span>
+        <button type="button" onclick="selectAllFilteredLeads()" class="text-xs text-brand-blue hover:text-white min-h-[36px]">Seleccionar los filtrados</button>
+        <select id="leadBulkStage" aria-label="Mover a la fase">
+          <option value="" disabled selected>Mover a…</option>
+          <option value="nuevo">Nuevo</option><option value="email_no_enviado">Email no enviado</option><option value="contactada">Contactada</option>
+          <option value="propuesta">Propuesta</option><option value="reunion">Reunión</option><option value="ganado">Ganado</option><option value="perdido">Perdido</option>
+        </select>
+        <button type="button" id="leadBulkApply" onclick="applyBulkStage()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2 disabled:opacity-40">Aplicar</button>
+        <button type="button" onclick="toggleLeadSelectMode()" class="text-sm text-gray-400 hover:text-white px-2 min-h-[36px]">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- ═══ VISTA: PROPUESTAS ═══ -->
+    <div id="proposalsView" style="display:none">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-5">
+        <div class="min-w-0">
+          <h2 class="font-display font-bold text-lg">Propuestas</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Qué propuestas has enviado y en qué punto están. Si una abierta lleva 5 días sin movimiento, aparece en «Hoy toca contactar».</p>
+        </div>
+        <button type="button" onclick="openEntityModal('proposal')" class="sm:shrink-0 flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nueva propuesta
+        </button>
+      </div>
+      <div id="proposalFilters" class="lead-stage-scroll mb-3" role="group" aria-label="Filtrar por estado"></div>
+      <p id="proposalCount" class="text-xs text-gray-600 mb-3"></p>
+      <div id="proposalsList" class="item-list"></div>
+      <p class="text-xs text-gray-600 mt-3">Las propuestas a un lead se añaden desde su ficha (Leads → abrir lead → Propuestas). Aquí puedes crear las de clientes.</p>
+    </div>
+
+    <!-- ═══ VISTA: PLANTILLAS DE MENSAJE ═══ -->
+    <div id="templatesView" style="display:none">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-5">
+        <div class="min-w-0">
+          <h2 class="font-display font-bold text-lg">Plantillas de mensaje</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Textos listos para WhatsApp. Variables: <code class="text-brand-blue">{nombre}</code> <code class="text-brand-blue">{empresa}</code> <code class="text-brand-blue">{importe}</code> <code class="text-brand-blue">{enlace}</code>. Se rellenan al usarlas desde un lead o un cobro.</p>
+        </div>
+        <button type="button" onclick="openEntityModal('message_template')" class="sm:shrink-0 flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nueva plantilla
+        </button>
+      </div>
+      <div id="templatesList" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- ═══ VISTA: AJUSTES ═══ -->
+    <div id="settingsView" style="display:none">
+      <div class="mb-6">
+        <h2 class="font-display font-bold text-lg">Ajustes</h2>
+        <p class="text-gray-500 text-sm mt-0.5">Copia de seguridad del panel. Los avisos al móvil se configuran en Historias.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <section class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5" aria-labelledby="backupTitle">
+          <h3 id="backupTitle" class="font-display font-semibold text-sm mb-1">Copia de seguridad</h3>
+          <p id="backupLast" class="text-sm text-gray-300 mt-3" role="status">Cargando…</p>
+          <p id="backupDetail" class="text-xs text-gray-500 mt-1"></p>
+          <button type="button" id="backupNowBtn" onclick="runBackupNow()" class="mt-4 w-full sm:w-auto bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-3 hover:opacity-90 min-h-[44px] disabled:opacity-60">Hacer copia ahora</button>
+          <p class="text-xs text-gray-600 mt-4">Cada madrugada se guarda una copia de leads, clientes, pagos, oportunidades, tareas, eventos, actividad, cobros pendientes, propuestas y plantillas en un almacén privado de Supabase. Se conservan las últimas 30.</p>
+        </section>
+      </div>
     </div>
 
     <!-- ═══ VISTA: OPORTUNIDADES ═══ -->
@@ -753,40 +1107,50 @@
         <h2 class="font-display font-bold text-lg">Historias</h2>
         <p class="text-gray-500 text-sm mt-0.5">Tu calendario de contenido, el control de las historias subidas y los avisos al móvil.</p>
       </div>
-      <div class="grid lg:grid-cols-2 gap-6">
-        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-display font-semibold text-sm">Esta semana</h3>
             <span id="storyWeekCount" class="text-xs text-gray-500"></span>
           </div>
-          <div id="storyWeek" class="grid grid-cols-7 gap-2 mb-3"></div>
+          <div id="storyWeek" class="grid grid-cols-7 gap-1.5 sm:gap-2 mb-3"></div>
           <p class="text-xs text-gray-600">Pulsa un día para marcar la historia como subida. Si la de hoy ya está marcada, no te llega el aviso.</p>
         </div>
-        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5">
           <h3 class="font-display font-semibold text-sm mb-4">Calendario de historias</h3>
           <div id="storyLinks" class="space-y-2 mb-4"></div>
-          <div class="grid sm:grid-cols-[1fr_1.4fr_auto] gap-2">
-            <input type="text" id="storyLinkTitle" placeholder="Nombre (p. ej. Semana 9)" maxlength="80">
-            <input type="url" id="storyLinkUrl" placeholder="https://claude.ai/artifact/…">
-            <button type="button" onclick="addStoryLink()" class="border border-white/10 rounded-xl px-4 py-2 text-sm text-gray-300 hover:text-white hover:border-white/20">Añadir</button>
+          <div class="grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_auto] gap-2">
+            <input type="text" id="storyLinkTitle" placeholder="Nombre (p. ej. Semana 9)" maxlength="80" aria-label="Nombre del calendario">
+            <input type="url" id="storyLinkUrl" placeholder="https://claude.ai/artifact/…" aria-label="Enlace del calendario">
+            <button type="button" onclick="addStoryLink()" class="border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:border-white/20 min-h-[42px]">Añadir</button>
           </div>
         </div>
-        <div class="bg-brand-gray border border-white/5 rounded-2xl p-5 lg:col-span-2">
+        <div class="bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5 lg:col-span-2">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-            <div>
+            <div class="min-w-0">
               <h3 class="font-display font-semibold text-sm">Notificaciones</h3>
               <p id="pushStatus" class="text-xs text-gray-500 mt-1"></p>
             </div>
-            <div class="flex flex-wrap gap-2">
-              <button type="button" id="pushToggleBtn" onclick="togglePushSubscription()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90">Activar en este dispositivo</button>
-              <button type="button" onclick="sendTestPush()" class="border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:border-white/20">Enviar prueba</button>
+            <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:flex gap-2 sm:shrink-0">
+              <button type="button" id="pushToggleBtn" onclick="togglePushSubscription()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 min-h-[42px] hover:opacity-90">Activar en este dispositivo</button>
+              <button type="button" onclick="sendTestPush()" class="border border-white/10 rounded-xl px-4 py-2.5 min-h-[42px] text-sm text-gray-300 hover:text-white hover:border-white/20">Enviar prueba</button>
             </div>
           </div>
-          <div class="grid sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             <div class="entity-field">
               <label class="!flex items-center gap-2"><input type="checkbox" id="ns-tasks_enabled" style="width:auto;padding:0"> Tareas del día</label>
               <input type="time" id="ns-tasks_time">
               <p class="text-xs text-gray-600 mt-1.5">Lista de las tareas que vencen hoy.</p>
+            </div>
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-followups_enabled" style="width:auto;padding:0"> Seguimiento de leads</label>
+              <input type="time" id="ns-followups_time">
+              <p class="text-xs text-gray-600 mt-1.5">De lunes a viernes: a quién toca contactar hoy.</p>
+            </div>
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-cobros_enabled" style="width:auto;padding:0"> Cobros pendientes</label>
+              <input type="time" id="ns-cobros_time">
+              <p class="text-xs text-gray-600 mt-1.5">De lunes a viernes: cobros vencidos o que vencen hoy.</p>
             </div>
             <div class="entity-field">
               <label class="!flex items-center gap-2"><input type="checkbox" id="ns-story_enabled" style="width:auto;padding:0"> Subir la historia</label>
@@ -800,8 +1164,8 @@
               <p class="text-xs text-gray-600 mt-1.5">«¡Hay que crear las historias de la semana!!!»</p>
             </div>
           </div>
-          <div class="flex justify-end mt-5">
-            <button type="button" id="notifSaveBtn" onclick="saveNotificationSettings()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-2.5 hover:opacity-90">Guardar horarios</button>
+          <div class="flex sm:justify-end mt-5">
+            <button type="button" id="notifSaveBtn" onclick="saveNotificationSettings()" class="w-full sm:w-auto bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-2.5 min-h-[42px] hover:opacity-90">Guardar horarios</button>
           </div>
         </div>
       </div>
@@ -1083,7 +1447,7 @@
 <div id="leadDetailOverlay" onclick="closeLeadDetailOnOverlay(event)"
   class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex justify-end" style="display:none">
   <div id="leadDetailPanel" class="lead-detail-panel bg-brand-dark border-l border-white/10 h-full flex flex-col">
-    <div class="flex items-start justify-between gap-3 p-6 border-b border-white/5">
+    <div class="flex items-start justify-between gap-3 p-4 sm:p-6 border-b border-white/5">
       <div class="min-w-0">
         <div class="flex items-center gap-2 flex-wrap mb-1">
           <h2 id="leadDetailName" class="font-display font-bold text-xl truncate"></h2>
@@ -1095,8 +1459,8 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <div id="leadDetailBody" class="p-6 overflow-y-auto flex-1"></div>
-    <div class="flex items-center justify-between gap-3 p-6 border-t border-white/5">
+    <div id="leadDetailBody" class="p-4 sm:p-6 overflow-y-auto overscroll-contain flex-1"></div>
+    <div class="flex items-center justify-between gap-3 p-4 sm:p-6 border-t border-white/5" style="padding-bottom:max(1rem, env(safe-area-inset-bottom))">
       <button id="leadDetailDeleteBtn" class="text-sm text-gray-500 hover:text-red-400 transition-colors">Eliminar lead</button>
       <button onclick="editCurrentLeadDetail()" class="flex items-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-6 py-3 hover:opacity-90 transition-opacity">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -1400,6 +1764,97 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     BUSCADOR GLOBAL (tecla "/" o Ctrl/Cmd + K)
+════════════════════════════════════════════════════════════════ -->
+<div id="gsearch-overlay" onclick="closeGlobalSearchOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[70] items-start justify-center overflow-y-auto" style="display:none">
+  <div class="gsearch-box" role="dialog" aria-modal="true" aria-label="Buscar en el panel">
+    <div class="gsearch-input-row">
+      <svg class="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+      <input id="gsearchInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buscar leads, clientes, tareas…"
+        role="combobox" aria-expanded="true" aria-controls="gsearchResults" aria-autocomplete="list" aria-label="Buscar"
+        oninput="globalSearchInput(this.value)" onkeydown="globalSearchKey(event)">
+      <button type="button" onclick="closeGlobalSearch()" class="text-xs text-gray-500 hover:text-white px-2 min-h-[44px] shrink-0" aria-label="Cerrar buscador">Esc</button>
+    </div>
+    <div id="gsearchResults" class="gsearch-results" role="listbox" aria-label="Resultados"></div>
+    <p class="text-[11px] text-gray-600 px-4 py-2 border-t border-white/5 hidden sm:block">↑ ↓ para moverte · Enter para abrir · Esc para cerrar</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     USAR PLANTILLA DE MENSAJE (WhatsApp / copiar)
+════════════════════════════════════════════════════════════════ -->
+<div id="tpl-overlay" onclick="closeTemplatePickerOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[60] items-start justify-center px-4 py-6 overflow-y-auto" style="display:none">
+  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-5 sm:p-7 my-auto" style="max-width:600px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)" role="dialog" aria-modal="true" aria-labelledby="tplTitle">
+    <div class="flex items-start justify-between gap-3 mb-5">
+      <div class="min-w-0">
+        <h2 id="tplTitle" class="font-display font-bold text-lg">Usar plantilla</h2>
+        <p id="tplSubtitle" class="text-xs text-gray-500 mt-0.5 truncate"></p>
+      </div>
+      <button type="button" onclick="closeTemplatePicker()" class="text-gray-600 hover:text-white transition-colors p-1 shrink-0" aria-label="Cerrar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="tplEmpty" class="text-sm text-gray-400 mb-4" style="display:none">
+      No hay plantillas activas. <button type="button" class="text-brand-blue underline" onclick="closeTemplatePicker(); switchView('templates')">Crear una plantilla</button>
+    </div>
+    <div id="tplBody">
+      <div class="entity-field mb-4">
+        <label for="tpl-select">Plantilla</label>
+        <select id="tpl-select" onchange="templatePickerSelect()"></select>
+      </div>
+      <div class="grid grid-cols-1 min-[480px]:grid-cols-2 gap-3 mb-4">
+        <div class="entity-field"><label for="tpl-v-nombre">{nombre}</label><input type="text" id="tpl-v-nombre" oninput="templatePickerVars()"></div>
+        <div class="entity-field"><label for="tpl-v-empresa">{empresa}</label><input type="text" id="tpl-v-empresa" oninput="templatePickerVars()"></div>
+        <div class="entity-field"><label for="tpl-v-importe">{importe}</label><input type="text" id="tpl-v-importe" oninput="templatePickerVars()"></div>
+        <div class="entity-field"><label for="tpl-v-enlace">{enlace}</label><input type="text" id="tpl-v-enlace" inputmode="url" oninput="templatePickerVars()" placeholder="https://…"></div>
+      </div>
+      <div class="entity-field mb-2">
+        <label for="tpl-text">Mensaje (puedes editarlo)</label>
+        <textarea id="tpl-text" rows="8" style="min-height:170px" oninput="templatePickerEdited()"></textarea>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4 min-h-[20px]">
+        <p id="tpl-warn" class="text-xs text-amber-300" style="display:none" role="status"></p>
+        <button type="button" id="tpl-refill" class="text-xs text-brand-blue hover:text-white min-h-[32px]" style="display:none" onclick="templatePickerRefill()">Rellenar de nuevo con los datos</button>
+      </div>
+      <p id="tpl-wa-note" class="text-xs text-gray-500 mb-3" style="display:none"></p>
+      <div class="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+        <button type="button" onclick="copyTemplateText()" class="border border-white/10 rounded-xl px-5 py-3 text-sm text-gray-300 hover:text-white hover:border-white/20 min-h-[44px]">Copiar texto</button>
+        <a id="tpl-wa" href="#" target="_blank" rel="noopener noreferrer" onclick="return templateOpenWhatsapp(event)"
+          class="inline-flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-3 hover:opacity-90 min-h-[44px]">Abrir WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MARCAR COBRO PENDIENTE COMO COBRADO (crea el pago)
+════════════════════════════════════════════════════════════════ -->
+<div id="recpay-overlay" onclick="closeReceivablePayOnOverlay(event)"
+  class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[60] items-start justify-center px-4 py-6 overflow-y-auto" style="display:none">
+  <div class="bg-brand-dark border border-white/10 rounded-2xl w-full p-5 sm:p-7 my-auto" style="max-width:440px;animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)" role="dialog" aria-modal="true" aria-labelledby="recpayTitle">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <h2 id="recpayTitle" class="font-display font-bold text-lg">Marcar como cobrado</h2>
+      <button type="button" onclick="closeReceivablePay()" class="text-gray-600 hover:text-white transition-colors p-1 shrink-0" aria-label="Cerrar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p id="recpaySummary" class="text-sm text-gray-300 mb-1"></p>
+    <p class="text-xs text-gray-500 mb-5">Se registra el pago en «Cobros registrados» y cuenta como ingreso en Inicio.</p>
+    <div class="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3 mb-6">
+      <div class="entity-field"><label for="recpay-method">Método</label>
+        <select id="recpay-method"><option value="bizum">Bizum</option><option value="transferencia">Transferencia</option><option value="efectivo">Efectivo</option><option value="stripe">Stripe</option><option value="otro">Otro</option></select></div>
+      <div class="entity-field"><label for="recpay-date">Fecha del cobro</label><input type="date" id="recpay-date"></div>
+    </div>
+    <div class="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+      <button type="button" onclick="closeReceivablePay()" class="border border-white/10 rounded-xl px-5 py-3 text-sm text-gray-400 hover:text-white min-h-[44px]">Cancelar</button>
+      <button type="button" id="recpayBtn" onclick="confirmReceivablePay()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-6 py-3 hover:opacity-90 min-h-[44px]">Confirmar cobro</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast"></div>
 
@@ -1491,19 +1946,19 @@ const VIEW_CONTAINER_IDS = {
   home: 'homeView', leads: 'leadsView', opportunities: 'opportunitiesView', clients: 'clientsView',
   projects: 'projectsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
   expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView', jobs: 'jobsView',
-  stories: 'storiesView',
+  stories: 'storiesView', proposals: 'proposalsView', templates: 'templatesView', settings: 'settingsView',
 };
 const VIEW_NAV_IDS = {
   home: 'navHome', leads: 'navLeads', opportunities: 'navOpportunities', clients: 'tabClients',
   projects: 'navProjects', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
   expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity', jobs: 'navJobs',
-  stories: 'navStories',
+  stories: 'navStories', proposals: 'navProposals', templates: 'navTemplates', settings: 'navSettings',
 };
 const VIEW_TITLES = {
   home: 'Inicio', leads: 'Leads (CRM)', opportunities: 'Oportunidades', clients: 'Clientes',
   projects: 'Proyectos', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
   expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad', jobs: 'Búsqueda de trabajo',
-  stories: 'Historias',
+  stories: 'Historias', proposals: 'Propuestas', templates: 'Plantillas de mensaje', settings: 'Ajustes',
 };
 
 function switchView(view) {
@@ -1536,6 +1991,9 @@ function loadViewData(view) {
   else if (view === 'activity') loadActivityView();
   else if (view === 'jobs') loadJobSearch();
   else if (view === 'stories') loadStoriesView();
+  else if (view === 'proposals') loadProposalsView();
+  else if (view === 'templates') loadTemplatesView();
+  else if (view === 'settings') loadSettingsView();
 }
 
 function toggleSidebar(open) {
@@ -1591,7 +2049,7 @@ function toggleMonths(slug) {
 }
 
 async function refreshAllPayments() {
-  await Promise.all([loadPayments(), loadRegisteredPayments()]);
+  await Promise.all([loadPayments(), loadRegisteredPayments(), loadReceivables()]);
 }
 
 const PAYMENT_METHOD_LABELS = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
@@ -2397,6 +2855,21 @@ function safeUrl(url) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 // ─── Config genérica por tipo de entidad (alimenta el modal reutilizable) ──────
+const PROPOSAL_FIELDS = [
+  { key: 'title', label: 'Título', type: 'text', required: true, span: 2, placeholder: 'Web corporativa' },
+  { key: 'amount', label: 'Importe (€)', type: 'number' },
+  { key: 'status', label: 'Estado', type: 'select', default: 'enviada', options: [
+      ['enviada','Enviada'], ['vista','Vista'], ['aceptada','Aceptada'], ['rechazada','Rechazada'], ['caducada','Caducada'] ] },
+  { key: 'sent_at', label: 'Enviada el', type: 'date' },
+  { key: 'channel', label: 'Canal', type: 'select', default: '', options: [
+      ['','Sin definir'], ['whatsapp','WhatsApp'], ['instagram','Instagram'], ['email','Email'],
+      ['llamada','Llamada'], ['reunion','Reunión'], ['otro','Otro'] ] },
+  { key: 'next_followup_at', label: 'Próximo seguimiento', type: 'date' },
+  { key: 'url', label: 'Enlace a la propuesta', type: 'url', placeholder: 'https://…' },
+  { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+];
+const TEMPLATE_CATEGORY_LABELS = { lead: 'Primer contacto', propuesta: 'Propuesta', cobro: 'Cobro', demo: 'Demo', reunion: 'Reunión', renovacion: 'Renovación', general: 'General' };
+
 const ENTITY_CONFIG = {
   lead: {
     label: 'lead',
@@ -2405,7 +2878,8 @@ const ENTITY_CONFIG = {
     itemUrl: id => `/api/leads?id=${id}`,
     sections: [
       { title: 'Contacto', keys: ['name', 'company', 'email', 'phone', 'whatsapp', 'website', 'instagram'] },
-      { title: 'Datos comerciales', keys: ['stage', 'source', 'value_estimate', 'city', 'sector'] },
+      { title: 'Datos comerciales', keys: ['stage', 'temperature', 'source', 'value_estimate', 'city', 'sector'] },
+      { title: 'Seguimiento', keys: ['channel', 'next_followup_at'] },
       { title: 'Notas (incluye textos generados por IA, si los hay)', keys: ['notes'] },
     ],
     fields: [
@@ -2417,6 +2891,12 @@ const ENTITY_CONFIG = {
           ['nuevo','Nuevo'], ['email_no_enviado','Email no enviado'], ['contactada','Contactada'],
           ['propuesta','Propuesta'],
           ['reunion','Reunión'], ['ganado','Ganado'], ['perdido','Perdido'] ] },
+      { key: 'temperature', label: 'Temperatura', type: 'select', default: '', options: [
+          ['','Sin definir'], ['caliente','Caliente'], ['templado','Templado'], ['frio','Frío'] ] },
+      { key: 'channel', label: 'Canal habitual', type: 'select', default: '', options: [
+          ['','Sin definir'], ['whatsapp','WhatsApp'], ['instagram','Instagram'], ['email','Email'],
+          ['llamada','Llamada'], ['reunion','Reunión'], ['otro','Otro'] ] },
+      { key: 'next_followup_at', label: 'Próximo seguimiento', type: 'date' },
       { key: 'source', label: 'Origen', type: 'text', placeholder: 'web, referido, redes, n8n…' },
       { key: 'value_estimate', label: 'Valor estimado (€)', type: 'number' },
       { key: 'website', label: 'Web', type: 'text', placeholder: 'https://…' },
@@ -2514,6 +2994,44 @@ const ENTITY_CONFIG = {
       { key: 'description', label: 'Descripción', type: 'textarea', span: 2 },
     ],
   },
+  receivable: {
+    label: 'cobro pendiente',
+    listUrl: () => '/api/receivables',
+    itemUrl: id => `/api/receivables?id=${id}`,
+    fields: [
+      { key: 'client_id', label: 'Cliente', type: 'client_select', required: true },
+      { key: 'concept', label: 'Concepto', type: 'text', required: true, placeholder: 'Segunda parte de la web' },
+      { key: 'amount', label: 'Importe (€)', type: 'number', required: true },
+      { key: 'due_date', label: 'Vence el', type: 'date', required: true, default: () => leadToday() },
+      { key: 'installment', label: 'Parte de una web', type: 'select', default: '', options: [
+          ['','No es parte de una web'], ['primera_mitad','1ª mitad'], ['segunda_mitad','2ª mitad'], ['otro','Pago parcial'] ] },
+      { key: 'web_total', label: 'Precio total de la web (€)', type: 'number' },
+      { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+    ],
+  },
+  message_template: {
+    label: 'plantilla',
+    listUrl: () => '/api/message-templates',
+    itemUrl: id => `/api/message-templates?id=${id}`,
+    fields: [
+      { key: 'name', label: 'Nombre', type: 'text', required: true },
+      { key: 'category', label: 'Para qué sirve', type: 'select', default: 'general', options: Object.entries(TEMPLATE_CATEGORY_LABELS) },
+      { key: 'active', label: 'Estado', type: 'select', bool: true, default: 'true', options: [['true','Activa'], ['false','Desactivada']] },
+      { key: 'body', label: 'Texto (variables: {nombre} {empresa} {importe} {enlace})', type: 'textarea', span: 2, tall: true, required: true },
+    ],
+  },
+  proposal: {
+    label: 'propuesta',
+    listUrl: () => '/api/proposals',
+    itemUrl: id => `/api/proposals?id=${id}`,
+    fields: [{ key: 'client_id', label: 'Cliente', type: 'client_select', required: true }, ...PROPOSAL_FIELDS],
+  },
+  lead_proposal: {
+    label: 'propuesta',
+    listUrl: () => '/api/proposals',
+    itemUrl: id => `/api/proposals?id=${id}`,
+    fields: [{ key: 'lead_id', type: 'hidden' }, ...PROPOSAL_FIELDS],
+  },
   invoice: { itemUrl: id => `/api/invoices?id=${id}` }, // la factura usa un modal propio (líneas repetibles)
   payment: { itemUrl: id => `/api/payments?id=${id}` }, // los cobros usan su propio modal (registrar pago)
 };
@@ -2526,6 +3044,10 @@ const ENTITY_DATA_SOURCE = {
   expense: () => expensesData,
   expense_category: () => expenseCategoriesData,
   event: () => eventsData,
+  receivable: () => receivablesData,
+  message_template: () => templatesData,
+  proposal: () => proposalsData,
+  lead_proposal: () => proposalsData,
 };
 
 function toDatetimeLocal(iso) {
@@ -2541,9 +3063,10 @@ function renderEntityField(f, item, prefill = null) {
   const value = item ? (item[f.key] ?? '') : (prefill?.[f.key] ?? dflt ?? '');
   const spanClass = f.span === 2 ? 'sm:col-span-2' : '';
   const id = `ef-${f.key}`;
+  if (f.type === 'hidden') return `<input type="hidden" id="${id}" value="${esc(value)}">`;
   let control;
   if (f.type === 'select') {
-    control = `<select id="${id}">${f.options.map(([v,l]) => `<option value="${v}" ${v===value?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+    control = `<select id="${id}">${f.options.map(([v,l]) => `<option value="${v}" ${String(v)===String(value)?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
   } else if (f.type === 'textarea') {
     control = `<textarea id="${id}" placeholder="${esc(f.placeholder||'')}" style="${f.tall ? 'min-height:260px' : ''}">${esc(value)}</textarea>`;
   } else if (f.type === 'client_select') {
@@ -2623,6 +3146,7 @@ async function saveEntity() {
     let v = el.value;
     if (f.type === 'number') v = v === '' ? null : Number(v);
     else if (f.type === 'datetime') v = v ? new Date(v).toISOString() : null;
+    else if (f.bool) v = v === 'true';
     else if (v === '') v = null;
     if (f.required && (v === null || v === '')) {
       showToast(`${f.label} es obligatorio`, 'error');
@@ -2635,6 +3159,7 @@ async function saveEntity() {
   }
   const btn = document.getElementById('entitySaveBtn');
   btn.disabled = true;
+  const previous = id ? (ENTITY_DATA_SOURCE[type]?.() || []).find(x => x.id === id) : null;
   try {
     const url = id ? cfg.itemUrl(id) : cfg.listUrl();
     const res = await fetch(url, {
@@ -2646,10 +3171,12 @@ async function saveEntity() {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Error al guardar');
     }
+    const saved = await res.json().catch(() => null);
     closeEntityModal();
     showToast(id ? '✓ Guardado' : '✓ Creado');
     loadViewData(currentView);
     if (currentView !== 'home') loadHome();
+    afterEntitySaved(type, body, previous, saved);
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -2657,9 +3184,25 @@ async function saveEntity() {
   }
 }
 
-// ─── Leads (lista única con color por fase + búsqueda) ──────────────────────────
-// Un color fijo por fase: se usa como borde/punto en cada tarjeta y en la leyenda
-// de arriba (que también sirve de filtro rápido al hacer click).
+// Qué más hay que refrescar según lo que se acaba de guardar
+async function afterEntitySaved(type, body, previous, saved) {
+  if (type === 'lead_proposal' || type === 'proposal') {
+    if (type === 'lead_proposal') await loadLeads(); // incluye las propuestas; una nueva puede mover al lead a "propuesta"
+    else await loadProposalsQuiet();
+    refreshLeadDetailIfOpen();
+    if (body.status === 'aceptada' && previous?.status !== 'aceptada') offerConvertAfterAccept(saved);
+  } else if (type === 'receivable') {
+    loadReceivables();
+  } else if (type === 'message_template') {
+    templatesLoaded = false;
+  }
+}
+
+// ─── Leads: lista con seguimiento ───────────────────────────────────────────────
+// Un color fijo por fase (borde de cada fila y filtros de arriba). Cada lead muestra cuándo
+// se le contactó por última vez y cuándo toca volver a hacerlo; "Hoy toca contactar" filtra
+// los que tienen el seguimiento vencido. Las reglas de abajo (leadFollowup/leadScore) son
+// las mismas que lib/lead-rules.js en el servidor: si se cambian allí, cambiarlas aquí.
 const LEAD_STAGE_META = {
   nuevo:      { label: 'Nuevo',      color: '#38bdf8' },
   email_no_enviado: { label: 'Email no enviado', color: '#f472b6' },
@@ -2670,14 +3213,181 @@ const LEAD_STAGE_META = {
   perdido:    { label: 'Perdido',    color: '#f87171' },
 };
 const LEAD_STAGES = Object.entries(LEAD_STAGE_META).map(([k, v]) => [k, v.label]);
+const LEAD_CHANNELS = { whatsapp: 'WhatsApp', instagram: 'Instagram', email: 'Email', llamada: 'Llamada', reunion: 'Reunión', otro: 'Otro' };
+const LEAD_TEMPS = {
+  caliente: { label: 'Caliente', color: '#f87171' },
+  templado: { label: 'Templado', color: '#fbbf24' },
+  frio:     { label: 'Frío',     color: '#38bdf8' },
+};
+const LEAD_CLOSED = ['ganado', 'perdido'];
+const LEAD_HOT = ['propuesta', 'reunion'];
+const LEAD_STALE_HOT_DAYS = 5;
+const LEAD_PAGE = 40;
+const LEAD_BULK_MAX = 200;
+const LEAD_PREFS_KEY = 'dazentyLeadPrefs';
+const LEAD_SORTS = {
+  priority: 'Prioridad',
+  stale:    'Más tiempo sin contacto',
+  recent:   'Más recientes',
+  value:    'Mayor valor',
+  name:     'Nombre (A–Z)',
+};
 
 let leadStageFilter = null; // null = todas las fases
 let leadSearchQuery = '';
+let leadViewMode = 'list';  // 'list' | 'hot'
+let leadSort = 'priority';
+let leadDueOnly = false;
+let leadVisible = LEAD_PAGE;
+let leadSelectMode = false;
+const leadSelected = new Set();
+
+// Los filtros se recuerdan entre visitas (solo en este navegador; si falla, no pasa nada)
+function loadLeadPrefs() {
+  try {
+    const p = JSON.parse(localStorage.getItem(LEAD_PREFS_KEY) || '{}');
+    if (p.mode === 'list' || p.mode === 'hot') leadViewMode = p.mode;
+    if (LEAD_SORTS[p.sort]) leadSort = p.sort;
+    leadDueOnly = p.due === true;
+    leadStageFilter = LEAD_STAGE_META[p.stage] ? p.stage : null;
+  } catch { /* sin preferencias guardadas */ }
+}
+function saveLeadPrefs() {
+  try {
+    localStorage.setItem(LEAD_PREFS_KEY, JSON.stringify({ mode: leadViewMode, sort: leadSort, due: leadDueOnly, stage: leadStageFilter }));
+  } catch { /* almacenamiento bloqueado */ }
+}
+loadLeadPrefs();
+
+// ── Fechas y reglas de seguimiento ──
+function dayDiff(fromIso, toIso) {
+  const a = Date.parse(String(fromIso).slice(0, 10));
+  const b = Date.parse(String(toIso).slice(0, 10));
+  return Number.isNaN(a) || Number.isNaN(b) ? null : Math.round((b - a) / 86400000);
+}
+function leadToday() { return isoDay(new Date()); }
+function tsDay(ts) { return ts ? isoDay(new Date(ts)) : null; }
+function agoLabel(ts) {
+  const d = tsDay(ts);
+  if (!d) return null;
+  const n = dayDiff(d, leadToday());
+  if (n <= 0) return 'hoy';
+  if (n === 1) return 'ayer';
+  if (n < 30) return `hace ${n} d`;
+  if (n < 365) return `hace ${Math.round(n / 30)} m`;
+  return `hace ${Math.round(n / 365)} a`;
+}
+function shortDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).replace('.', '');
+}
+function addDaysIso(iso, days) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return isoDay(new Date(y, m - 1, d + days));
+}
+
+function leadFollowup(l, today = leadToday()) {
+  if (!l || LEAD_CLOSED.includes(l.stage)) return { due: false };
+  if (l.awaiting_reply) {
+    const waiting = l.replied_at ? dayDiff(tsDay(l.replied_at), today) : 0;
+    return { due: true, awaiting: true, overdueDays: Math.max(waiting || 0, 0), reason: 'respondio' };
+  }
+  const base = baseLeadFollowup(l, today);
+  const prop = proposalDueMap(today).get(l.id);
+  if (prop) {
+    return { due: true, proposal: true, overdueDays: Math.max(base.overdueDays || 0, prop.overdueDays || 0), reason: base.due ? base.reason : 'propuesta' };
+  }
+  return base;
+}
+function baseLeadFollowup(l, today) {
+  if (l.next_followup_at) {
+    const over = dayDiff(l.next_followup_at, today);
+    return over !== null && over >= 0
+      ? { due: true, overdueDays: over, reason: over === 0 ? 'hoy' : 'vencido' }
+      : { due: false };
+  }
+  if (LEAD_HOT.includes(l.stage)) {
+    const ref = tsDay(l.last_contact_at || l.updated_at || l.created_at);
+    const idle = ref ? dayDiff(ref, today) : null;
+    if (idle !== null && idle >= LEAD_STALE_HOT_DAYS) return { due: true, overdueDays: idle, reason: 'sin_movimiento' };
+  }
+  return { due: false };
+}
+function leadScore(l, f) {
+  let s = 0;
+  if (l.awaiting_reply) s += 1000; // si ha respondido, se contesta antes que nada
+  if (l.stage === 'reunion') s += 60; else if (l.stage === 'propuesta') s += 50;
+  if (l.temperature === 'caliente') s += 30; else if (l.temperature === 'templado') s += 10;
+  if (f.due) s += 20 + Math.min(f.overdueDays || 0, 30);
+  if (f.proposal) s += 15;
+  s += Math.min(Number(l.value_estimate) || 0, 10000) / 500;
+  return s;
+}
+function followChipText(f) {
+  if (!f || !f.due) return '';
+  if (f.awaiting) return f.overdueDays > 0 ? `Ha respondido · hace ${f.overdueDays} d` : 'Ha respondido';
+  const base = f.reason === 'hoy' ? 'Toca hoy'
+    : f.reason === 'vencido' ? `Vencido hace ${f.overdueDays} d`
+    : f.reason === 'propuesta' ? `Propuesta sin respuesta (${f.overdueDays} d)`
+    : `${f.overdueDays} d sin movimiento`;
+  return f.proposal && f.reason !== 'propuesta' ? `${base} · propuesta sin respuesta` : base;
+}
+function followChipHtml(f) {
+  const t = followChipText(f);
+  if (!t) return '';
+  if (f.awaiting) return `<span class="reply-chip">${esc(t)}</span>`;
+  const cls = f.reason === 'hoy' ? 'bg-amber-400/15 text-amber-300' : 'bg-red-400/15 text-red-300';
+  return `<span class="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${cls}">${esc(t)}</span>`;
+}
+function stageBadgeHtml(stage) {
+  const meta = LEAD_STAGE_META[stage] || { label: stage, color: '#6b7280' };
+  return `<span class="lead-stage-badge" style="--badge-bg:${meta.color}26; --badge-text:${meta.color}"><span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}</span>`;
+}
+function leadWaLink(l) {
+  let digits = String(l.whatsapp || l.phone || '').replace(/\D/g, '');
+  if (digits.length === 9 && /^[6789]/.test(digits)) digits = '34' + digits; // móvil/fijo español sin prefijo
+  return digits.length >= 10 ? `https://wa.me/${digits}` : '';
+}
+
+// ── Llamadas a la API ──
+async function leadApi(path, method = 'GET', body) {
+  const res = await fetch(path, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const data = res.status === 204 ? {} : await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'No se pudo completar la acción');
+  return data;
+}
+function mergeLead(updated) {
+  if (!updated || !updated.id) return;
+  const i = leadsData.findIndex(x => x.id === updated.id);
+  if (i >= 0) leadsData[i] = { ...leadsData[i], ...updated };
+}
+function updateLeadsNavBadge(count) {
+  const el = document.getElementById('navLeadsBadge');
+  if (!el) return;
+  el.textContent = count > 99 ? '99+' : String(count);
+  el.style.display = count > 0 ? 'inline-flex' : 'none';
+}
+// Tras cambiar un lead: repinta lo que esté abierto sin volver a pedirlo todo al servidor
+function refreshAfterLeadChange() {
+  if (currentView === 'leads') { renderLeadStageLegend(); renderLeadsBoard(); }
+  if (currentLeadDetailId) {
+    const l = leadsData.find(x => x.id === currentLeadDetailId);
+    if (l) renderLeadDetail(l);
+  }
+  if (currentView === 'home') loadHome();
+}
 
 async function loadLeads() {
   try {
-    const res = await fetch('/api/leads', { headers: { 'x-admin-password': adminPass } });
-    leadsData = await res.json().catch(() => []);
+    const [res] = await Promise.all([fetch('/api/leads', { headers: { 'x-admin-password': adminPass } }), loadProposalsQuiet()]);
+    const data = await res.json().catch(() => []);
+    leadsData = Array.isArray(data) ? data : [];
+    for (const id of [...leadSelected]) if (!leadsData.some(l => l.id === id)) leadSelected.delete(id);
     renderLeadStageLegend();
     renderLeadsBoard();
   } catch {
@@ -2685,6 +3395,7 @@ async function loadLeads() {
   }
 }
 
+// ── Filtros ──
 function renderLeadStageLegend() {
   const legend = document.getElementById('leadStageLegend');
   const counts = {};
@@ -2695,113 +3406,315 @@ function renderLeadStageLegend() {
       onclick="setLeadStageFilter(null)">Todas <span class="opacity-60">${leadsData.length}</span></button>`;
   const stagePills = Object.entries(LEAD_STAGE_META).map(([stage, meta]) => {
     const active = leadStageFilter === stage;
-    const bg = meta.color + '26'; // ~15% opacity hex suffix
     return `
     <button class="lead-stage-pill ${active ? 'active' : ''}"
-      style="--dot-color:${meta.color}; --pill-bg:${bg}; --pill-border:${meta.color}66; --pill-text:${meta.color}"
+      style="--dot-color:${meta.color}; --pill-bg:${meta.color}26; --pill-border:${meta.color}66; --pill-text:${meta.color}"
       onclick="setLeadStageFilter('${stage}')">
       <span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>
       ${meta.label} <span class="opacity-60">${counts[stage] || 0}</span>
     </button>`;
   }).join('');
   legend.innerHTML = allPill + stagePills;
+
+  const dueCount = leadsData.filter(l => leadFollowup(l).due).length;
+  const dueBtn = document.getElementById('leadDueBtn');
+  if (dueBtn) {
+    dueBtn.setAttribute('aria-pressed', String(leadDueOnly));
+    document.getElementById('leadDueCount').textContent = dueCount;
+  }
+  updateLeadsNavBadge(dueCount);
+  document.getElementById('leadSortSelect').value = leadSort;
+  document.querySelectorAll('[data-lead-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.leadMode === leadViewMode)));
+  const selBtn = document.getElementById('leadSelectBtn');
+  if (selBtn) selBtn.setAttribute('aria-pressed', String(leadSelectMode));
 }
 
+function resetLeadPaging() { leadVisible = LEAD_PAGE; }
 function setLeadStageFilter(stage) {
   leadStageFilter = stage;
-  renderLeadStageLegend();
+  resetLeadPaging(); saveLeadPrefs();
+  renderLeadStageLegend(); renderLeadsBoard();
+}
+function toggleLeadDue() {
+  leadDueOnly = !leadDueOnly;
+  resetLeadPaging(); saveLeadPrefs();
+  renderLeadStageLegend(); renderLeadsBoard();
+}
+function setLeadViewMode(mode) {
+  leadViewMode = mode;
+  resetLeadPaging(); saveLeadPrefs();
+  renderLeadStageLegend(); renderLeadsBoard();
+}
+function setLeadSort(sort) {
+  if (!LEAD_SORTS[sort]) return;
+  leadSort = sort;
+  resetLeadPaging(); saveLeadPrefs();
   renderLeadsBoard();
 }
-
 function handleLeadSearch(value) {
   leadSearchQuery = value.trim().toLowerCase();
+  resetLeadPaging();
   renderLeadsBoard();
 }
+function showMoreLeads() {
+  leadVisible += LEAD_PAGE;
+  renderLeadsBoard();
+}
+// Atajos desde Inicio
+function openLeadsDue() {
+  leadDueOnly = true; leadStageFilter = null; leadViewMode = 'list'; leadSort = 'priority';
+  resetLeadPaging(); saveLeadPrefs();
+  switchView('leads');
+}
+function openLeadsStage(stage, mode = 'list') {
+  leadDueOnly = false; leadStageFilter = stage || null; leadViewMode = mode;
+  resetLeadPaging(); saveLeadPrefs();
+  switchView('leads');
+}
+function openLeadsHot() {
+  leadDueOnly = false; leadStageFilter = null; leadViewMode = 'hot';
+  resetLeadPaging(); saveLeadPrefs();
+  switchView('leads');
+}
 
+// Devuelve los leads filtrados y ordenados, con su estado de seguimiento ya calculado
 function getFilteredLeads() {
-  let items = leadsData;
-  if (leadStageFilter) items = items.filter(l => l.stage === leadStageFilter);
-  if (leadSearchQuery) {
-    const q = leadSearchQuery;
-    items = items.filter(l => [l.name, l.company, l.email, l.phone, l.city, l.sector, l.whatsapp]
-      .some(v => v && String(v).toLowerCase().includes(q)));
+  const today = leadToday();
+  const q = leadSearchQuery;
+  let rows = [];
+  for (const l of leadsData) {
+    if (leadViewMode === 'hot' ? !LEAD_HOT.includes(l.stage) : (leadStageFilter && l.stage !== leadStageFilter)) continue;
+    if (q && ![l.name, l.company, l.email, l.phone, l.city, l.sector, l.whatsapp, l.instagram]
+      .some(v => v && String(v).toLowerCase().includes(q))) continue;
+    const f = leadFollowup(l, today);
+    if (leadDueOnly && !f.due) continue;
+    rows.push({ l, f, score: leadScore(l, f) });
   }
-  // Más recientes primero (por actividad), para encontrar fácilmente lo último tocado
-  return [...items].sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
+  const touched = x => new Date(x.l.updated_at || x.l.created_at || 0).getTime();
+  const lastRef = x => new Date(x.l.last_contact_at || x.l.updated_at || x.l.created_at || 0).getTime();
+  const sorters = {
+    priority: (a, b) => b.score - a.score || touched(b) - touched(a),
+    stale:    (a, b) => lastRef(a) - lastRef(b),
+    recent:   (a, b) => touched(b) - touched(a),
+    value:    (a, b) => (Number(b.l.value_estimate) || 0) - (Number(a.l.value_estimate) || 0),
+    name:     (a, b) => String(a.l.name || '').localeCompare(String(b.l.name || ''), 'es'),
+  };
+  return rows.sort(sorters[leadSort] || sorters.priority);
+}
+
+// ── Lista ──
+function leadRowHtml({ l, f }) {
+  const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
+  const temp = LEAD_TEMPS[l.temperature];
+  const sub = [l.company && l.company !== l.name ? l.company : '', l.city].filter(Boolean).join(' · ');
+  const value = l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : '';
+  const last = agoLabel(l.last_contact_at);
+  const wa = leadWaLink(l);
+  const chip = followChipHtml(f);
+  const next = !f.due && l.next_followup_at ? `<p class="text-[11px] text-gray-500">Próx. ${esc(shortDate(l.next_followup_at))}</p>` : '';
+  return `
+    <div class="lead-row${l.awaiting_reply ? ' awaiting' : ''}" style="--stage-color:${meta.color}" onclick="openLeadDetail('${l.id}')">
+      <div class="lc-main">
+        ${leadSelectMode ? `<input type="checkbox" class="lead-check" aria-label="Seleccionar ${esc(l.name)}" ${leadSelected.has(l.id) ? 'checked' : ''}
+          onclick="event.stopPropagation()" onchange="toggleLeadSelected('${l.id}', this.checked)">` : ''}
+        <div class="min-w-0">
+          <p class="font-medium text-sm truncate">
+            ${temp ? `<span class="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style="background:${temp.color}" title="${esc(temp.label)}"></span>` : ''}${esc(l.name)}
+            ${l.source && l.source.startsWith('n8n') ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-blue/10 text-brand-blue ml-1 align-middle" title="Creado automáticamente por n8n">n8n</span>' : ''}
+          </p>
+          <p class="text-xs text-gray-500 truncate">${esc(sub)}${value ? `<span class="lc-value-m">${sub ? ' · ' : ''}${value}</span>` : ''}</p>
+        </div>
+      </div>
+      <div class="lc-stage">
+        <select aria-label="Fase de ${esc(l.name)}" class="lead-stage-select" style="--c:${meta.color}"
+          onclick="event.stopPropagation()" onchange="quickChangeLeadStage('${l.id}', this.value)">
+          ${LEAD_STAGES.map(([s, lb]) => `<option value="${s}" ${s === l.stage ? 'selected' : ''}>${lb}</option>`).join('')}
+        </select>
+      </div>
+      <div class="lc-contact">
+        <p class="text-xs ${last ? 'text-gray-300' : 'text-gray-600'}">${last ? `${esc(last)}${l.channel ? ' · ' + esc(LEAD_CHANNELS[l.channel] || '') : ''}` : 'Sin contacto'}</p>
+        ${chip || next}
+      </div>
+      <div class="lc-value">${value}</div>
+      <div class="lc-actions">
+        ${wa ? `<a href="${wa}" target="_blank" rel="noopener noreferrer" class="lead-act" title="Abrir WhatsApp" aria-label="Abrir WhatsApp de ${esc(l.name)}" onclick="event.stopPropagation()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></a>` : ''}
+        <button type="button" class="lead-act${l.awaiting_reply ? ' on' : ''}" aria-pressed="${!!l.awaiting_reply}"
+          title="${l.awaiting_reply ? 'Ya le contesté (quitar el aviso)' : 'Ha respondido: falta contestar'}"
+          aria-label="${l.awaiting_reply ? 'Quitar el aviso de respuesta pendiente de' : 'Marcar que ha respondido:'} ${esc(l.name)}"
+          onclick="event.stopPropagation(); toggleLeadReply('${l.id}', ${!l.awaiting_reply})">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+        </button>
+        <button type="button" class="lead-act" title="Registrar contacto de hoy" aria-label="Registrar contacto con ${esc(l.name)}" onclick="event.stopPropagation(); quickContact('${l.id}')">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </button>
+      </div>
+    </div>`;
 }
 
 function renderLeadsBoard() {
   const board = document.getElementById('leadsBoard');
   const countLabel = document.getElementById('leadCountLabel');
-  const items = getFilteredLeads();
-  countLabel.textContent = (leadStageFilter || leadSearchQuery)
-    ? `Mostrando ${items.length} de ${leadsData.length} leads`
+  const rows = getFilteredLeads();
+  const filtered = Boolean(leadStageFilter || leadSearchQuery || leadDueOnly || leadViewMode === 'hot');
+  countLabel.textContent = filtered
+    ? `Mostrando ${rows.length} de ${leadsData.length} leads`
     : `${leadsData.length} leads en total`;
+  board.classList.toggle('select-mode', leadSelectMode);
 
-  if (!items.length) {
-    board.innerHTML = '<p class="text-sm text-gray-600 text-center py-12 sm:col-span-2 xl:col-span-3">No hay leads que coincidan con la búsqueda/filtro.</p>';
+  if (!rows.length) {
+    board.innerHTML = `<p class="text-sm text-gray-600 text-center py-12 px-4">${
+      leadDueOnly ? 'Nada pendiente de contactar. Todo al día.' : 'No hay leads que coincidan con la búsqueda o el filtro.'}</p>`;
+    updateBulkBar();
     return;
   }
 
-  board.innerHTML = items.map(l => {
-    const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
-    return `
-        <div class="lead-card" style="--stage-color:${meta.color}" onclick="openLeadDetail('${l.id}')">
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <p class="font-medium text-sm truncate">${esc(l.name)}</p>
-            ${l.source && l.source.startsWith('n8n') ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-blue/10 text-brand-blue shrink-0" title="Creado automáticamente por n8n (${esc(l.source)})">🤖 n8n</span>` : ''}
-          </div>
-          ${l.company && l.company !== l.name ? `<p class="text-xs text-gray-500 mb-1 truncate">${esc(l.company)}</p>` : ''}
-          <div class="flex items-center gap-2 flex-wrap mb-2">
-            <span class="lead-stage-badge" style="--badge-bg:${meta.color}26; --badge-text:${meta.color}">
-              <span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}
-            </span>
-            ${l.city ? `<span class="text-[11px] text-gray-600">📍 ${esc(l.city)}</span>` : ''}
-            ${l.value_estimate ? `<span class="text-[11px] text-brand-blue">${fmtAmt(l.value_estimate)}€</span>` : ''}
-          </div>
-          <div class="flex items-center gap-2 mt-2">
-            <select onclick="event.stopPropagation()" onchange="quickChangeLeadStage('${l.id}', this.value)" style="font-size:11px;padding:4px 6px" class="flex-1">
-              ${LEAD_STAGES.map(([s,lb]) => `<option value="${s}" ${s===l.stage?'selected':''}>${lb}</option>`).join('')}
-            </select>
-            <button onclick="event.stopPropagation(); askDeleteEntity('lead','${l.id}','¿Eliminar este lead?')" class="text-gray-600 hover:text-red-400 transition-colors p-1 shrink-0">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </div>
-        </div>`;
-  }).join('');
+  const head = `<div class="lead-row-head"><span>Lead</span><span>Fase</span><span>Último contacto</span><span class="text-right">Valor</span><span></span></div>`;
+  if (leadViewMode === 'hot') {
+    // Fases calientes agrupadas: lo que está más cerca de cerrarse
+    board.innerHTML = head + ['reunion', 'propuesta'].map(stage => {
+      const group = rows.filter(r => r.l.stage === stage);
+      if (!group.length) return '';
+      const meta = LEAD_STAGE_META[stage];
+      const total = group.reduce((s, r) => s + (Number(r.l.value_estimate) || 0), 0);
+      return `<div class="lead-group-head" style="--c:${meta.color}">
+          <span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>
+          <span class="font-display font-semibold text-sm">${esc(meta.label)}</span>
+          <span class="text-xs text-gray-500">${group.length}${total ? ` · ${fmtAmt(total)}€` : ''}</span>
+        </div>${group.slice(0, leadVisible).map(leadRowHtml).join('')}
+        ${group.length > leadVisible ? `<p class="text-xs text-gray-600 px-4 py-2">… y ${group.length - leadVisible} más (pulsa «Mostrar más»)</p>` : ''}`;
+    }).join('') + (rows.length > leadVisible * 2 ? moreButtonHtml(rows.length - leadVisible) : '');
+  } else {
+    const shown = rows.slice(0, leadVisible);
+    board.innerHTML = head + shown.map(leadRowHtml).join('')
+      + (rows.length > shown.length ? moreButtonHtml(rows.length - shown.length) : '');
+  }
+  updateBulkBar();
+}
+function moreButtonHtml(remaining) {
+  return `<div class="p-4 text-center"><button type="button" onclick="showMoreLeads()"
+    class="border border-white/10 rounded-xl px-5 py-2.5 text-sm text-gray-300 hover:text-white hover:border-white/20 w-full sm:w-auto">Mostrar ${Math.min(LEAD_PAGE, remaining)} más <span class="text-gray-600">(${remaining} restantes)</span></button></div>`;
 }
 
 async function quickChangeLeadStage(id, stage) {
   try {
-    await fetch(`/api/leads?id=${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
-      body: JSON.stringify({ stage }),
-    });
-    await loadLeads();
+    const updated = await leadApi(`/api/leads?id=${id}`, 'PUT', { stage });
+    mergeLead(updated);
+    refreshAfterLeadChange();
     showToast('✓ Fase actualizada');
-    if (currentView !== 'home') loadHome();
-  } catch {
-    showToast('Error al actualizar', 'error');
+  } catch (err) {
+    showToast(err.message || 'Error al actualizar', 'error');
+    renderLeadsBoard(); // devuelve el selector a la fase real
   }
 }
 
-// ─── Panel de detalle de lead (solo lectura, animado) ────────────────────────
-// Al hacer click en una tarjeta se abre este panel en vez del modal de edición
-// directamente, para que la información se lea clara antes de tocar nada.
+// Registro rápido: "he contactado hoy"; el servidor propone la fecha del siguiente seguimiento
+async function quickContact(id) {
+  try {
+    const updated = await leadApi(`/api/leads?id=${id}&action=contact`, 'POST', {});
+    mergeLead(updated);
+    refreshAfterLeadChange();
+    showToast(`✓ Contacto registrado${updated.next_followup_at ? ` · próximo ${shortDate(updated.next_followup_at)}` : ''}`);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ── Selección y acciones en bloque ──
+function toggleLeadSelectMode() {
+  leadSelectMode = !leadSelectMode;
+  if (!leadSelectMode) leadSelected.clear();
+  document.getElementById('leadBulkStage').value = '';
+  renderLeadStageLegend();
+  renderLeadsBoard();
+}
+function toggleLeadSelected(id, on) {
+  if (on) {
+    if (leadSelected.size >= LEAD_BULK_MAX) {
+      showToast(`Máximo ${LEAD_BULK_MAX} leads por operación`, 'error');
+      renderLeadsBoard();
+      return;
+    }
+    leadSelected.add(id);
+  } else leadSelected.delete(id);
+  updateBulkBar();
+}
+function selectAllFilteredLeads() {
+  const rows = getFilteredLeads();
+  for (const { l } of rows) {
+    if (leadSelected.size >= LEAD_BULK_MAX) break;
+    leadSelected.add(l.id);
+  }
+  if (rows.length > LEAD_BULK_MAX) showToast(`Seleccionados los primeros ${LEAD_BULK_MAX}`);
+  renderLeadsBoard();
+}
+function updateBulkBar() {
+  const bar = document.getElementById('leadBulkBar');
+  if (!bar) return;
+  const n = leadSelected.size;
+  bar.style.display = leadSelectMode ? 'flex' : 'none';
+  document.getElementById('leadBulkCount').textContent = n === 1 ? '1 seleccionado' : `${n} seleccionados`;
+  document.getElementById('leadBulkApply').disabled = n === 0;
+  document.getElementById('leadBulkStage').disabled = n === 0;
+  document.querySelectorAll('.lead-check').forEach(cb => {
+    const row = cb.closest('.lead-row');
+    if (row) row.classList.toggle('selected', cb.checked);
+  });
+}
+async function applyBulkStage() {
+  const stage = document.getElementById('leadBulkStage').value;
+  const ids = [...leadSelected];
+  if (!stage || !ids.length) return;
+  if (!confirm(`¿Mover ${ids.length} lead${ids.length === 1 ? '' : 's'} a "${LEAD_STAGE_META[stage].label}"?`)) return;
+  const btn = document.getElementById('leadBulkApply');
+  btn.disabled = true;
+  try {
+    const { updated } = await leadApi('/api/leads?action=bulk', 'PATCH', { ids, stage });
+    leadSelected.clear();
+    leadSelectMode = false;
+    document.getElementById('leadBulkStage').value = '';
+    await loadLeads();
+    renderLeadStageLegend();
+    showToast(`✓ ${updated} lead${updated === 1 ? '' : 's'} movido${updated === 1 ? '' : 's'}`);
+  } catch (err) {
+    showToast(err.message, 'error');
+    btn.disabled = false;
+  }
+}
+
+// ─── Panel de detalle de lead ────────────────────────────────────────────────────
+// Se abre al pulsar una fila. Arriba, el seguimiento (registrar contacto, temperatura,
+// próxima fecha); debajo los datos, el historial y la conversión a cliente. El botón
+// "Editar" del pie abre el modal genérico para cambiar los datos básicos.
 let currentLeadDetailId = null;
+let leadTimelineToken = 0;
 
 function leadDetailRow(label, valueHtml) {
   if (!valueHtml) return '';
   return `<div class="lead-detail-row"><label>${esc(label)}</label><div class="val">${valueHtml}</div></div>`;
 }
 
-function openLeadDetail(id) {
-  const l = leadsData.find(x => x.id === id);
-  if (!l) return;
-  currentLeadDetailId = id;
-  const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
+async function openLeadById(id) {
+  if (!leadsData.length) await loadLeads();
+  openLeadDetail(id);
+}
 
+function leadQuickLinks(l) {
+  const wa = leadWaLink(l);
+  const ig = String(l.instagram || '').replace(/^@/, '').trim();
+  const links = [
+    wa && ['WhatsApp', wa],
+    l.phone && ['Llamar', `tel:${String(l.phone).replace(/[^\d+]/g, '')}`],
+    l.email && ['Email', `mailto:${l.email}`],
+    ig && ['Instagram', `https://instagram.com/${encodeURIComponent(ig)}`],
+    l.website && ['Web', safeUrl(l.website)],
+  ].filter(Boolean);
+  return links.map(([label, href]) => `<a href="${esc(href)}" ${href.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}
+    class="lead-quick-link">${esc(label)}</a>`).join('');
+}
+
+function renderLeadDetail(l) {
+  const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
   document.getElementById('leadDetailName').textContent = l.name || '—';
   document.getElementById('leadDetailCompany').textContent = (l.company && l.company !== l.name) ? l.company : '';
   const badge = document.getElementById('leadDetailStageBadge');
@@ -2809,17 +3722,20 @@ function openLeadDetail(id) {
   badge.style.setProperty('--badge-text', meta.color);
   badge.innerHTML = `<span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}`;
 
-  const waDigits = (l.whatsapp || '').replace(/\D/g, '');
+  const f = leadFollowup(l);
+  const closed = LEAD_CLOSED.includes(l.stage);
+  const today = leadToday();
+  const defaultNext = l.next_followup_at || addDaysIso(today, LEAD_HOT.includes(l.stage) ? 3 : 7);
+  const last = agoLabel(l.last_contact_at);
   const igHandle = (l.instagram || '').replace(/^@/, '').trim();
 
   const contacto = [
     leadDetailRow('Email', l.email ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : ''),
     leadDetailRow('Teléfono', l.phone ? `<a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>` : ''),
-    leadDetailRow('WhatsApp', waDigits ? `<a href="https://wa.me/${waDigits}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : (l.whatsapp ? esc(l.whatsapp) : '')),
+    leadDetailRow('WhatsApp', leadWaLink(l) ? `<a href="${leadWaLink(l)}" target="_blank" rel="noopener">${esc(l.whatsapp || l.phone)}</a>` : (l.whatsapp ? esc(l.whatsapp) : '')),
     leadDetailRow('Web', l.website ? `<a href="${safeUrl(l.website)}" target="_blank" rel="noopener noreferrer">${esc(l.website)}</a>` : ''),
     leadDetailRow('Instagram', igHandle ? `<a href="https://instagram.com/${esc(igHandle)}" target="_blank" rel="noopener">@${esc(igHandle)}</a>` : ''),
   ].join('');
-
   const comerciales = [
     leadDetailRow('Origen', l.source ? esc(l.source) : ''),
     leadDetailRow('Ciudad', l.city ? esc(l.city) : ''),
@@ -2827,14 +3743,74 @@ function openLeadDetail(id) {
     leadDetailRow('Valor estimado', l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : ''),
   ].join('');
 
-  const body = document.getElementById('leadDetailBody');
-  body.innerHTML = `
-    ${contacto ? `<p class="entity-section-title">Contacto</p><div class="mb-2">${contacto}</div>` : ''}
-    ${comerciales ? `<p class="entity-section-title mt-5">Datos comerciales</p><div class="mb-2">${comerciales}</div>` : ''}
-    ${l.notes ? `<p class="entity-section-title mt-5">Notas</p><div class="lead-detail-notes">${esc(l.notes)}</div>` : ''}
-  `;
-  document.getElementById('leadDetailDeleteBtn').onclick = () => askDeleteEntity('lead', l.id, '¿Eliminar este lead?');
+  const follow = closed ? '' : `
+    <div class="ld-follow">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <p class="entity-section-title !mb-0 !pb-0 !border-0">Seguimiento</p>
+        ${followChipHtml(f)}
+      </div>
+      <p class="text-sm text-gray-400 mb-3">
+        Último contacto: <span class="text-gray-200">${last ? `${esc(last)}${l.channel ? ' por ' + esc(LEAD_CHANNELS[l.channel] || '') : ''}` : 'ninguno registrado'}</span>
+        · Próximo: <span class="text-gray-200">${l.next_followup_at ? esc(shortDate(l.next_followup_at)) : 'sin fecha'}</span>
+      </p>
+      <div class="temp-seg mb-3" role="group" aria-label="Temperatura del lead">
+        ${Object.entries(LEAD_TEMPS).map(([k, t]) => `<button type="button" aria-pressed="${l.temperature === k}" style="--c:${t.color}"
+          onclick="setLeadTemperature('${k}')"><span class="lead-stage-dot" style="--dot-color:${t.color}"></span>${t.label}</button>`).join('')}
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+        <div class="entity-field"><label for="ld-channel">Canal</label>
+          <select id="ld-channel"><option value="">—</option>${Object.entries(LEAD_CHANNELS).map(([k, lb]) => `<option value="${k}" ${l.channel === k ? 'selected' : ''}>${lb}</option>`).join('')}</select></div>
+        <div class="entity-field"><label for="ld-next">Próximo seguimiento</label>
+          <input type="date" id="ld-next" value="${esc(defaultNext)}"></div>
+      </div>
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        ${[['+3 días', 3], ['+1 semana', 7], ['+2 semanas', 14], ['+1 mes', 30]].map(([lb, d]) =>
+          `<button type="button" class="date-chip" onclick="setLeadNextIn(${d})">${lb}</button>`).join('')}
+        <button type="button" class="date-chip" onclick="setLeadNextIn(null)">Sin fecha</button>
+      </div>
+      <div class="entity-field mb-3"><label for="ld-note">Nota del contacto</label>
+        <textarea id="ld-note" rows="2" maxlength="2000" placeholder="Qué se habló y qué queda pendiente…" style="min-height:64px"></textarea></div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button type="button" id="ldContactBtn" onclick="submitLeadContact()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-3 hover:opacity-90 transition-opacity">Registrar contacto</button>
+        <button type="button" onclick="submitLeadNote()" class="border border-white/10 rounded-xl px-5 py-3 text-sm text-gray-300 hover:text-white hover:border-white/20">Solo guardar nota</button>
+      </div>
+    </div>`;
 
+  const links = leadQuickLinks(l);
+  const replyBanner = l.awaiting_reply && !closed ? `
+    <div class="reply-banner" role="status">
+      <p class="text-sm font-semibold text-red-200">Ha respondido: falta contestarle${l.replied_at ? ` (${esc(agoLabel(l.replied_at))})` : ''}</p>
+      <p class="text-xs text-gray-400 mt-1">Al registrar un contacto, el aviso se quita solo.</p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button type="button" class="btn-chip primary" onclick="openTemplateForLead('${l.id}')">Contestar con plantilla</button>
+        <button type="button" class="btn-chip" onclick="toggleLeadReply('${l.id}', false)">Ya le contesté</button>
+      </div>
+    </div>` : '';
+  const convert = l.converted_client_id
+    ? `<p class="text-xs text-emerald-400 mt-6">Ya es cliente. <button type="button" class="underline" onclick="closeLeadDetail(); switchView('clients')">Ver clientes</button></p>`
+    : `<button type="button" onclick="convertLeadToClient()" class="mt-6 w-full border border-emerald-400/30 text-emerald-300 rounded-xl px-5 py-3 text-sm font-medium hover:bg-emerald-400/10 transition-colors">Convertir en cliente</button>`;
+
+  document.getElementById('leadDetailBody').innerHTML = `
+    ${replyBanner}
+    <div class="flex flex-wrap gap-2 mb-5">${links}<button type="button" class="lead-quick-link" onclick="openTemplateForLead('${l.id}')">Usar plantilla</button>${closed || l.awaiting_reply ? '' : `<button type="button" class="lead-quick-link" onclick="toggleLeadReply('${l.id}', true)">Ha respondido</button>`}</div>
+    ${follow}
+    ${contacto ? `<p class="entity-section-title mt-6">Contacto</p><div class="mb-2">${contacto}</div>` : ''}
+    ${comerciales ? `<p class="entity-section-title mt-6">Datos comerciales</p><div class="mb-2">${comerciales}</div>` : ''}
+    ${l.notes ? `<p class="entity-section-title mt-6">Notas</p><div class="lead-detail-notes">${esc(l.notes)}</div>` : ''}
+    ${leadProposalsHtml(l)}
+    <p class="entity-section-title mt-6">Historial</p>
+    <div id="leadTimeline" class="lead-timeline"><p class="text-sm text-gray-600">Cargando…</p></div>
+    ${convert}`;
+  document.getElementById('leadDetailDeleteBtn').onclick = () => askDeleteEntity('lead', l.id, '¿Eliminar este lead?');
+  loadLeadTimeline(l.id);
+}
+
+function openLeadDetail(id) {
+  const l = leadsData.find(x => x.id === id);
+  if (!l) return;
+  currentLeadDetailId = id;
+  renderLeadDetail(l);
+  document.getElementById('leadDetailBody').scrollTop = 0;
   const overlay = document.getElementById('leadDetailOverlay');
   const panel = document.getElementById('leadDetailPanel');
   overlay.style.display = 'flex';
@@ -2848,7 +3824,7 @@ function closeLeadDetail() {
   const overlay = document.getElementById('leadDetailOverlay');
   const panel = document.getElementById('leadDetailPanel');
   panel.classList.remove('open');
-  setTimeout(() => { overlay.style.display = 'none'; }, 320);
+  setTimeout(() => { if (!currentLeadDetailId) overlay.style.display = 'none'; }, 320);
   currentLeadDetailId = null;
 }
 
@@ -2860,6 +3836,109 @@ function editCurrentLeadDetail() {
   const id = currentLeadDetailId;
   closeLeadDetail();
   if (id) setTimeout(() => openEntityModal('lead', id), 150);
+}
+
+// ── Historial del lead (tabla "activities") ──
+const TIMELINE_ICONS = {
+  contact:       ['#34d399', 'M5 13l4 4L19 7'],
+  note:          ['#38bdf8', 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.4-9.4a2 2 0 112.8 2.8L11.8 15H9v-2.8l8.6-8.6z'],
+  stage_changed: ['#a78bfa', 'M13 7l5 5m0 0l-5 5m5-5H6'],
+  created:       ['#9ca3af', 'M12 4v16m8-8H4'],
+  converted:     ['#34d399', 'M5 13l4 4L19 7'],
+  proposal:      ['#a78bfa', 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
+  reply:         ['#f87171', 'M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'],
+};
+async function loadLeadTimeline(id) {
+  const token = ++leadTimelineToken;
+  const box = document.getElementById('leadTimeline');
+  try {
+    const items = await leadApi(`/api/activities?entity_type=lead&entity_id=${encodeURIComponent(id)}&limit=60`);
+    if (token !== leadTimelineToken || !box || currentLeadDetailId !== id) return; // ya se abrió otro lead
+    if (!items.length) {
+      box.innerHTML = '<p class="text-sm text-gray-600">Aún no hay nada registrado. Los contactos y notas que guardes aparecerán aquí.</p>';
+      return;
+    }
+    box.innerHTML = items.map(a => {
+      const [color, path] = TIMELINE_ICONS[a.action] || ['#6b7280', 'M12 8v4l3 3'];
+      const when = new Date(a.created_at).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return `<div class="flex items-start gap-3">
+        <span class="timeline-dot" style="--c:${color}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="${path}"/></svg></span>
+        <div class="min-w-0 flex-1"><p class="text-sm text-gray-200 break-words">${esc(a.description || a.action)}</p><p class="text-xs text-gray-600">${esc(when)}</p></div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    if (box && token === leadTimelineToken) box.innerHTML = `<p class="text-sm text-red-400">${esc(err.message)}</p>`;
+  }
+}
+
+// ── Acciones del panel ──
+function setLeadNextIn(days) {
+  const input = document.getElementById('ld-next');
+  if (input) input.value = days === null ? '' : addDaysIso(leadToday(), days);
+}
+
+async function submitLeadContact() {
+  const id = currentLeadDetailId;
+  const btn = document.getElementById('ldContactBtn');
+  if (!id || !btn || btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const updated = await leadApi(`/api/leads?id=${id}&action=contact`, 'POST', {
+      channel: document.getElementById('ld-channel').value || undefined,
+      note: document.getElementById('ld-note').value.trim(),
+      next_followup_at: document.getElementById('ld-next').value || null,
+    });
+    mergeLead(updated);
+    refreshAfterLeadChange();
+    showToast(`✓ Contacto registrado${updated.next_followup_at ? ` · próximo ${shortDate(updated.next_followup_at)}` : ''}`);
+  } catch (err) {
+    showToast(err.message, 'error');
+    btn.disabled = false;
+  }
+}
+
+async function submitLeadNote() {
+  const id = currentLeadDetailId;
+  const note = document.getElementById('ld-note').value.trim();
+  if (!id) return;
+  if (!note) { showToast('Escribe primero la nota', 'error'); return; }
+  try {
+    await leadApi(`/api/leads?id=${id}&action=note`, 'POST', { note });
+    document.getElementById('ld-note').value = '';
+    loadLeadTimeline(id);
+    showToast('✓ Nota guardada');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function setLeadTemperature(temp) {
+  const id = currentLeadDetailId;
+  const l = leadsData.find(x => x.id === id);
+  if (!l) return;
+  try {
+    const updated = await leadApi(`/api/leads?id=${id}`, 'PUT', { temperature: l.temperature === temp ? '' : temp });
+    mergeLead(updated);
+    refreshAfterLeadChange();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function convertLeadToClient() {
+  const id = currentLeadDetailId;
+  const l = leadsData.find(x => x.id === id);
+  if (!l) return;
+  if (!confirm(`¿Convertir "${l.company || l.name}" en cliente? Se crea la ficha de cliente y una oportunidad, y el lead pasa a Ganado.`)) return;
+  try {
+    const { client } = await leadApi(`/api/leads?id=${id}&action=convert`, 'POST');
+    closeLeadDetail();
+    await loadLeads();
+    if (typeof loadClients === 'function') loadClients();
+    showToast(`✓ Cliente creado: ${client.client_name}`);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
 }
 
 // Botón "Actualizar CRM": fuerza un refetch manual de leads (por si un flujo de n8n
@@ -4225,7 +5304,7 @@ async function removeStoryLink(index) {
 
 function renderNotificationSettings() {
   const s = storiesState.settings;
-  ['tasks', 'story', 'weekly'].forEach(k => {
+  ['tasks', 'followups', 'cobros', 'story', 'weekly'].forEach(k => {
     document.getElementById(`ns-${k}_enabled`).checked = s[`${k}_enabled`] !== false;
     document.getElementById(`ns-${k}_time`).value = s[`${k}_time`] || '';
   });
@@ -4240,7 +5319,7 @@ async function saveNotificationSettings() {
   const body = {
     story_days: [...document.querySelectorAll('#ns-story_days [aria-pressed="true"]')].map(b => Number(b.dataset.dow)),
   };
-  ['tasks', 'story', 'weekly'].forEach(k => {
+  ['tasks', 'followups', 'cobros', 'story', 'weekly'].forEach(k => {
     body[`${k}_enabled`] = document.getElementById(`ns-${k}_enabled`).checked;
     body[`${k}_time`] = document.getElementById(`ns-${k}_time`).value;
   });
@@ -4434,27 +5513,141 @@ async function loadHome() {
   try {
     const res = await fetch('/api/dashboard', { headers: { 'x-admin-password': adminPass } });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error');
+    renderHomeGreeting();
+    renderHomeSalesKpis(data);
     renderHomeKpis(data);
+    renderHomeDue(data);
+    renderHomeReceivables(data);
+    renderHomeRenewals(data);
+    setProposalsBadge(data.propuestas_abiertas?.due || 0);
+    renderHomeFunnel(data);
+    renderHomeSources(data);
     renderHomeUrgentTasks(data.tareas_urgentes_hoy || []);
     renderHomeUpcomingEvents(data.proximos_eventos || []);
     renderActivityItems(document.getElementById('homeActivity'), data.actividad_reciente || [], 'Sin actividad reciente.');
+    updateLeadsNavBadge(data.seguimientos_total || 0);
   } catch {
     showToast('Error al cargar el panel de inicio', 'error');
   }
 }
 
+function renderHomeGreeting() {
+  const h = new Date().getHours();
+  const hello = h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('homeGreeting').textContent = `${hello}, Alejandro`;
+  const date = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  document.getElementById('homeDate').textContent = date.charAt(0).toUpperCase() + date.slice(1);
+}
+
+function homeKpiCard({ label, value, sub = '', cls = 'text-white', onclick = '' }) {
+  const inner = `
+      <p class="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-2 leading-snug">${esc(label)}</p>
+      <p class="font-display font-bold text-xl sm:text-2xl ${cls} truncate">${value}</p>
+      ${sub ? `<p class="text-xs text-gray-600 mt-1 truncate">${esc(sub)}</p>` : ''}`;
+  return onclick
+    ? `<button type="button" onclick="${onclick}" class="home-kpi text-left">${inner}</button>`
+    : `<div class="home-kpi">${inner}</div>`;
+}
+
+function renderHomeSalesKpis(d) {
+  const due = d.seguimientos_total || 0;
+  document.getElementById('homeKpisSales').innerHTML = [
+    { label: 'Toca contactar', value: due, cls: due ? 'text-red-300' : 'text-emerald-300', sub: due ? 'pendientes' : 'todo al día', onclick: 'openLeadsDue()' },
+    { label: 'Leads calientes', value: d.leads_calientes || 0, sub: d.valor_calientes ? `${fmtAmt(d.valor_calientes)}€ en juego` : 'propuesta y reunión', cls: 'text-violet-300', onclick: 'openLeadsHot()' },
+    { label: 'Leads nuevos (7 d)', value: d.leads_nuevos_semana || 0, sub: `${fmtAmt(d.leads_total || 0)} en total`, onclick: "openLeadsStage(null)" },
+    { label: 'Clientes activos', value: d.clientes_activos || 0, sub: `de ${d.clientes_total || 0}`, cls: 'text-white', onclick: "switchView('clients')" },
+  ].map(homeKpiCard).join('');
+
+  const alert = document.getElementById('homeMailAlert');
+  const n = d.emails_sin_enviar || 0;
+  alert.style.display = n ? 'flex' : 'none';
+  if (n) document.getElementById('homeMailAlertText').textContent =
+    `${fmtAmt(n)} lead${n === 1 ? '' : 's'} con el email sin enviar`;
+}
+
 function renderHomeKpis(d) {
-  const cards = [
-    { label: 'Facturado este mes',   value: `${fmtAmt(d.facturado_mes)}€`,   cls: 'text-white' },
-    { label: 'Pendiente de cobro',   value: `${fmtAmt(d.pendiente_cobro)}€`, cls: 'text-yellow-400' },
-    { label: 'Gastos este mes',      value: `${fmtAmt(d.gastos_mes)}€`,      cls: 'text-red-400' },
-    { label: 'Beneficio este mes',   value: `${fmtAmt(d.beneficio_mes)}€`,   cls: d.beneficio_mes >= 0 ? 'text-green-400' : 'text-red-400' },
-  ];
-  document.getElementById('homeKpis').innerHTML = cards.map(c => `
-    <div class="bg-brand-gray border border-white/5 rounded-2xl p-5">
-      <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">${c.label}</p>
-      <p class="font-display font-bold text-2xl ${c.cls}">${c.value}</p>
-    </div>`).join('');
+  document.getElementById('homeKpis').innerHTML = [
+    { label: 'Facturado este mes', value: `${fmtAmt(d.facturado_mes)}€`, cls: 'text-white' },
+    { label: 'Pendiente de cobro', value: `${fmtAmt(d.pendiente_cobro)}€`, cls: 'text-yellow-400' },
+    { label: 'Gastos este mes', value: `${fmtAmt(d.gastos_mes)}€`, cls: 'text-red-400' },
+    { label: 'Beneficio este mes', value: `${fmtAmt(d.beneficio_mes)}€`, cls: d.beneficio_mes >= 0 ? 'text-green-400' : 'text-red-400' },
+  ].map(homeKpiCard).join('');
+}
+
+// Leads a los que toca contactar hoy (los 8 más urgentes; el resto, en la lista de Leads)
+function renderHomeDue(d) {
+  const list = d.seguimientos || [];
+  homeDueCache = list;
+  const total = d.seguimientos_total || 0;
+  const waiting = d.esperando_respuesta || 0;
+  const sub = document.getElementById('homeDueSub');
+  const box = document.getElementById('homeDueList');
+  document.getElementById('homeDueAll').style.display = total ? 'inline-flex' : 'none';
+  if (!list.length) {
+    sub.textContent = 'Ningún seguimiento pendiente';
+    box.innerHTML = `<p class="text-sm text-gray-500 text-center py-8">Todo al día. Cuando registres un contacto, aquí te recordaré cuándo volver a escribir.</p>`;
+    return;
+  }
+  sub.textContent = (total > list.length ? `Los ${list.length} más urgentes de ${total}` : `${total} pendiente${total === 1 ? '' : 's'}`)
+    + (waiting ? ` · ${waiting} ${waiting === 1 ? 'ha respondido y espera' : 'han respondido y esperan'} contestación` : '');
+  box.innerHTML = list.map(l => {
+    const wa = leadWaLink(l);
+    const info = [l.company && l.company !== l.name ? l.company : '',
+      l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : '',
+      l.last_contact_at ? `contactado ${agoLabel(l.last_contact_at)}` : 'sin contacto registrado'].filter(Boolean).join(' · ');
+    return `
+    <div class="home-due-row">
+      <button type="button" class="min-w-0 flex-1 text-left" onclick="openLeadById('${l.id}')">
+        <p class="text-sm font-medium truncate">${esc(l.name)}</p>
+        <div class="flex flex-wrap items-center gap-1.5 mt-1">${stageBadgeHtml(l.stage)}${followChipHtml(l.followup)}</div>
+        <p class="text-xs text-gray-500 truncate mt-1">${esc(info)}</p>
+        ${l.proposal_title ? `<p class="text-xs text-violet-300 truncate mt-0.5">Propuesta: ${esc(l.proposal_title)}</p>` : ''}
+      </button>
+      <div class="flex gap-1.5 shrink-0">
+        <button type="button" class="lead-act" title="Usar plantilla de mensaje" aria-label="Usar plantilla para ${esc(l.name)}" onclick="openTemplateForLead('${l.id}')">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></button>
+        ${wa ? `<a href="${wa}" target="_blank" rel="noopener noreferrer" class="lead-act" title="Abrir WhatsApp" aria-label="Abrir WhatsApp de ${esc(l.name)}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></a>` : ''}
+        <button type="button" class="lead-act" title="Registrar contacto de hoy" aria-label="Registrar contacto con ${esc(l.name)}" onclick="quickContact('${l.id}')">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Embudo: barras con escala suavizada (790 frente a 3 sería ilegible en lineal)
+function renderHomeFunnel(d) {
+  const f = d.embudo || { counts: {}, total: 0 };
+  const stages = ['nuevo', 'email_no_enviado', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
+  const max = Math.max(1, ...stages.map(s => f.counts[s] || 0));
+  document.getElementById('homeFunnelSub').textContent = f.total
+    ? `${f.contacted_pct}% contactados · ${f.advanced_of_contacted_pct}% de los contactados llega a propuesta o más`
+    : 'Aún no hay leads';
+  document.getElementById('homeFunnel').innerHTML = stages.map(s => {
+    const meta = LEAD_STAGE_META[s];
+    const n = f.counts[s] || 0;
+    const w = n ? Math.max(3, Math.round(Math.sqrt(n / max) * 100)) : 0;
+    return `<button type="button" class="funnel-row" onclick="openLeadsStage('${s}')" aria-label="${esc(meta.label)}: ${n}">
+      <span class="funnel-label">${esc(meta.label)}</span>
+      <span class="funnel-track"><span class="funnel-bar" style="width:${w}%;background:${meta.color}"></span></span>
+      <span class="funnel-count">${fmtAmt(n)}</span>
+    </button>`;
+  }).join('');
+}
+
+function renderHomeSources(d) {
+  const rows = d.leads_por_origen || [];
+  const box = document.getElementById('homeSources');
+  if (!rows.length) { box.innerHTML = '<p class="text-sm text-gray-600 text-center py-6">Sin datos todavía.</p>'; return; }
+  box.innerHTML = `
+    <div class="source-row source-head"><span>Origen</span><span>Leads</span><span>Avanzan</span><span>Ganados</span></div>
+    ${rows.map(r => `<div class="source-row">
+      <span class="truncate">${esc(r.source)}</span><span>${fmtAmt(r.total)}</span>
+      <span class="${r.advanced ? 'text-violet-300' : 'text-gray-600'}">${fmtAmt(r.advanced)}</span>
+      <span class="${r.won ? 'text-emerald-300' : 'text-gray-600'}">${fmtAmt(r.won)}</span></div>`).join('')}
+    <p class="text-[11px] text-gray-600 mt-3">«Avanzan» = propuesta, reunión o ganado.</p>`;
 }
 
 async function renderHomeUrgentTasks(tasks) {
@@ -4492,6 +5685,788 @@ function renderHomeUpcomingEvents(events) {
       <p class="text-xs text-brand-blue shrink-0">${new Date(ev.start_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</p>
       <p class="text-sm flex-1 truncate">${esc(ev.title)}</p>
     </div>`).join('');
+}
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// Cobros pendientes, plantillas de mensaje, buscador global, propuestas,
+// "ha respondido", renovaciones y copia de seguridad (migraciones 015–019).
+// Reutiliza leadApi(), showToast(), esc(), fmtAmt() y el modal genérico del bloque anterior.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const NEW_TAB_OVERLAYS = ['gsearch-overlay', 'tpl-overlay', 'recpay-overlay'];
+const fmtEuros = n => `${Number(n).toLocaleString('es-ES', { maximumFractionDigits: 2 })} €`;
+const firstNameOf = name => String(name || '').trim().split(/\s+/)[0] || '';
+const clientById = id => clients.find(c => c.id === id) || null;
+const clientNameById = id => clientById(id)?.client_name || 'Cliente';
+function clientPhone(c) { return c ? (c.client_contact_phone || '') : ''; }
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // Alternativa para navegadores que bloquean el portapapeles
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch { ok = false; }
+    ta.remove();
+    return ok;
+  }
+}
+
+// ─── Plantillas de mensaje ─────────────────────────────────────────────────────
+// Misma lógica que lib/message-templates.js (fillTemplate / whatsappLink)
+let templatesData = [];
+let templatesLoaded = false;
+
+function fillMessageTemplate(body, vars) {
+  const missing = [];
+  const text = String(body || '').replace(/\{(nombre|empresa|importe|enlace)\}/g, (match, key, offset, whole) => {
+    const v = String(vars[key] ?? '').trim();
+    if (!v) { if (!missing.includes(key)) missing.push(key); return match; }
+    return v.endsWith('.') && whole[offset + match.length] === '.' ? v.slice(0, -1) : v; // "S.L." + punto de la frase
+  });
+  return { text, missing };
+}
+function waMessageLink(phone, text) {
+  let digits = String(phone || '').replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  if (digits.length === 9 && /^[6789]/.test(digits)) digits = '34' + digits;
+  const q = text ? `?text=${encodeURIComponent(text)}` : '';
+  if (digits.length < 10 || digits.length > 15) return `https://wa.me/${q}`; // sin número: WhatsApp deja elegir contacto
+  return `https://wa.me/${digits}${q}`;
+}
+function hasWaNumber(phone) {
+  let digits = String(phone || '').replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  if (digits.length === 9 && /^[6789]/.test(digits)) digits = '34' + digits;
+  return digits.length >= 10 && digits.length <= 15;
+}
+
+async function ensureTemplates(force = false) {
+  if (templatesLoaded && !force) return templatesData;
+  templatesData = await leadApi('/api/message-templates');
+  templatesLoaded = true;
+  return templatesData;
+}
+
+let tplCtx = null;
+let tplDirty = false;
+
+async function openTemplatePicker(ctx) {
+  tplCtx = ctx;
+  tplDirty = false;
+  document.getElementById('tplSubtitle').textContent = ctx.title || '';
+  let list = [];
+  try { list = (await ensureTemplates()).filter(t => t.active); } catch (err) { showToast(err.message, 'error'); return; }
+  const select = document.getElementById('tpl-select');
+  const ordered = [...list].sort((a, b) => (b.category === ctx.category) - (a.category === ctx.category));
+  select.innerHTML = ordered.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  document.getElementById('tplEmpty').style.display = ordered.length ? 'none' : 'block';
+  document.getElementById('tplBody').style.display = ordered.length ? 'block' : 'none';
+  for (const k of ['nombre', 'empresa', 'importe', 'enlace']) document.getElementById(`tpl-v-${k}`).value = ctx[k] || '';
+  document.getElementById('tpl-refill').style.display = 'none';
+  document.getElementById('tpl-wa-note').style.display = 'none';
+  document.getElementById('tpl-overlay').style.display = 'flex';
+  if (ordered.length) { renderTemplateText(); document.getElementById('tpl-select').focus(); }
+}
+function closeTemplatePicker() { document.getElementById('tpl-overlay').style.display = 'none'; tplCtx = null; }
+function closeTemplatePickerOnOverlay(e) { if (e.target === document.getElementById('tpl-overlay')) closeTemplatePicker(); }
+
+function templateVars() {
+  const v = {};
+  for (const k of ['nombre', 'empresa', 'importe', 'enlace']) v[k] = document.getElementById(`tpl-v-${k}`).value;
+  return v;
+}
+function renderTemplateText() {
+  const tpl = templatesData.find(t => t.id === document.getElementById('tpl-select').value);
+  const { text } = fillMessageTemplate(tpl ? tpl.body : '', templateVars());
+  document.getElementById('tpl-text').value = text;
+  tplDirty = false;
+  document.getElementById('tpl-refill').style.display = 'none';
+  updateTemplateStatus();
+}
+function templatePickerSelect() { renderTemplateText(); }
+function templatePickerVars() {
+  if (tplDirty) document.getElementById('tpl-refill').style.display = 'inline-block'; // no pisamos lo que has editado
+  else renderTemplateText();
+}
+function templatePickerRefill() { renderTemplateText(); }
+function templatePickerEdited() { tplDirty = true; updateTemplateStatus(); }
+
+// Avisa de las variables que siguen sin rellenar y actualiza el enlace de WhatsApp
+function updateTemplateStatus() {
+  const text = document.getElementById('tpl-text').value;
+  const missing = [...new Set((text.match(/\{(nombre|empresa|importe|enlace)\}/g) || []))];
+  const warn = document.getElementById('tpl-warn');
+  warn.style.display = missing.length ? 'block' : 'none';
+  warn.textContent = missing.length ? `Faltan por rellenar: ${missing.join(' ')}` : '';
+  const phone = tplCtx?.phone || '';
+  document.getElementById('tpl-wa').href = waMessageLink(phone, text);
+  const note = document.getElementById('tpl-wa-note');
+  note.style.display = hasWaNumber(phone) ? 'none' : 'block';
+  note.textContent = 'Este contacto no tiene un teléfono válido: WhatsApp te dejará elegir a quién enviarlo. También puedes copiar el texto.';
+}
+function templateOpenWhatsapp(e) {
+  const text = document.getElementById('tpl-text').value;
+  const missing = [...new Set((text.match(/\{(nombre|empresa|importe|enlace)\}/g) || []))];
+  if (missing.length && !confirm(`Quedan datos sin rellenar (${missing.join(' ')}). ¿Abrir WhatsApp igualmente?`)) {
+    e.preventDefault();
+    return false;
+  }
+  document.getElementById('tpl-wa').href = waMessageLink(tplCtx?.phone || '', text);
+  return true;
+}
+async function copyTemplateText() {
+  const ok = await copyText(document.getElementById('tpl-text').value);
+  showToast(ok ? '✓ Texto copiado' : 'No se pudo copiar', ok ? 'success' : 'error');
+}
+
+// Plantilla pensada para un lead: elige la categoría según su fase y rellena sus datos
+function openTemplateForLead(id) {
+  const l = leadsData.find(x => x.id === id) || homeDueCache.find(x => x.id === id);
+  if (!l) return;
+  const openProposal = proposalsData.find(p => p.lead_id === id && PROPOSAL_OPEN.includes(p.status));
+  const category = openProposal || l.stage === 'propuesta' ? 'propuesta' : l.stage === 'reunion' ? 'reunion' : 'lead';
+  openTemplatePicker({
+    title: `Para ${l.name}${l.company && l.company !== l.name ? ` · ${l.company}` : ''}`,
+    category,
+    nombre: firstNameOf(l.name),
+    empresa: l.company || l.name,
+    importe: openProposal?.amount ? fmtEuros(openProposal.amount) : (l.value_estimate ? fmtEuros(l.value_estimate) : ''),
+    enlace: openProposal?.url || '',
+    phone: l.whatsapp || l.phone || '',
+  });
+}
+
+// ─── Vista de plantillas (gestor) ──────────────────────────────────────────────
+
+async function loadTemplatesView() {
+  const box = document.getElementById('templatesList');
+  try {
+    await ensureTemplates(true);
+    box.innerHTML = templatesData.length ? templatesData.map(t => `
+      <article class="tpl-card ${t.active ? '' : 'inactive'}">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div class="min-w-0">
+            <h3 class="font-display font-semibold text-sm truncate">${esc(t.name)}</h3>
+            <p class="text-xs text-gray-500">${esc(TEMPLATE_CATEGORY_LABELS[t.category] || t.category)}${t.active ? '' : ' · desactivada'}</p>
+          </div>
+          <div class="flex gap-1.5 shrink-0">
+            <button type="button" class="btn-chip" onclick="openEntityModal('message_template','${t.id}')">Editar</button>
+            <button type="button" class="btn-chip" onclick="askDeleteEntity('message_template','${t.id}','¿Eliminar esta plantilla?')" aria-label="Eliminar ${esc(t.name)}">Eliminar</button>
+          </div>
+        </div>
+        <p class="tpl-preview">${esc(t.body)}</p>
+      </article>`).join('')
+      : '<p class="text-sm text-gray-600 col-span-full text-center py-12">Aún no hay plantillas. Crea la primera con «Nueva plantilla».</p>';
+  } catch (err) {
+    box.innerHTML = `<p class="text-sm text-red-400 col-span-full">${esc(err.message)}</p>`;
+  }
+}
+
+// ─── Cobros pendientes ─────────────────────────────────────────────────────────
+let receivablesData = [];
+let receivableFilter = 'pendiente';
+
+function receivableState(r, today = leadToday()) {
+  if (r.status !== 'pendiente') return { open: false };
+  const late = dayDiff(r.due_date, today);
+  return { open: true, overdue: late > 0, today: late === 0, days: late };
+}
+function receivableChipHtml(r) {
+  if (r.status === 'cobrado') return '<span class="state-pill bg-emerald-400/15 text-emerald-300">Cobrado</span>';
+  if (r.status === 'cancelado') return '<span class="state-pill bg-gray-500/20 text-gray-400">Cancelado</span>';
+  const s = receivableState(r);
+  if (s.overdue) return `<span class="state-pill bg-red-400/15 text-red-300">Vencido hace ${s.days} d</span>`;
+  if (s.today) return '<span class="state-pill bg-amber-400/15 text-amber-300">Vence hoy</span>';
+  return `<span class="state-pill bg-white/5 text-gray-400">Vence el ${esc(shortDate(r.due_date))}</span>`;
+}
+
+async function loadReceivables() {
+  try {
+    const rows = await leadApi('/api/receivables');
+    receivablesData = Array.isArray(rows) ? rows : [];
+    renderReceivables();
+  } catch (err) {
+    receivablesData = [];
+    const box = document.getElementById('receivablesList');
+    if (box) box.innerHTML = `<p class="text-sm text-red-400 px-4 py-6">${esc(err.message)}</p>`;
+  }
+}
+function setReceivableFilter(value) { receivableFilter = value; renderReceivables(); }
+
+function receivableRowHtml(r) {
+  const c = clientById(r.client_id);
+  const open = r.status === 'pendiente';
+  return `<div class="item-row">
+    <div class="item-main">
+      <div class="flex items-baseline justify-between gap-3">
+        <p class="font-medium text-sm truncate">${esc(c?.client_name || 'Sin cliente')}</p>
+        <span class="font-display font-semibold text-brand-blue whitespace-nowrap">${esc(fmtEuros(r.amount))}</span>
+      </div>
+      <p class="text-xs text-gray-400 truncate">${esc(r.concept)}</p>
+      ${r.notes ? `<p class="text-xs text-gray-600 truncate">${esc(r.notes)}</p>` : ''}
+      <div class="flex flex-wrap gap-1.5 mt-1.5">${receivableChipHtml(r)}</div>
+    </div>
+    <div class="item-actions">
+      ${open ? `<button type="button" class="btn-chip primary" onclick="openReceivablePay('${r.id}')">Cobrado</button>
+        <button type="button" class="btn-chip" onclick="openTemplateForReceivable('${r.id}')">Plantilla</button>
+        <button type="button" class="btn-chip" onclick="openEntityModal('receivable','${r.id}')">Editar</button>
+        <button type="button" class="btn-chip" onclick="cancelReceivable('${r.id}')">Cancelar</button>` : ''}
+      ${r.status === 'cancelado' ? `<button type="button" class="btn-chip" onclick="reopenReceivable('${r.id}')">Reabrir</button>
+        <button type="button" class="btn-chip" onclick="askDeleteEntity('receivable','${r.id}','¿Eliminar este cobro?')">Eliminar</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderReceivables() {
+  const box = document.getElementById('receivablesList');
+  if (!box) return;
+  const today = leadToday();
+  const open = receivablesData.filter(r => r.status === 'pendiente');
+  const overdue = open.filter(r => receivableState(r, today).overdue);
+  const sum = rows => rows.reduce((s, r) => s + Number(r.amount), 0);
+  document.getElementById('recSummary').textContent = open.length
+    ? `${open.length} pendiente${open.length === 1 ? '' : 's'} · ${fmtEuros(sum(open))}${overdue.length ? ` · ${overdue.length} vencido${overdue.length === 1 ? '' : 's'} (${fmtEuros(sum(overdue))})` : ''}`
+    : 'Nada pendiente de cobrar';
+  const rows = receivablesData
+    .filter(r => receivableFilter === 'all' || r.status === receivableFilter)
+    .sort((a, b) => {
+      const sa = receivableState(a, today), sb = receivableState(b, today);
+      if (sa.open !== sb.open) return sa.open ? -1 : 1;
+      if (sa.overdue !== sb.overdue) return sa.overdue ? -1 : 1;
+      return sa.overdue ? sb.days - sa.days : String(a.due_date).localeCompare(String(b.due_date));
+    });
+  box.innerHTML = rows.length ? rows.map(receivableRowHtml).join('')
+    : `<p class="text-sm text-gray-600 text-center py-10 px-4">${receivableFilter === 'pendiente' ? 'No hay cobros pendientes. Cuando un cliente te deba algo, apúntalo aquí con «Nuevo cobro pendiente».' : 'Nada que mostrar con este filtro.'}</p>`;
+}
+
+function openReceivablePay(id) {
+  const r = receivablesData.find(x => x.id === id);
+  if (!r) return;
+  recPayId = id;
+  document.getElementById('recpaySummary').textContent = `${clientNameById(r.client_id)} · ${r.concept} · ${fmtEuros(r.amount)}`;
+  document.getElementById('recpay-method').value = 'bizum';
+  document.getElementById('recpay-date').value = leadToday();
+  document.getElementById('recpayBtn').disabled = false;
+  document.getElementById('recpay-overlay').style.display = 'flex';
+  document.getElementById('recpay-method').focus();
+}
+let recPayId = null;
+function closeReceivablePay() { document.getElementById('recpay-overlay').style.display = 'none'; recPayId = null; }
+function closeReceivablePayOnOverlay(e) { if (e.target === document.getElementById('recpay-overlay')) closeReceivablePay(); }
+async function confirmReceivablePay() {
+  const id = recPayId;
+  const btn = document.getElementById('recpayBtn');
+  if (!id || btn.disabled) return;
+  const date = document.getElementById('recpay-date').value;
+  if (!date) { showToast('Indica la fecha del cobro', 'error'); return; }
+  btn.disabled = true;
+  try {
+    await leadApi(`/api/receivables?id=${id}&action=cobrado`, 'POST', {
+      payment_method: document.getElementById('recpay-method').value, payment_date: date,
+    });
+    closeReceivablePay();
+    showToast('✓ Cobro registrado');
+    await loadReceivables();
+    if (currentView === 'payments') loadRegisteredPayments();
+    if (currentView === 'home') loadHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+    btn.disabled = false;
+  }
+}
+async function cancelReceivable(id) {
+  if (!confirm('¿Cancelar este cobro pendiente? No se borra: queda en «Cancelados».')) return;
+  try {
+    await leadApi(`/api/receivables?id=${id}`, 'PUT', { status: 'cancelado' });
+    showToast('✓ Cobro cancelado');
+    await loadReceivables();
+    if (currentView === 'home') loadHome();
+  } catch (err) { showToast(err.message, 'error'); }
+}
+async function reopenReceivable(id) {
+  try {
+    await leadApi(`/api/receivables?id=${id}`, 'PUT', { status: 'pendiente' });
+    showToast('✓ Cobro reabierto');
+    await loadReceivables();
+  } catch (err) { showToast(err.message, 'error'); }
+}
+function openTemplateForReceivable(id) {
+  const r = receivablesData.find(x => x.id === id) || homeReceivablesCache.find(x => x.id === id);
+  if (!r) return;
+  const c = clientById(r.client_id);
+  openTemplatePicker({
+    title: `Cobro de ${c?.client_name || 'cliente'} · ${r.concept}`,
+    category: 'cobro',
+    nombre: firstNameOf(c?.client_contact_name || c?.client_name),
+    empresa: c?.company_name || c?.client_name || '',
+    importe: fmtEuros(r.amount),
+    enlace: '',
+    phone: clientPhone(c),
+  });
+}
+
+// ─── Inicio: cobros pendientes y renovaciones ──────────────────────────────────
+let homeReceivablesCache = [];
+let homeDueCache = [];
+
+function renderHomeReceivables(d) {
+  const cp = d.cobros_pendientes || { count: 0, total: 0, overdue_count: 0, overdue_total: 0, items: [] };
+  homeReceivablesCache = cp.items || [];
+  const sub = document.getElementById('homeRecSub');
+  const box = document.getElementById('homeReceivables');
+  sub.textContent = cp.count
+    ? `${fmtEuros(cp.total)} en ${cp.count} cobro${cp.count === 1 ? '' : 's'}${cp.overdue_count ? ` · ${fmtEuros(cp.overdue_total)} vencido${cp.overdue_count === 1 ? '' : 's'}` : ''}`
+    : 'Nada pendiente de cobrar';
+  if (!cp.items?.length) {
+    box.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">Todo cobrado. Si alguien te debe algo, apúntalo en Pagos → «Nuevo cobro pendiente».</p>';
+    return;
+  }
+  box.innerHTML = cp.items.map(r => `
+    <div class="home-due-row">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm font-medium truncate">${esc(r.client_name)}</p>
+          <span class="font-display font-semibold text-brand-blue text-sm whitespace-nowrap">${esc(fmtEuros(r.amount))}</span>
+        </div>
+        <p class="text-xs text-gray-500 truncate">${esc(r.concept)}</p>
+        <div class="mt-1">${receivableChipHtml(r)}</div>
+      </div>
+      <div class="flex gap-1.5 shrink-0">
+        <button type="button" class="lead-act" title="Mensaje de cobro" aria-label="Plantilla de cobro para ${esc(r.client_name)}" onclick="openTemplateForReceivable('${r.id}')">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></button>
+        <button type="button" class="lead-act" title="Marcar como cobrado" aria-label="Marcar como cobrado el cobro de ${esc(r.client_name)}" onclick="homeMarkPaid('${r.id}')">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+      </div>
+    </div>`).join('');
+}
+function homeMarkPaid(id) {
+  // El modal lee el cobro de receivablesData: si aún no está cargado, lo añadimos desde el resumen del inicio
+  if (!receivablesData.some(r => r.id === id)) {
+    const r = homeReceivablesCache.find(x => x.id === id);
+    if (r) receivablesData.push(r);
+  }
+  openReceivablePay(id);
+}
+
+function renderHomeRenewals(d) {
+  const rows = d.renovaciones || [];
+  const box = document.getElementById('homeRenewals');
+  homeRenewalsCache = rows;
+  if (!rows.length) {
+    box.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">Ninguna renovación a la vista en los próximos 60 días.</p>';
+    return;
+  }
+  box.innerHTML = rows.map((r, i) => {
+    const when = r.expired ? `Venció el ${shortDate(r.coverage_end)} (hace ${Math.abs(r.days_left)} d)`
+      : r.days_left === 0 ? 'Vence hoy' : `Vence el ${shortDate(r.coverage_end)} (en ${r.days_left} d)`;
+    const cls = r.expired ? 'bg-red-400/15 text-red-300' : r.days_left <= 14 ? 'bg-amber-400/15 text-amber-300' : 'bg-white/5 text-gray-400';
+    return `<div class="home-due-row">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm font-medium truncate">${esc(r.client_name)}</p>
+          ${r.amount ? `<span class="text-xs text-gray-500 whitespace-nowrap">${esc(fmtEuros(r.amount))}</span>` : ''}
+        </div>
+        <p class="text-xs text-gray-500 truncate">${esc(r.service)}</p>
+        <div class="mt-1"><span class="state-pill ${cls}">${esc(when)}</span></div>
+      </div>
+      <button type="button" class="btn-chip shrink-0" onclick="openTemplateForRenewal(${i})">Plantilla</button>
+    </div>`;
+  }).join('');
+}
+let homeRenewalsCache = [];
+function openTemplateForRenewal(i) {
+  const r = homeRenewalsCache[i];
+  if (!r) return;
+  const c = clientById(r.client_id);
+  openTemplatePicker({
+    title: `Renovación de ${r.client_name} · ${r.service}`,
+    category: 'renovacion',
+    nombre: firstNameOf(r.contact_name || r.client_name),
+    empresa: c?.company_name || r.client_name,
+    importe: r.amount ? fmtEuros(r.amount) : '',
+    enlace: '',
+    phone: r.whatsapp || clientPhone(c),
+  });
+}
+
+// ─── Buscador global ───────────────────────────────────────────────────────────
+let gsTimer = null;
+let gsToken = 0;
+let gsItems = [];
+let gsActive = -1;
+const GS_GROUPS = [['leads', 'Leads'], ['clients', 'Clientes'], ['tasks', 'Tareas'], ['opportunities', 'Oportunidades']];
+
+function openGlobalSearch() {
+  const overlay = document.getElementById('gsearch-overlay');
+  overlay.style.display = 'flex';
+  const input = document.getElementById('gsearchInput');
+  input.value = '';
+  gsItems = []; gsActive = -1; gsToken++;
+  document.getElementById('gsearchResults').innerHTML = '<p class="gsearch-empty">Escribe al menos 2 letras. Busca en leads (nombre, empresa, email, teléfono, notas…), clientes, tareas y oportunidades.</p>';
+  input.focus();
+}
+function closeGlobalSearch() {
+  document.getElementById('gsearch-overlay').style.display = 'none';
+  clearTimeout(gsTimer);
+  gsToken++;
+  const btn = document.getElementById('globalSearchBtn');
+  if (btn && document.getElementById('dashboard').style.display !== 'none') btn.focus();
+}
+function closeGlobalSearchOnOverlay(e) { if (e.target === document.getElementById('gsearch-overlay')) closeGlobalSearch(); }
+
+function globalSearchInput(value) {
+  clearTimeout(gsTimer);
+  const q = value.trim();
+  if (q.length < 2) {
+    gsToken++;
+    gsItems = []; gsActive = -1;
+    document.getElementById('gsearchResults').innerHTML = '<p class="gsearch-empty">Escribe al menos 2 letras.</p>';
+    return;
+  }
+  gsTimer = setTimeout(() => runGlobalSearch(q), 220);
+}
+
+function gsItemFor(type, row) {
+  if (type === 'leads') return { type, id: row.id, title: row.name, sub: [row.company && row.company !== row.name ? row.company : '', row.email || row.phone || row.whatsapp || '', (LEAD_STAGE_META[row.stage] || {}).label || ''].filter(Boolean).join(' · ') };
+  if (type === 'clients') return { type, id: row.id, title: row.client_name, sub: [row.company_name, row.client_contact_name, row.client_contact_email].filter(Boolean).join(' · ') };
+  if (type === 'tasks') return { type, id: row.id, title: row.title, sub: [row.status, row.due_date].filter(Boolean).join(' · ') };
+  return { type, id: row.id, title: row.title, sub: [row.status, row.value ? fmtEuros(row.value) : ''].filter(Boolean).join(' · ') };
+}
+
+async function runGlobalSearch(q) {
+  const token = ++gsToken;
+  const box = document.getElementById('gsearchResults');
+  box.innerHTML = '<p class="gsearch-empty" role="status">Buscando…</p>';
+  try {
+    const data = await leadApi(`/api/search?q=${encodeURIComponent(q)}`);
+    if (token !== gsToken) return; // ya hay otra búsqueda más reciente
+    gsItems = [];
+    let html = '';
+    for (const [type, label] of GS_GROUPS) {
+      const rows = data[type] || [];
+      if (!rows.length) continue;
+      html += `<div class="gsearch-group" role="presentation">${label}</div>`;
+      for (const row of rows) {
+        const item = gsItemFor(type, row);
+        const i = gsItems.push(item) - 1;
+        html += `<button type="button" role="option" id="gs-opt-${i}" class="gsearch-item" aria-selected="false" onclick="globalSearchPick(${i})" onmousemove="globalSearchHover(${i})">
+          <span class="min-w-0 flex-1"><span class="block text-sm font-medium truncate">${esc(item.title)}</span>${item.sub ? `<span class="block text-xs text-gray-500 truncate">${esc(item.sub)}</span>` : ''}</span></button>`;
+      }
+    }
+    box.innerHTML = html || `<p class="gsearch-empty" role="status">Sin resultados para «${esc(q)}».</p>`;
+    gsActive = gsItems.length ? 0 : -1;
+    paintGlobalSearchActive();
+  } catch (err) {
+    if (token === gsToken) box.innerHTML = `<p class="gsearch-empty text-red-400" role="alert">${esc(err.message)}</p>`;
+  }
+}
+function paintGlobalSearchActive() {
+  const input = document.getElementById('gsearchInput');
+  gsItems.forEach((_, i) => {
+    const el = document.getElementById(`gs-opt-${i}`);
+    if (el) el.setAttribute('aria-selected', String(i === gsActive));
+  });
+  const active = document.getElementById(`gs-opt-${gsActive}`);
+  if (active) { input.setAttribute('aria-activedescendant', active.id); active.scrollIntoView({ block: 'nearest' }); }
+  else input.removeAttribute('aria-activedescendant');
+}
+function globalSearchHover(i) { if (gsActive !== i) { gsActive = i; paintGlobalSearchActive(); } }
+function globalSearchKey(e) {
+  if (e.key === 'Escape') { e.preventDefault(); closeGlobalSearch(); return; }
+  if (!gsItems.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); gsActive = (gsActive + 1) % gsItems.length; paintGlobalSearchActive(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); gsActive = (gsActive - 1 + gsItems.length) % gsItems.length; paintGlobalSearchActive(); }
+  else if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); globalSearchPick(gsActive); }
+}
+
+async function globalSearchPick(i) {
+  const item = gsItems[i];
+  if (!item) return;
+  closeGlobalSearch();
+  try {
+    if (item.type === 'leads') {
+      switchView('leads');
+      if (!leadsData.some(l => l.id === item.id)) await loadLeads();
+      openLeadDetail(item.id);
+    } else if (item.type === 'clients') {
+      switchView('clients');
+      openModal(item.id);
+    } else if (item.type === 'tasks') {
+      switchView('tasks');
+      await loadTasks();
+      openEntityModal('task', item.id);
+    } else {
+      switchView('opportunities');
+      await loadOpportunities();
+      openEntityModal('opportunity', item.id);
+    }
+  } catch (err) { showToast(err.message || 'No se pudo abrir el resultado', 'error'); }
+}
+
+function isTypingTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+}
+function anyOverlayOpen() {
+  return [...document.querySelectorAll('[id$="-overlay"], #leadDetailOverlay')]
+    .some(el => el.id !== 'login-overlay' && getComputedStyle(el).display !== 'none' && el.id !== 'gsearch-overlay');
+}
+document.addEventListener('keydown', e => {
+  if (!adminPass || e.isComposing) return;
+  const searchOpen = getComputedStyle(document.getElementById('gsearch-overlay')).display !== 'none';
+  if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    if (!searchOpen) openGlobalSearch();
+    return;
+  }
+  if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !isTypingTarget(e.target) && !searchOpen && !anyOverlayOpen()) {
+    e.preventDefault();
+    openGlobalSearch();
+  }
+  // Escape cierra primero los modales nuevos (los antiguos gestionan el suyo)
+  if (e.key === 'Escape' && !searchOpen) {
+    for (const id of ['tpl-overlay', 'recpay-overlay']) {
+      if (getComputedStyle(document.getElementById(id)).display !== 'none') {
+        e.preventDefault();
+        if (id === 'tpl-overlay') closeTemplatePicker(); else closeReceivablePay();
+        return;
+      }
+    }
+  }
+});
+
+// ─── Propuestas ────────────────────────────────────────────────────────────────
+// Mismas reglas que lib/proposal-rules.js
+const PROPOSAL_STATUS_META = {
+  enviada:   { label: 'Enviada',   color: '#fbbf24' },
+  vista:     { label: 'Vista',     color: '#38bdf8' },
+  aceptada:  { label: 'Aceptada',  color: '#34d399' },
+  rechazada: { label: 'Rechazada', color: '#f87171' },
+  caducada:  { label: 'Caducada',  color: '#9ca3af' },
+};
+const PROPOSAL_OPEN = ['enviada', 'vista'];
+const PROPOSAL_STALE_DAYS = 5;
+let proposalsData = [];
+let proposalFilter = 'open';
+
+function proposalFollowup(p, today = leadToday()) {
+  if (!PROPOSAL_OPEN.includes(p.status)) return { due: false };
+  if (p.next_followup_at) {
+    const over = dayDiff(p.next_followup_at, today);
+    return over !== null && over >= 0 ? { due: true, overdueDays: over, reason: over === 0 ? 'hoy' : 'vencido' } : { due: false };
+  }
+  const ref = [p.updated_at, p.sent_at, p.created_at].filter(Boolean).map(v => String(v)).sort().pop();
+  const idle = ref ? dayDiff(String(ref).slice(0, 10), today) : null;
+  return idle !== null && idle >= PROPOSAL_STALE_DAYS ? { due: true, overdueDays: idle, reason: 'sin_movimiento' } : { due: false };
+}
+let _pdm = { today: '', ref: null, map: new Map() };
+function proposalDueMap(today) {
+  if (_pdm.ref === proposalsData && _pdm.today === today) return _pdm.map;
+  const map = new Map();
+  for (const p of proposalsData) {
+    if (!p.lead_id) continue;
+    const f = proposalFollowup(p, today);
+    if (!f.due) continue;
+    const prev = map.get(p.lead_id);
+    if (!prev || f.overdueDays > prev.overdueDays) map.set(p.lead_id, { overdueDays: f.overdueDays, reason: f.reason, title: p.title });
+  }
+  _pdm = { today, ref: proposalsData, map };
+  return map;
+}
+
+async function loadProposalsQuiet() {
+  try {
+    const rows = await leadApi('/api/proposals');
+    proposalsData = Array.isArray(rows) ? rows : [];
+  } catch { proposalsData = []; } // sin migración 017 el resto del panel sigue funcionando
+  updateProposalsBadge();
+}
+function updateProposalsBadge() {
+  const today = leadToday();
+  setProposalsBadge(proposalsData.filter(p => proposalFollowup(p, today).due).length);
+}
+function setProposalsBadge(n) {
+  const el = document.getElementById('navProposalsBadge');
+  if (!el) return;
+  el.textContent = n > 99 ? '99+' : String(n);
+  el.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+
+async function loadProposalsView() {
+  const box = document.getElementById('proposalsList');
+  box.innerHTML = '<p class="text-sm text-gray-600 text-center py-10">Cargando…</p>';
+  try {
+    const rows = await leadApi('/api/proposals');
+    proposalsData = Array.isArray(rows) ? rows : [];
+    if (!leadsData.length) { try { await loadLeads(); } catch { /* los nombres de lead se mostrarán como "Lead" */ } }
+    updateProposalsBadge();
+    renderProposalsView();
+  } catch (err) {
+    box.innerHTML = `<p class="text-sm text-red-400 px-4 py-6">${esc(err.message)}</p>`;
+  }
+}
+function setProposalFilter(f) { proposalFilter = f; renderProposalsView(); }
+
+function proposalOwnerName(p) {
+  if (p.lead_id) { const l = leadsData.find(x => x.id === p.lead_id); return l ? `${l.name}${l.company && l.company !== l.name ? ` · ${l.company}` : ''}` : 'Lead'; }
+  return clientNameById(p.client_id);
+}
+function proposalFollowChip(p) {
+  const f = proposalFollowup(p);
+  if (!f.due) return '';
+  const text = f.reason === 'hoy' ? 'Toca hoy' : f.reason === 'vencido' ? `Seguimiento vencido hace ${f.overdueDays} d` : `${f.overdueDays} d sin movimiento`;
+  return `<span class="state-pill ${f.reason === 'hoy' ? 'bg-amber-400/15 text-amber-300' : 'bg-red-400/15 text-red-300'}">${esc(text)}</span>`;
+}
+function proposalStatusSelect(p) {
+  return `<select class="row-select" aria-label="Estado de ${esc(p.title)}" style="color:${PROPOSAL_STATUS_META[p.status].color}" onchange="setProposalStatus('${p.id}', this.value)">
+    ${Object.entries(PROPOSAL_STATUS_META).map(([k, m]) => `<option value="${k}" ${k === p.status ? 'selected' : ''}>${m.label}</option>`).join('')}</select>`;
+}
+
+function renderProposalsView() {
+  const filters = [['open', 'Abiertas'], ['all', 'Todas'], ...Object.entries(PROPOSAL_STATUS_META).map(([k, m]) => [k, m.label])];
+  const countOf = f => f === 'all' ? proposalsData.length : f === 'open' ? proposalsData.filter(p => PROPOSAL_OPEN.includes(p.status)).length : proposalsData.filter(p => p.status === f).length;
+  document.getElementById('proposalFilters').innerHTML = filters.map(([k, label]) =>
+    `<button type="button" class="lead-toggle shrink-0" aria-pressed="${proposalFilter === k}" onclick="setProposalFilter('${k}')">${esc(label)} <span class="lead-toggle-count">${countOf(k)}</span></button>`).join('');
+  const rows = proposalsData
+    .filter(p => proposalFilter === 'all' ? true : proposalFilter === 'open' ? PROPOSAL_OPEN.includes(p.status) : p.status === proposalFilter)
+    .sort((a, b) => (proposalFollowup(b).due - proposalFollowup(a).due) || String(b.sent_at || b.created_at).localeCompare(String(a.sent_at || a.created_at)));
+  const open = proposalsData.filter(p => PROPOSAL_OPEN.includes(p.status));
+  const total = open.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  document.getElementById('proposalCount').textContent = `${rows.length} propuesta${rows.length === 1 ? '' : 's'} en esta vista · ${open.length} abierta${open.length === 1 ? '' : 's'}${total ? ` (${fmtEuros(total)} en juego)` : ''}`;
+  document.getElementById('proposalsList').innerHTML = rows.length ? rows.map(p => {
+    const sent = p.sent_at ? `Enviada ${agoLabel(p.sent_at)}${p.channel ? ' por ' + (LEAD_CHANNELS[p.channel] || p.channel) : ''}` : '';
+    return `<div class="item-row">
+      <div class="item-main">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="font-medium text-sm truncate">${esc(p.title)}</p>
+          ${p.amount ? `<span class="font-display font-semibold text-brand-blue whitespace-nowrap">${esc(fmtEuros(p.amount))}</span>` : ''}
+        </div>
+        <p class="text-xs text-gray-400 truncate">${esc(proposalOwnerName(p))}${p.lead_id ? '' : ' · cliente'}</p>
+        <div class="flex flex-wrap items-center gap-1.5 mt-1.5">${proposalFollowChip(p)}${sent ? `<span class="text-xs text-gray-600">${esc(sent)}</span>` : ''}</div>
+      </div>
+      <div class="item-actions">
+        ${proposalStatusSelect(p)}
+        ${p.url ? `<a class="btn-chip" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">Abrir</a>` : ''}
+        ${p.lead_id ? `<button type="button" class="btn-chip" onclick="openProposalLead('${p.lead_id}')">Ver lead</button>` : ''}
+        <button type="button" class="btn-chip" onclick="openEntityModal('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}')">Editar</button>
+        <button type="button" class="btn-chip" aria-label="Eliminar ${esc(p.title)}" onclick="askDeleteEntity('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}','¿Eliminar esta propuesta?')">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('') : '<p class="text-sm text-gray-600 text-center py-10 px-4">No hay propuestas con este filtro.</p>';
+}
+function openProposalLead(id) { switchView('leads'); setTimeout(() => openLeadById(id), 50); }
+
+async function setProposalStatus(id, status) {
+  const p = proposalsData.find(x => x.id === id);
+  if (!p || p.status === status) return;
+  try {
+    const updated = await leadApi(`/api/proposals?id=${id}`, 'PUT', { status });
+    Object.assign(p, updated);
+    proposalsData = [...proposalsData]; // invalida la caché de "toca contactar"
+    updateProposalsBadge();
+    if (currentView === 'proposals') renderProposalsView();
+    refreshLeadDetailIfOpen();
+    showToast(`✓ Propuesta ${PROPOSAL_STATUS_META[status].label.toLowerCase()}`);
+    if (status === 'aceptada') offerConvertAfterAccept(updated);
+    if (currentView === 'home') loadHome();
+  } catch (err) {
+    showToast(err.message, 'error');
+    if (currentView === 'proposals') renderProposalsView();
+  }
+}
+// Al aceptar una propuesta de un lead que aún no es cliente, se ofrece convertirlo
+async function offerConvertAfterAccept(p) {
+  if (!p || !p.lead_id) return;
+  let lead = leadsData.find(l => l.id === p.lead_id);
+  if (!lead) { try { await loadLeads(); } catch { return; } lead = leadsData.find(l => l.id === p.lead_id); }
+  if (!lead || lead.converted_client_id) return;
+  if (!confirm(`Propuesta aceptada. ¿Convertir a "${lead.company || lead.name}" en cliente ahora? Se crea su ficha y el lead pasa a Ganado.`)) return;
+  try {
+    const { client } = await leadApi(`/api/leads?id=${lead.id}&action=convert`, 'POST');
+    await loadLeads();
+    if (typeof loadClients === 'function') loadClients();
+    showToast(`✓ Cliente creado: ${client.client_name}`);
+  } catch (err) { showToast(err.message, 'error'); }
+}
+function refreshLeadDetailIfOpen() {
+  if (!currentLeadDetailId) return;
+  const l = leadsData.find(x => x.id === currentLeadDetailId);
+  if (l) renderLeadDetail(l);
+}
+
+// Sección "Propuestas" dentro de la ficha del lead
+function leadProposalsHtml(l) {
+  const mine = proposalsData.filter(p => p.lead_id === l.id).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  return `<p class="entity-section-title mt-6">Propuestas</p>
+    ${mine.length ? `<div class="space-y-2 mb-3">${mine.map(p => `
+      <div class="border border-white/7 rounded-xl p-3 bg-[#0e0e0e]">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-sm font-medium truncate">${esc(p.title)}</p>
+          ${p.amount ? `<span class="text-sm text-brand-blue whitespace-nowrap">${esc(fmtEuros(p.amount))}</span>` : ''}
+        </div>
+        <p class="text-xs text-gray-500 mt-0.5">${p.sent_at ? `Enviada ${esc(agoLabel(p.sent_at))}` : ''}${p.channel ? ' · ' + esc(LEAD_CHANNELS[p.channel] || '') : ''}</p>
+        <div class="flex flex-wrap items-center gap-2 mt-2">${proposalStatusSelect(p)}${proposalFollowChip(p)}
+          ${p.url ? `<a class="btn-chip" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">Abrir</a>` : ''}
+          <button type="button" class="btn-chip" onclick="openEntityModal('lead_proposal','${p.id}')">Editar</button></div>
+      </div>`).join('')}</div>` : '<p class="text-sm text-gray-600 mb-3">Aún no has registrado ninguna propuesta para este lead.</p>'}
+    <button type="button" class="btn-chip" onclick="addProposalForLead('${l.id}')">+ Añadir propuesta</button>`;
+}
+function addProposalForLead(id) {
+  const l = leadsData.find(x => x.id === id);
+  if (!l) return;
+  openEntityModal('lead_proposal', null, { lead_id: id, title: `Propuesta ${l.company || l.name}`, channel: l.channel || 'whatsapp', sent_at: leadToday(), amount: l.value_estimate || '' });
+}
+
+// ─── "Ha respondido, falta contestar" ─────────────────────────────────────────
+async function toggleLeadReply(id, awaiting) {
+  try {
+    const updated = await leadApi(`/api/leads?id=${id}&action=reply`, 'POST', { awaiting });
+    mergeLead(updated);
+    refreshAfterLeadChange();
+    showToast(awaiting ? '✓ Marcado: falta contestarle' : '✓ Respuesta atendida');
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+// ─── Copia de seguridad (Ajustes) ──────────────────────────────────────────────
+function fmtBackupDate(iso) {
+  return new Date(iso).toLocaleString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function renderBackupStatus(last) {
+  const el = document.getElementById('backupLast');
+  const detail = document.getElementById('backupDetail');
+  if (!last || !last.at) {
+    el.textContent = 'Todavía no hay ninguna copia.';
+    detail.textContent = 'La primera se hará esta madrugada, o pulsa «Hacer copia ahora».';
+    return;
+  }
+  el.textContent = `Última copia: ${fmtBackupDate(last.at)}`;
+  const rows = Object.values(last.counts || {}).reduce((s, n) => s + Number(n || 0), 0);
+  const kb = Math.max(1, Math.round((last.size || 0) / 1024));
+  detail.textContent = `${last.source === 'manual' ? 'Manual' : 'Automática'} · ${fmtAmt(rows)} registros · ${fmtAmt(kb)} KB${last.errors?.length ? ` · ⚠ no se pudo leer: ${last.errors.join(', ')}` : ''}`;
+}
+async function loadSettingsView() {
+  try { renderBackupStatus((await leadApi('/api/backup-cron')).last); }
+  catch (err) { document.getElementById('backupLast').textContent = err.message; }
+}
+async function runBackupNow() {
+  const btn = document.getElementById('backupNowBtn');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  const old = btn.textContent;
+  btn.textContent = 'Haciendo copia…';
+  try {
+    const data = await leadApi('/api/backup-cron', 'POST', {});
+    renderBackupStatus(data.last);
+    showToast('✓ Copia de seguridad hecha');
+  } catch (err) { showToast(err.message, 'error'); }
+  finally { btn.disabled = false; btn.textContent = old; }
 }
 </script>
 <!-- Vercel Analytics -->

@@ -51,3 +51,37 @@ test('tasks message lists today and counts overdue; nothing when empty', () => {
   assert.equal(msg.body, '• Llamar a Jocars\n⚠️ 1 atrasada');
   assert.equal(tasksMessage(tasks.slice(1, 2), '2026-10-26'), null);
 });
+
+test('lead follow-up reminder fires on weekdays at 10:00 and not on weekends', () => {
+  const s = { ...DEFAULT_SETTINGS, cobros_enabled: false }; // los cobros se prueban aparte
+  assert.deepEqual(dueNotifications(at(1, '10:00'), s), ['followups']);
+  assert.deepEqual(dueNotifications(at(5, '11:30'), s), ['followups']);
+  assert.deepEqual(dueNotifications(at(1, '10:05'), s, { sent: ['followups'] }), []);
+  assert.deepEqual(dueNotifications(at(1, '12:00'), s), []);
+  assert.deepEqual(dueNotifications(at(6, '10:00'), s), []);
+  assert.deepEqual(dueNotifications(at(0, '10:00'), s), []);
+  assert.deepEqual(dueNotifications(at(1, '10:00'), { ...s, followups_enabled: false }), []);
+});
+
+test('receivables reminder fires on weekdays at 10:00, once a day, and can be disabled', () => {
+  const s = { ...DEFAULT_SETTINGS, followups_enabled: false };
+  assert.deepEqual(dueNotifications(at(1, '10:00'), s), ['cobros']);
+  assert.deepEqual(dueNotifications(at(5, '11:55'), s), ['cobros']);
+  assert.deepEqual(dueNotifications(at(1, '10:05'), s, { sent: ['cobros'] }), []);
+  assert.deepEqual(dueNotifications(at(6, '10:00'), s), []);
+  assert.deepEqual(dueNotifications(at(0, '10:00'), s), []);
+  assert.deepEqual(dueNotifications(at(1, '10:00'), { ...s, cobros_enabled: false }), []);
+  assert.deepEqual(dueNotifications(at(1, '10:00'), DEFAULT_SETTINGS).sort(), ['cobros', 'followups']);
+});
+
+test('receivables settings are validated like the other reminders', () => {
+  assert.equal(normalizeSettings({ cobros_time: '99:00' }).error !== undefined, true);
+  assert.equal(normalizeSettings({ cobros_time: '09:30' }).settings.cobros_time, '09:30');
+  assert.equal(normalizeSettings({ cobros_enabled: false }).settings.cobros_enabled, false);
+});
+
+test('follow-up settings are validated like the other reminders', () => {
+  assert.equal(normalizeSettings({ followups_time: '25:00' }).error !== undefined, true);
+  assert.equal(normalizeSettings({ followups_time: '09:30' }).settings.followups_time, '09:30');
+  assert.equal(normalizeSettings({ followups_enabled: false }).settings.followups_enabled, false);
+});

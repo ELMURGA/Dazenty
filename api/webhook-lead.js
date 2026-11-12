@@ -19,13 +19,15 @@
 //    { action: "update", external_id?, company?, stage?, notes_append?,
 //      phone?, email?, website?, instagram?, whatsapp?, lost_reason?,
 //      email_asunto?, email_cuerpo?, whatsapp_msg?, instagram_msg?,
-//      mark_whatsapp_contacted? }
+//      mark_whatsapp_contacted?, mark_replied? }
 //    Busca primero por "external_id" (match exacto) y, si no lo encuentra o no se
 //    envía, cae a buscar por "company" (match exacto, insensible a mayúsculas) y
 //    toma el más reciente. Si tampoco hay coincidencia, crea el lead igualmente
 //    (con los datos disponibles) para no perder la información.
 //    "mark_whatsapp_contacted: true" guarda la fecha/hora actual en
 //    whatsapp_contacted_at (reemplaza a la columna "Contactado WhatsApp" de Sheets).
+//    "mark_replied: true" marca que el lead ha respondido y falta contestarle (sale arriba
+//    en "Hoy toca contactar" del panel); "mark_replied: false" lo desmarca.
 //
 // 3) action: "check_duplicate" → { company } → { exists, lead } para que los
 //    flujos de prospección automática no vuelvan a procesar el mismo negocio.
@@ -192,7 +194,25 @@ export default async function handler(req, res) {
         if (body.mark_whatsapp_contacted) patch.whatsapp_contacted_at = new Date().toISOString();
         if (body.external_id && !existing.external_id) patch.external_id = body.external_id;
 
+        // Contacto automático de n8n: lo sellamos para que el panel sepa cuándo y por dónde
+        // se escribió al lead. Solo la primera vez; no se programa seguimiento (no hay avisos
+        // para fases tempranas) y no se pisa un contacto que Alejandro ya registró a mano.
+        if (!existing.last_contact_at && (body.stage === 'contactada' || body.mark_whatsapp_contacted)) {
+          patch.last_contact_at = new Date().toISOString();
+          patch.channel = body.mark_whatsapp_contacted && body.stage !== 'contactada' ? 'whatsapp' : 'email';
+        }
+
+        if (body.mark_replied === true) {
+          patch.awaiting_reply = true;
+          patch.replied_at = new Date().toISOString();
+        } else if (body.mark_replied === false) {
+          patch.awaiting_reply = false;
+        }
+
         const updated = await sbUpdate('leads', existing.id, patch);
+        if (body.mark_replied === true) {
+          await logActivity('lead', existing.id, 'reply', `"${updated.name}" ha respondido: falta contestar (vía n8n)`, { awaiting: true });
+        }
         if (body.stage) {
           await logActivity('lead', existing.id, 'stage_changed', `Lead "${updated.name}" movido a "${body.stage}" vía n8n`);
         }
@@ -228,6 +248,10 @@ export default async function handler(req, res) {
       whatsapp_msg: body.whatsapp_msg || null,
       instagram_msg: body.instagram_msg || null,
     };
+    if (body.mark_replied === true) {
+      lead.awaiting_reply = true;
+      lead.replied_at = new Date().toISOString();
+    }
     const created = await sbInsert('leads', lead);
     await logActivity('lead', created.id, 'created', `Nuevo lead vía n8n: ${created.name}`);
     return res.status(201).json(created);

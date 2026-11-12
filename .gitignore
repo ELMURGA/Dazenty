@@ -18,3 +18,11 @@ node_modules/
 *.MP4
 *.mp4
 supabase/.temp/
+
+# Duplicados creados por Finder/iCloud ("archivo 2.js"): no son parte del proyecto
+* 2.*
+* 2/
+
+# Herramientas locales de IA/navegador (no son parte del proyecto)
+.playwright-mcp/
+.taste-skill/

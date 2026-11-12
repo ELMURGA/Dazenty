@@ -65,6 +65,8 @@ Configurar en **Vercel → Settings → Environment Variables**:
 | `STRIPE_SECRET_KEY` | Clave secreta de Stripe (`sk_live_...`) |
 | `STRIPE_WEBHOOK_SECRET` | Signing secret del webhook de Stripe (`whsec_...`) |
 | `RESEND_API_KEY` | API key de Resend para envío de emails |
+| `CRON_SECRET` | Secreto de los avisos push (`push-cron`) y de la copia diaria (`backup-cron`) |
+| `N8N_WEBHOOK_SECRET` | Secreto que n8n envía en `x-webhook-secret` a `/api/webhook-lead` |
 
 ---
 
@@ -112,6 +114,76 @@ modificar pagos existentes. Pruebas de validación y regresión:
 
 ```sh
 node --test tests/payments.test.js
+```
+
+---
+
+## Panel de administración: ventas, cobros y copias (migraciones 014–019)
+
+**Orden obligatorio al publicar:** primero aplicar las migraciones en Supabase (SQL Editor, en
+este orden) y después desplegar. El código nuevo lee columnas y tablas que no existen hasta
+aplicarlas; si se despliega antes, el webhook de n8n y el Inicio fallarían.
+
+| Migración | Qué añade |
+|---|---|
+| `014_lead_followup.sql` | Último contacto, próximo seguimiento, canal y temperatura de cada lead |
+| `015_receivables.sql` | Tabla `receivables` (cobros pendientes). Crea el cobro de 200 € de Almacenes Camu si el cliente existe |
+| `016_message_templates.sql` | Tabla `message_templates` con 6 plantillas iniciales (no pisa las que edites) |
+| `017_proposals.sql` | Tabla `proposals` (estado de las propuestas) |
+| `018_lead_reply.sql` | `leads.replied_at` y `leads.awaiting_reply` ("ha respondido, falta contestar") |
+| `019_backups_bucket.sql` | Bucket **privado** `backups` de Supabase Storage |
+
+Todas son idempotentes (`if not exists`), activan RLS y no crean políticas públicas: solo el
+backend (clave `service_role`) accede.
+
+- **Seguimiento de leads**: Inicio → «Hoy toca contactar»; Leads → registrar contacto, notas,
+  historial, fases en bloque y «Convertir en cliente». Reglas en `lib/lead-rules.js`.
+- **Cobros pendientes** (`api/receivables.js`, `lib/receivable-rules.js`): lo que un cliente debe.
+  Pagos → «Nuevo cobro pendiente»; «Cobrado» crea el pago en `payments` y lo enlaza (no se puede
+  cobrar dos veces). Tarjeta en Inicio con los vencidos primero y aviso al móvil de lunes a
+  viernes a las 10:00 (ajustable en Historias).
+- **Plantillas de mensaje** (`api/message-templates.js`, `lib/message-templates.js`): menú
+  Plantillas. Variables `{nombre}` `{empresa}` `{importe}` `{enlace}`. «Usar plantilla» está en la
+  ficha del lead, en «Hoy toca contactar», en cada cobro y en cada renovación: rellena, deja
+  editar, copia o abre WhatsApp (`wa.me`) con el texto precargado. Las variables sin valor se
+  dejan visibles y se avisa antes de enviar.
+- **Búsqueda global** (`api/search.js`, `lib/search.js`): botón arriba, tecla `/` o Ctrl/Cmd + K.
+  Busca en la base de datos (no en lo cargado en el navegador) leads, clientes, tareas y
+  oportunidades; mínimo 2 caracteres y 8 resultados por tipo. Los comodines `% _ *` cuentan como
+  letras normales.
+- **Propuestas** (`api/proposals.js`, `lib/proposal-rules.js`): menú Propuestas y sección en la
+  ficha del lead. Estados enviada, vista, aceptada, rechazada y caducada. Una abierta (enviada o
+  vista) sin movimiento en 5 días hace aparecer a su lead en «Hoy toca contactar». Al aceptarla se
+  ofrece convertir el lead en cliente. Crear una propuesta mueve a «propuesta» a un lead que aún
+  estaba en una fase temprana.
+- **Ha respondido, falta contestar**: botón en la lista y en la ficha del lead. Esos leads van
+  los primeros de «Hoy toca contactar» con una etiqueta roja; registrar un contacto lo quita. n8n
+  puede activarlo con `{ "action": "update", "external_id": "…", "mark_replied": true }` en
+  `/api/webhook-lead` (`false` lo quita).
+- **Renovaciones de mantenimiento**: bloque en Inicio con los servicios cuya cobertura
+  (`coverage_end`) vence en 60 días. Usa la misma regla que las oportunidades de renovación
+  (`coverageRenewal` en `lib/opportunity-rules.js`).
+- **Copia de seguridad** (`api/backup-cron.js`, `lib/backup.js`): cada madrugada (`vercel.json`,
+  3:00 UTC) vuelca en JSON leads, clients, payments, opportunities, tasks, events, activities,
+  receivables, proposals y message_templates en el bucket privado `backups` y conserva las 30
+  últimas. En Ajustes se ve la última copia y hay un botón «Hacer copia ahora». Los logs solo
+  llevan nombres de tabla y recuentos. Necesita `CRON_SECRET` en Vercel (Vercel lo envía solo
+  como `Authorization: Bearer …`; es el mismo que usa `push-cron`). **Las copias incluyen datos
+  de clientes (también `portal_token`)**: el bucket debe seguir siendo privado.
+
+### Pruebas
+
+```sh
+node --test tests/*.test.js
+```
+
+Los tests ejecutan los endpoints reales contra un Supabase de mentira en memoria
+(`tests/helpers/fake-supabase.js`).
+
+Para revisar el panel en local con datos inventados (nunca toca la base de datos real):
+
+```sh
+node tools/admin-mock-server.mjs   # http://localhost:4180/admin · contraseña: secret-pass
 ```
 
 ---

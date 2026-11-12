@@ -6,11 +6,37 @@
 
 import { guard, sbSelect } from '../lib/db.js';
 import { syncStripeSubscriptionPayments } from '../lib/stripe-sync.js';
+import { dueFollowups, funnel, bySource } from '../lib/lead-rules.js';
+import { summarizeReceivables } from '../lib/receivable-rules.js';
+import { proposalDueByLead, proposalFollowup } from '../lib/proposal-rules.js';
+import { upcomingRenewals } from '../lib/renewal-rules.js';
 
 function monthRange(date = new Date()) {
   const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
   const end = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1));
   return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+}
+
+// Supabase devuelve como máximo 1000 filas por petición: se pagina para no cortar los leads
+async function selectAll(table, params) {
+  const PAGE = 1000;
+  const all = [];
+  for (let offset = 0; offset < 100000; offset += PAGE) {
+    const rows = await sbSelect(table, `${params}&limit=${PAGE}&offset=${offset}`);
+    all.push(...rows);
+    if (rows.length < PAGE) break;
+  }
+  return all;
+}
+
+// Lo que depende de tablas de migraciones recientes no debe tumbar todo el Inicio si falla
+async function optional(name, fn, fallback) {
+  try {
+    return await fn();
+  } catch (err) {
+    console.error(`[api/dashboard] ${name}:`, String(err.message || '').slice(0, 120));
+    return fallback;
+  }
 }
 
 export default async function handler(req, res) {
@@ -40,16 +66,25 @@ export default async function handler(req, res) {
       expensesMonth,
       recentActivities,
       upcomingEvents,
+      receivableRows,
+      openProposals,
+      coveragePayments,
     ] = await Promise.all([
       sbSelect('payments', `payment_date=gte.${start}&payment_date=lt.${end}&select=amount`),
       sbSelect('invoices', `status=in.(pendiente,parcial,vencida)&select=total,paid_amount`),
       sbSelect('projects', `select=id,status`),
       sbSelect('tasks', `status=neq.completada&select=*&order=due_date.asc.nullslast`),
-      sbSelect('leads', `select=id,stage,created_at`),
-      sbSelect('clients', `select=id,status`),
+      selectAll('leads', 'select=id,name,company,stage,source,created_at,updated_at,last_contact_at,next_followup_at,temperature,value_estimate,city,whatsapp,phone,email,awaiting_reply,replied_at&order=id'),
+      sbSelect('clients', 'select=id,client_name,company_name,client_contact_name,client_contact_phone,status,service_name,stripe_subscription_id,stripe_subscription_status'),
       sbSelect('expenses', `expense_date=gte.${start}&expense_date=lt.${end}&select=amount`),
       sbSelect('activities', `select=*&order=created_at.desc&limit=12`),
       sbSelect('events', `start_at=gte.${new Date().toISOString()}&select=*&order=start_at.asc&limit=5`),
+      optional('receivables', () => sbSelect('receivables',
+        'status=eq.pendiente&select=id,client_id,concept,amount,due_date,status&order=due_date.asc&limit=1000'), []),
+      optional('proposals', () => sbSelect('proposals',
+        'status=in.(enviada,vista)&select=id,lead_id,client_id,title,amount,status,sent_at,next_followup_at,updated_at,created_at&limit=1000'), []),
+      optional('renewals', () => sbSelect('payments',
+        'stripe_payment_id=is.null&coverage_end=not.is.null&select=client_id,amount,coverage_end,service_concept&limit=1000'), []),
     ]);
 
     const facturado_mes = round2(paymentsMonth.reduce((s, p) => s + Number(p.amount), 0));
@@ -68,6 +103,11 @@ export default async function handler(req, res) {
     }, {});
     const leads_nuevos_semana = leads.filter(l => l.created_at >= weekAgo).length;
 
+    const embudo = funnel(leads);
+    const proposalDue = proposalDueByLead(openProposals, today);
+    const seguimientos = dueFollowups(leads, today, { proposalDue });
+    const calientes = leads.filter(l => ['propuesta', 'reunion'].includes(l.stage));
+
     const clientes_activos = clients.filter(c => c.status === 'active').length;
 
     return res.json({
@@ -82,6 +122,31 @@ export default async function handler(req, res) {
       leads_por_stage,
       leads_nuevos_semana,
       leads_total: leads.length,
+      embudo,
+      leads_por_origen: bySource(leads).slice(0, 6),
+      seguimientos_total: seguimientos.length,
+      seguimientos: seguimientos.slice(0, 8).map(l => ({
+        id: l.id, name: l.name, company: l.company, stage: l.stage, temperature: l.temperature,
+        value_estimate: l.value_estimate, next_followup_at: l.next_followup_at,
+        last_contact_at: l.last_contact_at, whatsapp: l.whatsapp, phone: l.phone, email: l.email,
+        followup: l.followup, awaiting_reply: !!l.awaiting_reply, replied_at: l.replied_at || null,
+        proposal_title: proposalDue.get(l.id)?.title || null,
+      })),
+      esperando_respuesta: leads.filter(l => l.awaiting_reply && !['ganado', 'perdido'].includes(l.stage)).length,
+      leads_calientes: calientes.length,
+      valor_calientes: round2(calientes.reduce((s, l) => s + (Number(l.value_estimate) || 0), 0)),
+      emails_sin_enviar: embudo.counts.email_no_enviado || 0,
+      cobros_pendientes: (() => {
+        const names = Object.fromEntries(clients.map(c => [c.id, c.client_name]));
+        const sum = summarizeReceivables(receivableRows, today, 6);
+        return { ...sum, items: sum.items.map(r => ({ ...r, client_name: names[r.client_id] || 'Cliente' })) };
+      })(),
+      propuestas_abiertas: {
+        count: openProposals.length,
+        total: round2(openProposals.reduce((s, p) => s + (Number(p.amount) || 0), 0)),
+        due: openProposals.filter(p => proposalFollowup(p, today).due).length,
+      },
+      renovaciones: upcomingRenewals(clients, coveragePayments, today).slice(0, 8),
       clientes_activos,
       clientes_total: clients.length,
       actividad_reciente: recentActivities,
