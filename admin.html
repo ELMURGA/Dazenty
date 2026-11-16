@@ -19,23 +19,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind servido desde el propio dominio (antes CDN de terceros sin integridad) -->
-  <script src="/js/vendor/tailwindcss-play-3.4.17.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Space Grotesk', 'sans-serif'],
-          },
-          colors: {
-            brand: { blue: '#d97762', dark: '#050505', gray: '#121212', card: '#0e0e0e', light: '#EAEAEA' }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #050505; }
@@ -400,6 +383,8 @@
       /* Foco visible al navegar con teclado */
     :focus-visible { outline: 2px solid #d97762; outline-offset: 2px; }
   </style>
+  <!-- Tailwind precompilado (npm run build:admin): antes se compilaba en el navegador con 400 KB de JS -->
+  <link rel="stylesheet" href="/css/admin.min.css?v=20261116">
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
 
@@ -494,6 +479,11 @@
         <button type="button" onclick="switchView('projects')" id="navProjects" class="sidenav-item">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
           Proyectos
+        </button>
+        <button type="button" onclick="switchView('domains')" id="navDomains" class="sidenav-item">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
+          <span class="flex-1">Dominios</span>
+          <span id="navDomainsBadge" class="min-w-[20px] h-5 px-1.5 rounded-full bg-brand-blue text-black text-[11px] font-bold items-center justify-center" style="display:none" aria-label="Dominios que caducan pronto"></span>
         </button>
         <button type="button" onclick="switchView('tasks')" id="navTasks" class="sidenav-item">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -774,6 +764,16 @@
           </div>
           <div id="homeRenewals"></div>
         </section>
+        <section id="homeDomainsCard" class="lg:col-span-2 bg-brand-gray border border-white/5 rounded-2xl p-4 sm:p-5" aria-labelledby="homeDomTitle" style="display:none">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="min-w-0">
+              <h2 id="homeDomTitle" class="font-display font-semibold text-sm">Dominios a punto de caducar</h2>
+              <p id="homeDomSub" class="text-xs text-gray-500 mt-0.5"></p>
+            </div>
+            <button type="button" onclick="switchView('domains')" class="text-xs text-brand-blue hover:text-white transition-colors shrink-0 min-h-[36px]">Ver todos →</button>
+          </div>
+          <div id="homeDomains"></div>
+        </section>
       </div>
 
 
@@ -882,12 +882,32 @@
       <p class="text-xs text-gray-600 mt-3">Las propuestas a un lead se añaden desde su ficha (Leads → abrir lead → Propuestas). Aquí puedes crear las de clientes.</p>
     </div>
 
+    <!-- ═══ VISTA: DOMINIOS ═══ -->
+    <div id="domainsView" style="display:none">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-5">
+        <div class="min-w-0">
+          <h2 class="font-display font-bold text-lg">Dominios</h2>
+          <p class="text-gray-500 text-sm mt-0.5">Todos los dominios que has comprado y cuándo caducan. Un mes antes te llega un aviso al móvil y el cliente recibe un email y un aviso en su portal.</p>
+        </div>
+        <button type="button" onclick="openEntityModal('domain')" class="sm:shrink-0 flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Nuevo dominio
+        </button>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-3">
+        <div id="domainFilters" class="lead-stage-scroll" role="group" aria-label="Filtrar dominios"></div>
+        <input type="search" id="domainSearch" placeholder="Buscar dominio, cliente o proveedor…" aria-label="Buscar dominios" oninput="setDomainSearch(this.value)" class="sm:ml-auto sm:max-w-xs">
+      </div>
+      <p id="domainCount" class="text-xs text-gray-600 mb-3"></p>
+      <div id="domainsList" class="item-list"></div>
+    </div>
+
     <!-- ═══ VISTA: PLANTILLAS DE MENSAJE ═══ -->
     <div id="templatesView" style="display:none">
       <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-5">
         <div class="min-w-0">
           <h2 class="font-display font-bold text-lg">Plantillas de mensaje</h2>
-          <p class="text-gray-500 text-sm mt-0.5">Textos listos para WhatsApp. Variables: <code class="text-brand-blue">{nombre}</code> <code class="text-brand-blue">{empresa}</code> <code class="text-brand-blue">{importe}</code> <code class="text-brand-blue">{enlace}</code>. Se rellenan al usarlas desde un lead o un cobro.</p>
+          <p class="text-gray-500 text-sm mt-0.5">Textos listos para WhatsApp. Variables: <code class="text-brand-blue">{nombre}</code> <code class="text-brand-blue">{empresa}</code> <code class="text-brand-blue">{importe}</code> <code class="text-brand-blue">{enlace}</code> <code class="text-brand-blue">{dominio}</code> <code class="text-brand-blue">{fecha}</code>. Se rellenan solas al usarlas desde un lead, propuesta, cobro, renovación o dominio, o eligiendo «Usar» en la plantilla.</p>
         </div>
         <button type="button" onclick="openEntityModal('message_template')" class="sm:shrink-0 flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5 hover:opacity-90 transition-opacity">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
@@ -1151,6 +1171,11 @@
               <label class="!flex items-center gap-2"><input type="checkbox" id="ns-cobros_enabled" style="width:auto;padding:0"> Cobros pendientes</label>
               <input type="time" id="ns-cobros_time">
               <p class="text-xs text-gray-600 mt-1.5">De lunes a viernes: cobros vencidos o que vencen hoy.</p>
+            </div>
+            <div class="entity-field">
+              <label class="!flex items-center gap-2"><input type="checkbox" id="ns-domains_enabled" style="width:auto;padding:0"> Dominios por caducar</label>
+              <input type="time" id="ns-domains_time">
+              <p class="text-xs text-gray-600 mt-1.5">Cada día: a un mes, a una semana y cuando caducan. También avisa al cliente por email.</p>
             </div>
             <div class="entity-field">
               <label class="!flex items-center gap-2"><input type="checkbox" id="ns-story_enabled" style="width:auto;padding:0"> Subir la historia</label>
@@ -1801,15 +1826,23 @@
       No hay plantillas activas. <button type="button" class="text-brand-blue underline" onclick="closeTemplatePicker(); switchView('templates')">Crear una plantilla</button>
     </div>
     <div id="tplBody">
-      <div class="entity-field mb-4">
-        <label for="tpl-select">Plantilla</label>
-        <select id="tpl-select" onchange="templatePickerSelect()"></select>
+      <div class="grid grid-cols-1 min-[480px]:grid-cols-2 gap-3 mb-4">
+        <div class="entity-field">
+          <label for="tpl-target">Para quién</label>
+          <select id="tpl-target" onchange="templatePickerTarget()"></select>
+        </div>
+        <div class="entity-field">
+          <label for="tpl-select">Plantilla</label>
+          <select id="tpl-select" onchange="templatePickerSelect()"></select>
+        </div>
       </div>
       <div class="grid grid-cols-1 min-[480px]:grid-cols-2 gap-3 mb-4">
         <div class="entity-field"><label for="tpl-v-nombre">{nombre}</label><input type="text" id="tpl-v-nombre" oninput="templatePickerVars()"></div>
         <div class="entity-field"><label for="tpl-v-empresa">{empresa}</label><input type="text" id="tpl-v-empresa" oninput="templatePickerVars()"></div>
         <div class="entity-field"><label for="tpl-v-importe">{importe}</label><input type="text" id="tpl-v-importe" oninput="templatePickerVars()"></div>
         <div class="entity-field"><label for="tpl-v-enlace">{enlace}</label><input type="text" id="tpl-v-enlace" inputmode="url" oninput="templatePickerVars()" placeholder="https://…"></div>
+        <div class="entity-field" id="tpl-f-dominio"><label for="tpl-v-dominio">{dominio}</label><input type="text" id="tpl-v-dominio" oninput="templatePickerVars()"></div>
+        <div class="entity-field" id="tpl-f-fecha"><label for="tpl-v-fecha">{fecha}</label><input type="text" id="tpl-v-fecha" oninput="templatePickerVars()"></div>
       </div>
       <div class="entity-field mb-2">
         <label for="tpl-text">Mensaje (puedes editarlo)</label>
@@ -1820,10 +1853,15 @@
         <button type="button" id="tpl-refill" class="text-xs text-brand-blue hover:text-white min-h-[32px]" style="display:none" onclick="templatePickerRefill()">Rellenar de nuevo con los datos</button>
       </div>
       <p id="tpl-wa-note" class="text-xs text-gray-500 mb-3" style="display:none"></p>
+      <label id="tpl-log-wrap" class="items-center gap-2 text-xs text-gray-400 mb-4 cursor-pointer" style="display:none">
+        <input type="checkbox" id="tpl-log" checked style="width:auto;padding:0"> Registrar el contacto por WhatsApp en la ficha al abrirlo
+      </label>
       <div class="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
         <button type="button" onclick="copyTemplateText()" class="border border-white/10 rounded-xl px-5 py-3 text-sm text-gray-300 hover:text-white hover:border-white/20 min-h-[44px]">Copiar texto</button>
         <a id="tpl-wa" href="#" target="_blank" rel="noopener noreferrer" onclick="return templateOpenWhatsapp(event)"
-          class="inline-flex items-center justify-center gap-2 bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-5 py-3 hover:opacity-90 min-h-[44px]">Abrir WhatsApp</a>
+          title="Abrir WhatsApp con el mensaje" aria-label="Abrir WhatsApp con el mensaje"
+          class="inline-flex items-center justify-center rounded-xl px-6 py-3 hover:brightness-110 min-h-[44px] min-w-[64px] transition" style="background:#25D366">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
       </div>
     </div>
   </div>
@@ -1860,6 +1898,12 @@
 
 
 <script>
+// ─── Logo original de WhatsApp (verde) para todos los botones que abren WhatsApp ───
+const WA_ICON_PATH = "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z";
+function waIcon(cls = 'w-[18px] h-[18px]', fill = '#25D366') {
+  return `<svg class="${cls}" viewBox="0 0 24 24" fill="${fill}" aria-hidden="true" focusable="false"><path d="${WA_ICON_PATH}"/></svg>`;
+}
+
 // ─── Estado global ───────────────────────────────────────────────────────────
 let adminPass = '';
 let clients   = [];
@@ -1869,6 +1913,24 @@ let currentView    = 'clients';
 let paymentsData   = [];
 let paymentsLoaded = false;
 let registeredPaymentsData = [];
+
+// Precarga: nada más entrar se piden a la vez los datos de la primera pantalla, sin esperar a que
+// termine el resto del arranque. Cada precarga se consume una sola vez y caduca a los 20 s.
+const prefetched = new Map();
+function prefetchJson(path) {
+  prefetched.set(path, { at: Date.now(), p: fetch(path, { headers: { 'x-admin-password': adminPass } })
+    .then(async r => ({ ok: r.ok, status: r.status, data: await r.json().catch(() => null) }))
+    .catch(() => null) });
+}
+function takePrefetched(path) {
+  const e = prefetched.get(path);
+  prefetched.delete(path);
+  return e && Date.now() - e.at < 20000 ? e.p : null;
+}
+// Datos de la última carga: se pintan al instante al volver a una pantalla y se refrescan por detrás
+let homeLastData = null;
+let domainsData = [];
+let homeDomainsCache = [];
 
 // Estado Dazenty OS (nuevos módulos)
 let leadsData             = [];
@@ -1926,7 +1988,12 @@ async function doLogin(e) {
       renderSummary();
       // Las notificaciones abren /admin#historias o /admin#tasks: entramos directamente ahí
       const hash = location.hash.slice(1);
-      switchView(hash === 'historias' ? 'stories' : hash);
+      const firstView = hash === 'historias' ? 'stories' : hash;
+      if (!VIEW_CONTAINER_IDS[firstView] || firstView === 'home') prefetchJson('/api/dashboard');
+      else if (firstView === 'leads') { prefetchJson('/api/leads?slim=1'); prefetchJson('/api/proposals'); }
+      switchView(firstView);
+      // Los leads son lo más pesado: se piden al repartir ya la primera pantalla, para que «Leads» abra al instante
+      if (firstView !== 'leads') setTimeout(() => { prefetchJson('/api/leads?slim=1'); prefetchJson('/api/proposals'); }, 1200);
     } else {
       err.style.display = 'block';
       document.getElementById('loginInput').value = '';
@@ -1944,19 +2011,19 @@ async function doLogin(e) {
 // ─── Cambio de vista: navegación lateral (Dazenty OS) ─────────────────────────
 const VIEW_CONTAINER_IDS = {
   home: 'homeView', leads: 'leadsView', opportunities: 'opportunitiesView', clients: 'clientsView',
-  projects: 'projectsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
+  projects: 'projectsView', domains: 'domainsView', tasks: 'tasksView', invoices: 'invoicesView', payments: 'paymentsView',
   expenses: 'expensesView', calendar: 'calendarView', activity: 'activityView', jobs: 'jobsView',
   stories: 'storiesView', proposals: 'proposalsView', templates: 'templatesView', settings: 'settingsView',
 };
 const VIEW_NAV_IDS = {
   home: 'navHome', leads: 'navLeads', opportunities: 'navOpportunities', clients: 'tabClients',
-  projects: 'navProjects', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
+  projects: 'navProjects', domains: 'navDomains', tasks: 'navTasks', invoices: 'navInvoices', payments: 'tabPayments',
   expenses: 'navExpenses', calendar: 'navCalendar', activity: 'navActivity', jobs: 'navJobs',
   stories: 'navStories', proposals: 'navProposals', templates: 'navTemplates', settings: 'navSettings',
 };
 const VIEW_TITLES = {
   home: 'Inicio', leads: 'Leads (CRM)', opportunities: 'Oportunidades', clients: 'Clientes',
-  projects: 'Proyectos', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
+  projects: 'Proyectos', domains: 'Dominios', tasks: 'Tareas', invoices: 'Facturación', payments: 'Pagos',
   expenses: 'Gastos', calendar: 'Calendario', activity: 'Actividad', jobs: 'Búsqueda de trabajo',
   stories: 'Historias', proposals: 'Propuestas', templates: 'Plantillas de mensaje', settings: 'Ajustes',
 };
@@ -1984,6 +2051,7 @@ function loadViewData(view) {
   else if (view === 'leads') loadLeads();
   else if (view === 'opportunities') loadOpportunities();
   else if (view === 'projects') loadProjects();
+  else if (view === 'domains') loadDomains();
   else if (view === 'tasks') loadTasks();
   else if (view === 'invoices') { loadInvoices(); loadInvoicePdfs(); }
   else if (view === 'expenses') loadExpensesView();
@@ -2868,7 +2936,7 @@ const PROPOSAL_FIELDS = [
   { key: 'url', label: 'Enlace a la propuesta', type: 'url', placeholder: 'https://…' },
   { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
 ];
-const TEMPLATE_CATEGORY_LABELS = { lead: 'Primer contacto', propuesta: 'Propuesta', cobro: 'Cobro', demo: 'Demo', reunion: 'Reunión', renovacion: 'Renovación', general: 'General' };
+const TEMPLATE_CATEGORY_LABELS = { lead: 'Primer contacto', propuesta: 'Propuesta', cobro: 'Cobro', demo: 'Demo', reunion: 'Reunión', renovacion: 'Renovación', dominio: 'Dominio', general: 'General' };
 
 const ENTITY_CONFIG = {
   lead: {
@@ -3017,7 +3085,7 @@ const ENTITY_CONFIG = {
       { key: 'name', label: 'Nombre', type: 'text', required: true },
       { key: 'category', label: 'Para qué sirve', type: 'select', default: 'general', options: Object.entries(TEMPLATE_CATEGORY_LABELS) },
       { key: 'active', label: 'Estado', type: 'select', bool: true, default: 'true', options: [['true','Activa'], ['false','Desactivada']] },
-      { key: 'body', label: 'Texto (variables: {nombre} {empresa} {importe} {enlace})', type: 'textarea', span: 2, tall: true, required: true },
+      { key: 'body', label: 'Texto (variables: {nombre} {empresa} {importe} {enlace} {dominio} {fecha})', type: 'textarea', span: 2, tall: true, required: true },
     ],
   },
   proposal: {
@@ -3031,6 +3099,21 @@ const ENTITY_CONFIG = {
     listUrl: () => '/api/proposals',
     itemUrl: id => `/api/proposals?id=${id}`,
     fields: [{ key: 'lead_id', type: 'hidden' }, ...PROPOSAL_FIELDS],
+  },
+  domain: {
+    label: 'dominio',
+    listUrl: () => '/api/domains',
+    itemUrl: id => `/api/domains?id=${id}`,
+    fields: [
+      { key: 'domain', label: 'Dominio', type: 'text', required: true, span: 2, placeholder: 'miempresa.es' },
+      { key: 'client_id', label: 'Cliente', type: 'client_select' },
+      { key: 'registrar', label: 'Comprado en', type: 'text', placeholder: 'IONOS, Vercel, Namecheap…' },
+      { key: 'registered_at', label: 'Fecha de compra', type: 'date' },
+      { key: 'expires_at', label: 'Caduca el', type: 'date', required: true },
+      { key: 'renewal_price', label: 'Precio de renovación (€/año)', type: 'number' },
+      { key: 'notify_client', label: 'Avisar al cliente', type: 'select', bool: true, default: 'true', options: [['true', 'Sí, automáticamente a un mes'], ['false', 'No']] },
+      { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
+    ],
   },
   invoice: { itemUrl: id => `/api/invoices?id=${id}` }, // la factura usa un modal propio (líneas repetibles)
   payment: { itemUrl: id => `/api/payments?id=${id}` }, // los cobros usan su propio modal (registrar pago)
@@ -3046,6 +3129,7 @@ const ENTITY_DATA_SOURCE = {
   event: () => eventsData,
   receivable: () => receivablesData,
   message_template: () => templatesData,
+  domain: () => domainsData,
   proposal: () => proposalsData,
   lead_proposal: () => proposalsData,
 };
@@ -3125,6 +3209,27 @@ async function openEntityModal(type, id = null, prefill = null) {
     fieldsBox.innerHTML = cfg.fields.map(f => renderEntityField(f, item, prefill)).join('');
   }
   document.getElementById('entity-modal-overlay').style.display = 'flex';
+  if (type === 'message_template') addTemplateVarChips();
+}
+
+// Botones bajo el texto de una plantilla: un clic inserta la variable donde está el cursor
+function addTemplateVarChips() {
+  const ta = document.getElementById('ef-body');
+  if (!ta || document.getElementById('tplVarChips')) return;
+  const box = document.createElement('div');
+  box.id = 'tplVarChips';
+  box.className = 'flex flex-wrap items-center gap-1.5 mt-2';
+  box.innerHTML = '<span class="text-xs text-gray-500">Insertar:</span>' + TPL_KEYS.map(k =>
+    `<button type="button" class="btn-chip !min-h-[30px] !px-2.5 text-xs" data-var="${k}">{${k}}</button>`).join('');
+  box.addEventListener('click', e => {
+    const k = e.target.closest('[data-var]')?.dataset.var;
+    if (!k) return;
+    const at = ta.selectionStart ?? ta.value.length;
+    ta.value = ta.value.slice(0, at) + `{${k}}` + ta.value.slice(ta.selectionEnd ?? at);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = at + k.length + 2;
+  });
+  ta.parentElement.appendChild(box);
 }
 
 function closeEntityModal() {
@@ -3344,6 +3449,34 @@ function stageBadgeHtml(stage) {
   const meta = LEAD_STAGE_META[stage] || { label: stage, color: '#6b7280' };
   return `<span class="lead-stage-badge" style="--badge-bg:${meta.color}26; --badge-text:${meta.color}"><span class="lead-stage-dot" style="--dot-color:${meta.color}"></span>${esc(meta.label)}</span>`;
 }
+// Por qué canales se ha contactado a un lead (misma lógica que contactChannels en lib/lead-contact.js).
+// Un lead puede haber recibido email y WhatsApp: se muestran los dos, no solo el primero.
+function leadContactChannels(l) {
+  const out = [];
+  const email = l.email_contacted_at || (l.channel === 'email' ? l.last_contact_at : null);
+  const wa = l.whatsapp_contacted_at || (l.channel === 'whatsapp' ? l.last_contact_at : null);
+  if (email) out.push({ key: 'email', at: email });
+  if (wa) out.push({ key: 'whatsapp', at: wa });
+  return out;
+}
+// Fecha del contacto más reciente por cualquier canal
+function leadLastContact(l) {
+  return [l.last_contact_at, l.whatsapp_contacted_at, l.email_contacted_at].filter(Boolean).sort().pop() || null;
+}
+function leadContactChipsHtml(l) {
+  const chans = leadContactChannels(l);
+  if (!chans.length) return '';
+  const chip = c => c.key === 'whatsapp'
+    ? `<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-[#25D366]/40 text-[#25D366]" title="Contactado por WhatsApp ${esc(agoLabel(c.at) || '')}">${waIcon('w-3 h-3')}WhatsApp</span>`
+    : `<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-white/15 text-gray-300" title="Contactado por email ${esc(agoLabel(c.at) || '')}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>Email</span>`;
+  return `<span class="flex flex-wrap gap-1 mt-1">${chans.map(chip).join('')}</span>`;
+}
+// Importe que se ve en la lista: el de las propuestas enviadas (abiertas o aceptadas) y, si no hay, el valor estimado
+function leadProposalTotal(l) {
+  return proposalsData.filter(p => p.lead_id === l.id && (PROPOSAL_OPEN.includes(p.status) || p.status === 'aceptada'))
+    .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+}
+
 function leadWaLink(l) {
   let digits = String(l.whatsapp || l.phone || '').replace(/\D/g, '');
   if (digits.length === 9 && /^[6789]/.test(digits)) digits = '34' + digits; // móvil/fijo español sin prefijo
@@ -3384,8 +3517,14 @@ function refreshAfterLeadChange() {
 
 async function loadLeads() {
   try {
-    const [res] = await Promise.all([fetch('/api/leads', { headers: { 'x-admin-password': adminPass } }), loadProposalsQuiet()]);
-    const data = await res.json().catch(() => []);
+    if (leadsData.length) { renderLeadStageLegend(); renderLeadsBoard(); } // lo que ya había, al instante
+    const preLeads = takePrefetched('/api/leads?slim=1');
+    const [res] = await Promise.all([
+      preLeads ? preLeads.then(r => r || fetch('/api/leads?slim=1', { headers: { 'x-admin-password': adminPass } }).then(async x => ({ ok: x.ok, data: await x.json().catch(() => []) })))
+               : fetch('/api/leads?slim=1', { headers: { 'x-admin-password': adminPass } }).then(async x => ({ ok: x.ok, data: await x.json().catch(() => []) })),
+      loadProposalsQuiet(),
+    ]);
+    const data = res.data;
     leadsData = Array.isArray(data) ? data : [];
     for (const id of [...leadSelected]) if (!leadsData.some(l => l.id === id)) leadSelected.delete(id);
     renderLeadStageLegend();
@@ -3507,8 +3646,9 @@ function leadRowHtml({ l, f }) {
   const meta = LEAD_STAGE_META[l.stage] || { label: l.stage, color: '#6b7280' };
   const temp = LEAD_TEMPS[l.temperature];
   const sub = [l.company && l.company !== l.name ? l.company : '', l.city].filter(Boolean).join(' · ');
-  const value = l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : '';
-  const last = agoLabel(l.last_contact_at);
+  const propTotal = leadProposalTotal(l);
+  const value = propTotal ? `${fmtAmt(propTotal)}€` : (l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : '');
+  const last = agoLabel(leadLastContact(l));
   const wa = leadWaLink(l);
   const chip = followChipHtml(f);
   const next = !f.due && l.next_followup_at ? `<p class="text-[11px] text-gray-500">Próx. ${esc(shortDate(l.next_followup_at))}</p>` : '';
@@ -3532,13 +3672,14 @@ function leadRowHtml({ l, f }) {
         </select>
       </div>
       <div class="lc-contact">
-        <p class="text-xs ${last ? 'text-gray-300' : 'text-gray-600'}">${last ? `${esc(last)}${l.channel ? ' · ' + esc(LEAD_CHANNELS[l.channel] || '') : ''}` : 'Sin contacto'}</p>
+        <p class="text-xs ${last ? 'text-gray-300' : 'text-gray-600'}">${last ? esc(last) : 'Sin contacto'}</p>
+        ${leadContactChipsHtml(l)}
         ${chip || next}
       </div>
-      <div class="lc-value">${value}</div>
+      <div class="lc-value"${propTotal ? ' title="Importe de las propuestas enviadas" style="color:#c4b5fd"' : ''}>${value}</div>
       <div class="lc-actions">
         ${wa ? `<a href="${wa}" target="_blank" rel="noopener noreferrer" class="lead-act" title="Abrir WhatsApp" aria-label="Abrir WhatsApp de ${esc(l.name)}" onclick="event.stopPropagation()">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></a>` : ''}
+          ${waIcon()}</a>` : ''}
         <button type="button" class="lead-act${l.awaiting_reply ? ' on' : ''}" aria-pressed="${!!l.awaiting_reply}"
           title="${l.awaiting_reply ? 'Ya le contesté (quitar el aviso)' : 'Ha respondido: falta contestar'}"
           aria-label="${l.awaiting_reply ? 'Quitar el aviso de respuesta pendiente de' : 'Marcar que ha respondido:'} ${esc(l.name)}"
@@ -3710,7 +3851,7 @@ function leadQuickLinks(l) {
     l.website && ['Web', safeUrl(l.website)],
   ].filter(Boolean);
   return links.map(([label, href]) => `<a href="${esc(href)}" ${href.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}
-    class="lead-quick-link">${esc(label)}</a>`).join('');
+    class="lead-quick-link${label === 'WhatsApp' ? ' inline-flex items-center gap-1.5' : ''}">${label === 'WhatsApp' ? waIcon('w-3.5 h-3.5') : ''}${esc(label)}</a>`).join('');
 }
 
 function renderLeadDetail(l) {
@@ -3726,7 +3867,7 @@ function renderLeadDetail(l) {
   const closed = LEAD_CLOSED.includes(l.stage);
   const today = leadToday();
   const defaultNext = l.next_followup_at || addDaysIso(today, LEAD_HOT.includes(l.stage) ? 3 : 7);
-  const last = agoLabel(l.last_contact_at);
+  const last = agoLabel(leadLastContact(l));
   const igHandle = (l.instagram || '').replace(/^@/, '').trim();
 
   const contacto = [
@@ -3741,6 +3882,7 @@ function renderLeadDetail(l) {
     leadDetailRow('Ciudad', l.city ? esc(l.city) : ''),
     leadDetailRow('Sector', l.sector ? esc(l.sector) : ''),
     leadDetailRow('Valor estimado', l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : ''),
+    leadDetailRow('Propuestas enviadas', leadProposalTotal(l) ? `${fmtAmt(leadProposalTotal(l))}€` : ''),
   ].join('');
 
   const follow = closed ? '' : `
@@ -3750,7 +3892,7 @@ function renderLeadDetail(l) {
         ${followChipHtml(f)}
       </div>
       <p class="text-sm text-gray-400 mb-3">
-        Último contacto: <span class="text-gray-200">${last ? `${esc(last)}${l.channel ? ' por ' + esc(LEAD_CHANNELS[l.channel] || '') : ''}` : 'ninguno registrado'}</span>
+        Último contacto: <span class="text-gray-200">${last ? esc(last) : 'ninguno registrado'}</span>${leadContactChipsHtml(l)}
         · Próximo: <span class="text-gray-200">${l.next_followup_at ? esc(shortDate(l.next_followup_at)) : 'sin fecha'}</span>
       </p>
       <div class="temp-seg mb-3" role="group" aria-label="Temperatura del lead">
@@ -3929,7 +4071,7 @@ async function convertLeadToClient() {
   const id = currentLeadDetailId;
   const l = leadsData.find(x => x.id === id);
   if (!l) return;
-  if (!confirm(`¿Convertir "${l.company || l.name}" en cliente? Se crea la ficha de cliente y una oportunidad, y el lead pasa a Ganado.`)) return;
+  if (!confirm(`¿Convertir "${l.company || l.name}" en cliente? Se crea la ficha de cliente y el lead pasa a Ganado.`)) return;
   try {
     const { client } = await leadApi(`/api/leads?id=${id}&action=convert`, 'POST');
     closeLeadDetail();
@@ -5304,7 +5446,7 @@ async function removeStoryLink(index) {
 
 function renderNotificationSettings() {
   const s = storiesState.settings;
-  ['tasks', 'followups', 'cobros', 'story', 'weekly'].forEach(k => {
+  ['tasks', 'followups', 'cobros', 'domains', 'story', 'weekly'].forEach(k => {
     document.getElementById(`ns-${k}_enabled`).checked = s[`${k}_enabled`] !== false;
     document.getElementById(`ns-${k}_time`).value = s[`${k}_time`] || '';
   });
@@ -5319,7 +5461,7 @@ async function saveNotificationSettings() {
   const body = {
     story_days: [...document.querySelectorAll('#ns-story_days [aria-pressed="true"]')].map(b => Number(b.dataset.dow)),
   };
-  ['tasks', 'followups', 'cobros', 'story', 'weekly'].forEach(k => {
+  ['tasks', 'followups', 'cobros', 'domains', 'story', 'weekly'].forEach(k => {
     body[`${k}_enabled`] = document.getElementById(`ns-${k}_enabled`).checked;
     body[`${k}_time`] = document.getElementById(`ns-${k}_time`).value;
   });
@@ -5511,15 +5653,27 @@ function renderActivityItems(container, items, emptyMsg) {
 // ─── Inicio (dashboard real con KPIs agregados) ────────────────────────────────
 async function loadHome() {
   try {
-    const res = await fetch('/api/dashboard', { headers: { 'x-admin-password': adminPass } });
-    const data = await res.json();
+    if (homeLastData) paintHome(homeLastData); // se ve al instante; los datos nuevos lo reemplazan en cuanto llegan
+    const pre = await takePrefetched('/api/dashboard');
+    const res = pre ? { ok: pre.ok, status: pre.status } : await fetch('/api/dashboard', { headers: { 'x-admin-password': adminPass } });
+    const data = pre ? (pre.data || {}) : await res.json();
     if (!res.ok) throw new Error(data.error || 'Error');
+    homeLastData = data;
+    paintHome(data);
+  } catch {
+    showToast('Error al cargar el panel de inicio', 'error');
+  }
+}
+
+function paintHome(data) {
+  try {
     renderHomeGreeting();
     renderHomeSalesKpis(data);
     renderHomeKpis(data);
     renderHomeDue(data);
     renderHomeReceivables(data);
     renderHomeRenewals(data);
+    renderHomeDomains(data);
     setProposalsBadge(data.propuestas_abiertas?.due || 0);
     renderHomeFunnel(data);
     renderHomeSources(data);
@@ -5527,8 +5681,9 @@ async function loadHome() {
     renderHomeUpcomingEvents(data.proximos_eventos || []);
     renderActivityItems(document.getElementById('homeActivity'), data.actividad_reciente || [], 'Sin actividad reciente.');
     updateLeadsNavBadge(data.seguimientos_total || 0);
-  } catch {
-    showToast('Error al cargar el panel de inicio', 'error');
+    setDomainsBadge(data.dominios?.soon_count || 0);
+  } catch (err) {
+    console.error('[inicio]', err);
   }
 }
 
@@ -5595,7 +5750,7 @@ function renderHomeDue(d) {
     const wa = leadWaLink(l);
     const info = [l.company && l.company !== l.name ? l.company : '',
       l.value_estimate ? `${fmtAmt(l.value_estimate)}€` : '',
-      l.last_contact_at ? `contactado ${agoLabel(l.last_contact_at)}` : 'sin contacto registrado'].filter(Boolean).join(' · ');
+      leadLastContact(l) ? `contactado ${agoLabel(leadLastContact(l))}${leadContactChannels(l).length ? ' por ' + leadContactChannels(l).map(c => LEAD_CHANNELS[c.key]).join(' y ') : ''}` : 'sin contacto registrado'].filter(Boolean).join(' · ');
     return `
     <div class="home-due-row">
       <button type="button" class="min-w-0 flex-1 text-left" onclick="openLeadById('${l.id}')">
@@ -5608,7 +5763,7 @@ function renderHomeDue(d) {
         <button type="button" class="lead-act" title="Usar plantilla de mensaje" aria-label="Usar plantilla para ${esc(l.name)}" onclick="openTemplateForLead('${l.id}')">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></button>
         ${wa ? `<a href="${wa}" target="_blank" rel="noopener noreferrer" class="lead-act" title="Abrir WhatsApp" aria-label="Abrir WhatsApp de ${esc(l.name)}">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-9 6l1.4-4.2A8 8 0 1 1 8.2 19.4L4 20z"/></svg></a>` : ''}
+          ${waIcon()}</a>` : ''}
         <button type="button" class="lead-act" title="Registrar contacto de hoy" aria-label="Registrar contacto con ${esc(l.name)}" onclick="quickContact('${l.id}')">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         </button>
@@ -5724,7 +5879,7 @@ let templatesLoaded = false;
 
 function fillMessageTemplate(body, vars) {
   const missing = [];
-  const text = String(body || '').replace(/\{(nombre|empresa|importe|enlace)\}/g, (match, key, offset, whole) => {
+  const text = String(body || '').replace(/\{(nombre|empresa|importe|enlace|dominio|fecha)\}/g, (match, key, offset, whole) => {
     const v = String(vars[key] ?? '').trim();
     if (!v) { if (!missing.includes(key)) missing.push(key); return match; }
     return v.endsWith('.') && whole[offset + match.length] === '.' ? v.slice(0, -1) : v; // "S.L." + punto de la frase
@@ -5755,52 +5910,166 @@ async function ensureTemplates(force = false) {
 
 let tplCtx = null;
 let tplDirty = false;
+let tplChosen = false; // la plantilla la ha elegido el usuario a mano: no se cambia sola al cambiar de destinatario
+const TPL_KEYS = ['nombre', 'empresa', 'importe', 'enlace', 'dominio', 'fecha'];
+const TPL_VAR_RE = '\\{(nombre|empresa|importe|enlace|dominio|fecha)\\}';
 
-async function openTemplatePicker(ctx) {
+function longDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+// ── Contexto de cada tipo de destinatario: de aquí salen las variables y el teléfono ──
+function ctxForLead(l) {
+  const openProposal = proposalsData.find(p => p.lead_id === l.id && PROPOSAL_OPEN.includes(p.status));
+  const category = openProposal || l.stage === 'propuesta' ? 'propuesta' : l.stage === 'reunion' ? 'reunion' : 'lead';
+  const chans = leadContactChannels(l).map(c => c.key);
+  return {
+    target: `lead:${l.id}`, leadId: l.id,
+    title: `Para ${l.name}${l.company && l.company !== l.name ? ` · ${l.company}` : ''}`,
+    category,
+    // Ya se le escribió por email y todavía no por WhatsApp: lo natural es el seguimiento tras el email
+    prefer: category === 'lead' && chans.includes('email') && !chans.includes('whatsapp') ? 'Seguimiento tras el email' : '',
+    nombre: firstNameOf(l.name),
+    empresa: l.company || l.name,
+    importe: openProposal?.amount ? fmtEuros(openProposal.amount) : (l.value_estimate ? fmtEuros(l.value_estimate) : ''),
+    enlace: openProposal?.url || '',
+    phone: l.whatsapp || l.phone || '',
+  };
+}
+function ctxForClient(c, extra = {}) {
+  return {
+    target: `client:${c.id}`, clientId: c.id,
+    title: `Para ${c.client_name}`,
+    category: 'general',
+    nombre: firstNameOf(c.client_contact_name || c.client_name),
+    empresa: c.company_name || c.client_name || '',
+    importe: '', enlace: '', phone: clientPhone(c),
+    ...extra,
+  };
+}
+function ctxForDomain(d) {
+  const c = clientById(d.client_id);
+  const days = dayDiff(leadToday(), d.expires_at);
+  return ctxForClient(c || { id: '', client_name: d.client_name || '' }, {
+    target: `domain:${d.id}`, domainId: d.id, clientId: c?.id || null,
+    title: `Dominio ${d.domain}${c ? ` · ${c.client_name}` : ''}`,
+    category: 'dominio',
+    prefer: days !== null && days < 0 ? 'Dominio caducado' : 'Aviso de dominio por caducar',
+    importe: d.renewal_price ? fmtEuros(d.renewal_price) : '',
+    dominio: d.domain, fecha: longDate(d.expires_at),
+  });
+}
+function parseTplTarget(value) {
+  const [kind, ...rest] = String(value || '').split(':');
+  const id = rest.join(':');
+  if (kind === 'lead') { const l = leadsData.find(x => x.id === id) || homeDueCache.find(x => x.id === id); return l ? ctxForLead(l) : null; }
+  if (kind === 'client') { const c = clientById(id); return c ? ctxForClient(c) : null; }
+  if (kind === 'domain') { const d = domainsData.find(x => x.id === id) || homeDomainsCache.find(x => x.id === id); return d ? ctxForDomain(d) : null; }
+  return null;
+}
+
+// Lista «Para quién»: el destinatario actual, los leads abiertos (los que han respondido y los que
+// tocan primero), los clientes y los dominios
+function tplTargetOptions(ctx) {
+  const today = leadToday();
+  const open = leadsData.filter(l => !LEAD_CLOSED.includes(l.stage));
+  const rank = l => (l.awaiting_reply ? 0 : leadFollowup(l, today).due ? 1 : 2);
+  const leads = open.sort((a, b) => rank(a) - rank(b) || String(b.updated_at || '').localeCompare(String(a.updated_at || ''))).slice(0, 300);
+  if (ctx.leadId && !leads.some(l => l.id === ctx.leadId)) { const l = leadsData.find(x => x.id === ctx.leadId); if (l) leads.unshift(l); }
+  const opt = (v, label) => `<option value="${esc(v)}" ${v === ctx.target ? 'selected' : ''}>${esc(label)}</option>`;
+  const group = (label, items) => items.length ? `<optgroup label="${esc(label)}">${items.join('')}</optgroup>` : '';
+  return `<option value="">Sin destinatario (escribir a mano)</option>`
+    + group('Leads', leads.map(l => opt(`lead:${l.id}`, `${l.name}${l.company && l.company !== l.name ? ` · ${l.company}` : ''}`)))
+    + group('Clientes', clients.map(c => opt(`client:${c.id}`, c.client_name)))
+    + group('Dominios', domainsData.map(d => opt(`domain:${d.id}`, d.domain)));
+}
+
+function orderTemplates(list, ctx) {
+  const ordered = [...list].sort((a, b) => (b.category === ctx.category) - (a.category === ctx.category));
+  const i = ctx.prefer ? ordered.findIndex(t => t.name === ctx.prefer) : -1;
+  if (i > 0) ordered.unshift(ordered.splice(i, 1)[0]);
+  return ordered;
+}
+
+async function openTemplatePicker(ctx, templateId = null) {
   tplCtx = ctx;
   tplDirty = false;
+  tplChosen = Boolean(templateId);
   document.getElementById('tplSubtitle').textContent = ctx.title || '';
   let list = [];
   try { list = (await ensureTemplates()).filter(t => t.active); } catch (err) { showToast(err.message, 'error'); return; }
+  if (!domainsData.length) ensureDomainsQuiet().then(() => { if (tplCtx === ctx) refreshTplTargets(); });
   const select = document.getElementById('tpl-select');
-  const ordered = [...list].sort((a, b) => (b.category === ctx.category) - (a.category === ctx.category));
+  const ordered = orderTemplates(list, ctx);
   select.innerHTML = ordered.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  if (templateId) select.value = templateId;
+  document.getElementById('tpl-target').innerHTML = tplTargetOptions(ctx);
   document.getElementById('tplEmpty').style.display = ordered.length ? 'none' : 'block';
   document.getElementById('tplBody').style.display = ordered.length ? 'block' : 'none';
-  for (const k of ['nombre', 'empresa', 'importe', 'enlace']) document.getElementById(`tpl-v-${k}`).value = ctx[k] || '';
+  fillTplVarInputs(ctx);
   document.getElementById('tpl-refill').style.display = 'none';
   document.getElementById('tpl-wa-note').style.display = 'none';
   document.getElementById('tpl-overlay').style.display = 'flex';
   if (ordered.length) { renderTemplateText(); document.getElementById('tpl-select').focus(); }
+}
+function refreshTplTargets() {
+  const box = document.getElementById('tpl-target');
+  if (box && tplCtx) box.innerHTML = tplTargetOptions(tplCtx);
+}
+function fillTplVarInputs(ctx) {
+  for (const k of TPL_KEYS) document.getElementById(`tpl-v-${k}`).value = ctx[k] || '';
 }
 function closeTemplatePicker() { document.getElementById('tpl-overlay').style.display = 'none'; tplCtx = null; }
 function closeTemplatePickerOnOverlay(e) { if (e.target === document.getElementById('tpl-overlay')) closeTemplatePicker(); }
 
 function templateVars() {
   const v = {};
-  for (const k of ['nombre', 'empresa', 'importe', 'enlace']) v[k] = document.getElementById(`tpl-v-${k}`).value;
+  for (const k of TPL_KEYS) v[k] = document.getElementById(`tpl-v-${k}`).value;
   return v;
+}
+// {dominio} y {fecha} solo se piden si la plantilla elegida los usa (o ya traen valor)
+function updateTplVarFields(body) {
+  for (const k of ['dominio', 'fecha']) {
+    const used = String(body || '').includes(`{${k}}`) || document.getElementById(`tpl-v-${k}`).value;
+    document.getElementById(`tpl-f-${k}`).style.display = used ? '' : 'none';
+  }
 }
 function renderTemplateText() {
   const tpl = templatesData.find(t => t.id === document.getElementById('tpl-select').value);
+  updateTplVarFields(tpl ? tpl.body : '');
   const { text } = fillMessageTemplate(tpl ? tpl.body : '', templateVars());
   document.getElementById('tpl-text').value = text;
   tplDirty = false;
   document.getElementById('tpl-refill').style.display = 'none';
   updateTemplateStatus();
 }
-function templatePickerSelect() { renderTemplateText(); }
+function templatePickerSelect() { tplChosen = true; renderTemplateText(); }
 function templatePickerVars() {
   if (tplDirty) document.getElementById('tpl-refill').style.display = 'inline-block'; // no pisamos lo que has editado
   else renderTemplateText();
 }
 function templatePickerRefill() { renderTemplateText(); }
 function templatePickerEdited() { tplDirty = true; updateTemplateStatus(); }
+// Cambiar el destinatario rellena solos los datos, el teléfono y (si no la has elegido tú) la plantilla más adecuada
+function templatePickerTarget() {
+  const ctx = parseTplTarget(document.getElementById('tpl-target').value)
+    || { target: '', title: 'Sin destinatario', category: tplCtx?.category || 'general', nombre: '', empresa: '', importe: '', enlace: '', phone: '' };
+  tplCtx = ctx;
+  document.getElementById('tplSubtitle').textContent = ctx.title || '';
+  fillTplVarInputs(ctx);
+  if (!tplChosen) {
+    const best = orderTemplates(templatesData.filter(t => t.active), ctx)[0];
+    if (best) document.getElementById('tpl-select').value = best.id;
+  }
+  renderTemplateText();
+}
 
 // Avisa de las variables que siguen sin rellenar y actualiza el enlace de WhatsApp
 function updateTemplateStatus() {
   const text = document.getElementById('tpl-text').value;
-  const missing = [...new Set((text.match(/\{(nombre|empresa|importe|enlace)\}/g) || []))];
+  const missing = [...new Set((text.match(new RegExp(TPL_VAR_RE, 'g')) || []))];
   const warn = document.getElementById('tpl-warn');
   warn.style.display = missing.length ? 'block' : 'none';
   warn.textContent = missing.length ? `Faltan por rellenar: ${missing.join(' ')}` : '';
@@ -5809,16 +6078,31 @@ function updateTemplateStatus() {
   const note = document.getElementById('tpl-wa-note');
   note.style.display = hasWaNumber(phone) ? 'none' : 'block';
   note.textContent = 'Este contacto no tiene un teléfono válido: WhatsApp te dejará elegir a quién enviarlo. También puedes copiar el texto.';
+  // Registrar el contacto solo tiene sentido si el destinatario es un lead
+  document.getElementById('tpl-log-wrap').style.display = tplCtx?.leadId ? 'flex' : 'none';
 }
 function templateOpenWhatsapp(e) {
   const text = document.getElementById('tpl-text').value;
-  const missing = [...new Set((text.match(/\{(nombre|empresa|importe|enlace)\}/g) || []))];
+  const missing = [...new Set((text.match(new RegExp(TPL_VAR_RE, 'g')) || []))];
   if (missing.length && !confirm(`Quedan datos sin rellenar (${missing.join(' ')}). ¿Abrir WhatsApp igualmente?`)) {
     e.preventDefault();
     return false;
   }
   document.getElementById('tpl-wa').href = waMessageLink(tplCtx?.phone || '', text);
+  logTemplateContact();
   return true;
+}
+// Al abrir WhatsApp desde un lead, el contacto queda apuntado en su ficha (canal WhatsApp, y se quita «ha respondido»)
+async function logTemplateContact() {
+  const leadId = tplCtx?.leadId;
+  if (!leadId || !document.getElementById('tpl-log').checked) return;
+  const tpl = templatesData.find(t => t.id === document.getElementById('tpl-select').value);
+  try {
+    const updated = await leadApi(`/api/leads?id=${leadId}&action=contact`, 'POST', { channel: 'whatsapp', note: tpl ? `Plantilla «${tpl.name}» por WhatsApp` : 'Mensaje por WhatsApp' });
+    mergeLead(updated);
+    refreshAfterLeadChange();
+    showToast(`✓ Contacto por WhatsApp registrado${updated.next_followup_at ? ` · próximo ${shortDate(updated.next_followup_at)}` : ''}`);
+  } catch (err) { showToast(err.message, 'error'); }
 }
 async function copyTemplateText() {
   const ok = await copyText(document.getElementById('tpl-text').value);
@@ -5828,18 +6112,28 @@ async function copyTemplateText() {
 // Plantilla pensada para un lead: elige la categoría según su fase y rellena sus datos
 function openTemplateForLead(id) {
   const l = leadsData.find(x => x.id === id) || homeDueCache.find(x => x.id === id);
-  if (!l) return;
-  const openProposal = proposalsData.find(p => p.lead_id === id && PROPOSAL_OPEN.includes(p.status));
-  const category = openProposal || l.stage === 'propuesta' ? 'propuesta' : l.stage === 'reunion' ? 'reunion' : 'lead';
-  openTemplatePicker({
-    title: `Para ${l.name}${l.company && l.company !== l.name ? ` · ${l.company}` : ''}`,
-    category,
-    nombre: firstNameOf(l.name),
-    empresa: l.company || l.name,
-    importe: openProposal?.amount ? fmtEuros(openProposal.amount) : (l.value_estimate ? fmtEuros(l.value_estimate) : ''),
-    enlace: openProposal?.url || '',
-    phone: l.whatsapp || l.phone || '',
-  });
+  if (l) openTemplatePicker(ctxForLead(l));
+}
+// Desde una propuesta (de un lead o de un cliente): importe y enlace de la propuesta
+function openTemplateForProposal(id) {
+  const p = proposalsData.find(x => x.id === id);
+  if (!p) return;
+  let ctx = null;
+  if (p.lead_id) { const l = leadsData.find(x => x.id === p.lead_id); if (l) ctx = ctxForLead(l); }
+  else if (p.client_id) { const c = clientById(p.client_id); if (c) ctx = ctxForClient(c, { category: 'propuesta' }); }
+  if (!ctx) { showToast('No se encontró a quién va la propuesta', 'error'); return; }
+  openTemplatePicker({ ...ctx, category: 'propuesta', prefer: 'Propuesta enviada con precio', title: `Propuesta «${p.title}» · ${ctx.title.replace(/^Para /, '')}`,
+    importe: p.amount ? fmtEuros(p.amount) : ctx.importe, enlace: p.url || ctx.enlace });
+}
+function openTemplateForDomain(id) {
+  const d = domainsData.find(x => x.id === id) || homeDomainsCache.find(x => x.id === id);
+  if (d) openTemplatePicker(ctxForDomain(d));
+}
+// Desde la pantalla de plantillas: se elige la plantilla y después a quién va
+function openTemplateFromManager(id) {
+  const t = templatesData.find(x => x.id === id);
+  if (!t) return;
+  openTemplatePicker({ target: '', title: `Plantilla «${t.name}»: elige a quién enviarla`, category: t.category, nombre: '', empresa: '', importe: '', enlace: '', phone: '' }, id);
 }
 
 // ─── Vista de plantillas (gestor) ──────────────────────────────────────────────
@@ -5856,6 +6150,7 @@ async function loadTemplatesView() {
             <p class="text-xs text-gray-500">${esc(TEMPLATE_CATEGORY_LABELS[t.category] || t.category)}${t.active ? '' : ' · desactivada'}</p>
           </div>
           <div class="flex gap-1.5 shrink-0">
+            <button type="button" class="btn-chip primary" onclick="openTemplateFromManager('${t.id}')" aria-label="Usar ${esc(t.name)}">Usar</button>
             <button type="button" class="btn-chip" onclick="openEntityModal('message_template','${t.id}')">Editar</button>
             <button type="button" class="btn-chip" onclick="askDeleteEntity('message_template','${t.id}','¿Eliminar esta plantilla?')" aria-label="Eliminar ${esc(t.name)}">Eliminar</button>
           </div>
@@ -5866,6 +6161,126 @@ async function loadTemplatesView() {
   } catch (err) {
     box.innerHTML = `<p class="text-sm text-red-400 col-span-full">${esc(err.message)}</p>`;
   }
+}
+
+// ─── Dominios ──────────────────────────────────────────────────────────────────
+// Todos los dominios comprados y su caducidad. Las reglas de estado (domainState) son las de
+// lib/domain-rules.js (domainStatus): si se cambian allí, cambiarlas aquí.
+let domainFilter = 'all';
+let domainSearchQuery = '';
+const DOMAIN_SOON_DAYS = 30;
+const DOMAIN_URGENT_DAYS = 7;
+
+function domainState(d, today = leadToday()) {
+  const days = d.expires_at ? dayDiff(today, d.expires_at) : null;
+  if (days === null) return { days: null, key: 'ok', label: 'Sin fecha', cls: 'bg-white/5 text-gray-400' };
+  if (days < 0) return { days, key: 'expired', label: `Caducó hace ${-days} d`, cls: 'bg-red-400/15 text-red-300' };
+  if (days === 0) return { days, key: 'urgent', label: 'Caduca hoy', cls: 'bg-red-400/15 text-red-300' };
+  if (days <= DOMAIN_URGENT_DAYS) return { days, key: 'urgent', label: `Caduca en ${days} d`, cls: 'bg-red-400/15 text-red-300' };
+  if (days <= DOMAIN_SOON_DAYS) return { days, key: 'soon', label: `Caduca en ${days} d`, cls: 'bg-amber-400/15 text-amber-300' };
+  return { days, key: 'ok', label: days < 90 ? `En ${days} d` : `En ${Math.round(days / 30)} meses`, cls: 'bg-white/5 text-gray-400' };
+}
+function setDomainsBadge(n) {
+  const el = document.getElementById('navDomainsBadge');
+  if (!el) return;
+  el.textContent = n > 99 ? '99+' : String(n);
+  el.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+async function ensureDomainsQuiet() {
+  try { const rows = await leadApi('/api/domains'); domainsData = Array.isArray(rows) ? rows : []; } catch { /* sin migración 021 */ }
+  return domainsData;
+}
+async function loadDomains() {
+  const box = document.getElementById('domainsList');
+  if (domainsData.length) renderDomains(); else box.innerHTML = '<p class="text-sm text-gray-600 text-center py-10">Cargando…</p>';
+  try {
+    const rows = await leadApi('/api/domains');
+    domainsData = Array.isArray(rows) ? rows : [];
+    renderDomains();
+  } catch (err) {
+    box.innerHTML = `<p class="text-sm text-red-400 px-4 py-6">${esc(err.message)}${/relation|domains|42P01|404/i.test(err.message) ? ' — falta aplicar la migración 021 en Supabase.' : ''}</p>`;
+  }
+}
+function setDomainFilter(f) { domainFilter = f; renderDomains(); }
+function setDomainSearch(v) { domainSearchQuery = String(v || '').trim().toLowerCase(); renderDomains(); }
+
+function domainNoticeText(d) {
+  if (d.notify_client === false) return 'Aviso al cliente desactivado';
+  if (!d.client_id) return 'Sin cliente: no se avisa a nadie';
+  if (d.client_notified_at) return `Cliente avisado ${agoLabel(d.client_notified_at)}`;
+  return 'Aviso al cliente: se envía automáticamente a un mes';
+}
+
+function renderDomains() {
+  const today = leadToday();
+  const all = domainsData.map(d => ({ d, st: domainState(d, today) }));
+  const soon = all.filter(x => x.st.key === 'soon' || x.st.key === 'urgent');
+  const expired = all.filter(x => x.st.key === 'expired');
+  const filters = [['all', 'Todos', all.length], ['soon', 'Caducan pronto', soon.length], ['expired', 'Caducados', expired.length]];
+  document.getElementById('domainFilters').innerHTML = filters.map(([k, label, n]) =>
+    `<button type="button" class="lead-toggle shrink-0" aria-pressed="${domainFilter === k}" onclick="setDomainFilter('${k}')">${esc(label)} <span class="lead-toggle-count">${n}</span></button>`).join('');
+  setDomainsBadge(soon.length + expired.length);
+
+  const q = domainSearchQuery;
+  const rows = all
+    .filter(x => domainFilter === 'all' ? true : domainFilter === 'soon' ? (x.st.key === 'soon' || x.st.key === 'urgent') : x.st.key === 'expired')
+    .filter(x => !q || [x.d.domain, clientNameById(x.d.client_id), x.d.registrar, x.d.notes].some(v => v && String(v).toLowerCase().includes(q)))
+    .sort((a, b) => (a.st.days ?? 1e9) - (b.st.days ?? 1e9));
+  const yearly = domainsData.reduce((sum, d) => sum + (Number(d.renewal_price) || 0), 0);
+  document.getElementById('domainCount').textContent = `${rows.length} dominio${rows.length === 1 ? '' : 's'} en esta vista · ${domainsData.length} en total${yearly ? ` · ${fmtEuros(yearly)} al año en renovaciones` : ''}`;
+
+  document.getElementById('domainsList').innerHTML = rows.length ? rows.map(({ d, st }) => {
+    const client = clientById(d.client_id);
+    const meta = [client ? client.client_name : '', d.registrar, d.renewal_price ? `${fmtEuros(d.renewal_price)}/año` : ''].filter(Boolean).join(' · ');
+    const canEmail = Boolean(client && client.client_contact_email && d.notify_client !== false);
+    return `<div class="item-row">
+      <div class="item-main">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="font-medium text-sm truncate">${esc(d.domain)}</p>
+          <span class="state-pill ${st.cls}">${esc(st.label)}</span>
+        </div>
+        <p class="text-xs text-gray-400 truncate">${esc(meta || 'Sin cliente asignado')}</p>
+        <p class="text-xs text-gray-600 mt-1">Caduca el ${esc(longDate(d.expires_at))}${d.registered_at ? ` · comprado el ${esc(longDate(d.registered_at))}` : ''} · ${esc(domainNoticeText(d))}</p>
+      </div>
+      <div class="item-actions">
+        <button type="button" class="lead-act" title="Mensaje de WhatsApp con plantilla" aria-label="Plantilla de WhatsApp para ${esc(d.domain)}" onclick="openTemplateForDomain('${d.id}')">${waIcon()}</button>
+        ${canEmail ? `<button type="button" class="btn-chip" onclick="notifyDomainClient('${d.id}')">Avisar por email</button>` : ''}
+        <button type="button" class="btn-chip" onclick="openEntityModal('domain','${d.id}')">Editar</button>
+        <button type="button" class="btn-chip" aria-label="Eliminar ${esc(d.domain)}" onclick="askDeleteEntity('domain','${d.id}','¿Eliminar este dominio?')">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('') : `<p class="text-sm text-gray-600 text-center py-10 px-4">${domainsData.length ? 'No hay dominios con este filtro.' : 'Aún no has añadido ningún dominio. Pulsa «Nuevo dominio» para empezar.'}</p>`;
+}
+
+async function notifyDomainClient(id) {
+  const d = domainsData.find(x => x.id === id);
+  if (!d || !confirm(`¿Enviar ahora el aviso de caducidad de ${d.domain} por email a ${clientNameById(d.client_id)}?`)) return;
+  try {
+    await leadApi(`/api/domains?id=${id}&action=notify`, 'POST');
+    showToast('✓ Aviso enviado al cliente');
+    loadDomains();
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+// Inicio: dominios que caducan en un mes
+function renderHomeDomains(d) {
+  const info = d.dominios || { items: [], soon_count: 0, total: 0 };
+  const card = document.getElementById('homeDomainsCard');
+  homeDomainsCache = info.items || [];
+  card.style.display = homeDomainsCache.length ? 'block' : 'none';
+  if (!homeDomainsCache.length) return;
+  document.getElementById('homeDomSub').textContent = `${info.soon_count} caducan en los próximos 30 días · ${info.total} dominios en total`;
+  document.getElementById('homeDomains').innerHTML = homeDomainsCache.map(x => {
+    const st = domainState(x);
+    return `<div class="home-due-row">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-medium truncate">${esc(x.domain)}</p>
+        <p class="text-xs text-gray-500 truncate">${esc(x.client_name || 'Sin cliente')}</p>
+        <div class="mt-1"><span class="state-pill ${st.cls}">${esc(st.label)} · ${esc(longDate(x.expires_at))}</span></div>
+      </div>
+      <button type="button" class="lead-act shrink-0" title="Mensaje de WhatsApp con plantilla" aria-label="Plantilla de WhatsApp para ${esc(x.domain)}" onclick="openTemplateForDomain('${x.id}')">${waIcon()}</button>
+    </div>`;
+  }).join('');
 }
 
 // ─── Cobros pendientes ─────────────────────────────────────────────────────────
@@ -6001,6 +6416,7 @@ function openTemplateForReceivable(id) {
   if (!r) return;
   const c = clientById(r.client_id);
   openTemplatePicker({
+    target: c ? `client:${c.id}` : '', clientId: c?.id || null,
     title: `Cobro de ${c?.client_name || 'cliente'} · ${r.concept}`,
     category: 'cobro',
     nombre: firstNameOf(c?.client_contact_name || c?.client_name),
@@ -6085,6 +6501,7 @@ function openTemplateForRenewal(i) {
   if (!r) return;
   const c = clientById(r.client_id);
   openTemplatePicker({
+    target: c ? `client:${c.id}` : '', clientId: c?.id || null,
     title: `Renovación de ${r.client_name} · ${r.service}`,
     category: 'renovacion',
     nombre: firstNameOf(r.contact_name || r.client_name),
@@ -6283,7 +6700,8 @@ function proposalDueMap(today) {
 
 async function loadProposalsQuiet() {
   try {
-    const rows = await leadApi('/api/proposals');
+    const pre = await takePrefetched('/api/proposals');
+    const rows = pre && pre.ok ? pre.data : await leadApi('/api/proposals');
     proposalsData = Array.isArray(rows) ? rows : [];
   } catch { proposalsData = []; } // sin migración 017 el resto del panel sigue funcionando
   updateProposalsBadge();
@@ -6301,11 +6719,14 @@ function setProposalsBadge(n) {
 
 async function loadProposalsView() {
   const box = document.getElementById('proposalsList');
-  box.innerHTML = '<p class="text-sm text-gray-600 text-center py-10">Cargando…</p>';
+  if (proposalsData.length) renderProposalsView(); else box.innerHTML = '<p class="text-sm text-gray-600 text-center py-10">Cargando…</p>';
   try {
-    const rows = await leadApi('/api/proposals');
+    // Propuestas y leads (para los nombres) se piden a la vez, no uno detrás de otro
+    const [rows] = await Promise.all([
+      leadApi('/api/proposals'),
+      leadsData.length ? null : loadLeads().catch(() => { /* los nombres de lead se mostrarán como "Lead" */ }),
+    ]);
     proposalsData = Array.isArray(rows) ? rows : [];
-    if (!leadsData.length) { try { await loadLeads(); } catch { /* los nombres de lead se mostrarán como "Lead" */ } }
     updateProposalsBadge();
     renderProposalsView();
   } catch (err) {
@@ -6354,6 +6775,7 @@ function renderProposalsView() {
       <div class="item-actions">
         ${proposalStatusSelect(p)}
         ${p.url ? `<a class="btn-chip" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">Abrir</a>` : ''}
+        <button type="button" class="btn-chip" onclick="openTemplateForProposal('${p.id}')">Plantilla</button>
         ${p.lead_id ? `<button type="button" class="btn-chip" onclick="openProposalLead('${p.lead_id}')">Ver lead</button>` : ''}
         <button type="button" class="btn-chip" onclick="openEntityModal('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}')">Editar</button>
         <button type="button" class="btn-chip" aria-label="Eliminar ${esc(p.title)}" onclick="askDeleteEntity('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}','¿Eliminar esta propuesta?')">Eliminar</button>
@@ -6401,22 +6823,53 @@ function refreshLeadDetailIfOpen() {
   if (l) renderLeadDetail(l);
 }
 
-// Sección "Propuestas" dentro de la ficha del lead
+// Sección "Propuestas" dentro de la ficha del lead: cada propuesta con su precio y el total enviado arriba
 function leadProposalsHtml(l) {
   const mine = proposalsData.filter(p => p.lead_id === l.id).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
-  return `<p class="entity-section-title mt-6">Propuestas</p>
+  const total = leadProposalTotal(l);
+  const priced = mine.filter(p => p.amount).length;
+  return `<div class="flex items-baseline justify-between gap-3 mt-6 mb-2 border-b border-white/5 pb-2">
+      <p class="entity-section-title !mb-0 !pb-0 !border-0 !mt-0">Propuestas</p>
+      ${total ? `<p class="text-xs text-gray-400">Total enviado <span class="font-display font-semibold text-sm text-violet-300">${esc(fmtEuros(total))}</span></p>` : ''}
+    </div>
     ${mine.length ? `<div class="space-y-2 mb-3">${mine.map(p => `
       <div class="border border-white/7 rounded-xl p-3 bg-[#0e0e0e]">
-        <div class="flex items-baseline justify-between gap-3">
-          <p class="text-sm font-medium truncate">${esc(p.title)}</p>
-          ${p.amount ? `<span class="text-sm text-brand-blue whitespace-nowrap">${esc(fmtEuros(p.amount))}</span>` : ''}
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-sm font-medium truncate">${esc(p.title)}</p>
+            <p class="text-xs text-gray-500 mt-0.5">${p.sent_at ? `Enviada ${esc(agoLabel(p.sent_at))}` : ''}${p.channel ? ' · ' + esc(LEAD_CHANNELS[p.channel] || '') : ''}</p>
+          </div>
+          ${p.amount
+            ? `<span class="font-display font-bold text-base text-brand-blue whitespace-nowrap" title="Precio de la propuesta">${esc(fmtEuros(p.amount))}</span>`
+            : `<form class="flex items-center gap-1.5 shrink-0" onsubmit="return saveProposalPrice(event, '${p.id}')">
+                 <input type="number" step="0.01" min="0" inputmode="decimal" placeholder="Precio €" aria-label="Precio de ${esc(p.title)}" class="!w-24 !py-1.5 !text-xs" required>
+                 <button type="submit" class="btn-chip !min-h-[32px]">Poner precio</button>
+               </form>`}
         </div>
-        <p class="text-xs text-gray-500 mt-0.5">${p.sent_at ? `Enviada ${esc(agoLabel(p.sent_at))}` : ''}${p.channel ? ' · ' + esc(LEAD_CHANNELS[p.channel] || '') : ''}</p>
         <div class="flex flex-wrap items-center gap-2 mt-2">${proposalStatusSelect(p)}${proposalFollowChip(p)}
           ${p.url ? `<a class="btn-chip" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">Abrir</a>` : ''}
+          <button type="button" class="btn-chip" onclick="openTemplateForProposal('${p.id}')">Plantilla</button>
           <button type="button" class="btn-chip" onclick="openEntityModal('lead_proposal','${p.id}')">Editar</button></div>
-      </div>`).join('')}</div>` : '<p class="text-sm text-gray-600 mb-3">Aún no has registrado ninguna propuesta para este lead.</p>'}
+      </div>`).join('')}</div>${mine.length > priced && priced ? '<p class="text-xs text-amber-300/80 mb-3">Alguna propuesta no tiene precio: no suma en el total.</p>' : ''}`
+      : '<p class="text-sm text-gray-600 mb-3">Aún no has registrado ninguna propuesta para este lead.</p>'}
     <button type="button" class="btn-chip" onclick="addProposalForLead('${l.id}')">+ Añadir propuesta</button>`;
+}
+async function saveProposalPrice(e, id) {
+  e.preventDefault();
+  const input = e.target.querySelector('input');
+  const amount = Number(input.value);
+  if (!Number.isFinite(amount) || amount < 0) { showToast('El precio no es válido', 'error'); return false; }
+  try {
+    const updated = await leadApi(`/api/proposals?id=${id}`, 'PUT', { amount });
+    const p = proposalsData.find(x => x.id === id);
+    if (p) Object.assign(p, updated);
+    proposalsData = [...proposalsData];
+    refreshLeadDetailIfOpen();
+    if (currentView === 'leads') renderLeadsBoard();
+    if (currentView === 'proposals') renderProposalsView();
+    showToast(`✓ Precio guardado: ${fmtEuros(amount)}`);
+  } catch (err) { showToast(err.message, 'error'); }
+  return false;
 }
 function addProposalForLead(id) {
   const l = leadsData.find(x => x.id === id);

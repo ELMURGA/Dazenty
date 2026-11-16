@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 
 export const FAKE_HOST = 'fake.supabase.test';
 
-const UNIQUE = { clients: ['slug'], message_templates: ['name'] };
+const UNIQUE = { clients: ['slug'], message_templates: ['name'], domains: ['domain'] };
 
 function splitTop(str) {
   const parts = [];

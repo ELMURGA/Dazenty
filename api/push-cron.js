@@ -8,13 +8,17 @@
 //   - weekly → el domingo, "¡Hay que crear las historias de la semana!!!"
 //   - followups → entre semana, los leads a los que toca contactar (ver lib/lead-rules.js)
 //   - cobros → entre semana, los cobros pendientes vencidos o que vencen hoy (lib/receivable-rules.js)
+//   - domains → cada día, dominios que caducan en un mes / una semana / ya caducados (lib/domain-rules.js);
+//     además envía el email de aviso al cliente de cada uno (una vez por fase)
 // push_log impide repetir un aviso el mismo día aunque la llamada se repita.
 // ==========================================================
 
-import { SB_URL, SB_KEY, safeEqual, sbSelect } from '../lib/db.js';
+import { SB_URL, SB_KEY, sbHeaders, safeEqual, sbSelect } from '../lib/db.js';
 import { dueFollowups, followupsMessage } from '../lib/lead-rules.js';
 import { dueReceivables, receivablesMessage } from '../lib/receivable-rules.js';
 import { proposalDueByLead } from '../lib/proposal-rules.js';
+import { pendingDomainAlerts, domainsMessage } from '../lib/domain-rules.js';
+import { emailClientAboutDomain } from '../lib/domain-notify.js';
 import {
   DEFAULT_SETTINGS, MESSAGES, madridNow, dueNotifications, tasksMessage,
   getSetting, claimNotification, sendToAll, vapidConfigured,
@@ -75,6 +79,31 @@ export default async function handler(req, res) {
         const names = Object.fromEntries(clients.map(c => [c.id, c.client_name]));
         message = receivablesMessage(dueReceivables(rows, now.date), r => names[r.client_id] || '');
         if (!message) { results[kind] = 'sin cobros vencidos'; continue; }
+      }
+      if (kind === 'domains') {
+        const domains = await sbSelect('domains', 'select=*&order=expires_at.asc&limit=1000');
+        const alerts = pendingDomainAlerts(domains, now.date);
+        if (!alerts.length) { results[kind] = 'sin dominios que avisar'; continue; }
+        const clients = await sbSelect('clients', 'select=id,client_name');
+        const names = Object.fromEntries(clients.map(c => [c.id, c.client_name]));
+        const withName = alerts.map(a => ({ ...a, client_name: names[a.client_id] || '' }));
+        // Email al cliente: solo cuando entra en la fase de un mes (y en la de caducado), una vez por fase
+        const emailed = [];
+        for (const a of withName) {
+          if (a.notify_client === false || !a.client_id) continue;
+          try { if ((await emailClientAboutDomain(a, now.date)).sent) emailed.push(a.domain); } catch (err) { console.error('[push-cron] email dominio:', err.message); }
+        }
+        // Se guarda la fase avisada para no repetir el aviso mañana
+        for (const a of withName) {
+          const r = await fetch(`${SB_URL}/rest/v1/domains?id=eq.${encodeURIComponent(a.id)}`, {
+            method: 'PATCH', headers: sbHeaders,
+            body: JSON.stringify({ alert_stage: a.stage, owner_notified_at: new Date().toISOString() }),
+          });
+          if (!r.ok) console.error('[push-cron] guardar fase de aviso', r.status);
+        }
+        message = domainsMessage(withName);
+        results[kind] = { ...(await sendToAll(message)), client_emails: emailed.length };
+        continue;
       }
       results[kind] = await sendToAll(message);
     }

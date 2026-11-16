@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:css": "tailwindcss -i input.css -o css/site.min.css --minify"
+    "build:css": "tailwindcss -i input.css -o css/site.min.css --minify",
+    "build:admin": "tailwindcss -c tailwind.admin.config.js -i input-admin.css -o css/admin.min.css --minify"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

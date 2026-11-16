@@ -7,12 +7,12 @@
 // POST   /api/leads?id=xxx&action=contact → registrar un contacto (canal, nota, próximo seguimiento)
 // POST   /api/leads?id=xxx&action=note    → añadir una nota al historial sin marcar contacto
 // POST   /api/leads?id=xxx&action=reply   → marcar/desmarcar "ha respondido, falta contestar" { awaiting: true|false }
-// POST   /api/leads?id=xxx&action=convert → convertir en cliente (+ oportunidad) y marcar ganado
+// POST   /api/leads?id=xxx&action=convert → convertir en cliente y marcar ganado (no crea oportunidad)
 // PATCH  /api/leads?action=bulk           → cambiar de fase varios leads { ids, stage }
 // Todas requieren x-admin-password.
 // ==========================================================
 
-import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity, SB_URL, sbHeaders } from '../lib/db.js';
+import { guard, sbSelect, sbInsert, sbUpdate, sbUpdateOptional, sbDelete, logActivity, SB_URL, sbHeaders } from '../lib/db.js';
 import { madridNow } from '../lib/push.js';
 import {
   CHANNELS, normalizeFollowupFields, suggestNextFollowup, isIsoDate,
@@ -21,6 +21,11 @@ import {
 const STAGES = ['nuevo', 'email_no_enviado', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const BULK_MAX = 200;
+// Todo salvo los textos largos de mensajes (email_cuerpo, whatsapp_msg…): son lo que más pesa y la lista no los usa
+const LEAD_LIST_COLUMNS = ['id', 'name', 'email', 'phone', 'company', 'source', 'stage', 'value_estimate', 'notes', 'lost_reason',
+  'converted_client_id', 'assigned_to', 'created_at', 'updated_at', 'external_id', 'website', 'city', 'sector', 'instagram',
+  'whatsapp', 'whatsapp_contacted_at', 'last_contact_at', 'next_followup_at', 'channel', 'temperature', 'replied_at',
+  'awaiting_reply', 'score', 'priority', 'approach', 'message_version', 'reply_type', 'followup_sent_at', 'email_contacted_at'].join(',');
 const NOTE_MAX = 2000;
 const CHANNEL_LABELS = { whatsapp: 'WhatsApp', instagram: 'Instagram', email: 'email', llamada: 'llamada', reunion: 'reunión', otro: 'otro canal' };
 
@@ -57,7 +62,11 @@ async function registerContact(id, body) {
     next_followup_at: body.next_followup_at === undefined ? suggestNextFollowup(stage, today) : (body.next_followup_at || null),
   };
   if (stage !== lead.stage) patch.stage = stage;
-  const updated = await sbUpdate('leads', id, patch);
+  // Cada canal guarda su fecha: así el panel muestra «Email · WhatsApp» cuando se ha usado más de uno
+  const optional = {};
+  if (channel === 'whatsapp') patch.whatsapp_contacted_at = patch.last_contact_at;
+  if (channel === 'email') optional.email_contacted_at = patch.last_contact_at; // migración 021
+  const updated = await sbUpdateOptional('leads', id, patch, optional);
   const via = channel ? ` por ${CHANNEL_LABELS[channel]}` : '';
   await logActivity('lead', id, 'contact',
     `Contacto${via} con "${lead.name}"${note ? `: ${note}` : ''}`,
@@ -104,26 +113,12 @@ async function convertToClient(id) {
   }
   if (!client) throw httpError(409, 'No se pudo generar un identificador único para el cliente');
 
-  let opportunity = null;
-  try {
-    opportunity = await sbInsert('opportunities', {
-      client_id: client.id,
-      lead_id: lead.id,
-      title: `Proyecto ${clientName}`,
-      value: lead.value_estimate || null,
-      status: 'abierta',
-      probability: 70,
-    });
-  } catch (err) {
-    console.error('[api/leads convert] oportunidad:', err); // el cliente ya existe: no se deshace
-  }
-
   const updated = await sbUpdate('leads', id, {
     stage: 'ganado', converted_client_id: client.id, next_followup_at: null,
   });
   await logActivity('lead', id, 'converted', `Lead "${lead.name}" convertido en cliente "${client.client_name}"`,
-    { client_id: client.id, opportunity_id: opportunity?.id || null });
-  return { lead: updated, client, opportunity };
+    { client_id: client.id });
+  return { lead: updated, client };
 }
 
 async function bulkStage(body) {
@@ -150,17 +145,28 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      let params = 'select=*&order=created_at.desc,id.desc';
+      // El panel pide la lista sin los textos largos de los mensajes generados por n8n (no se usan en la lista)
+      const slim = req.query.slim === '1';
+      let params = `select=${slim ? LEAD_LIST_COLUMNS : '*'}&order=created_at.desc,id.desc`;
       if (stage) params += `&stage=eq.${encodeURIComponent(stage)}`;
       // Supabase devuelve como máximo 1000 filas por petición: se pagina hasta traerlas todas
       const PAGE = 1000;
-      const all = [];
-      for (let offset = 0; offset < 100000; offset += PAGE) {
-        const rows = await sbSelect('leads', `${params}&limit=${PAGE}&offset=${offset}`);
-        all.push(...rows);
-        if (rows.length < PAGE) break;
+      const fetchAll = async p => {
+        const all = [];
+        for (let offset = 0; offset < 100000; offset += PAGE) {
+          const rows = await sbSelect('leads', `${p}&limit=${PAGE}&offset=${offset}`);
+          all.push(...rows);
+          if (rows.length < PAGE) break;
+        }
+        return all;
+      };
+      try {
+        return res.json(await fetchAll(params));
+      } catch (err) {
+        if (!slim) throw err;
+        // Una columna de la lista aún no existe en la base de datos: se vuelve a pedir todo
+        return res.json(await fetchAll(params.replace(`select=${LEAD_LIST_COLUMNS}`, 'select=*')));
       }
-      return res.json(all);
     }
 
     if (req.method === 'POST' && action === 'contact') return res.json(await registerContact(id, req.body || {}));

@@ -4,7 +4,7 @@
 // POST   /api/message-templates              → crear { name, category?, body, active? }
 // PUT    /api/message-templates?id=xxx       → editar
 // DELETE /api/message-templates?id=xxx       → eliminar
-// Variables que admite el texto: {nombre} {empresa} {importe} {enlace} (se rellenan en el panel).
+// Variables que admite el texto: {nombre} {empresa} {importe} {enlace} {dominio} {fecha} (se rellenan en el panel).
 // ==========================================================
 
 import { guard, sbSelect, sbInsert, sbUpdate, sbDelete } from '../lib/db.js';

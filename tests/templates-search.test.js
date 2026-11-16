@@ -22,7 +22,10 @@ test('fillTemplate replaces the four variables and reports the ones without a va
   assert.equal(r.text, 'Hola Ana, de Acosta: 200 €. {enlace} y otra vez Ana');
   assert.deepEqual(r.missing, ['enlace']);
   assert.deepEqual(fillTemplate('Sin variables', {}).missing, []);
-  assert.equal(fillTemplate('{desconocida}', { desconocida: 'x' }).text, '{desconocida}'); // solo las cuatro
+  assert.equal(fillTemplate('{desconocida}', { desconocida: 'x' }).text, '{desconocida}'); // solo las conocidas
+  const dom = fillTemplate('{dominio} caduca el {fecha}', { dominio: 'acosta.es', fecha: '3 de enero de 2027' });
+  assert.equal(dom.text, 'acosta.es caduca el 3 de enero de 2027');
+  assert.deepEqual(fillTemplate('{dominio}', {}).missing, ['dominio']);
 });
 
 test('fillTemplate does not double the final dot of a value ("S.L.")', () => {

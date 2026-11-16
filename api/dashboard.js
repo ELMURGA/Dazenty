@@ -10,6 +10,7 @@ import { dueFollowups, funnel, bySource } from '../lib/lead-rules.js';
 import { summarizeReceivables } from '../lib/receivable-rules.js';
 import { proposalDueByLead, proposalFollowup } from '../lib/proposal-rules.js';
 import { upcomingRenewals } from '../lib/renewal-rules.js';
+import { domainStatus, DOMAIN_ALERT_DAYS, DOMAIN_EXPIRED_GRACE_DAYS } from '../lib/domain-rules.js';
 
 function monthRange(date = new Date()) {
   const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
@@ -39,6 +40,9 @@ async function optional(name, fn, fallback) {
   }
 }
 
+let lastStripeSync = 0;
+const STRIPE_SYNC_EVERY_MS = 5 * 60_000;
+
 export default async function handler(req, res) {
   if (await guard(req, res)) return;
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
@@ -50,10 +54,15 @@ export default async function handler(req, res) {
 
     // Añade a "Pagos" los cobros de suscripciones de Stripe que aún no estén
     // (por si el webhook falló o llegó antes de guardar la suscripción)
-    try {
-      await syncStripeSubscriptionPayments();
-    } catch (err) {
-      console.error('[api/dashboard] Sincronización con Stripe:', err);
+    // Llama a Stripe (lento): como mucho cada 5 min por instancia y sin esperar más de 2,5 s.
+    // El webhook ya registra los cobros al momento; esto es solo la red de seguridad.
+    if (Date.now() - lastStripeSync > STRIPE_SYNC_EVERY_MS) {
+      lastStripeSync = Date.now();
+      try {
+        await Promise.race([syncStripeSubscriptionPayments(), new Promise(r => setTimeout(r, 2500))]);
+      } catch (err) {
+        console.error('[api/dashboard] Sincronización con Stripe:', err);
+      }
     }
 
     const [
@@ -69,12 +78,13 @@ export default async function handler(req, res) {
       receivableRows,
       openProposals,
       coveragePayments,
+      domainRows,
     ] = await Promise.all([
       sbSelect('payments', `payment_date=gte.${start}&payment_date=lt.${end}&select=amount`),
       sbSelect('invoices', `status=in.(pendiente,parcial,vencida)&select=total,paid_amount`),
       sbSelect('projects', `select=id,status`),
       sbSelect('tasks', `status=neq.completada&select=*&order=due_date.asc.nullslast`),
-      selectAll('leads', 'select=id,name,company,stage,source,created_at,updated_at,last_contact_at,next_followup_at,temperature,value_estimate,city,whatsapp,phone,email,awaiting_reply,replied_at&order=id'),
+      selectAll('leads', 'select=id,name,company,stage,source,created_at,updated_at,last_contact_at,whatsapp_contacted_at,channel,next_followup_at,temperature,value_estimate,city,whatsapp,phone,email,awaiting_reply,replied_at&order=id'),
       sbSelect('clients', 'select=id,client_name,company_name,client_contact_name,client_contact_phone,status,service_name,stripe_subscription_id,stripe_subscription_status'),
       sbSelect('expenses', `expense_date=gte.${start}&expense_date=lt.${end}&select=amount`),
       sbSelect('activities', `select=*&order=created_at.desc&limit=12`),
@@ -85,6 +95,7 @@ export default async function handler(req, res) {
         'status=in.(enviada,vista)&select=id,lead_id,client_id,title,amount,status,sent_at,next_followup_at,updated_at,created_at&limit=1000'), []),
       optional('renewals', () => sbSelect('payments',
         'stripe_payment_id=is.null&coverage_end=not.is.null&select=client_id,amount,coverage_end,service_concept&limit=1000'), []),
+      optional('domains', () => sbSelect('domains', 'select=id,domain,client_id,expires_at,renewal_price&order=expires_at.asc&limit=1000'), []),
     ]);
 
     const facturado_mes = round2(paymentsMonth.reduce((s, p) => s + Number(p.amount), 0));
@@ -128,7 +139,7 @@ export default async function handler(req, res) {
       seguimientos: seguimientos.slice(0, 8).map(l => ({
         id: l.id, name: l.name, company: l.company, stage: l.stage, temperature: l.temperature,
         value_estimate: l.value_estimate, next_followup_at: l.next_followup_at,
-        last_contact_at: l.last_contact_at, whatsapp: l.whatsapp, phone: l.phone, email: l.email,
+        last_contact_at: l.last_contact_at, whatsapp_contacted_at: l.whatsapp_contacted_at, channel: l.channel, whatsapp: l.whatsapp, phone: l.phone, email: l.email,
         followup: l.followup, awaiting_reply: !!l.awaiting_reply, replied_at: l.replied_at || null,
         proposal_title: proposalDue.get(l.id)?.title || null,
       })),
@@ -147,6 +158,13 @@ export default async function handler(req, res) {
         due: openProposals.filter(p => proposalFollowup(p, today).due).length,
       },
       renovaciones: upcomingRenewals(clients, coveragePayments, today).slice(0, 8),
+      dominios: (() => {
+        const names = Object.fromEntries(clients.map(c => [c.id, c.client_name]));
+        const soon = domainRows
+          .map(d => ({ ...d, days: domainStatus(d, today).days, client_name: names[d.client_id] || '' }))
+          .filter(d => d.days !== null && d.days <= DOMAIN_ALERT_DAYS && d.days >= -DOMAIN_EXPIRED_GRACE_DAYS);
+        return { total: domainRows.length, soon_count: soon.length, items: soon.slice(0, 6) };
+      })(),
       clientes_activos,
       clientes_total: clients.length,
       actividad_reciente: recentActivities,

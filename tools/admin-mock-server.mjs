@@ -20,7 +20,7 @@ process.env.N8N_WEBHOOK_SECRET = 'n8n-secret';
 
 const fake = createFakeSupabase(['leads', 'clients', 'opportunities', 'activities', 'payments', 'invoices', 'projects', 'tasks',
   'expenses', 'events', 'push_subscriptions', 'app_settings', 'story_days', 'push_log', 'contacts', 'documents', 'invoice_pdfs',
-  'receivables', 'proposals', 'message_templates']);
+  'receivables', 'proposals', 'message_templates', 'domains']);
 fake.install();
 const { db } = fake;
 
@@ -66,7 +66,19 @@ db.proposals.push(
   { id: randomUUID(), lead_id: db.leads[1].id, title: 'Tienda online', amount: 1500, sent_at: day(-3), channel: 'email', status: 'vista', created_at: ts(-3), updated_at: ts(-3) },
   { id: randomUUID(), client_id: perez.id, title: 'Renovación del posicionamiento SEO', amount: 480, sent_at: day(-20), status: 'aceptada', created_at: ts(-20), updated_at: ts(-12) },
 );
+db.domains.push(
+  { id: randomUUID(), domain: 'almacenescamu.es', client_id: camu.id, registrar: 'IONOS', registered_at: day(-340), expires_at: day(25), renewal_price: 14.9, notify_client: true, alert_stage: null, created_at: ts(-340) },
+  { id: randomUUID(), domain: 'asesoriaperez.com', client_id: perez.id, registrar: 'Vercel', registered_at: day(-360), expires_at: day(4), renewal_price: 17, notify_client: true, alert_stage: '30d', client_notified_at: ts(-20), created_at: ts(-360) },
+  { id: randomUUID(), domain: 'shafiq.es', client_id: shafiq.id, registrar: 'Namecheap', registered_at: day(-400), expires_at: day(-6), renewal_price: 12, notify_client: true, created_at: ts(-400) },
+  { id: randomUUID(), domain: 'dazenty.com', registrar: 'Vercel', registered_at: day(-100), expires_at: day(265), renewal_price: 15, notify_client: false, created_at: ts(-100) },
+);
+// Un lead contactado por email Y por WhatsApp, y otro solo por WhatsApp
+db.leads[5].email_contacted_at = ts(-6); db.leads[5].whatsapp_contacted_at = ts(-2); db.leads[5].last_contact_at = ts(-2); db.leads[5].channel = 'whatsapp';
+db.leads[6].whatsapp_contacted_at = ts(-1); db.leads[6].last_contact_at = ts(-1); db.leads[6].channel = 'whatsapp';
+db.leads[7].email_contacted_at = ts(-4); db.leads[7].last_contact_at = ts(-4); db.leads[7].channel = 'email';
 const seeds = [
+  ['Aviso de dominio por caducar', 'dominio', 'Hola {nombre}, te aviso de que el dominio {dominio} caduca el {fecha}. Para que la web y el correo de {empresa} no se corten, conviene renovarlo ya.\n\nSi quieres, me encargo yo de la renovación: dímelo y te paso los detalles.'],
+  ['Seguimiento tras el email', 'lead', 'Hola {nombre}, soy Alejandro, de Dazenty. Te escribí hace unos días por email sobre la web de {empresa} y por si se te pasó, te lo comento también por aquí.'],
   ['Primer contacto', 'lead', 'Hola {nombre}, soy Alejandro, de Dazenty. He estado viendo la web de {empresa} y creo que podríamos mejorarla para que te ayude a conseguir más clientes.\n\n¿Te parece si te cuento cómo en un par de minutos? Sin compromiso.'],
   ['Seguimiento de propuesta', 'propuesta', 'Hola {nombre}, ¿qué tal? Te escribo para saber si has podido revisar la propuesta que te envié para {empresa}.\n\nSi tienes cualquier duda o quieres ajustar algo, dímelo y lo vemos. Te la dejo aquí por si la necesitas: {enlace}'],
   ['Recordatorio de cobro por Bizum', 'cobro', 'Hola {nombre}, te recuerdo que tienes pendiente el pago de {importe}. Puedes hacérmelo por Bizum cuando te venga bien y me avisas para confirmarlo.\n\nMuchas gracias.'],

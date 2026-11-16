@@ -9,7 +9,8 @@
 // Auth admin: header  x-admin-password: <ADMIN_PASSWORD env var>
 // ==========================================================
 
-import { adminAuthError, loadPortalClient } from '../lib/db.js';
+import { adminAuthError, loadPortalClient, sbSelect } from '../lib/db.js';
+import { portalDomains } from '../lib/domain-rules.js';
 
 const SB_URL  = process.env.SUPABASE_URL;
 const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
@@ -81,6 +82,12 @@ export default async function handler(req, res) {
       portal.pdf_proposal_url = Boolean(client.pdf_proposal_url);
       portal.pdf_invoice_url = Boolean(client.pdf_invoice_url);
       portal.stripe_subscription_id = Boolean(client.stripe_subscription_id);
+      // Aviso de dominios que caducan en un mes: el cliente lo ve en su portal (si falla, el portal sigue igual)
+      portal.domains = [];
+      try {
+        const rows = await sbSelect('domains', `client_id=eq.${encodeURIComponent(client.id)}&select=domain,expires_at,notify_client`);
+        portal.domains = portalDomains(rows, new Date().toISOString().slice(0, 10));
+      } catch { /* sin migración 021 */ }
       return res.json(portal);
     } catch (err) {
       console.error('[clients GET slug]', err);

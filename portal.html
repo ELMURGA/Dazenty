@@ -158,6 +158,9 @@
       </p>
     </section>
 
+    <!-- AVISO DE DOMINIO POR CADUCAR (solo se muestra si algún dominio del cliente caduca en un mes) -->
+    <div id="domainAlerts" class="space-y-3 fade-up fade-up-1" style="display:none" role="status"></div>
+
     <!-- PLAN DE HOSTING ACTIVO -->
     <div class="bg-brand-gray border border-brand-blue/20 rounded-2xl p-7 relative overflow-hidden fade-up fade-up-2">
       <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-blue/50 to-transparent"></div>
@@ -570,6 +573,9 @@ function renderPortal(d) {
     }
   }
 
+  // Dominios que caducan en un mes (los pone el panel de Dazenty)
+  renderDomainAlerts(d.domains || []);
+
   // Enlace WhatsApp
   document.getElementById('waContactLink').href = `https://wa.me/${WA_NUMBER}`;
 
@@ -602,6 +608,31 @@ function renderPortal(d) {
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
   }, 350);
+}
+
+function renderDomainAlerts(domains) {
+  const box = document.getElementById('domainAlerts');
+  if (!box) return;
+  if (!domains.length) { box.style.display = 'none'; box.textContent = ''; return; }
+  box.textContent = '';
+  domains.forEach(dom => {
+    const date = new Date(dom.expires_at + 'T00:00:00Z').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const expired = dom.days < 0;
+    const when = expired ? `caducó el ${date}` : dom.days === 0 ? 'caduca hoy' : dom.days === 1 ? 'caduca mañana' : `caduca el ${date} (en ${dom.days} días)`;
+    const card = document.createElement('div');
+    card.className = 'rounded-2xl p-5 border ' + (expired || dom.days <= 7 ? 'border-red-500/40 bg-red-500/5' : 'border-amber-400/40 bg-amber-400/5');
+    const title = document.createElement('p');
+    title.className = 'font-display font-bold text-base mb-1';
+    title.textContent = expired ? 'Tu dominio ha caducado' : 'Tu dominio caduca pronto';
+    const text = document.createElement('p');
+    text.className = 'text-sm text-gray-300 leading-relaxed';
+    const name = document.createElement('strong');
+    name.textContent = dom.domain;
+    text.append(name, ` ${when}. Para que tu web y tu correo sigan funcionando sin cortes hay que renovarlo: escríbeme y me encargo de todo.`);
+    card.append(title, text);
+    box.appendChild(card);
+  });
+  box.style.display = 'block';
 }
 
 function renderPaymentSection(plans, customNote) {

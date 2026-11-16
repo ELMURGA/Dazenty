@@ -9,7 +9,7 @@ process.env.ADMIN_PASSWORD = 'secret-pass';
 process.env.CRON_SECRET = 'cron-secret';
 
 const fake = createFakeSupabase(['leads', 'clients', 'payments', 'opportunities', 'tasks', 'events', 'activities',
-  'receivables', 'proposals', 'message_templates', 'app_settings']);
+  'receivables', 'proposals', 'message_templates', 'domains', 'app_settings']);
 fake.install();
 const { db } = fake;
 

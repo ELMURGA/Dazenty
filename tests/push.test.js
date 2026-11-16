@@ -53,7 +53,7 @@ test('tasks message lists today and counts overdue; nothing when empty', () => {
 });
 
 test('lead follow-up reminder fires on weekdays at 10:00 and not on weekends', () => {
-  const s = { ...DEFAULT_SETTINGS, cobros_enabled: false }; // los cobros se prueban aparte
+  const s = { ...DEFAULT_SETTINGS, cobros_enabled: false, domains_enabled: false }; // cobros y dominios se prueban aparte
   assert.deepEqual(dueNotifications(at(1, '10:00'), s), ['followups']);
   assert.deepEqual(dueNotifications(at(5, '11:30'), s), ['followups']);
   assert.deepEqual(dueNotifications(at(1, '10:05'), s, { sent: ['followups'] }), []);
@@ -64,14 +64,14 @@ test('lead follow-up reminder fires on weekdays at 10:00 and not on weekends', (
 });
 
 test('receivables reminder fires on weekdays at 10:00, once a day, and can be disabled', () => {
-  const s = { ...DEFAULT_SETTINGS, followups_enabled: false };
+  const s = { ...DEFAULT_SETTINGS, followups_enabled: false, domains_enabled: false };
   assert.deepEqual(dueNotifications(at(1, '10:00'), s), ['cobros']);
   assert.deepEqual(dueNotifications(at(5, '11:55'), s), ['cobros']);
   assert.deepEqual(dueNotifications(at(1, '10:05'), s, { sent: ['cobros'] }), []);
   assert.deepEqual(dueNotifications(at(6, '10:00'), s), []);
   assert.deepEqual(dueNotifications(at(0, '10:00'), s), []);
   assert.deepEqual(dueNotifications(at(1, '10:00'), { ...s, cobros_enabled: false }), []);
-  assert.deepEqual(dueNotifications(at(1, '10:00'), DEFAULT_SETTINGS).sort(), ['cobros', 'followups']);
+  assert.deepEqual(dueNotifications(at(1, '10:00'), DEFAULT_SETTINGS).sort(), ['cobros', 'domains', 'followups']);
 });
 
 test('receivables settings are validated like the other reminders', () => {

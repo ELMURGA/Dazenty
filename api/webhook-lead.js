@@ -52,7 +52,8 @@
 // para limitar el riesgo si se filtra: este endpoint solo puede tocar leads.
 // ==========================================================
 
-import { guardWebhook, sbInsert, sbUpdate, sbSelect, logActivity } from '../lib/db.js';
+import { guardWebhook, sbInsert, sbUpdateOptional, sbSelect, logActivity } from '../lib/db.js';
+import { isWhatsappContact, isEmailContact } from '../lib/lead-contact.js';
 
 const STAGES = ['nuevo', 'email_no_enviado', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
 const PRIORITIES = ['alta', 'media', 'baja', 'no_contactar'];
@@ -204,15 +205,27 @@ export default async function handler(req, res) {
         if (body.instagram_msg) patch.instagram_msg = body.instagram_msg;
         if (REPLY_TYPES.includes(body.reply_type)) patch.reply_type = body.reply_type;
         if (body.mark_followup_sent) patch.followup_sent_at = new Date().toISOString();
-        if (body.mark_whatsapp_contacted) patch.whatsapp_contacted_at = new Date().toISOString();
         if (body.external_id && !existing.external_id) patch.external_id = body.external_id;
 
-        // Contacto automático de n8n: lo sellamos para que el panel sepa cuándo y por dónde
-        // se escribió al lead. Solo la primera vez; no se programa seguimiento (no hay avisos
-        // para fases tempranas) y no se pisa un contacto que Alejandro ya registró a mano.
-        if (!existing.last_contact_at && (body.stage === 'contactada' || body.mark_whatsapp_contacted)) {
-          patch.last_contact_at = new Date().toISOString();
-          patch.channel = body.mark_whatsapp_contacted && body.stage !== 'contactada' ? 'whatsapp' : 'email';
+        // Canal del contacto automático: un lead puede haber sido contactado por email Y por WhatsApp,
+        // y el panel debe reflejar los dos. Cada canal guarda su propia fecha; «último contacto» y
+        // canal pasan a ser los del contacto más reciente por WhatsApp (el email solo los fija la
+        // primera vez, para no pisar un contacto que Alejandro ya registró a mano). No se programa
+        // seguimiento: no hay avisos para fases tempranas.
+        const now = new Date().toISOString();
+        const optional = {}; // columnas de la migración 021
+        const byWhatsapp = isWhatsappContact(body);
+        const byEmail = isEmailContact(body);
+        if (byWhatsapp) {
+          patch.whatsapp_contacted_at = now;
+          patch.last_contact_at = now;
+          patch.channel = 'whatsapp';
+        } else if (byEmail) {
+          optional.email_contacted_at = now;
+          if (!existing.last_contact_at) {
+            patch.last_contact_at = now;
+            patch.channel = 'email';
+          }
         }
 
         if (body.mark_replied === true) {
@@ -222,7 +235,7 @@ export default async function handler(req, res) {
           patch.awaiting_reply = false;
         }
 
-        const updated = await sbUpdate('leads', existing.id, patch);
+        const updated = await sbUpdateOptional('leads', existing.id, patch, optional);
         if (body.mark_replied === true) {
           await logActivity('lead', existing.id, 'reply', `"${updated.name}" ha respondido: falta contestar (vía n8n)`, { awaiting: true });
         }

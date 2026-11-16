@@ -140,14 +140,13 @@ test('PUT validates follow-up fields, ignores last_contact_at and clears the dat
   assert.equal(closed.body.next_followup_at, null);
 });
 
-test('converting creates the client and an opportunity, marks the lead as won and refuses a second time', async () => {
+test('converting creates the client (no opportunity), marks the lead as won and refuses a second time', async () => {
   reset();
   const lead = addLead({ name: 'Ana Pérez', company: 'Bodegas Acosta', email: 'ana@acosta.test', value_estimate: 900 });
   const res = await call(leads, { method: 'POST', query: { id: lead.id, action: 'convert' } });
   assert.equal(res.code, 201);
   assert.equal(res.body.client.slug, 'bodegas-acosta');
-  assert.equal(db.opportunities[0].lead_id, lead.id);
-  assert.equal(db.opportunities[0].value, 900);
+  assert.equal(db.opportunities.length, 0);
   assert.equal(db.leads[0].stage, 'ganado');
   assert.equal(db.leads[0].converted_client_id, res.body.client.id);
   assert.equal((await call(leads, { method: 'POST', query: { id: lead.id, action: 'convert' } })).code, 409);
