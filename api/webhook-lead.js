@@ -55,6 +55,8 @@
 import { guardWebhook, sbInsert, sbUpdate, sbSelect, logActivity } from '../lib/db.js';
 
 const STAGES = ['nuevo', 'email_no_enviado', 'contactada', 'propuesta', 'reunion', 'ganado', 'perdido'];
+const PRIORITIES = ['alta', 'media', 'baja', 'no_contactar'];
+const REPLY_TYPES = ['positiva', 'info', 'negativa', 'baja', 'automatica'];
 
 const normalizar = (s) =>
   String(s || '')
@@ -138,11 +140,20 @@ export default async function handler(req, res) {
 
     if (action === 'check_duplicate') {
       if (!body.company) return res.status(400).json({ error: 'Se requiere "company"' });
+      // Mismo negocio = mismo nombre, mismo email o mismo WhatsApp (antes solo se miraba el nombre exacto)
+      // Entre comillas: un nombre con comas o paréntesis rompería el filtro or=() de PostgREST
+      const q = (v) => encodeURIComponent('"' + String(v).replace(/[\\"]/g, '\\$&') + '"');
+      const filtros = [`company.ilike.${q(body.company)}`];
+      const email = String(body.email || '').trim().toLowerCase();
+      if (/^[^\s@,()]+@[^\s@,()]+$/.test(email)) filtros.push(`email.ilike.${q(email)}`);
+      const wa = String(body.whatsapp || '').replace(/\D/g, '');
+      if (wa.length >= 9) filtros.push(`whatsapp.ilike.*${wa.slice(-9)}*`);
       const rows = await sbSelect(
         'leads',
-        `select=id,company,stage,created_at&company=ilike.${encodeURIComponent(body.company)}&limit=1`
+        `select=id,company,stage,lost_reason,created_at&or=(${filtros.join(',')})&order=created_at.desc&limit=5`
       );
-      return res.json({ exists: rows.length > 0, lead: rows[0] || null });
+      const baja = rows.some((r) => r.lost_reason === 'baja');
+      return res.json({ exists: rows.length > 0, do_not_contact: baja, lead: rows[0] || null });
     }
 
     if (action === 'find_by_company') {
@@ -191,6 +202,8 @@ export default async function handler(req, res) {
         if (body.email_cuerpo) patch.email_cuerpo = body.email_cuerpo;
         if (body.whatsapp_msg) patch.whatsapp_msg = body.whatsapp_msg;
         if (body.instagram_msg) patch.instagram_msg = body.instagram_msg;
+        if (REPLY_TYPES.includes(body.reply_type)) patch.reply_type = body.reply_type;
+        if (body.mark_followup_sent) patch.followup_sent_at = new Date().toISOString();
         if (body.mark_whatsapp_contacted) patch.whatsapp_contacted_at = new Date().toISOString();
         if (body.external_id && !existing.external_id) patch.external_id = body.external_id;
 
@@ -248,6 +261,11 @@ export default async function handler(req, res) {
       whatsapp_msg: body.whatsapp_msg || null,
       instagram_msg: body.instagram_msg || null,
     };
+    // Puntuación del Motor comercial de n8n (migración 020)
+    if (body.score != null && !Number.isNaN(Number(body.score))) lead.score = Math.round(Number(body.score));
+    if (PRIORITIES.includes(body.priority)) lead.priority = body.priority;
+    if (body.approach) lead.approach = String(body.approach).slice(0, 60);
+    if (body.message_version) lead.message_version = String(body.message_version).slice(0, 60);
     if (body.mark_replied === true) {
       lead.awaiting_reply = true;
       lead.replied_at = new Date().toISOString();
