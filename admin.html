@@ -1980,6 +1980,7 @@ async function doLogin(e) {
     });
     if (res.ok || res.status === 200) {
       adminPass = pass;
+      try { sessionStorage.setItem('dz-admin-pass', pass); } catch { /* noop */ }
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'flex';
       const data = await res.json().catch(() => []);
@@ -1995,6 +1996,7 @@ async function doLogin(e) {
       // Los leads son lo más pesado: se piden al repartir ya la primera pantalla, para que «Leads» abra al instante
       if (firstView !== 'leads') setTimeout(() => { prefetchJson('/api/leads?slim=1'); prefetchJson('/api/proposals'); }, 1200);
     } else {
+      try { sessionStorage.removeItem('dz-admin-pass'); } catch { /* noop */ }
       err.style.display = 'block';
       document.getElementById('loginInput').value = '';
       document.getElementById('loginInput').focus();
@@ -2302,6 +2304,7 @@ function renderPayments() {
 }
 
 function logout() {
+  try { sessionStorage.removeItem('dz-admin-pass'); } catch { /* noop */ }
   adminPass = '';
   clients = [];
   paymentsData = [];
@@ -2327,6 +2330,15 @@ async function showDashboard() {
 
 // Focus automático en el campo de contraseña al cargar
 document.getElementById('loginInput').focus();
+
+// Sesión recordada: al recargar la página vuelve a entrar sola (mientras la pestaña siga abierta)
+try {
+  const saved = sessionStorage.getItem('dz-admin-pass');
+  if (saved) {
+    document.getElementById('loginInput').value = saved;
+    doLogin({ preventDefault() {} });
+  }
+} catch { /* noop */ }
 
 async function loadClients() {
   // Mostrar estado "cargando"
