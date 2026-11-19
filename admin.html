@@ -4499,6 +4499,12 @@ async function loadInvoices() {
   }
 }
 
+// Lo que falta por cobrar de una factura: pagada o cancelada = nada (aunque paid_amount quede en 0)
+function invoicePending(inv) {
+  if (!inv || inv.status === 'pagada' || inv.status === 'cancelada') return 0;
+  return Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0));
+}
+
 function renderInvoicesTable() {
   const tbody = document.getElementById('invoicesBody');
   if (!invoicesData.length) {
@@ -4508,7 +4514,7 @@ function renderInvoicesTable() {
   tbody.innerHTML = invoicesData.map(inv => {
     const st = INVOICE_STATUS_LABELS[inv.status] || { label: inv.status, cls: 'bg-gray-800 text-gray-500' };
     const client = clients.find(c => c.id === inv.client_id);
-    const pending = Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0));
+    const pending = invoicePending(inv);
     return `
     <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
       <td class="px-4 py-3 font-medium">${esc(inv.invoice_number || inv.id.slice(0,8))}</td>
@@ -4995,7 +5001,8 @@ function openPaymentModal(invoiceId = null, clientId = '') {
   const inv = invoicesData.find(i => i.id === invoiceId);
   if (invoiceId && !inv) { showToast('No se encontró la factura', 'error'); return; }
   payingInvoiceId = invoiceId;
-  const pending = inv ? Math.max(0, Number(inv.total) - Number(inv.paid_amount || 0)) : 0;
+  if (inv && invoicePending(inv) <= 0) { showToast('Esta factura ya está pagada', 'error'); return; }
+  const pending = inv ? invoicePending(inv) : 0;
   document.getElementById('pay-client').innerHTML = '<option value="">Selecciona un cliente</option>' +
     clients.map(c => `<option value="${esc(c.id)}">${esc(c.client_name)}</option>`).join('');
   document.getElementById('pay-client').value = inv ? inv.client_id : clientId;
@@ -5111,7 +5118,7 @@ function closePaymentModalOnOverlay(e) {
   if (e.target === document.getElementById('payment-modal-overlay')) closePaymentModal();
 }
 
-async function savePayment() {
+async function savePayment(force = false) {
   const inv = invoicesData.find(i => i.id === payingInvoiceId);
   const clientId = inv ? inv.client_id : document.getElementById('pay-client').value;
   const amount = Number(document.getElementById('pay-amount').value);
@@ -5127,6 +5134,7 @@ async function savePayment() {
   };
   if (!body.payment_date) { showToast('Indica la fecha de cobro', 'error'); return; }
   if (payingInvoiceId) body.invoice_id = payingInvoiceId;
+  if (force === true) body.force = true;
   if (!payingInvoiceId && paymentKind === 'web') {
     body.payment_kind = 'web';
     body.web_total = Number(document.getElementById('pay-webTotal').value);
@@ -5151,6 +5159,8 @@ async function savePayment() {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
+      if (err.code === 'duplicate' && confirm(err.error)) { btn.disabled = false; return savePayment(true); }
+      if (err.code === 'duplicate') return;
       throw new Error(err.error || 'Error al registrar el pago');
     }
     closePaymentModal();

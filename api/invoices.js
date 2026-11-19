@@ -67,6 +67,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: `status inválido. Usa: ${STATUSES.join(', ')}` });
       }
       const totals = computeTotals(items, body.tax_rate ?? 21);
+      // Una factura marcada como pagada a mano no puede quedar con 0 € cobrados
+      if (body.status === 'pagada' && !(Number(body.paid_amount) >= totals.total)) body.paid_amount = totals.total;
       const created = await sbInsert('invoices', { ...body, ...totals });
       const createdItems = await replaceItems(created.id, items);
       await logActivity('invoice', created.id, 'created', `Nueva factura ${created.invoice_number || created.id} por ${totals.total}€`);
@@ -81,6 +83,11 @@ export default async function handler(req, res) {
       }
       if (Array.isArray(items)) {
         Object.assign(body, computeTotals(items, body.tax_rate ?? 21));
+      }
+      if (body.status === 'pagada') {
+        const [cur] = await sbSelect('invoices', `id=eq.${encodeURIComponent(id)}&select=total`);
+        const total = body.total ?? cur?.total;
+        if (total != null && !(Number(body.paid_amount) >= Number(total))) body.paid_amount = Number(total);
       }
       const updated = await sbUpdate('invoices', id, body);
       let outItems;

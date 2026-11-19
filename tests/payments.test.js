@@ -86,9 +86,13 @@ test('API stores manual coverage and still recalculates linked invoice payments'
       return Response.json([]);
     }
     if (table === 'invoices') return Response.json([{ id: 'invoice-1', client_id: 'client-1', total: 121, status: 'pendiente' }]);
+    if (table === 'payments' && String(url).includes('payment_date=eq')) return Response.json(duplicates);
+    if (table === 'payments' && String(url).includes('payment_kind=eq.web')) return Response.json(webPrev);
     if (table === 'payments') return Response.json([{ amount: 121 }]);
     throw new Error(`Unexpected request: ${url}`);
   };
+  let duplicates = [];
+  let webPrev = [];
   const send = async body => {
     const res = {
       statusCode: 200, setHeader() {},
@@ -106,6 +110,19 @@ test('API stores manual coverage and still recalculates linked invoice payments'
     assert.deepEqual(writes.find(w => w.table === 'invoices').body, { paid_amount: 121, status: 'pagada' });
     assert.equal((await send({ ...payment, invoice_id: 'invoice-1', client_id: 'wrong-client' })).statusCode, 400);
     assert.equal((await send({ ...payment, coverage_end: null })).statusCode, 400);
+    // Mismo cliente, importe y fecha: avisa de posible duplicado y solo pasa con force
+    duplicates = [{ id: 'old' }];
+    const dup = await send({ client_id: 'client-1', amount: 50, payment_date: '2026-11-18' });
+    assert.equal(dup.statusCode, 409);
+    assert.equal(dup.body.code, 'duplicate');
+    assert.equal((await send({ client_id: 'client-1', amount: 50, payment_date: '2026-11-18', force: true })).statusCode, 201);
+    duplicates = [];
+    // Una web de 400 € con 400 € ya cobrados no admite otro cobro
+    webPrev = [{ amount: 200 }, { amount: 200 }];
+    const extra = await send({ client_id: 'client-1', amount: 200, payment_kind: 'web', web_total: 400, installment: 'otro' });
+    assert.equal(extra.statusCode, 409);
+    webPrev = [{ amount: 200 }];
+    assert.equal((await send({ client_id: 'client-1', amount: 200, payment_kind: 'web', web_total: 400, installment: 'segunda_mitad' })).statusCode, 201);
   } finally {
     globalThis.fetch = originalFetch;
   }

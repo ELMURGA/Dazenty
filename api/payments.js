@@ -45,13 +45,41 @@ export default async function handler(req, res) {
       if (body.payment_method && !METHODS.includes(body.payment_method)) {
         return res.status(400).json({ error: `payment_method inválido. Usa: ${METHODS.join(', ')}` });
       }
+      const force = body.force === true;
+      delete body.force;
+      body.amount = Number(body.amount);
       if (body.invoice_id) {
-        const [invoice] = await sbSelect('invoices', `id=eq.${encodeURIComponent(body.invoice_id)}&select=client_id`);
+        const [invoice] = await sbSelect('invoices', `id=eq.${encodeURIComponent(body.invoice_id)}&select=client_id,total,paid_amount,status`);
         if (!invoice || invoice.client_id !== body.client_id) {
           return res.status(400).json({ error: 'La factura no pertenece al cliente seleccionado' });
         }
+        if (invoice.status === 'cancelada') return res.status(409).json({ error: 'La factura está cancelada: no admite cobros' });
+        const pending = Math.round((Number(invoice.total) - Number(invoice.paid_amount || 0)) * 100) / 100;
+        if (pending <= 0) return res.status(409).json({ error: 'Esta factura ya está pagada entera: no hace falta registrar otro cobro' });
+        if (body.amount > pending + 0.005) {
+          return res.status(400).json({ error: `El cobro (${body.amount}€) supera lo que falta por pagar de la factura (${pending}€)` });
+        }
       }
-      body.amount = Number(body.amount);
+      // Cobros de una web por partes: no se puede cobrar más del precio total de esa web
+      if (body.payment_kind === 'web') {
+        const webTotal = Number(body.web_total);
+        const prev = await sbSelect('payments',
+          `client_id=eq.${encodeURIComponent(body.client_id)}&payment_kind=eq.web&web_total=eq.${webTotal}&select=amount`);
+        const already = prev.reduce((sum, p) => sum + Number(p.amount), 0);
+        if (already + body.amount > webTotal + 0.005) {
+          const left = Math.max(0, Math.round((webTotal - already) * 100) / 100);
+          return res.status(409).json({ error: `Esta web (${webTotal}€) ya lleva ${Math.round(already * 100) / 100}€ cobrados: solo quedan ${left}€ por cobrar` });
+        }
+      }
+      // Mismo cliente, importe y fecha que otro cobro ya registrado: casi seguro un doble clic o un duplicado
+      if (!force) {
+        const date = body.payment_date || new Date().toISOString().slice(0, 10);
+        const same = await sbSelect('payments',
+          `client_id=eq.${encodeURIComponent(body.client_id)}&amount=eq.${body.amount}&payment_date=eq.${date}&select=id`);
+        if (same.length) {
+          return res.status(409).json({ code: 'duplicate', error: 'Ya hay un cobro igual (mismo cliente, importe y fecha). ¿Seguro que es otro distinto?' });
+        }
+      }
       if (body.payment_kind === 'web') body.web_total = Number(body.web_total);
       if (body.service_concept) body.service_concept = body.service_concept.trim();
       const created = await sbInsert('payments', body);
