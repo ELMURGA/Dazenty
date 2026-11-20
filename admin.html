@@ -625,7 +625,7 @@
           <p class="text-gray-500 text-sm mt-0.5">Registra efectivo, transferencias o Bizum, también sin factura asociada.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-        <button type="button" onclick="openProjectPaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
+        <button type="button" onclick="openPaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
         <button onclick="refreshAllPayments()" id="refreshPaymentsBtn"
           class="flex items-center gap-2 text-xs font-medium border border-white/8 rounded-xl px-4 py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2209,7 +2209,6 @@ function renderWebPaymentsSummary() {
 function openWebPaymentModal(clientId, total) {
   openPaymentModal(null, clientId);
   setPaymentKind('web');
-  document.getElementById('pay-kindField').style.display = 'none';
   document.getElementById('pay-webTotal').value = total;
   suggestWebPayment();
 }
@@ -2237,8 +2236,8 @@ function registeredPaymentRow(p) {
   </tr>`;
 }
 
-// Un cobro de servicio sin factura es de mantenimiento/hosting: va a Mantenimiento; el resto (webs, facturas) se queda en Pagos
-const isMaintenancePayment = p => p.payment_kind !== 'web' && !p.invoice_id;
+// Solo los cobros marcados como mantenimiento salen en Mantenimiento; el resto se queda en Pagos
+const isMaintenancePayment = p => p.is_maintenance === true;
 
 async function loadRegisteredPayments() {
   const tbody = document.getElementById('registeredPaymentsBody');
@@ -5062,6 +5061,7 @@ function openPaymentModal(invoiceId = null, clientId = '') {
   const inv = invoicesData.find(i => i.id === invoiceId);
   if (invoiceId && !inv) { showToast('No se encontró la factura', 'error'); return; }
   payingInvoiceId = invoiceId;
+  paymentIsMaintenance = false;
   if (inv && invoicePending(inv) <= 0) { showToast('Esta factura ya está pagada', 'error'); return; }
   const pending = inv ? invoicePending(inv) : 0;
   document.getElementById('pay-client').innerHTML = '<option value="">Selecciona un cliente</option>' +
@@ -5086,15 +5086,12 @@ function openPaymentModal(invoiceId = null, clientId = '') {
   document.getElementById('payment-modal-overlay').style.display = 'flex';
 }
 
-// Desde Pagos solo se registran cobros de proyectos (webs); desde Mantenimiento, cobros de mantenimiento
-function openProjectPaymentModal() {
-  openPaymentModal();
-  setPaymentKind('web');
-  document.getElementById('pay-kindField').style.display = 'none';
-}
+// Desde Mantenimiento se registran cobros de mantenimiento (se marcan para que no salgan en Pagos)
+let paymentIsMaintenance = false;
 
 function openMaintenancePaymentModal() {
   openPaymentModal();
+  paymentIsMaintenance = true;
   document.getElementById('pay-kindField').style.display = 'none';
 }
 
@@ -5207,6 +5204,7 @@ async function savePayment(force = false) {
   };
   if (!body.payment_date) { showToast('Indica la fecha de cobro', 'error'); return; }
   if (payingInvoiceId) body.invoice_id = payingInvoiceId;
+  if (paymentIsMaintenance && !payingInvoiceId) body.is_maintenance = true;
   if (force === true) body.force = true;
   if (!payingInvoiceId && paymentKind === 'web') {
     body.payment_kind = 'web';
