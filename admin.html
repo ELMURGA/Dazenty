@@ -625,7 +625,7 @@
           <p class="text-gray-500 text-sm mt-0.5">Registra efectivo, transferencias o Bizum, también sin factura asociada.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-        <button type="button" onclick="openPaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
+        <button type="button" onclick="openProjectPaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
         <button onclick="refreshAllPayments()" id="refreshPaymentsBtn"
           class="flex items-center gap-2 text-xs font-medium border border-white/8 rounded-xl px-4 py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -681,15 +681,31 @@
           <h2 class="font-display font-bold text-lg">Mantenimiento</h2>
           <p class="text-gray-500 text-sm mt-0.5">Cuotas de mantenimiento y hosting de tus clientes, leídas de Stripe: meses pagados, último pago y próximo cobro.</p>
         </div>
-        <button onclick="loadPayments()" id="refreshMaintenanceBtn"
+        <div class="flex flex-wrap gap-2">
+        <button type="button" onclick="openMaintenancePaymentModal()" class="bg-brand-blue text-black font-display font-semibold text-sm rounded-xl px-4 py-2.5">Registrar cobro</button>
+        <button onclick="refreshMaintenance()" id="refreshMaintenanceBtn"
           class="flex items-center gap-2 text-xs font-medium border border-white/8 rounded-xl px-4 py-2.5 hover:border-white/20 hover:text-white transition-all text-gray-400">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
           Actualizar
         </button>
+        </div>
       </div>
 
+      <h3 class="font-display font-semibold text-sm mb-3">Cobros de mantenimiento registrados</h3>
+      <p class="text-gray-500 text-xs mb-4">Efectivo, transferencias o Bizum de mantenimiento y hosting. Cuentan como ingresos en Inicio. El período indica los días cubiertos, incluidos ambos extremos.</p>
+      <div class="overflow-x-auto rounded-2xl border border-white/5 mb-8">
+        <table class="w-full text-sm">
+          <thead><tr class="border-b border-white/5 text-left text-xs text-gray-500 uppercase tracking-wider">
+            <th class="px-4 py-3">Cliente / concepto</th><th class="px-4 py-3">Importe</th>
+            <th class="px-4 py-3">Fecha de cobro</th><th class="px-4 py-3">Método</th>
+            <th class="px-4 py-3">Período cubierto</th><th class="px-4 py-3"></th>
+          </tr></thead>
+          <tbody id="maintenancePaymentsBody"></tbody>
+        </table>
+      </div>
+      <h3 class="font-display font-semibold text-sm mb-3">Suscripciones de Stripe</h3>
       <div id="paymentsTableWrap" class="overflow-x-auto rounded-2xl border border-white/5">
         <table class="w-full text-sm">
           <thead>
@@ -711,7 +727,7 @@
       <!-- Estado vacío pagos -->
       <div id="paymentsEmptyState" class="text-center py-24" style="display:none">
         <div class="text-5xl mb-4">💳</div>
-        <p class="font-display font-semibold text-lg mb-2">Sin mantenimientos activos</p>
+        <p class="font-display font-semibold text-lg mb-2">Sin suscripciones activas en Stripe</p>
         <p class="text-gray-500 text-sm">En cuanto un cliente pague su primera cuota, aparecerá aquí.</p>
       </div>
 
@@ -2072,7 +2088,7 @@ function switchView(view) {
 
 function loadViewData(view) {
   if (view === 'payments') refreshAllPayments();
-  else if (view === 'maintenance') loadPayments();
+  else if (view === 'maintenance') refreshMaintenance();
   else if (view === 'home') loadHome();
   else if (view === 'leads') loadLeads();
   else if (view === 'opportunities') loadOpportunities();
@@ -2142,6 +2158,10 @@ function toggleMonths(slug) {
   if (chevron) chevron.style.transform = show ? 'rotate(180deg)' : 'rotate(0deg)';
 }
 
+async function refreshMaintenance() {
+  await Promise.all([loadPayments(), loadRegisteredPayments()]);
+}
+
 async function refreshAllPayments() {
   await Promise.all([loadRegisteredPayments(), loadReceivables()]);
 }
@@ -2189,13 +2209,43 @@ function renderWebPaymentsSummary() {
 function openWebPaymentModal(clientId, total) {
   openPaymentModal(null, clientId);
   setPaymentKind('web');
+  document.getElementById('pay-kindField').style.display = 'none';
   document.getElementById('pay-webTotal').value = total;
   suggestWebPayment();
 }
 
+// Fila de un cobro registrado (la usan Pagos y Mantenimiento)
+function registeredPaymentRow(p) {
+  const client = clients.find(c => c.id === p.client_id);
+  const methods = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
+  return `<tr class="border-b border-white/5">
+    <td class="px-4 py-3 min-w-[180px]"><p class="font-medium">${esc(client?.client_name || 'Cliente')}</p>
+      <p class="text-gray-400 text-xs break-words">${esc(p.service_concept || (p.invoice_id ? 'Pago de factura' : 'Cobro sin concepto'))}</p>
+      ${p.notes ? `<p class="text-gray-500 text-xs break-words">${esc(p.notes)}</p>` : ''}</td>
+    <td class="px-4 py-3 whitespace-nowrap text-brand-blue">${fmtAmt(p.amount)}€</td>
+    <td class="px-4 py-3 whitespace-nowrap">${esc(p.payment_date)}</td>
+    <td class="px-4 py-3">${esc(methods[p.payment_method] || p.payment_method || '—')}</td>
+    <td class="px-4 py-3 whitespace-nowrap">${p.payment_kind === 'web'
+      ? `<span class="text-brand-blue">${esc(INSTALLMENT_LABELS[p.installment] || 'Web')}</span> <span class="text-gray-500">de ${fmtAmt(p.web_total)}€</span>`
+      : p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
+    <td class="px-4 py-3 text-right whitespace-nowrap">
+      <button type="button" onclick="askDeleteEntity('payment','${p.id}','¿Eliminar este cobro?')"
+        class="text-gray-600 hover:text-red-400 transition-colors p-1" title="Eliminar cobro">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </button>
+    </td>
+  </tr>`;
+}
+
+// Un cobro de servicio sin factura es de mantenimiento/hosting: va a Mantenimiento; el resto (webs, facturas) se queda en Pagos
+const isMaintenancePayment = p => p.payment_kind !== 'web' && !p.invoice_id;
+
 async function loadRegisteredPayments() {
   const tbody = document.getElementById('registeredPaymentsBody');
-  tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-gray-500 text-center">Cargando cobros…</td></tr>';
+  const mBody = document.getElementById('maintenancePaymentsBody');
+  const loading = '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Cargando cobros…</td></tr>';
+  tbody.innerHTML = loading;
+  mBody.innerHTML = loading;
   try {
     const res = await fetch('/api/payments', { headers: { 'x-admin-password': adminPass } });
     const all = await res.json();
@@ -2203,30 +2253,17 @@ async function loadRegisteredPayments() {
     // Los cobros de suscripciones de Stripe solo cuentan para Inicio: ya se listan en Mantenimiento
     const data = (Array.isArray(all) ? all : []).filter(p => !p.stripe_payment_id);
     registeredPaymentsData = data;
-    tbody.innerHTML = data.length ? data.map(p => {
-      const client = clients.find(c => c.id === p.client_id);
-      const methods = { efectivo: 'Efectivo', transferencia: 'Transferencia', bizum: 'Bizum', stripe: 'Stripe', otro: 'Otro' };
-      return `<tr class="border-b border-white/5">
-        <td class="px-4 py-3 min-w-[180px]"><p class="font-medium">${esc(client?.client_name || 'Cliente')}</p>
-          <p class="text-gray-400 text-xs break-words">${esc(p.service_concept || (p.invoice_id ? 'Pago de factura' : 'Cobro sin concepto'))}</p>
-          ${p.notes ? `<p class="text-gray-500 text-xs break-words">${esc(p.notes)}</p>` : ''}</td>
-        <td class="px-4 py-3 whitespace-nowrap text-brand-blue">${fmtAmt(p.amount)}€</td>
-        <td class="px-4 py-3 whitespace-nowrap">${esc(p.payment_date)}</td>
-        <td class="px-4 py-3">${esc(methods[p.payment_method] || p.payment_method || '—')}</td>
-        <td class="px-4 py-3 whitespace-nowrap">${p.payment_kind === 'web'
-          ? `<span class="text-brand-blue">${esc(INSTALLMENT_LABELS[p.installment] || 'Web')}</span> <span class="text-gray-500">de ${fmtAmt(p.web_total)}€</span>`
-          : p.coverage_start && p.coverage_end ? `${esc(p.coverage_start)} → ${esc(p.coverage_end)}` : '—'}</td>
-        <td class="px-4 py-3 text-right whitespace-nowrap">
-          <button type="button" onclick="askDeleteEntity('payment','${p.id}','¿Eliminar este cobro?')"
-            class="text-gray-600 hover:text-red-400 transition-colors p-1" title="Eliminar cobro">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
-        </td>
-      </tr>`;
-    }).join('') : '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Sin cobros registrados. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
+    const projectPays = data.filter(p => !isMaintenancePayment(p));
+    const maintPays = data.filter(isMaintenancePayment);
+    tbody.innerHTML = projectPays.length ? projectPays.map(registeredPaymentRow).join('')
+      : '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Sin cobros de proyectos. Usa «Registrar cobro» para apuntar un pago de una web.</td></tr>';
+    mBody.innerHTML = maintPays.length ? maintPays.map(registeredPaymentRow).join('')
+      : '<tr><td colspan="6" class="px-4 py-8 text-gray-500 text-center">Sin cobros de mantenimiento. Usa «Registrar cobro» para apuntar un pago en efectivo.</td></tr>';
     renderWebPaymentsSummary();
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
+    const msg = `<tr><td colspan="6" class="px-4 py-8 text-red-400 text-center">${esc(err.message)}</td></tr>`;
+    tbody.innerHTML = msg;
+    mBody.innerHTML = msg;
   }
 }
 
@@ -5049,6 +5086,18 @@ function openPaymentModal(invoiceId = null, clientId = '') {
   document.getElementById('payment-modal-overlay').style.display = 'flex';
 }
 
+// Desde Pagos solo se registran cobros de proyectos (webs); desde Mantenimiento, cobros de mantenimiento
+function openProjectPaymentModal() {
+  openPaymentModal();
+  setPaymentKind('web');
+  document.getElementById('pay-kindField').style.display = 'none';
+}
+
+function openMaintenancePaymentModal() {
+  openPaymentModal();
+  document.getElementById('pay-kindField').style.display = 'none';
+}
+
 // ─── Cobro de la web por partes (50 % al empezar y 50 % al terminar) ──────────
 let paymentKind = 'servicio';
 
@@ -5190,7 +5239,7 @@ async function savePayment(force = false) {
     closePaymentModal();
     showToast('✓ Pago registrado');
     if (inv) await loadInvoices();
-    if (currentView === 'payments') await loadRegisteredPayments();
+    if (currentView === 'payments' || currentView === 'maintenance') await loadRegisteredPayments();
     if (currentView === 'home') await loadHome();
   } catch (err) {
     showToast(err.message, 'error');
