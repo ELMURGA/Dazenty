@@ -470,6 +470,24 @@
                     </div>
                 </article>
 
+                <!-- Proyecto - Almacenes Camu -->
+                <article class="project-card group cursor-pointer reveal" data-category="web" data-id="camu">
+                    <div class="relative overflow-hidden aspect-square bg-neutral-900 mb-4 rounded-lg">
+                        <img src="../proyectos/web_camu.webp" alt="Almacenes Camu" width="1200" height="750" class="project-img w-full h-full object-cover" loading="lazy">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/20 backdrop-blur-[1px]">
+                            <span class="project-hover-badge transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">Ver Detalles</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-1">
+                            <span>Web Corporativa</span>
+                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                            <span>2026</span>
+                        </div>
+                        <h3 class="font-display text-lg font-bold uppercase tracking-tight text-white group-hover:text-brand-blue transition-colors">Almacenes Camu</h3>
+                    </div>
+                </article>
+
                 <!-- Proyecto 9 - CD Atlético Matalascañas -->
                 <article class="project-card group cursor-pointer reveal" data-category="design" data-id="matalascanas">
                     <div class="relative overflow-hidden aspect-square bg-neutral-900 mb-4 rounded-lg">
@@ -845,6 +863,17 @@
                     desc: '<p>Desarrollo de plataforma e-commerce completa y estrategia de marketing B2B para Sevilla Tarjetas Plásticas, empresa especializada en tarjetas corporativas y material plástico personalizado.</p><p>La tienda online incluye configurador de producto en tiempo real, catálogo segmentado por tipo de tarjeta, sistema de presupuestos y pedidos online, y área privada para clientes corporativos con historial de pedidos.</p>',
                     link: 'https://sevillatarjetasplasticas.com'
                 },
+                'camu': {
+                    shots: { d: '../proyectos/fichas/camu-d.webp', m: '../proyectos/fichas/camu-m.webp' },
+                    title: 'Almacenes Camu',
+                    image: '../proyectos/web_camu.webp',
+                    category: 'Web Corporativa / SEO',
+                    year: '2026',
+                    client: 'Almacenes Camu S.A.',
+                    services: 'UX/UI Design<br>Web Development<br>Local SEO',
+                    desc: '<p>Web corporativa para Almacenes Camu, distribuidor de materiales de construcción, cerámicas y baños en Utrera (Sevilla) con más de 40 años de trayectoria.</p><p>Incluye catálogo de productos por categorías, galería de exposición con fotografías reales, página de empleo, formulario de contacto con protección anti-spam y contenido optimizado para posicionar en búsquedas locales.</p>',
+                    link: 'https://almacenescamu.com'
+                },
                 'matalascanas': {
                     title: 'CD Atlético Matalascañas',
                     image: '../proyectos/matalascanas.webp',
@@ -927,7 +956,7 @@
             const scD = $('sc-desktop'), scM = $('sc-mobile'), scP = $('cs-poster');
             const scScrollD = $('sc-scroll-d'), scScrollM = $('sc-scroll-m');
             const scPlay = $('sc-play'), scTools = $('cs-tools'), scProgress = $('sc-progress');
-            const accents = { jcautos: '#d4a73a', davidvillalba: '#c2a275', jandula: '#e58aa6', hermanos: '#e8801a', costadelsol: '#cfa84b', sevillatp: '#e3b92c' };
+            const accents = { jcautos: '#d4a73a', davidvillalba: '#c2a275', jandula: '#e58aa6', hermanos: '#e8801a', costadelsol: '#cfa84b', sevillatp: '#e3b92c', camu: '#c8202a' };
             let current = null, scRaf = 0, lastFocus = null, _drawerScrollY = 0;
 
             const order = () => [...document.querySelectorAll('.project-card')].filter(c => c.style.display !== 'none').map(c => c.getAttribute('data-id')).filter(id => projectData[id]);
