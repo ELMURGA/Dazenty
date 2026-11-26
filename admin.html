@@ -384,7 +384,7 @@
     :focus-visible { outline: 2px solid #d97762; outline-offset: 2px; }
   </style>
   <!-- Tailwind precompilado (npm run build:admin): antes se compilaba en el navegador con 400 KB de JS -->
-  <link rel="stylesheet" href="/css/admin.min.css?v=20261126">
+  <link rel="stylesheet" href="/css/admin.min.css?v=20261126b">
 </head>
 <body class="bg-brand-dark text-white min-h-screen antialiased">
 
@@ -3005,7 +3005,7 @@ const PROPOSAL_FIELDS = [
       ['','Sin definir'], ['whatsapp','WhatsApp'], ['instagram','Instagram'], ['email','Email'],
       ['llamada','Llamada'], ['reunion','Reunión'], ['otro','Otro'] ] },
   { key: 'next_followup_at', label: 'Próximo seguimiento', type: 'date' },
-  { key: 'url', label: 'PDF de la propuesta', type: 'pdf', span: 2 },
+  { key: 'files', label: 'PDF de la propuesta', type: 'files', span: 2 },
   { key: 'notes', label: 'Notas', type: 'textarea', span: 2 },
 ];
 const TEMPLATE_CATEGORY_LABELS = { lead: 'Primer contacto', propuesta: 'Propuesta', cobro: 'Cobro', demo: 'Demo', reunion: 'Reunión', renovacion: 'Renovación', dominio: 'Dominio', general: 'General' };
@@ -3233,8 +3233,8 @@ function renderEntityField(f, item, prefill = null) {
     control = `<select id="${id}"><option value="">— Ninguna —</option>${expenseCategoriesData.map(c => `<option value="${c.id}" ${c.id===value?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`;
   } else if (f.type === 'color') {
     control = `<input type="color" id="${id}" value="${value || '#d97762'}" style="height:42px;padding:4px">`;
-  } else if (f.type === 'pdf') {
-    control = proposalPdfControl(id, value, item);
+  } else if (f.type === 'files') {
+    control = proposalFilesControl(item);
   } else if (f.type === 'datetime') {
     control = `<input type="datetime-local" id="${id}" value="${toDatetimeLocal(value)}">`;
   } else {
@@ -3244,88 +3244,104 @@ function renderEntityField(f, item, prefill = null) {
 }
 
 // ─── PDF de una propuesta (dentro del modal genérico) ──────────────────────────
-// El archivo elegido se guarda aquí y solo se sube al pulsar Crear/Guardar: cancelar no deja
-// archivos sueltos. El input oculto `ef-url` lleva la referencia del PDF actual ('' = sin PDF).
-const PROPOSAL_PDF_MAX_BYTES = 3 * 1024 * 1024; // Vercel admite 4,5 MB por petición y el base64 ocupa un tercio más
-let pendingProposalPdf = null;
+// La lista del formulario mezcla PDF ya guardados ({url}) y recién elegidos ({file}). Estos
+// solo se suben al pulsar Crear/Guardar: cancelar no deja archivos sueltos.
+const PROPOSAL_PDF_MAX_BYTES = 20 * 1024 * 1024; // mismo límite que lib/proposal-rules.js
+const PROPOSAL_MAX_FILES = 10;
+let proposalFiles = [];
+let proposalFileSwap = null; // posición que se está cambiando; null = añadir
 
-const isProposalPdf = url => /\/storage\/v1\/object\/public\/client-docs\/[a-z0-9-]+\/proposal-\d+\.pdf$/.test(String(url || ''));
+const proposalPdfPath = url => String(url || '').split('/object/public/client-docs/')[1] || '';
+const fmtFileSize = n => !n ? '' : n < 1048576 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1048576).toLocaleString('es-ES', { maximumFractionDigits: 1 })} MB`;
 
-function proposalPdfControl(id, value, item) {
-  return `<input type="hidden" id="${id}" value="${esc(value)}">
-    <div id="efPdfCurrent" class="flex flex-wrap items-center gap-2 border border-white/10 rounded-xl p-3" style="display:none">
-      <span id="efPdfName" class="text-sm text-gray-300 truncate flex-1 min-w-[140px]"></span>
-      ${item && isProposalPdf(value) ? `<button type="button" class="btn-chip" id="efPdfView" onclick="openProposalPdf('${item.id}')">Ver PDF</button>` : ''}
-      <button type="button" class="btn-chip" onclick="document.getElementById('efPdfFile').click()">Cambiar</button>
-      <button type="button" class="btn-chip" onclick="removeProposalPdf()">Quitar</button>
-    </div>
+function proposalFilesControl(item) {
+  proposalFiles = (item?.files || []).map(f => ({ ...f }));
+  return `<div id="efFiles" data-proposal="${esc(item?.id || '')}" class="space-y-2 mb-2"></div>
     <div class="dropzone" id="efPdfDrop" role="button" tabindex="0"
-         onclick="document.getElementById('efPdfFile').click()"
-         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('efPdfFile').click()}"
+         onclick="chooseProposalPdf(null)"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();chooseProposalPdf(null)}"
          ondragover="dragOver(event,'efPdfDrop')" ondragleave="dragLeave('efPdfDrop')"
-         ondrop="event.preventDefault();dragLeave('efPdfDrop');pickProposalPdf(event.dataTransfer?.files?.[0])">
-      <p class="text-sm text-gray-400">Arrastra el PDF o haz clic para subirlo</p>
-      <p class="text-xs text-gray-600 mt-1">Solo PDF, máximo 3 MB</p>
+         ondrop="event.preventDefault();dragLeave('efPdfDrop');proposalFileSwap=null;pickProposalPdfs(event.dataTransfer?.files)">
+      <p class="text-sm text-gray-400">Arrastra los PDF o haz clic para añadirlos</p>
+      <p class="text-xs text-gray-600 mt-1">Puedes añadir varios · solo PDF, máximo 20 MB cada uno</p>
     </div>
-    <input type="file" id="efPdfFile" accept="application/pdf,.pdf" style="display:none" onchange="pickProposalPdf(this.files?.[0]); this.value=''">
-    <p id="efPdfHint" class="text-xs text-amber-300/80 mt-2" style="display:none"></p>`;
+    <input type="file" id="efPdfFile" accept="application/pdf,.pdf" multiple style="display:none" onchange="pickProposalPdfs(this.files); this.value=''">`;
 }
 
-function syncProposalPdf() {
-  const input = document.getElementById('ef-url');
-  const current = document.getElementById('efPdfCurrent');
-  if (!input || !current) return;
-  const url = input.value;
-  const stored = isProposalPdf(url);
-  const has = Boolean(pendingProposalPdf) || stored;
-  current.style.display = has ? 'flex' : 'none';
-  document.getElementById('efPdfDrop').style.display = has ? 'none' : 'block';
-  document.getElementById('efPdfName').textContent = pendingProposalPdf
-    ? `${pendingProposalPdf.name} · se sube al guardar`
-    : stored ? 'PDF subido' : '';
-  const view = document.getElementById('efPdfView');
-  if (view) view.style.display = pendingProposalPdf ? 'none' : '';
-  const hint = document.getElementById('efPdfHint');
-  hint.textContent = !has && url ? 'Ahora solo tiene un enlace antiguo. Sube el PDF para sustituirlo.' : '';
-  hint.style.display = hint.textContent ? 'block' : 'none';
+function renderProposalFiles() {
+  const box = document.getElementById('efFiles');
+  if (!box) return;
+  const id = box.dataset.proposal;
+  box.innerHTML = proposalFiles.map((f, i) => `<div class="flex flex-wrap items-center gap-2 border border-white/10 rounded-xl p-3">
+      <div class="flex-1 min-w-[180px]">
+        <p class="text-sm text-gray-300 truncate" title="${esc(f.name)}">${esc(f.name)}</p>
+        <p class="text-xs ${f.file ? 'text-amber-300/80' : 'text-gray-600'}">${esc([fmtFileSize(f.size), f.file ? 'se sube al guardar' : ''].filter(Boolean).join(' · ') || 'PDF subido')}</p>
+      </div>
+      ${id && f.url ? `<button type="button" class="btn-chip" aria-label="Ver ${esc(f.name)}" onclick="openProposalPdf('${esc(id)}', proposalFiles[${i}].url)">Ver</button>` : ''}
+      <button type="button" class="btn-chip" aria-label="Cambiar ${esc(f.name)}" onclick="chooseProposalPdf(${i})">Cambiar</button>
+      <button type="button" class="btn-chip" aria-label="Quitar ${esc(f.name)}" onclick="removeProposalPdf(${i})">Quitar</button>
+    </div>`).join('');
+  document.getElementById('efPdfDrop').style.display = proposalFiles.length < PROPOSAL_MAX_FILES ? 'block' : 'none';
 }
 
-function pickProposalPdf(file) {
-  if (!file) return;
-  if (!/\.pdf$/i.test(file.name)) return showToast('Solo se permiten archivos PDF', 'error');
-  if (file.size > PROPOSAL_PDF_MAX_BYTES) return showToast('El PDF pesa más de 3 MB. Expórtalo comprimido e inténtalo de nuevo.', 'error');
-  pendingProposalPdf = file;
-  syncProposalPdf();
+function chooseProposalPdf(index) {
+  const input = document.getElementById('efPdfFile');
+  proposalFileSwap = index;
+  input.multiple = index === null;
+  input.click();
 }
 
-function removeProposalPdf() {
-  pendingProposalPdf = null;
-  document.getElementById('ef-url').value = '';
-  syncProposalPdf();
+function pickProposalPdfs(list) {
+  for (const file of Array.from(list || [])) {
+    if (!/\.pdf$/i.test(file.name)) { showToast(`«${file.name}» no es un PDF`, 'error'); continue; }
+    if (file.size > PROPOSAL_PDF_MAX_BYTES) { showToast(`«${file.name}» pesa más de 20 MB. Expórtalo comprimido.`, 'error'); continue; }
+    const entry = { file, name: file.name, size: file.size };
+    if (proposalFileSwap !== null) { proposalFiles[proposalFileSwap] = entry; break; }
+    if (proposalFiles.length >= PROPOSAL_MAX_FILES) { showToast(`Máximo ${PROPOSAL_MAX_FILES} PDF por propuesta`, 'error'); break; }
+    proposalFiles.push(entry);
+  }
+  proposalFileSwap = null;
+  renderProposalFiles();
 }
 
-// Sube el PDF elegido a la carpeta del lead o cliente y devuelve su referencia
-async function uploadProposalPdf(file, body) {
+function removeProposalPdf(index) {
+  proposalFiles.splice(index, 1);
+  renderProposalFiles();
+}
+
+// Sube los PDF pendientes (directos a Storage) y devuelve la lista final de la propuesta.
+// Cada uno que termina queda marcado como subido: al reintentar no se repite.
+async function uploadProposalFiles(body, onProgress) {
   const lead = body.lead_id || document.getElementById('ef-lead_id')?.value;
-  const owner = lead
-    ? leadsData.find(l => l.id === lead)
-    : clientById(body.client_id);
+  const owner = lead ? leadsData.find(l => l.id === lead) : clientById(body.client_id);
   const slug = owner?.slug || toSlug(owner?.company || owner?.name || owner?.client_name || '') || 'propuesta';
-  const res = await fetch('/api/upload', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
-    body: JSON.stringify({ clientSlug: slug, docType: 'proposal', filename: file.name.replace(/\.pdf$/i, '.pdf'), data: await fileToBase64(file) }),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || !data.publicUrl) throw new Error(data.error || 'No se pudo subir el PDF');
-  return data.publicUrl;
+  const list = proposalFiles;
+  const total = list.filter(f => f.file).length;
+  let done = 0;
+  for (let i = 0; i < list.length; i++) {
+    const { file, name, size } = list[i];
+    if (!file) continue;
+    onProgress(++done, total);
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPass },
+      body: JSON.stringify({ action: 'sign', clientSlug: slug, docType: 'proposal', filename: 'propuesta.pdf' }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.uploadUrl) throw new Error(data.error || `No se pudo subir «${name}»`);
+    const put = await fetch(data.uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'application/pdf' }, body: file });
+    if (!put.ok) throw new Error(`No se pudo subir «${name}»`);
+    list[i] = { url: data.publicUrl, name, size };
+    renderProposalFiles();
+  }
+  return list.map(({ url, name, size }) => ({ url, name, size }));
 }
 
 // Los PDF están en un bucket privado: se abren con una URL firmada y temporal
-async function openProposalPdf(id) {
+async function openProposalPdf(id, url) {
   const win = window.open('', '_blank');
   try {
-    const res = await fetch(`/api/proposals?id=${encodeURIComponent(id)}&sign=1`, { headers: { 'x-admin-password': adminPass } });
+    const res = await fetch(`/api/proposals?id=${encodeURIComponent(id)}&sign=1&file=${encodeURIComponent(proposalPdfPath(url))}`, { headers: { 'x-admin-password': adminPass } });
     const data = await res.json();
     if (!res.ok || !data.url) throw new Error(data.error || 'No disponible');
     if (win) { win.opener = null; win.location = data.url; } else { window.location = data.url; }
@@ -3335,11 +3351,21 @@ async function openProposalPdf(id) {
   }
 }
 
-// Botón de la lista: PDF subido, enlace antiguo (propuestas de /presupuesto sin PDF todavía) o aviso
+// Un botón por PDF, con su nombre
+function proposalFileChips(p) {
+  if (!p.files?.length) return '';
+  return `<div class="flex flex-wrap gap-1.5 mt-2">${p.files.map((f, i) => `<button type="button" class="btn-chip max-w-full" title="Ver ${esc(f.name)}" onclick="openProposalPdfAt('${p.id}', ${i})"><span aria-hidden="true">📄</span><span class="truncate max-w-[220px]">${esc(f.name.replace(/\.pdf$/i, ''))}</span></button>`).join('')}</div>`;
+}
+function openProposalPdfAt(id, i) {
+  const f = proposalsData.find(p => p.id === id)?.files?.[i];
+  if (f) openProposalPdf(id, f.url);
+}
+
+// Acciones de la fila: enlace antiguo si lo hay y, sin ningún PDF, el acceso para subirlo
 function proposalDocButton(p) {
-  if (isProposalPdf(p.url)) return `<button type="button" class="btn-chip" onclick="openProposalPdf('${p.id}')">Ver PDF</button>`;
   const link = p.url ? `<a class="btn-chip" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">Abrir enlace</a>` : '';
-  return `${link}<button type="button" class="btn-chip" onclick="openEntityModal('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}')">Subir PDF</button>`;
+  const add = p.files?.length ? '' : `<button type="button" class="btn-chip" onclick="openEntityModal('${p.lead_id ? 'lead_proposal' : 'proposal'}','${p.id}')">Subir PDF</button>`;
+  return link + add;
 }
 
 // Abre el modal genérico. `id` nulo = crear; con id busca el registro ya cargado en memoria.
@@ -3362,7 +3388,6 @@ async function openEntityModal(type, id = null, prefill = null) {
   }
   const item = id ? (ENTITY_DATA_SOURCE[type]?.() || []).find(x => x.id === id) : null;
   editingEntity = { type, id: id || null };
-  pendingProposalPdf = null;
   document.getElementById('entityModalTitle').textContent = item ? `Editar ${cfg.label}` : `Nuevo/a ${cfg.label}`;
   document.getElementById('entitySaveBtnLabel').textContent = item ? 'Guardar cambios' : 'Crear';
   document.getElementById('entity-modal-box').style.maxWidth = cfg.modalWidth || '560px';
@@ -3383,7 +3408,7 @@ async function openEntityModal(type, id = null, prefill = null) {
     fieldsBox.innerHTML = cfg.fields.map(f => renderEntityField(f, item, prefill)).join('');
   }
   document.getElementById('entity-modal-overlay').style.display = 'flex';
-  syncProposalPdf();
+  renderProposalFiles();
   if (type === 'message_template') addTemplateVarChips();
 }
 
@@ -3422,7 +3447,7 @@ async function saveEntity() {
   const body = {};
   for (const f of cfg.fields) {
     const el = document.getElementById(`ef-${f.key}`);
-    if (!el) continue;
+    if (!el) continue; // los PDF ('files') no tienen input propio: se añaden al guardar
     let v = el.value;
     if (f.type === 'number') v = v === '' ? null : Number(v);
     else if (f.type === 'datetime') v = v ? new Date(v).toISOString() : null;
@@ -3440,13 +3465,11 @@ async function saveEntity() {
   const btn = document.getElementById('entitySaveBtn');
   btn.disabled = true;
   const previous = id ? (ENTITY_DATA_SOURCE[type]?.() || []).find(x => x.id === id) : null;
+  const label = document.getElementById('entitySaveBtnLabel');
+  const labelText = label.textContent;
   try {
-    if (pendingProposalPdf && cfg.fields.some(f => f.type === 'pdf')) {
-      body.url = await uploadProposalPdf(pendingProposalPdf, body);
-      // Si fallara el guardado, al reintentar no se vuelve a subir
-      document.getElementById('ef-url').value = body.url;
-      pendingProposalPdf = null;
-      syncProposalPdf();
+    if (cfg.fields.some(f => f.type === 'files')) {
+      body.files = await uploadProposalFiles(body, (n, total) => { label.textContent = `Subiendo PDF ${n} de ${total}…`; });
     }
     const url = id ? cfg.itemUrl(id) : cfg.listUrl();
     const res = await fetch(url, {
@@ -3468,6 +3491,7 @@ async function saveEntity() {
     showToast(err.message, 'error');
   } finally {
     btn.disabled = false;
+    if (label.textContent.startsWith('Subiendo')) label.textContent = labelText;
   }
 }
 
@@ -6137,7 +6161,7 @@ function ctxForLead(l) {
     nombre: firstNameOf(l.name),
     empresa: l.company || l.name,
     importe: openProposal?.amount ? fmtEuros(openProposal.amount) : (l.value_estimate ? fmtEuros(l.value_estimate) : ''),
-    enlace: openProposal && !isProposalPdf(openProposal.url) ? openProposal.url || '' : '',
+    enlace: openProposal?.url || '',
     phone: l.whatsapp || l.phone || '',
   };
 }
@@ -6326,7 +6350,7 @@ function openTemplateForProposal(id) {
   else if (p.client_id) { const c = clientById(p.client_id); if (c) ctx = ctxForClient(c, { category: 'propuesta' }); }
   if (!ctx) { showToast('No se encontró a quién va la propuesta', 'error'); return; }
   openTemplatePicker({ ...ctx, category: 'propuesta', prefer: 'Propuesta enviada con precio', title: `Propuesta «${p.title}» · ${ctx.title.replace(/^Para /, '')}`,
-    importe: p.amount ? fmtEuros(p.amount) : ctx.importe, enlace: isProposalPdf(p.url) ? '' : p.url || ctx.enlace });
+    importe: p.amount ? fmtEuros(p.amount) : ctx.importe, enlace: p.url || ctx.enlace });
 }
 function openTemplateForDomain(id) {
   const d = domainsData.find(x => x.id === id) || homeDomainsCache.find(x => x.id === id);
@@ -6974,6 +6998,7 @@ function renderProposalsView() {
         </div>
         <p class="text-xs text-gray-400 truncate">${esc(proposalOwnerName(p))}${p.lead_id ? '' : ' · cliente'}</p>
         <div class="flex flex-wrap items-center gap-1.5 mt-1.5">${proposalFollowChip(p)}${sent ? `<span class="text-xs text-gray-600">${esc(sent)}</span>` : ''}</div>
+        ${proposalFileChips(p)}
       </div>
       <div class="item-actions">
         ${proposalStatusSelect(p)}
@@ -7049,6 +7074,7 @@ function leadProposalsHtml(l) {
                  <button type="submit" class="btn-chip !min-h-[32px]">Poner precio</button>
                </form>`}
         </div>
+        ${proposalFileChips(p)}
         <div class="flex flex-wrap items-center gap-2 mt-2">${proposalStatusSelect(p)}${proposalFollowChip(p)}
           ${proposalDocButton(p)}
           <button type="button" class="btn-chip" onclick="openTemplateForProposal('${p.id}')">Plantilla</button>

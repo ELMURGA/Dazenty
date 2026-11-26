@@ -3,12 +3,15 @@
 // POST /api/upload
 // Body JSON:
 //   { clientSlug, docType: "proposal"|"invoice"|"invoice-archive", filename, data: "<base64>" }
+//   { action: "sign", clientSlug, docType: "proposal", filename }  → PDF grandes
 // Header: x-admin-password
 //
-// Devuelve: { publicUrl }
+// Devuelve: { publicUrl }  (con action "sign", además { uploadUrl }: el navegador sube el
+// archivo con PUT directamente a Storage; /api/proposals comprueba después que es un PDF)
 // ==========================================================
 
-import { adminAuthError } from '../lib/db.js';
+import { randomUUID } from 'node:crypto';
+import { adminAuthError, signedUploadUrl } from '../lib/db.js';
 
 export const config = {
   api: {
@@ -32,10 +35,11 @@ export default async function handler(req, res) {
   const authError = await adminAuthError(req);
   if (authError) return res.status(authError.status).json({ error: authError.error });
 
-  const { clientSlug, docType, filename, data } = req.body ?? {};
+  const { action, clientSlug, docType, filename, data } = req.body ?? {};
+  const direct = action === 'sign';
 
   // Validaciones
-  if (!clientSlug || !docType || !filename || !data) {
+  if (!clientSlug || !docType || !filename || (!direct && !data)) {
     return res.status(400).json({ error: 'Faltan campos: clientSlug, docType, filename, data' });
   }
   if (!['proposal', 'invoice', 'invoice-archive'].includes(docType)) {
@@ -51,7 +55,15 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'clientSlug inválido' });
   }
 
-  const path = `${clientSlug}/${docType}-${Date.now()}.pdf`;
+  const path = `${clientSlug}/${docType}-${Date.now()}${direct ? `-${randomUUID().slice(0, 8)}` : ''}.pdf`;
+  const publicUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+
+  if (direct) {
+    if (docType !== 'proposal') return res.status(400).json({ error: 'La subida directa es solo para propuestas' });
+    const uploadUrl = await signedUploadUrl(path);
+    if (!uploadUrl) return res.status(502).json({ error: 'No se pudo preparar la subida' });
+    return res.json({ uploadUrl, publicUrl });
+  }
 
   let binary;
   try {
@@ -83,7 +95,6 @@ export default async function handler(req, res) {
   }
 
   // Se devuelve la URL canónica del objeto como referencia. El bucket es privado:
-  // los PDF se abren siempre con URL firmada (api/get-doc.js, api/invoice-pdfs.js)
-  const publicUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  // los PDF se abren siempre con URL firmada (api/get-doc.js, api/invoice-pdfs.js, api/proposals.js)
   return res.json({ publicUrl });
 }

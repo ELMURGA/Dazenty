@@ -66,9 +66,12 @@ db.proposals.push(
   { id: randomUUID(), lead_id: db.leads[1].id, title: 'Tienda online', amount: 1500, sent_at: day(-3), channel: 'email', status: 'vista', created_at: ts(-3), updated_at: ts(-3) },
   { id: randomUUID(), client_id: perez.id, title: 'Renovación del posicionamiento SEO', amount: 480, sent_at: day(-20), status: 'aceptada', created_at: ts(-20), updated_at: ts(-12) },
 );
-// Una propuesta con PDF ya subido, para probar «Ver PDF», cambiarlo y quitarlo
-fake.storage['client-docs'] = { 'lead-de-prueba/proposal-1.pdf': Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj 3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 300 200]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF') };
-db.proposals[1].url = 'https://fake.supabase.test/storage/v1/object/public/client-docs/lead-de-prueba/proposal-1.pdf';
+// Una propuesta con dos PDF ya subidos, para probar «Ver», cambiarlos y quitarlos
+const demoPdf = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj 3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 300 200]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF');
+fake.storage['client-docs'] = { 'lead-de-prueba/proposal-1.pdf': demoPdf, 'lead-de-prueba/proposal-2.pdf': demoPdf };
+db.proposals[1].files = ['Propuesta tienda online.pdf', 'Panel de pedidos.pdf'].map((name, i) => ({
+  url: `https://fake.supabase.test/storage/v1/object/public/client-docs/lead-de-prueba/proposal-${i + 1}.pdf`, name, size: demoPdf.length,
+}));
 db.domains.push(
   { id: randomUUID(), domain: 'almacenescamu.es', client_id: camu.id, registrar: 'IONOS', registered_at: day(-340), expires_at: day(25), renewal_price: 14.9, notify_client: true, alert_stage: null, created_at: ts(-340) },
   { id: randomUUID(), domain: 'asesoriaperez.com', client_id: perez.id, registrar: 'Vercel', registered_at: day(-360), expires_at: day(4), renewal_price: 17, notify_client: true, alert_stage: '30d', client_notified_at: ts(-20), created_at: ts(-360) },
@@ -103,7 +106,13 @@ http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://localhost:${PORT}`);
   // Hace de Storage: sirve los PDF que el panel abre con la URL firmada
   if (u.pathname.startsWith('/__storage/')) {
-    const [bucket, ...rest] = decodeURIComponent(u.pathname.slice('/__storage/'.length)).split('/');
+    const [bucket, ...rest] = decodeURIComponent(u.pathname.slice('/__storage/'.length)).replace(/^upload\//, '').split('/');
+    if (req.method === 'PUT') {
+      const parts = [];
+      for await (const c of req) parts.push(c);
+      (fake.storage[bucket] ||= {})[rest.join('/')] = Buffer.concat(parts);
+      res.writeHead(200, { 'content-type': 'application/json' }); res.end('{}'); return;
+    }
     const pdf = fake.storage[bucket]?.[rest.join('/')];
     if (!pdf) { res.writeHead(404); res.end('no'); return; }
     res.writeHead(200, { 'content-type': 'application/pdf' }); res.end(pdf); return;
@@ -119,7 +128,7 @@ http.createServer(async (req, res) => {
       const out = {
         statusCode: 200, headers: {}, setHeader(k, v) { this.headers[k] = v; }, getHeader() {},
         status(c) { this.statusCode = c; return this; },
-        json(b) { res.writeHead(this.statusCode, { ...this.headers, 'content-type': 'application/json' }); res.end(JSON.stringify(b).replaceAll('https://fake.supabase.test/storage/v1/object/sign/', `http://localhost:${PORT}/__storage/`)); return this; },
+        json(b) { res.writeHead(this.statusCode, { ...this.headers, 'content-type': 'application/json' }); res.end(JSON.stringify(b).replaceAll('https://fake.supabase.test/storage/v1/object/sign/', `http://localhost:${PORT}/__storage/`).replaceAll('https://fake.supabase.test/storage/v1/object/upload/sign/', `http://localhost:${PORT}/__storage/upload/`)); return this; },
         end(b) { res.writeHead(this.statusCode, this.headers); res.end(b); return this; },
       };
       await mod.default({ method: req.method, query: Object.fromEntries(u.searchParams), body, headers: req.headers, socket: req.socket, url: req.url }, out);

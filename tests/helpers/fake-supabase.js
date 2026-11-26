@@ -53,6 +53,7 @@ export function matches(row, key, cond) {
     case 'eq': r = String(cell) === val; break;
     case 'neq': r = String(cell) !== val; break;
     case 'in': r = val.replace(/^\(|\)$/g, '').split(',').includes(String(cell)); break;
+    case 'cs': r = Array.isArray(cell) && JSON.parse(val).every(want => cell.some(c => Object.entries(want).every(([k, v]) => c[k] === v))); break;
     case 'is': r = val === 'null' ? cell == null : String(cell) === val; break;
     case 'lt': r = cell != null && compare(cell, val) < 0; break;
     case 'lte': r = cell != null && compare(cell, val) <= 0; break;
@@ -120,11 +121,23 @@ export function createFakeSupabase(tables) {
         const bucket = path.slice('object/list/'.length);
         return jr(200, Object.keys(storage[bucket] || {}).sort().map(name => ({ name })));
       }
+      if (path.startsWith('object/upload/sign/')) {
+        const rest = path.slice('object/upload/sign/'.length);
+        if (method === 'PUT') {
+          const [bucket, ...parts] = rest.split('/');
+          (storage[bucket] ||= {})[parts.join('/')] = init.body;
+          return jr(200, { Key: rest });
+        }
+        return jr(200, { url: `/object/upload/sign/${rest}?token=fake` });
+      }
       if (path.startsWith('object/sign/')) {
         const [bucket, ...rest] = path.slice('object/sign/'.length).split('/');
         const name = rest.map(decodeURIComponent).join('/');
-        if (!storage[bucket]?.[name]) return jr(404, { error: 'not found' });
-        return jr(200, { signedURL: `/object/sign/${bucket}/${name}?token=fake` });
+        const file = storage[bucket]?.[name];
+        if (!file) return jr(404, { error: 'not found' });
+        if (method !== 'GET') return jr(200, { signedURL: `/object/sign/${bucket}/${name}?token=fake` });
+        const bytes = Buffer.from(file);
+        return new Response(bytes.subarray(0, 5), { status: 206, headers: { 'content-range': `bytes 0-4/${bytes.length}` } });
       }
       const [, bucket, ...nameParts] = path.split('/');
       if (method === 'POST') { (storage[bucket] ||= {})[nameParts.join('/')] = init.body; return jr(200, { Key: `${bucket}/${nameParts.join('/')}` }); }

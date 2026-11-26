@@ -1,7 +1,7 @@
 // api/proposals.js — Estado de las propuestas enviadas a leads y clientes
 // ==========================================================
 // GET    /api/proposals                 → lista (filtros: ?status=, ?lead_id=, ?client_id=, ?open=1)
-// GET    /api/proposals?id=xxx&sign=1   → { url } firmada y temporal para abrir el PDF
+// GET    /api/proposals?id=xxx&sign=1&file=<ruta> → { url } firmada y temporal para abrir un PDF
 // POST   /api/proposals                 → crear { lead_id | client_id, title, amount?, sent_at?, channel?, url?, ... }
 // PUT    /api/proposals?id=xxx          → editar (incluido el estado: enviada/vista/aceptada/rechazada/caducada)
 // DELETE /api/proposals?id=xxx          → eliminar
@@ -11,13 +11,13 @@
 //        candidatos responde 409 con la lista; sin ninguno crea el lead.
 // Todas requieren x-admin-password. Las abiertas (enviada/vista) sin movimiento en 5 días
 // salen en "Hoy toca contactar" (lib/proposal-rules.js).
-// El PDF se sube con /api/upload y su referencia se guarda en `url`. Al cambiarlo, quitarlo o
-// eliminar la propuesta se borra el archivo anterior de Storage.
+// Los PDF se suben con /api/upload y se guardan en `files` ([{ url, name, size }]). Al quitar o
+// cambiar uno, o al eliminar la propuesta, se borra el archivo de Storage.
 // ==========================================================
 
-import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity, signedDocUrl, deleteDocFile } from '../lib/db.js';
+import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity, signedDocUrl, docFileInfo, deleteDocFile } from '../lib/db.js';
 import { madridNow } from '../lib/push.js';
-import { normalizeProposal, proposalPdfPath, OPEN_PROPOSAL_STATUSES } from '../lib/proposal-rules.js';
+import { normalizeProposal, proposalPdfPath, PROPOSAL_PDF_MAX_BYTES, OPEN_PROPOSAL_STATUSES } from '../lib/proposal-rules.js';
 import { pickOwner, normalizeName } from '../lib/proposal-owner.js';
 import { sanitizeSearch } from '../lib/search.js';
 
@@ -34,6 +34,22 @@ async function loadProposal(id) {
 }
 
 
+// Comprueba los PDF recién añadidos: como el navegador los sube directo a Storage, aquí se
+// confirma que existen, que son PDF de verdad y que no pasan del tamaño máximo.
+async function checkNewFiles(files = [], previous = []) {
+  const known = new Set(previous.map(f => f.url));
+  await Promise.all(files.filter(f => !known.has(f.url)).map(async file => {
+    const path = proposalPdfPath(file.url);
+    const info = await docFileInfo(path);
+    if (!info) throw httpError(400, `"${file.name}" no se ha subido bien. Vuelve a añadirlo.`);
+    if (info.head !== '%PDF-' || info.size > PROPOSAL_PDF_MAX_BYTES) {
+      await removeUnusedPdf(file.url);
+      throw httpError(400, info.head !== '%PDF-' ? `"${file.name}" no es un PDF válido` : `"${file.name}" pesa más de 20 MB`);
+    }
+    file.size = info.size;
+  }));
+}
+
 // Borra un PDF que ya no usa nadie. Un fallo aquí no deshace el cambio ya guardado:
 // como mucho queda un archivo suelto en Storage.
 async function removeUnusedPdf(url) {
@@ -41,11 +57,13 @@ async function removeUnusedPdf(url) {
   if (!path) return;
   try {
     const ref = encodeURIComponent(url);
-    const [inProposals, inPortals] = await Promise.all([
+    const inFiles = encodeURIComponent(JSON.stringify([{ url }]));
+    const uses = await Promise.all([
+      sbSelect('proposals', `files=cs.${inFiles}&select=id&limit=1`),
       sbSelect('proposals', `url=eq.${ref}&select=id&limit=1`),
       sbSelect('clients', `pdf_proposal_url=eq.${ref}&select=id&limit=1`),
     ]);
-    if (inProposals.length || inPortals.length) return;
+    if (uses.some(rows => rows.length)) return;
     if (!(await deleteDocFile(path))) console.error('[api/proposals] no se pudo borrar', path);
   } catch (err) {
     console.error('[api/proposals] limpieza del PDF', err);
@@ -102,8 +120,6 @@ async function registerProposal(body) {
   if (same) {
     const patch = {};
     for (const k of ['amount', 'url', 'notes']) if (n.fields[k] != null) patch[k] = n.fields[k];
-    // Un enlace de Canva nunca sustituye al PDF que ya se hubiera subido
-    if (proposalPdfPath(same.url) && !proposalPdfPath(patch.url)) delete patch.url;
     const updated = await sbUpdate('proposals', same.id, patch);
     if (leadId) await logActivity('lead', leadId, 'proposal', `Propuesta "${title}" actualizada desde /presupuesto`, { proposal_id: same.id });
     return { status: 200, body: { proposal: updated, updated: true, owner: ownerCol === 'lead_id' ? 'lead' : 'client', created_lead: false } };
@@ -126,7 +142,9 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET' && id && req.query.sign) {
-      const path = proposalPdfPath((await loadProposal(id)).url);
+      const paths = ((await loadProposal(id)).files || []).map(f => proposalPdfPath(f.url)).filter(Boolean);
+      // Solo se firman archivos de esta propuesta
+      const path = req.query.file ? paths.find(p => p === req.query.file) : paths[0];
       const url = path ? await signedDocUrl(path, 300) : null;
       if (!url) return res.status(404).json({ error: 'Esta propuesta no tiene un PDF disponible' });
       return res.json({ url });
@@ -153,6 +171,7 @@ export default async function handler(req, res) {
       const fields = { status: 'enviada', ...n.fields };
       fields.sent_at ||= today;
       if (fields.lead_id && !UUID_RE.test(String(fields.lead_id))) return res.status(400).json({ error: 'lead_id inválido' });
+      await checkNewFiles(fields.files);
       const created = await sbInsert('proposals', fields);
       if (created.lead_id) {
         const [lead] = await sbSelect('leads', `id=eq.${created.lead_id}&select=id,name,stage`);
@@ -169,8 +188,10 @@ export default async function handler(req, res) {
       const current = await loadProposal(id);
       const n = normalizeProposal(req.body, { partial: true });
       if (n.error) return res.status(400).json({ error: n.error });
+      await checkNewFiles(n.fields.files, current.files || []);
       const updated = await sbUpdate('proposals', id, n.fields);
-      if (n.fields.url !== undefined && current.url !== updated.url) await removeUnusedPdf(current.url);
+      const kept = new Set((updated.files || []).map(f => f.url));
+      await Promise.all((current.files || []).filter(f => !kept.has(f.url)).map(f => removeUnusedPdf(f.url)));
       if (n.fields.status && n.fields.status !== current.status && updated.lead_id) {
         await logActivity('lead', updated.lead_id, 'proposal',
           `Propuesta "${updated.title}" → ${STATUS_LABELS[n.fields.status]}`, { proposal_id: id });
@@ -181,7 +202,7 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
       const current = await loadProposal(id);
       await sbDelete('proposals', id);
-      await removeUnusedPdf(current.url);
+      await Promise.all([...(current.files || []).map(f => f.url), current.url].map(removeUnusedPdf));
       return res.status(204).end();
     }
 
