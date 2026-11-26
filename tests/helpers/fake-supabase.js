@@ -120,6 +120,12 @@ export function createFakeSupabase(tables) {
         const bucket = path.slice('object/list/'.length);
         return jr(200, Object.keys(storage[bucket] || {}).sort().map(name => ({ name })));
       }
+      if (path.startsWith('object/sign/')) {
+        const [bucket, ...rest] = path.slice('object/sign/'.length).split('/');
+        const name = rest.map(decodeURIComponent).join('/');
+        if (!storage[bucket]?.[name]) return jr(404, { error: 'not found' });
+        return jr(200, { signedURL: `/object/sign/${bucket}/${name}?token=fake` });
+      }
       const [, bucket, ...nameParts] = path.split('/');
       if (method === 'POST') { (storage[bucket] ||= {})[nameParts.join('/')] = init.body; return jr(200, { Key: `${bucket}/${nameParts.join('/')}` }); }
       if (method === 'DELETE') {

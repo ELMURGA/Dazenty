@@ -1,6 +1,7 @@
 // api/proposals.js — Estado de las propuestas enviadas a leads y clientes
 // ==========================================================
 // GET    /api/proposals                 → lista (filtros: ?status=, ?lead_id=, ?client_id=, ?open=1)
+// GET    /api/proposals?id=xxx&sign=1   → { url } firmada y temporal para abrir el PDF
 // POST   /api/proposals                 → crear { lead_id | client_id, title, amount?, sent_at?, channel?, url?, ... }
 // PUT    /api/proposals?id=xxx          → editar (incluido el estado: enviada/vista/aceptada/rechazada/caducada)
 // DELETE /api/proposals?id=xxx          → eliminar
@@ -10,11 +11,13 @@
 //        candidatos responde 409 con la lista; sin ninguno crea el lead.
 // Todas requieren x-admin-password. Las abiertas (enviada/vista) sin movimiento en 5 días
 // salen en "Hoy toca contactar" (lib/proposal-rules.js).
+// El PDF se sube con /api/upload y su referencia se guarda en `url`. Al cambiarlo, quitarlo o
+// eliminar la propuesta se borra el archivo anterior de Storage.
 // ==========================================================
 
-import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity } from '../lib/db.js';
+import { guard, sbSelect, sbInsert, sbUpdate, sbDelete, logActivity, signedDocUrl, deleteDocFile } from '../lib/db.js';
 import { madridNow } from '../lib/push.js';
-import { normalizeProposal, OPEN_PROPOSAL_STATUSES } from '../lib/proposal-rules.js';
+import { normalizeProposal, proposalPdfPath, OPEN_PROPOSAL_STATUSES } from '../lib/proposal-rules.js';
 import { pickOwner, normalizeName } from '../lib/proposal-owner.js';
 import { sanitizeSearch } from '../lib/search.js';
 
@@ -30,6 +33,24 @@ async function loadProposal(id) {
   return row;
 }
 
+
+// Borra un PDF que ya no usa nadie. Un fallo aquí no deshace el cambio ya guardado:
+// como mucho queda un archivo suelto en Storage.
+async function removeUnusedPdf(url) {
+  const path = proposalPdfPath(url);
+  if (!path) return;
+  try {
+    const ref = encodeURIComponent(url);
+    const [inProposals, inPortals] = await Promise.all([
+      sbSelect('proposals', `url=eq.${ref}&select=id&limit=1`),
+      sbSelect('clients', `pdf_proposal_url=eq.${ref}&select=id&limit=1`),
+    ]);
+    if (inProposals.length || inPortals.length) return;
+    if (!(await deleteDocFile(path))) console.error('[api/proposals] no se pudo borrar', path);
+  } catch (err) {
+    console.error('[api/proposals] limpieza del PDF', err);
+  }
+}
 
 // Crea (o actualiza) la propuesta de un cliente a partir del nombre que sale en la propuesta de Canva
 async function registerProposal(body) {
@@ -81,6 +102,8 @@ async function registerProposal(body) {
   if (same) {
     const patch = {};
     for (const k of ['amount', 'url', 'notes']) if (n.fields[k] != null) patch[k] = n.fields[k];
+    // Un enlace de Canva nunca sustituye al PDF que ya se hubiera subido
+    if (proposalPdfPath(same.url) && !proposalPdfPath(patch.url)) delete patch.url;
     const updated = await sbUpdate('proposals', same.id, patch);
     if (leadId) await logActivity('lead', leadId, 'proposal', `Propuesta "${title}" actualizada desde /presupuesto`, { proposal_id: same.id });
     return { status: 200, body: { proposal: updated, updated: true, owner: ownerCol === 'lead_id' ? 'lead' : 'client', created_lead: false } };
@@ -102,6 +125,13 @@ export default async function handler(req, res) {
   const { id, status, lead_id, client_id, open, action } = req.query;
 
   try {
+    if (req.method === 'GET' && id && req.query.sign) {
+      const path = proposalPdfPath((await loadProposal(id)).url);
+      const url = path ? await signedDocUrl(path, 300) : null;
+      if (!url) return res.status(404).json({ error: 'Esta propuesta no tiene un PDF disponible' });
+      return res.json({ url });
+    }
+
     if (req.method === 'GET') {
       let params = 'select=*&order=created_at.desc,id.desc&limit=1000';
       if (status) params += `&status=eq.${encodeURIComponent(status)}`;
@@ -140,6 +170,7 @@ export default async function handler(req, res) {
       const n = normalizeProposal(req.body, { partial: true });
       if (n.error) return res.status(400).json({ error: n.error });
       const updated = await sbUpdate('proposals', id, n.fields);
+      if (n.fields.url !== undefined && current.url !== updated.url) await removeUnusedPdf(current.url);
       if (n.fields.status && n.fields.status !== current.status && updated.lead_id) {
         await logActivity('lead', updated.lead_id, 'proposal',
           `Propuesta "${updated.title}" → ${STATUS_LABELS[n.fields.status]}`, { proposal_id: id });
@@ -148,8 +179,9 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      await loadProposal(id);
+      const current = await loadProposal(id);
       await sbDelete('proposals', id);
+      await removeUnusedPdf(current.url);
       return res.status(204).end();
     }
 
