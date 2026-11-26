@@ -67,6 +67,7 @@ Configurar en **Vercel → Settings → Environment Variables**:
 | `RESEND_API_KEY` | API key de Resend para envío de emails |
 | `CRON_SECRET` | Secreto de los avisos push (`push-cron`) y de la copia diaria (`backup-cron`) |
 | `N8N_WEBHOOK_SECRET` | Secreto que n8n envía en `x-webhook-secret` a `/api/webhook-lead` |
+| `ISLA_TASKS_TOKEN` | Clave (32 caracteres o más) para la app Isla del Mac: solo ver, crear y marcar tareas en `/api/tasks` (cabecera `x-isla-token`) |
 
 ---
 
